@@ -48,11 +48,11 @@ public class AftertouchViewCommand<S extends IControlSurface<C>, C extends Confi
         final int convertAftertouch = config.getConvertAftertouch ();
         switch (convertAftertouch)
         {
-            // Filter poly aftertouch
+            // Filter poly-aftertouch
             case AbstractConfiguration.AFTERTOUCH_CONVERT_OFF:
                 break;
 
-            // Translate notes of Poly aftertouch to current note mapping and only allow aftertouch
+            // Translate notes of poly-aftertouch to current note mapping and only allow aftertouch
             // for pads with notes
             case AbstractConfiguration.AFTERTOUCH_CONVERT_POLY:
                 final int n = this.view.getKeyManager ().getMidiNoteFromGrid (note);
@@ -61,7 +61,7 @@ public class AftertouchViewCommand<S extends IControlSurface<C>, C extends Confi
                 this.surface.sendMidiEvent (MidiConstants.CMD_POLY_AFTERTOUCH, n, value);
                 break;
 
-            // Convert to Channel Aftertouch
+            // Convert to channel-aftertouch
             case AbstractConfiguration.AFTERTOUCH_CONVERT_CHANNEL:
                 this.surface.sendMidiEvent (MidiConstants.CMD_CHANNEL_AFTERTOUCH, value, 0);
                 break;

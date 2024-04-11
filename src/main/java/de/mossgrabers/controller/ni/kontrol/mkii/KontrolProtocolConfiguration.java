@@ -15,7 +15,7 @@ import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 
 
 /**
- * The configuration settings for Komplete Kontrol MkII.
+ * The configuration settings for Komplete Kontrol Mk2/3.
  *
  * @author Jürgen Moßgraber
  */

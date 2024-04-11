@@ -4,6 +4,9 @@
 
 package de.mossgrabers.controller.ni.kontrol.mkii.mode;
 
+import java.util.List;
+import java.util.Optional;
+
 import de.mossgrabers.controller.ni.kontrol.mkii.KontrolProtocolConfiguration;
 import de.mossgrabers.controller.ni.kontrol.mkii.TrackType;
 import de.mossgrabers.controller.ni.kontrol.mkii.controller.KontrolProtocol;
@@ -18,9 +21,6 @@ import de.mossgrabers.framework.mode.track.TrackVolumeMode;
 import de.mossgrabers.framework.parameterprovider.special.CombinedParameterProvider;
 import de.mossgrabers.framework.parameterprovider.track.PanParameterProvider;
 import de.mossgrabers.framework.parameterprovider.track.VolumeParameterProvider;
-
-import java.util.List;
-import java.util.Optional;
 
 
 /**
@@ -103,6 +103,7 @@ public class MixerMode extends TrackVolumeMode<KontrolProtocolControlSurface, Ko
     public void updateDisplay ()
     {
         final IValueChanger valueChanger = this.model.getValueChanger ();
+        final boolean hasSolo = this.model.getProject ().hasSolo ();
 
         final int [] vuData = new int [16];
         for (int i = 0; i < 8; i++)
@@ -120,6 +121,14 @@ public class MixerMode extends TrackVolumeMode<KontrolProtocolControlSurface, Ko
             final int j = 2 * i;
             vuData[j] = valueChanger.toMidiValue (track.getVuLeft ());
             vuData[j + 1] = valueChanger.toMidiValue (track.getVuRight ());
+
+            this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_MUTE, track.isMute () ? 1 : 0, i);
+            this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_SOLO, track.isSolo () ? 1 : 0, i);
+            this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_MUTED_BY_SOLO, !track.isSolo () && hasSolo ? 1 : 0, i);
+
+            final Optional<ITrack> selectedTrack = this.bank.getSelectedItem ();
+            this.surface.sendCommand (KontrolProtocolControlSurface.KONTROL_SELECTED_TRACK_AVAILABLE, selectedTrack.isPresent () ? TrackType.toTrackType (selectedTrack.get ().getType ()) : 0);
+            this.surface.sendCommand (KontrolProtocolControlSurface.KONTROL_SELECTED_TRACK_MUTED_BY_SOLO, selectedTrack.isPresent () && !selectedTrack.get ().isSolo () && hasSolo ? 1 : 0);
         }
         this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_VU, 2, 0, vuData);
     }

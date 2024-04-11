@@ -125,23 +125,6 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
             this.kompleteInstance = kompleteInstanceNew;
             surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_INSTANCE, 0, 0, kompleteInstanceNew);
         }
-
-        final ITrackBank bank = this.model.getCurrentTrackBank ();
-
-        final boolean hasSolo = this.model.getProject ().hasSolo ();
-        for (int i = 0; i < 8; i++)
-        {
-            final ITrack track = bank.getItem (i);
-            surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_MUTE, track.isMute () ? 1 : 0, i);
-            surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_SOLO, track.isSolo () ? 1 : 0, i);
-            surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_MUTED_BY_SOLO, !track.isSolo () && hasSolo ? 1 : 0, i);
-        }
-
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
-        final Optional<ITrack> selectedTrack = tb.getSelectedItem ();
-        surface.sendCommand (KontrolProtocolControlSurface.KONTROL_SELECTED_TRACK_AVAILABLE, selectedTrack.isPresent () ? TrackType.toTrackType (selectedTrack.get ().getType ()) : 0);
-        surface.sendCommand (KontrolProtocolControlSurface.KONTROL_SELECTED_TRACK_MUTED_BY_SOLO, selectedTrack.isPresent () && !selectedTrack.get ().isSolo () && hasSolo ? 1 : 0);
-
         super.flush ();
     }
 
@@ -162,8 +145,9 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
         final IMidiAccess midiAccess = this.factory.createMidiAccess ();
         final IMidiOutput output = midiAccess.createOutput ();
         final IMidiInput pianoInput = midiAccess.createInput (1, "Keyboard", "8?????" /* Note off */,
-                "9?????" /* Note on */, "B?????" /* Sustain pedal + Modulation + Strip */,
-                "D?????" /* Channel After-touch */, "E?????" /* Pitch-bend */);
+                "9?????" /* Note on */, "A?????" /* Poly-Aftertouch */,
+                "B?????" /* Sustain-pedal + Modulation + Strip */, "D?????" /* Channel-Aftertouch */,
+                "E?????" /* Pitch-bend */);
         final KontrolProtocolControlSurface surface = new KontrolProtocolControlSurface (this.host, this.colorManager, this.configuration, output, midiAccess.createInput (null), this.version);
         this.surfaces.add (surface);
 

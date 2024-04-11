@@ -140,6 +140,13 @@ public class ParamsMode extends AbstractParameterMode<KontrolProtocolControlSurf
             final int j = 2 * i;
             vuData[j] = valueChanger.toMidiValue (parameter.getModulatedValue ());
             vuData[j + 1] = valueChanger.toMidiValue (parameter.getModulatedValue ());
+
+            // Switch off all mutes and solos otherwise "tracks" will be darkened
+            this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_MUTE, 0, i);
+            this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_SOLO, 0, i);
+            this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_MUTED_BY_SOLO, 0, i);
+            this.surface.sendCommand (KontrolProtocolControlSurface.KONTROL_SELECTED_TRACK_AVAILABLE, 0);
+            this.surface.sendCommand (KontrolProtocolControlSurface.KONTROL_SELECTED_TRACK_MUTED_BY_SOLO, 0);
         }
         this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_VU, 2, 0, vuData);
     }
