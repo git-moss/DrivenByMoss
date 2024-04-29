@@ -75,10 +75,16 @@ public class BrowserCommand<S extends IControlSurface<C>, C extends Configuratio
         if (event != ButtonEvent.UP)
             return;
 
-        if (this.surface.isPressed (this.firstTrigger))
-            this.startBrowser (true, true);
+        if (this.secondTrigger != null)
+            if (this.surface.isPressed (this.firstTrigger))
+                this.startBrowser (true, true);
+            else
+                this.startBrowser (this.surface.isPressed (this.secondTrigger), false);
         else
-            this.startBrowser (this.secondTrigger == null || this.surface.isPressed (this.secondTrigger), false);
+            if (this.surface.isPressed (this.firstTrigger))
+                this.startBrowser (true, false);
+            else
+                this.startBrowser (false, false);
     }
 
 
