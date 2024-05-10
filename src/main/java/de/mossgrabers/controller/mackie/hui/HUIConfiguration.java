@@ -190,7 +190,7 @@ public class HUIConfiguration extends AbstractConfiguration
 
         this.yamahaWriteHackSetting = settingsUI.getEnumSetting ("WRITE selects current automation mode", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
         this.yamahaWriteHackSetting.addValueObserver (value -> {
-            this.yamahaWriteHack = "Off".equals (value);
+            this.yamahaWriteHack = "On".equals (value);
             this.notifyObservers (YAMAHA_WRITE_HACK);
         });
 
@@ -311,7 +311,6 @@ public class HUIConfiguration extends AbstractConfiguration
     public boolean isYamahaWriteHacked ()
     {
         return this.yamahaWriteHack;
-        /* return true; */
     }
 
 
