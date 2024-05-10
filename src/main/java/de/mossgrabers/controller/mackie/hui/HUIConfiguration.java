@@ -34,6 +34,8 @@ public class HUIConfiguration extends AbstractConfiguration
     public static final Integer    HAS_MOTOR_FADERS        = Integer.valueOf (54);
     /** Select the channel when touching it's fader. */
     private static final Integer   TOUCH_CHANNEL           = Integer.valueOf (55);
+    /** Make the WRITE button select the current automation mode (hack for the Yamaha DM3) */
+    public static final Integer    YAMAHA_WRITE_HACK      = Integer.valueOf (56);
 
     /** Use a Function button to switch to previous mode. */
     public static final int        FOOTSWITCH_2_PREV_MODE  = 15;
@@ -43,7 +45,8 @@ public class HUIConfiguration extends AbstractConfiguration
     public static final int        SHOW_MARKER_MODE        = 17;
 
     private static final String    DEVICE_SELECT           = "<Select a profile>";
-    private static final String    DEVICE_ICON_QCON_PRO_X  = "icon QConPro X";
+    private static final String    DEVICE_ICON_QCON_PRO_X  = "iCON QConPro X";
+    private static final String    DEVICE_YAMAHA_DM3  = "Yamaha DM3";
     private static final String    DEVICE_MACKIE_HUI       = "Mackie HUI";
     private static final String    DEVICE_NOVATION_SLMKIII = "Novation MkIII";
 
@@ -51,6 +54,7 @@ public class HUIConfiguration extends AbstractConfiguration
     {
         DEVICE_SELECT,
         DEVICE_ICON_QCON_PRO_X,
+        DEVICE_YAMAHA_DM3,        
         DEVICE_MACKIE_HUI,
         DEVICE_NOVATION_SLMKIII
     };
@@ -73,11 +77,13 @@ public class HUIConfiguration extends AbstractConfiguration
     private IEnumSetting           hasDisplay1Setting;
     private IEnumSetting           hasSegmentDisplaySetting;
     private IEnumSetting           hasMotorFadersSetting;
+    private IEnumSetting           yamahaWriteHackSetting;
 
     private boolean                zoomState;
     private boolean                hasDisplay1;
     private boolean                hasSegmentDisplay;
     private boolean                hasMotorFaders;
+    private boolean                yamahaWriteHack;
     private boolean                touchChannel;
     private boolean                sendPing;
 
@@ -151,6 +157,12 @@ public class HUIConfiguration extends AbstractConfiguration
                     this.setVUMetersEnabled (false);
                     break;
 
+                case DEVICE_YAMAHA_DM3:
+                    this.yamahaWriteHackSetting.set (ON_OFF_OPTIONS[1]);
+                    this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
+                    this.setVUMetersEnabled (true);
+                    break;
+
                 default:
                     return;
             }
@@ -176,6 +188,12 @@ public class HUIConfiguration extends AbstractConfiguration
             this.notifyObservers (HAS_MOTOR_FADERS);
         });
 
+        this.yamahaWriteHackSetting = settingsUI.getEnumSetting ("WRITE selects current automation mode", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        this.yamahaWriteHackSetting.addValueObserver (value -> {
+            this.yamahaWriteHack = "Off".equals (value);
+            this.notifyObservers (YAMAHA_WRITE_HACK);
+        });
+
         final IEnumSetting sendPingSetting = settingsUI.getEnumSetting ("Send ping", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
         sendPingSetting.addValueObserver (value -> {
             this.sendPing = "On".equals (value);
@@ -185,6 +203,7 @@ public class HUIConfiguration extends AbstractConfiguration
         this.isSettingActive.add (HAS_DISPLAY1);
         this.isSettingActive.add (HAS_SEGMENT_DISPLAY);
         this.isSettingActive.add (HAS_MOTOR_FADERS);
+        this.isSettingActive.add (YAMAHA_WRITE_HACK);
         this.isSettingActive.add (SEND_PING);
     }
 
@@ -282,6 +301,17 @@ public class HUIConfiguration extends AbstractConfiguration
     public boolean hasMotorFaders ()
     {
         return this.hasMotorFaders;
+    }
+
+    /**
+     * Returns true if WRITE should select the current automation mode.
+     *
+     * @return True if WRITE should select the current automation mode.
+     */
+    public boolean isYamahaWriteHacked ()
+    {
+        return this.yamahaWriteHack;
+        /* return true; */
     }
 
 
