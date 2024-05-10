@@ -411,10 +411,8 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
             this.addButtonHUI (surface, ButtonID.AUTOMATION_READ, "Read", new AutomationModeCommand<> (AutomationMode.READ, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_READ, () -> t.getAutomationWriteMode () == AutomationMode.READ);
             this.addButtonHUI (surface, ButtonID.AUTOMATION_LATCH, "Latch", new AutomationModeCommand<> (AutomationMode.LATCH, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_LATCH, () -> t.getAutomationWriteMode () == AutomationMode.LATCH);
 if (this.configuration.isYamahaWriteHacked()) {
-			this.model.getHost().showNotification("Setting to LATCH.");
             this.addButtonHUI (surface, ButtonID.AUTOMATION_WRITE, "Write", new AutomationModeCommand<> (AutomationMode.LATCH, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_WRITE, () -> t.getAutomationWriteMode () == AutomationMode.LATCH);
 } else {
-			this.model.getHost().showNotification("Setting to WRITE.");
             this.addButtonHUI (surface, ButtonID.AUTOMATION_WRITE, "Write", new AutomationModeCommand<> (AutomationMode.WRITE, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_WRITE, () -> t.getAutomationWriteMode () == AutomationMode.WRITE);
 }
              this.addButtonHUI (surface, ButtonID.AUTOMATION_TOUCH, "Touch", new AutomationModeCommand<> (AutomationMode.TOUCH, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_TOUCH, () -> t.getAutomationWriteMode () == AutomationMode.TOUCH);
