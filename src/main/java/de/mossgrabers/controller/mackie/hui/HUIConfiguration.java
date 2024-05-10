@@ -188,7 +188,7 @@ public class HUIConfiguration extends AbstractConfiguration
             this.notifyObservers (HAS_MOTOR_FADERS);
         });
 
-        this.yamahaWriteHackSetting = settingsUI.getEnumSetting ("WRITE selects current automation mode", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        this.yamahaWriteHackSetting = settingsUI.getEnumSetting ("WRITE selects latch mode", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
         this.yamahaWriteHackSetting.addValueObserver (value -> {
             this.yamahaWriteHack = "On".equals (value);
             this.notifyObservers (YAMAHA_WRITE_HACK);
@@ -304,9 +304,9 @@ public class HUIConfiguration extends AbstractConfiguration
     }
 
     /**
-     * Returns true if WRITE should select the current automation mode.
+     * Returns true if WRITE should select latch mode (hack for the DM3.)
      *
-     * @return True if WRITE should select the current automation mode.
+     * @return True if WRITE should select latch mode (hack for the DM3.)
      */
     public boolean isYamahaWriteHacked ()
     {
