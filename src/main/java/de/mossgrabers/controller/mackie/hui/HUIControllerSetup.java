@@ -401,9 +401,6 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
             // HUI_AUTO_ENABLE_SENDMUTE, not supported
             // HUI_AUTO_ENABLE_SEND, not supported
             // HUI_AUTO_ENABLE_MUTE, not supported
-			if (this.configuration.isYamahaWriteHacked()) {
-				this.model.getHost().showNotification("Yamaha WRITE hack enabled.");
-			}
 				
             // Automation modes
             this.addButtonHUI (surface, ButtonID.AUTOMATION_OFF, "Off", new AutomationModeCommand<> (AutomationMode.TRIM_READ, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_OFF, () -> false);
