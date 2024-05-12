@@ -11,22 +11,24 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 public class HUIAutomationModeCommand extends AutomationModeCommand<HUIControlSurface, HUIConfiguration>
 {
     private final HUIDisplay display;
+    private final AutomationMode ourAutomationMode;
 
     public HUIAutomationModeCommand(final AutomationMode autoMode, final IModel model, final HUIControlSurface surface, final HUIDisplay display)
     {
         super(autoMode, model, surface);
+        this.ourAutomationMode = autoMode;
         this.display = display;
     }
+
 
     @Override
     public void executeNormal(final ButtonEvent event)
     {
         super.executeNormal(event);
 
-        if (event == ButtonEvent.DOWN)
-        {
             final AutomationMode mode = this.model.getTransport().getAutomationWriteMode();
-            this.display.notifyHUIDisplay("Automation mode: " + mode.name());
-        }
+            if (mode == this.ourAutomationMode) {
+                this.display.notifyHUIDisplay(mode.name());
+            }
     }
 }
