@@ -81,6 +81,11 @@ public class HUIDisplay extends AbstractTextDisplay
     }
 
 
+    public void notifyHUIDisplay (final String message)
+    {
+        this.notifyOnDisplay(message);
+    }
+    
     /** {@inheritDoc} */
     @Override
     public void shutdown ()
