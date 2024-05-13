@@ -28,7 +28,9 @@ public class HUIAutomationModeCommand extends AutomationModeCommand<HUIControlSu
 
             final AutomationMode mode = this.model.getTransport().getAutomationWriteMode();
             if (mode == this.ourAutomationMode) {
-                this.display.notifyHUIDisplay("Automation: " + mode.name());
+                if (this.surface.getConfiguration().shouldNotifyAutomationMode()) {
+                    this.display.notifyHUIDisplay("Automation: " + mode.name());
+                }
             }
     }
 }
