@@ -404,24 +404,12 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
             // HUI_AUTO_ENABLE_MUTE, not supported
 
             // Automation modes
-            if (this.configuration.shouldNotifyAutomationMode())
-            {
-                this.addButtonHUI(surface, ButtonID.AUTOMATION_OFF, "Off", new HUIAutomationModeCommand(AutomationMode.TRIM_READ, this.model, surface, display), HUIControlSurface.HUI_AUTO_MODE_OFF, () -> false);
-                this.addButtonHUI(surface, ButtonID.AUTOMATION_TRIM, "Trim", new HUIAutomationModeCommand(AutomationMode.TRIM_READ, this.model, surface, display), HUIControlSurface.HUI_AUTO_MODE_TRIM, () -> t.getAutomationWriteMode() == AutomationMode.TRIM_READ);
-                this.addButtonHUI(surface, ButtonID.AUTOMATION_READ, "Read", new HUIAutomationModeCommand(AutomationMode.READ, this.model, surface, display), HUIControlSurface.HUI_AUTO_MODE_READ, () -> t.getAutomationWriteMode() == AutomationMode.READ);
-                this.addButtonHUI(surface, ButtonID.AUTOMATION_LATCH, "Latch", new HUIAutomationModeCommand(AutomationMode.LATCH, this.model, surface, display), HUIControlSurface.HUI_AUTO_MODE_LATCH, () -> t.getAutomationWriteMode() == AutomationMode.LATCH);
-                this.addButtonHUI(surface, ButtonID.AUTOMATION_WRITE, "Write", new HUIAutomationModeCommand(AutomationMode.WRITE, this.model, surface, display), HUIControlSurface.HUI_AUTO_MODE_WRITE, () -> t.getAutomationWriteMode() == AutomationMode.WRITE);
-                this.addButtonHUI(surface, ButtonID.AUTOMATION_TOUCH, "Touch", new HUIAutomationModeCommand(AutomationMode.TOUCH, this.model, surface, display), HUIControlSurface.HUI_AUTO_MODE_TOUCH, () -> t.getAutomationWriteMode() == AutomationMode.TOUCH);
-            }
-            else
-            {
-                this.addButtonHUI(surface, ButtonID.AUTOMATION_OFF, "Off", new AutomationModeCommand<> (AutomationMode.TRIM_READ, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_OFF, () -> false);
-                this.addButtonHUI(surface, ButtonID.AUTOMATION_TRIM, "Trim", new AutomationModeCommand<> (AutomationMode.TRIM_READ, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_TRIM, () -> t.getAutomationWriteMode () == AutomationMode.TRIM_READ);
-                this.addButtonHUI(surface, ButtonID.AUTOMATION_READ, "Read", new AutomationModeCommand<> (AutomationMode.READ, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_READ, () -> t.getAutomationWriteMode () == AutomationMode.READ);
-                this.addButtonHUI(surface, ButtonID.AUTOMATION_LATCH, "Latch", new AutomationModeCommand<> (AutomationMode.LATCH, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_LATCH, () -> t.getAutomationWriteMode () == AutomationMode.LATCH);
-                this.addButtonHUI(surface, ButtonID.AUTOMATION_WRITE, "Write", new AutomationModeCommand<> (AutomationMode.WRITE, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_WRITE, () -> t.getAutomationWriteMode () == AutomationMode.WRITE);
-                this.addButtonHUI(surface, ButtonID.AUTOMATION_TOUCH, "Touch", new AutomationModeCommand<> (AutomationMode.TOUCH, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_TOUCH, () -> t.getAutomationWriteMode () == AutomationMode.TOUCH);
-            }
+            this.addButtonHUI(surface, ButtonID.AUTOMATION_OFF, "Off", new HUIAutomationModeCommand(AutomationMode.TRIM_READ, this.model, surface, display), HUIControlSurface.HUI_AUTO_MODE_OFF, () -> false);                
+            this.addButtonHUI(surface, ButtonID.AUTOMATION_TRIM, "Trim", new HUIAutomationModeCommand(AutomationMode.TRIM_READ, this.model, surface, display), HUIControlSurface.HUI_AUTO_MODE_TRIM, () -> t.getAutomationWriteMode() == AutomationMode.TRIM_READ);
+            this.addButtonHUI(surface, ButtonID.AUTOMATION_READ, "Read", new HUIAutomationModeCommand(AutomationMode.READ, this.model, surface, display), HUIControlSurface.HUI_AUTO_MODE_READ, () -> t.getAutomationWriteMode() == AutomationMode.READ);
+            this.addButtonHUI(surface, ButtonID.AUTOMATION_LATCH, "Latch", new HUIAutomationModeCommand(AutomationMode.LATCH, this.model, surface, display), HUIControlSurface.HUI_AUTO_MODE_LATCH, () -> t.getAutomationWriteMode() == AutomationMode.LATCH);
+            this.addButtonHUI(surface, ButtonID.AUTOMATION_WRITE, "Write", new HUIAutomationModeCommand(AutomationMode.WRITE, this.model, surface, display), HUIControlSurface.HUI_AUTO_MODE_WRITE, () -> t.getAutomationWriteMode() == AutomationMode.WRITE);
+            this.addButtonHUI(surface, ButtonID.AUTOMATION_TOUCH, "Touch", new HUIAutomationModeCommand(AutomationMode.TOUCH, this.model, surface, display), HUIControlSurface.HUI_AUTO_MODE_TOUCH, () -> t.getAutomationWriteMode() == AutomationMode.TOUCH);
 
             // Status
             // HUI_STATUS_PHASE, not supported
