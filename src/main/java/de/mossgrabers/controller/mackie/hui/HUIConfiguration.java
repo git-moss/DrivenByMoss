@@ -190,10 +190,16 @@ public class HUIConfiguration extends AbstractConfiguration
             this.notifyObservers(AUTOMATION_NOTIFICATION);
         });
 
+        this.hasMotorFadersSetting = settingsUI.getEnumSetting("Has motor faders", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        this.hasMotorFadersSetting.addValueObserver(value -> {
+        this.hasMotorFaders = "On".equals(value);
+        this.notifyObservers(HAS_MOTOR_FADERS);
+        });
+        
         final IEnumSetting sendPingSetting = settingsUI.getEnumSetting ("Send ping", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
         sendPingSetting.addValueObserver (value -> {
             this.sendPing = "On".equals (value);
-            this.notifyObservers (HAS_MOTOR_FADERS);
+            this.notifyObservers (SEND_PING);
         });
 
         this.isSettingActive.add (HAS_DISPLAY1);
