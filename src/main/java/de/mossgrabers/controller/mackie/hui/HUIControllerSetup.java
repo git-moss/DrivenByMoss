@@ -252,9 +252,7 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
             final ModeManager modeManager = surface.getModeManager ();
             final ITransport t = this.model.getTransport ();
             final IApplication application = this.model.getApplication ();
-            final boolean automationNotification = true;
 
-            display.notifyHUIDisplay("Initializing HUI #" + String.valueOf(index));
             // Channel commands
             for (int channel = 0; channel < 8; channel++)
             {
@@ -406,7 +404,7 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
             // HUI_AUTO_ENABLE_MUTE, not supported
 
             // Automation modes
-            if (automationNotification)
+            if (this.configuration.shouldNotifyAutomationMode())
             {
                 this.addButtonHUI(surface, ButtonID.AUTOMATION_OFF, "Off", new HUIAutomationModeCommand(AutomationMode.TRIM_READ, this.model, surface, display), HUIControlSurface.HUI_AUTO_MODE_OFF, () -> false);
                 this.addButtonHUI(surface, ButtonID.AUTOMATION_TRIM, "Trim", new HUIAutomationModeCommand(AutomationMode.TRIM_READ, this.model, surface, display), HUIControlSurface.HUI_AUTO_MODE_TRIM, () -> t.getAutomationWriteMode() == AutomationMode.TRIM_READ);

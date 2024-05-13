@@ -34,6 +34,8 @@ public class HUIConfiguration extends AbstractConfiguration
     public static final Integer    HAS_MOTOR_FADERS        = Integer.valueOf (54);
     /** Select the channel when touching it's fader. */
     private static final Integer   TOUCH_CHANNEL           = Integer.valueOf (55);
+    /** Show the selected automation mode on the device upon selection. */
+    private static final Integer   AUTOMATION_NOTIFICATION    = Integer.valueOf (56);
 
     /** Use a Function button to switch to previous mode. */
     public static final int        FOOTSWITCH_2_PREV_MODE  = 15;
@@ -45,6 +47,7 @@ public class HUIConfiguration extends AbstractConfiguration
     private static final String    DEVICE_SELECT           = "<Select a profile>";
     private static final String    DEVICE_ICON_QCON_PRO_X  = "icon QConPro X";
     private static final String    DEVICE_MACKIE_HUI       = "Mackie HUI";
+    private static final String    DEVICE_YAMAHA_DM3       = "Yamaha DM3";
     private static final String    DEVICE_NOVATION_SLMKIII = "Novation MkIII";
 
     private static final String [] DEVICE_OPTIONS          =
@@ -52,6 +55,7 @@ public class HUIConfiguration extends AbstractConfiguration
         DEVICE_SELECT,
         DEVICE_ICON_QCON_PRO_X,
         DEVICE_MACKIE_HUI,
+        DEVICE_YAMAHA_DM3,
         DEVICE_NOVATION_SLMKIII
     };
 
@@ -73,11 +77,13 @@ public class HUIConfiguration extends AbstractConfiguration
     private IEnumSetting           hasDisplay1Setting;
     private IEnumSetting           hasSegmentDisplaySetting;
     private IEnumSetting           hasMotorFadersSetting;
+    private IEnumSetting           automationNotificationSetting;
 
     private boolean                zoomState;
     private boolean                hasDisplay1;
     private boolean                hasSegmentDisplay;
     private boolean                hasMotorFaders;
+    private boolean                automationNotification;    
     private boolean                touchChannel;
     private boolean                sendPing;
 
@@ -144,6 +150,14 @@ public class HUIConfiguration extends AbstractConfiguration
                     this.setVUMetersEnabled (true);
                     break;
 
+                case DEVICE_YAMAHA_DM3:
+                    this.hasDisplay1Setting.set (ON_OFF_OPTIONS[1]);
+                    this.hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[1]);
+                    this.hasMotorFadersSetting.set (ON_OFF_OPTIONS[1]);
+                    this.automationNotificationSetting.set (ON_OFF_OPTIONS[1]);
+                    this.setVUMetersEnabled (true);
+                    break;
+
                 case DEVICE_NOVATION_SLMKIII:
                     this.hasDisplay1Setting.set (ON_OFF_OPTIONS[1]);
                     this.hasSegmentDisplaySetting.set (ON_OFF_OPTIONS[0]);
@@ -170,10 +184,10 @@ public class HUIConfiguration extends AbstractConfiguration
             this.notifyObservers (HAS_SEGMENT_DISPLAY);
         });
 
-        this.hasMotorFadersSetting = settingsUI.getEnumSetting ("Has motor faders", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
-        this.hasMotorFadersSetting.addValueObserver (value -> {
-            this.hasMotorFaders = "On".equals (value);
-            this.notifyObservers (HAS_MOTOR_FADERS);
+        this.automationNotificationSetting = settingsUI.getEnumSetting("Automation mode notifications", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        this.automationNotificationSetting.addValueObserver(value -> {
+            this.automationNotification = "On".equals(value);
+            this.notifyObservers(AUTOMATION_NOTIFICATION);
         });
 
         final IEnumSetting sendPingSetting = settingsUI.getEnumSetting ("Send ping", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
@@ -184,6 +198,7 @@ public class HUIConfiguration extends AbstractConfiguration
 
         this.isSettingActive.add (HAS_DISPLAY1);
         this.isSettingActive.add (HAS_SEGMENT_DISPLAY);
+        this.isSettingActive.add (AUTOMATION_NOTIFICATION);
         this.isSettingActive.add (HAS_MOTOR_FADERS);
         this.isSettingActive.add (SEND_PING);
     }
@@ -284,6 +299,15 @@ public class HUIConfiguration extends AbstractConfiguration
         return this.hasMotorFaders;
     }
 
+    /**
+     * Returns true if automation mode notifications are enabled.
+     *
+     * @return True if automation mode notifications are enabled.
+     */
+    public boolean shouldNotifyAutomationMode ()
+    {
+        return this.automationNotification;
+    }
 
     /**
      * Returns true if a ping message should be send every second to the HUI device.
