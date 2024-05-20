@@ -63,7 +63,7 @@ public abstract class AbstractTextDisplay implements ITextDisplay
 
     /**
      * Set the line and cell numbers.
-     * 
+     *
      * @param noOfLines The number of rows that the display supports
      * @param noOfCells The number of cells that the display supports
      * @param noOfCharacters The number of characters of 1 row that the display supports

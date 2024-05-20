@@ -33,13 +33,13 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public class TransportImpl implements ITransport
 {
-    /** No preroll. */
+    /** No pre-roll. */
     private static final String            PREROLL_NONE            = "none";
-    /** 1 bar preroll. */
+    /** 1 bar pre-roll. */
     private static final String            PREROLL_1_BAR           = "one_bar";
-    /** 2 bar preroll. */
+    /** 2 bar pre-roll. */
     private static final String            PREROLL_2_BARS          = "two_bars";
-    /** 4 bar preroll. */
+    /** 4 bar pre-Wroll. */
     private static final String            PREROLL_4_BARS          = "four_bars";
 
     private static final String            ACTION_JUMP_TO_END      = "jump_to_end_of_arrangement";
@@ -525,7 +525,7 @@ public class TransportImpl implements ITransport
 
     /**
      * Get the fraction to use for time changes.
-     * 
+     *
      * @param slow Slow change if true otherwise fast
      * @return The fraction to change
      */

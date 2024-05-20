@@ -157,7 +157,7 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
 
     /**
      * Display the name of the nth send of the selected track.
-     * 
+     *
      * @param sendIndex The index of the send to notify
      */
     public void notifySelectedSend (final int sendIndex)

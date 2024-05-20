@@ -17,7 +17,9 @@ import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.daw.data.IDrumPad;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
+import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.featuregroup.ModeManager;
+import de.mossgrabers.framework.mode.INoteEditorMode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
@@ -262,7 +264,8 @@ public class DrumXoXView extends AbstractDrumXoXView<FireControlSurface, FireCon
         final ModeManager modeManager = this.surface.getModeManager ();
         if (velocity > 0)
         {
-            if (modeManager.isActive (Modes.NOTE))
+            final IMode activeMode = modeManager.getActive ();
+            if (activeMode instanceof final INoteEditorMode noteMode)
             {
                 // Store existing note for editing
                 final int sound = offsetY + this.selectedPad;
@@ -271,7 +274,14 @@ public class DrumXoXView extends AbstractDrumXoXView<FireControlSurface, FireCon
                 final INoteClip clip = this.getClip ();
                 final StepState state = clip.getStep (notePosition).getState ();
                 if (state == StepState.START)
+                {
                     this.editNote (clip, notePosition, true);
+                    if (noteMode.getNoteEditor ().getNotes ().isEmpty ())
+                    {
+                        this.surface.getDisplay ().notify ("Edit Notes: Off");
+                        this.isNoteEdited = false;
+                    }
+                }
                 return true;
             }
             return false;

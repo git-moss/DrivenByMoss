@@ -334,7 +334,7 @@ public class LaunchkeyMk3ControlSurface extends AbstractControlSurface<Launchkey
         final int deviceFamilyCode = deviceInquiry.getDeviceFamilyCode ()[0];
         this.hasFaders = deviceFamilyCode >= LAUNCHKEY_49;
 
-        if (this.getDisplay () instanceof LaunchkeyMk3Display launchkeyDisplay)
+        if (this.getDisplay () instanceof final LaunchkeyMk3Display launchkeyDisplay)
             launchkeyDisplay.setModel (deviceFamilyCode == LAUNCHKEY_88);
 
         this.host.println ("Detected " + LAUNCHKEY_MODEL_NAMES.get (Integer.valueOf (deviceFamilyCode)) + " (Firmware version: " + (firmwareVersion.charAt (0) == '0' ? firmwareVersion.substring (1) : firmwareVersion) + ")");

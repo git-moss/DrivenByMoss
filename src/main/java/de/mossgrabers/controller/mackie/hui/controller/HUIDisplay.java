@@ -39,6 +39,8 @@ public class HUIDisplay extends AbstractTextDisplay
     public HUIDisplay (final IHost host, final IMidiOutput output)
     {
         super (host, output, 1 /* No of rows */, 9 /* No of cells */, 36);
+
+        this.centerNotification = false;
     }
 
 

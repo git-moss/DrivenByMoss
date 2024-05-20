@@ -72,7 +72,7 @@ public class MCUDisplay extends AbstractTextDisplay
      */
     public void updateShortSecondDisplay ()
     {
-        if (!this.isFirstDisplay && this.isMainDevice && this.configuration instanceof MCUConfiguration conf)
+        if (!this.isFirstDisplay && this.isMainDevice && this.configuration instanceof final MCUConfiguration conf)
             this.setNumberOfCells (this.noOfLines, conf.hasDisplay2 () == SecondDisplay.QCON ? 9 : 8, this.noOfCharacters);
     }
 
@@ -114,7 +114,7 @@ public class MCUDisplay extends AbstractTextDisplay
     protected void updateLine (final int row, final String text, final String previousText)
     {
         String t = text;
-        if (!this.isFirstDisplay && this.isMainDevice && this.configuration instanceof MCUConfiguration conf && conf.hasDisplay2 () == SecondDisplay.QCON)
+        if (!this.isFirstDisplay && this.isMainDevice && this.configuration instanceof final MCUConfiguration conf && conf.hasDisplay2 () == SecondDisplay.QCON)
         {
             // If a 9th master cell should be added
             if (row == 0)

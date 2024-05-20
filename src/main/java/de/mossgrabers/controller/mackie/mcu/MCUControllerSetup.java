@@ -465,12 +465,12 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 this.addButton (surface, ButtonID.MOVE_TRACK_RIGHT, TAG_RIGHT, new MCUMoveTrackBankCommand (this.model, surface, true, false), 0, MCUControlSurface.MCU_TRACK_RIGHT);
 
                 // Automation
-                this.addButton (surface, ButtonID.AUTOMATION_TRIM, "Trim", new AutomationModeCommand<> (AutomationMode.TRIM_READ, this.model, surface), 0, MCUControlSurface.MCU_TRIM, () -> t.getAutomationWriteMode () == AutomationMode.TRIM_READ);
-                this.addButton (surface, ButtonID.AUTOMATION_READ, "Read", new AutomationModeCommand<> (AutomationMode.READ, this.model, surface), 0, MCUControlSurface.MCU_READ, () -> t.getAutomationWriteMode () == AutomationMode.READ);
-                this.addButton (surface, ButtonID.AUTOMATION_WRITE, "Write", new AutomationModeCommand<> (AutomationMode.WRITE, this.model, surface), 0, MCUControlSurface.MCU_WRITE, () -> t.getAutomationWriteMode () == AutomationMode.WRITE);
-                this.addButton (surface, ButtonID.AUTOMATION_GROUP, "Group/Write", new AutomationModeCommand<> (AutomationMode.LATCH_PREVIEW, this.model, surface), 0, MCUControlSurface.MCU_GROUP, () -> t.getAutomationWriteMode () == AutomationMode.LATCH_PREVIEW);
-                this.addButton (surface, ButtonID.AUTOMATION_TOUCH, "Touch", new AutomationModeCommand<> (AutomationMode.TOUCH, this.model, surface), 0, MCUControlSurface.MCU_TOUCH, () -> t.getAutomationWriteMode () == AutomationMode.TOUCH);
-                this.addButton (surface, ButtonID.AUTOMATION_LATCH, "Latch", new AutomationModeCommand<> (AutomationMode.LATCH, this.model, surface), 0, MCUControlSurface.MCU_LATCH, () -> t.getAutomationWriteMode () == AutomationMode.LATCH);
+                this.addButton (surface, ButtonID.AUTOMATION_TRIM, "Trim", new AutomationModeCommand<> (AutomationMode.TRIM_READ, this.model, surface, false), 0, MCUControlSurface.MCU_TRIM, () -> t.getAutomationWriteMode () == AutomationMode.TRIM_READ);
+                this.addButton (surface, ButtonID.AUTOMATION_READ, "Read", new AutomationModeCommand<> (AutomationMode.READ, this.model, surface, false), 0, MCUControlSurface.MCU_READ, () -> t.getAutomationWriteMode () == AutomationMode.READ);
+                this.addButton (surface, ButtonID.AUTOMATION_WRITE, "Write", new AutomationModeCommand<> (AutomationMode.WRITE, this.model, surface, false), 0, MCUControlSurface.MCU_WRITE, () -> t.getAutomationWriteMode () == AutomationMode.WRITE);
+                this.addButton (surface, ButtonID.AUTOMATION_GROUP, "Group/Write", new AutomationModeCommand<> (AutomationMode.LATCH_PREVIEW, this.model, surface, false), 0, MCUControlSurface.MCU_GROUP, () -> t.getAutomationWriteMode () == AutomationMode.LATCH_PREVIEW);
+                this.addButton (surface, ButtonID.AUTOMATION_TOUCH, "Touch", new AutomationModeCommand<> (AutomationMode.TOUCH, this.model, surface, false), 0, MCUControlSurface.MCU_TOUCH, () -> t.getAutomationWriteMode () == AutomationMode.TOUCH);
+                this.addButton (surface, ButtonID.AUTOMATION_LATCH, "Latch", new AutomationModeCommand<> (AutomationMode.LATCH, this.model, surface, false), 0, MCUControlSurface.MCU_LATCH, () -> t.getAutomationWriteMode () == AutomationMode.LATCH);
                 this.addButton (surface, ButtonID.UNDO, "Undo", new UndoCommand<> (this.model, surface), MCUControlSurface.MCU_UNDO);
 
                 // Panes

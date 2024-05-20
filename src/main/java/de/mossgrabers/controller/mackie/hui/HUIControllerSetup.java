@@ -4,6 +4,9 @@
 
 package de.mossgrabers.controller.mackie.hui;
 
+import java.util.function.BooleanSupplier;
+import java.util.function.IntSupplier;
+
 import de.mossgrabers.controller.mackie.hui.command.trigger.AssignableCommand;
 import de.mossgrabers.controller.mackie.hui.command.trigger.FaderTouchCommand;
 import de.mossgrabers.controller.mackie.hui.command.trigger.WorkaroundFader;
@@ -76,9 +79,6 @@ import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.ControlOnlyView;
 import de.mossgrabers.framework.view.Views;
-
-import java.util.function.BooleanSupplier;
-import java.util.function.IntSupplier;
 
 
 /**
@@ -403,12 +403,12 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
             // HUI_AUTO_ENABLE_MUTE, not supported
 
             // Automation modes
-            this.addButtonHUI (surface, ButtonID.AUTOMATION_OFF, "Off", new AutomationModeCommand<> (AutomationMode.TRIM_READ, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_OFF, () -> false);
-            this.addButtonHUI (surface, ButtonID.AUTOMATION_TRIM, "Trim", new AutomationModeCommand<> (AutomationMode.TRIM_READ, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_TRIM, () -> t.getAutomationWriteMode () == AutomationMode.TRIM_READ);
-            this.addButtonHUI (surface, ButtonID.AUTOMATION_READ, "Read", new AutomationModeCommand<> (AutomationMode.READ, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_READ, () -> t.getAutomationWriteMode () == AutomationMode.READ);
-            this.addButtonHUI (surface, ButtonID.AUTOMATION_LATCH, "Latch", new AutomationModeCommand<> (AutomationMode.LATCH, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_LATCH, () -> t.getAutomationWriteMode () == AutomationMode.LATCH);
-            this.addButtonHUI (surface, ButtonID.AUTOMATION_WRITE, "Write", new AutomationModeCommand<> (AutomationMode.WRITE, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_WRITE, () -> t.getAutomationWriteMode () == AutomationMode.WRITE);
-            this.addButtonHUI (surface, ButtonID.AUTOMATION_TOUCH, "Touch", new AutomationModeCommand<> (AutomationMode.TOUCH, this.model, surface), HUIControlSurface.HUI_AUTO_MODE_TOUCH, () -> t.getAutomationWriteMode () == AutomationMode.TOUCH);
+            this.addButtonHUI (surface, ButtonID.AUTOMATION_OFF, "Off", new AutomationModeCommand<> (AutomationMode.TRIM_READ, this.model, surface, true), HUIControlSurface.HUI_AUTO_MODE_OFF, () -> false);
+            this.addButtonHUI (surface, ButtonID.AUTOMATION_TRIM, "Trim", new AutomationModeCommand<> (AutomationMode.TRIM_READ, this.model, surface, true), HUIControlSurface.HUI_AUTO_MODE_TRIM, () -> t.getAutomationWriteMode () == AutomationMode.TRIM_READ);
+            this.addButtonHUI (surface, ButtonID.AUTOMATION_READ, "Read", new AutomationModeCommand<> (AutomationMode.READ, this.model, surface, true), HUIControlSurface.HUI_AUTO_MODE_READ, () -> t.getAutomationWriteMode () == AutomationMode.READ);
+            this.addButtonHUI (surface, ButtonID.AUTOMATION_LATCH, "Latch", new AutomationModeCommand<> (AutomationMode.LATCH, this.model, surface, true), HUIControlSurface.HUI_AUTO_MODE_LATCH, () -> t.getAutomationWriteMode () == AutomationMode.LATCH);
+            this.addButtonHUI (surface, ButtonID.AUTOMATION_WRITE, "Write", new AutomationModeCommand<> (AutomationMode.WRITE, this.model, surface, true), HUIControlSurface.HUI_AUTO_MODE_WRITE, () -> t.getAutomationWriteMode () == AutomationMode.WRITE);
+            this.addButtonHUI (surface, ButtonID.AUTOMATION_TOUCH, "Touch", new AutomationModeCommand<> (AutomationMode.TOUCH, this.model, surface, true), HUIControlSurface.HUI_AUTO_MODE_TOUCH, () -> t.getAutomationWriteMode () == AutomationMode.TOUCH);
 
             // Status
             // HUI_STATUS_PHASE, not supported

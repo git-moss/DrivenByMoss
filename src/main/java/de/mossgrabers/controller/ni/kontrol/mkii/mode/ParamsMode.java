@@ -211,7 +211,7 @@ public class ParamsMode extends AbstractParameterMode<KontrolProtocolControlSurf
 
     /**
      * Switch to the previous or next provider.
-     * 
+     *
      * @param isLeft Select the previous if true
      */
     public void switchProvider (final boolean isLeft)

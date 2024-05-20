@@ -96,7 +96,7 @@ public class AutoColor
         for (int i = 0; i < this.trackBank.getPageSize (); i++)
         {
             final ITrack track = this.trackBank.getItem (i);
-            matchColorToTrack (track, track.getName (), color, patterns);
+            this.matchColorToTrack (track, track.getName (), color, patterns);
         }
     }
 
@@ -113,7 +113,7 @@ public class AutoColor
         synchronized (this.colorRegex)
         {
             for (final Entry<DAWColor, List<Pattern>> e: this.colorRegex.entrySet ())
-                matchColorToTrack (track, trackName, e.getKey (), e.getValue ());
+                this.matchColorToTrack (track, trackName, e.getKey (), e.getValue ());
         }
     }
 

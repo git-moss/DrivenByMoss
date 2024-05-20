@@ -126,7 +126,7 @@ public class LaunchkeyMk3Display extends AbstractTextDisplay
 
     /**
      * Sets the model. The 88 key version uses a different system exclusive string!
-     * 
+     *
      * @param is88KeyVersion
      */
     public void setModel (final boolean is88KeyVersion)

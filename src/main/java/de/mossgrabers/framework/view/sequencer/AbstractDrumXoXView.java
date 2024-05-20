@@ -314,7 +314,8 @@ public abstract class AbstractDrumXoXView<S extends IControlSurface<C>, C extend
             return;
         }
 
-        this.handleNoteEditorMode (x, y, offsetY, velocity);
+        if (this.handleNoteEditorMode (x, y, offsetY, velocity))
+            return;
 
         super.handleSequencerArea (index, x, y, offsetY, velocity);
     }

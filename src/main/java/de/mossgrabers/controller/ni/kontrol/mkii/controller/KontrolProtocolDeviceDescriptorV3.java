@@ -90,6 +90,7 @@ public class KontrolProtocolDeviceDescriptorV3 implements IKontrolProtocolDevice
         }
     };
 
+
     /** {@inheritDoc} */
     @Override
     public UUID getID ()

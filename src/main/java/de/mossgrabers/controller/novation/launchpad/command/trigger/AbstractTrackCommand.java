@@ -7,6 +7,7 @@ package de.mossgrabers.controller.novation.launchpad.command.trigger;
 import de.mossgrabers.controller.novation.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
@@ -57,6 +58,10 @@ public class AbstractTrackCommand extends AbstractTriggerCommand<LaunchpadContro
                 if (!this.wasSession)
                     viewManager.setActive (Views.SESSION);
                 this.surface.getDisplay ().notify (notification);
+
+                // Prevent overriding active view restored from track change!
+                if (this.surface.isPressed (ButtonID.TRACK))
+                    this.wasSession = true;
                 break;
 
             case LONG:

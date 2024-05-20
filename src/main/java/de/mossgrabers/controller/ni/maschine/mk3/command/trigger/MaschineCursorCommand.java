@@ -25,6 +25,7 @@ public class MaschineCursorCommand extends ModeCursorCommand<MaschineControlSurf
 {
     private final ModeMultiSelectCommand<MaschineControlSurface, MaschineConfiguration> modeSelector;
     private final boolean                                                               isStudio;
+    private final boolean                                                               isUpDownEmulated;
 
 
     /**
@@ -39,7 +40,10 @@ public class MaschineCursorCommand extends ModeCursorCommand<MaschineControlSurf
         super (direction, model, surface, false);
 
         this.modeSelector = new ModeMultiSelectCommand<> (model, surface, Modes.POSITION, Modes.TEMPO, Modes.VOLUME);
-        this.isStudio = this.surface.getMaschine () == Maschine.STUDIO;
+
+        final Maschine maschine = this.surface.getMaschine ();
+        this.isStudio = maschine == Maschine.STUDIO;
+        this.isUpDownEmulated = maschine == Maschine.STUDIO || maschine == Maschine.MK2;
     }
 
 
@@ -51,6 +55,12 @@ public class MaschineCursorCommand extends ModeCursorCommand<MaschineControlSurf
         {
             this.surface.setTriggerConsumed (ButtonID.OVERDUB);
             this.modeSelector.executeShifted (ButtonEvent.UP);
+            return;
+        }
+
+        if (this.isUpDownEmulated && this.surface.isShiftPressed ())
+        {
+            super.scrollDown ();
             return;
         }
 
@@ -66,6 +76,12 @@ public class MaschineCursorCommand extends ModeCursorCommand<MaschineControlSurf
         {
             this.surface.setTriggerConsumed (ButtonID.OVERDUB);
             this.modeSelector.executeNormal (ButtonEvent.UP);
+            return;
+        }
+
+        if (this.isUpDownEmulated && this.surface.isShiftPressed ())
+        {
+            super.scrollUp ();
             return;
         }
 

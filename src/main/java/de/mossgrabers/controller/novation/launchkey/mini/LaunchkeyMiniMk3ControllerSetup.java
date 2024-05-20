@@ -414,7 +414,7 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
                 break;
 
             case USER:
-                if (modeManager.get (Modes.USER) instanceof LaunckeyMiniMk3ProjectParamsMode mode)
+                if (modeManager.get (Modes.USER) instanceof final LaunckeyMiniMk3ProjectParamsMode mode)
                 {
                     if (value > 0)
                         mode.selectNextParameterPage ();

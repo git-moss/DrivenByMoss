@@ -11,6 +11,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.constants.AutomationMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.StringUtils;
 
 
 /**
@@ -24,6 +25,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 public class AutomationModeCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
     private final AutomationMode autoMode;
+    private final boolean        notify;
 
 
     /**
@@ -32,12 +34,14 @@ public class AutomationModeCommand<S extends IControlSurface<C>, C extends Confi
      * @param autoMode The automation mode
      * @param model The model
      * @param surface The surface
+     * @param notify Notify on the display
      */
-    public AutomationModeCommand (final AutomationMode autoMode, final IModel model, final S surface)
+    public AutomationModeCommand (final AutomationMode autoMode, final IModel model, final S surface, final boolean notify)
     {
         super (model, surface);
 
         this.autoMode = autoMode;
+        this.notify = notify;
     }
 
 
@@ -52,6 +56,10 @@ public class AutomationModeCommand<S extends IControlSurface<C>, C extends Confi
         if (this.surface.isSelectPressed ())
             transport.resetAutomationOverrides ();
         else
+        {
             transport.setAutomationWriteMode (this.autoMode);
+            if (this.notify)
+                this.surface.getDisplay ().notify (StringUtils.limit (this.autoMode.name (), 4));
+        }
     }
 }

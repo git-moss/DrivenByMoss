@@ -227,6 +227,7 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
         final TriggerCommand stopCommand = new ModeSwitcherCommand (new StopCommand<> (this.model, surface), modeSwitchCommand, KontrolProtocolConfiguration.SwitchButton.STOP, this.configuration);
         final TriggerCommand autoCommand = new ModeSwitcherCommand (new WriteArrangerAutomationCommand<> (this.model, surface), modeSwitchCommand, KontrolProtocolConfiguration.SwitchButton.AUTO, this.configuration);
         final TriggerCommand tempoCommand = new ModeSwitcherCommand (new TapTempoCommand<> (this.model, surface), modeSwitchCommand, KontrolProtocolConfiguration.SwitchButton.TEMPO, this.configuration);
+        final TriggerCommand metronomeCommand = new ModeSwitcherCommand (new MetronomeCommand<> (this.model, surface, false), modeSwitchCommand, KontrolProtocolConfiguration.SwitchButton.METRONOME, this.configuration);
 
         this.addButton (ButtonID.PLAY, "Play", new PlayCommand<> (this.model, surface), 15, KontrolProtocolControlSurface.KONTROL_PLAY, t::isPlaying);
         this.addButton (ButtonID.NEW, "Restart", restartCommand, 15, KontrolProtocolControlSurface.KONTROL_RESTART);
@@ -237,7 +238,7 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
         this.addButton (ButtonID.STOP, "Stop", stopCommand, 15, KontrolProtocolControlSurface.KONTROL_STOP, () -> !t.isPlaying ());
 
         this.addButton (ButtonID.LOOP, "Loop", loopCommand, 15, KontrolProtocolControlSurface.KONTROL_LOOP, t::isLoop);
-        this.addButton (ButtonID.METRONOME, "Metronome", new MetronomeCommand<> (this.model, surface, false), 15, KontrolProtocolControlSurface.KONTROL_METRO, t::isMetronomeOn);
+        this.addButton (ButtonID.METRONOME, "Metronome", metronomeCommand, 15, KontrolProtocolControlSurface.KONTROL_METRO, t::isMetronomeOn);
         this.addButton (ButtonID.TAP_TEMPO, "Tempo", tempoCommand, 15, KontrolProtocolControlSurface.KONTROL_TAP_TEMPO);
 
         // Note: Since there is no pressed-state with this device, in the simulator-GUI the
@@ -526,7 +527,7 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
                 break;
 
             case DEVICE_PARAMS:
-                if (modeManager.getActive () instanceof ParamsMode paramMode)
+                if (modeManager.getActive () instanceof final ParamsMode paramMode)
                     paramMode.switchProvider (isLeft);
                 break;
 

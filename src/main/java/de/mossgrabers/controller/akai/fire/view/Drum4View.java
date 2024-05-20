@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.akai.fire.view;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.akai.fire.FireConfiguration;
 import de.mossgrabers.controller.akai.fire.controller.FireControlSurface;
 import de.mossgrabers.controller.akai.fire.mode.FireLayerMode;
@@ -17,12 +19,11 @@ import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.featuregroup.ModeManager;
+import de.mossgrabers.framework.mode.INoteEditorMode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.framework.view.sequencer.AbstractDrum4View;
-
-import java.util.Optional;
 
 
 /**
@@ -73,12 +74,20 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
         final ModeManager modeManager = this.surface.getModeManager ();
         if (velocity > 0)
         {
-            if (modeManager.isActive (Modes.NOTE))
+            final IMode activeMode = modeManager.getActive ();
+            if (activeMode instanceof final INoteEditorMode noteMode)
             {
                 // Store existing note for editing
                 final StepState state = clip.getStep (notePosition).getState ();
                 if (state == StepState.START)
+                {
                     this.editNote (clip, notePosition, true);
+                    if (noteMode.getNoteEditor ().getNotes ().isEmpty ())
+                    {
+                        this.surface.getDisplay ().notify ("Edit Notes: Off");
+                        this.isNoteEdited = false;
+                    }
+                }
                 return;
             }
         }

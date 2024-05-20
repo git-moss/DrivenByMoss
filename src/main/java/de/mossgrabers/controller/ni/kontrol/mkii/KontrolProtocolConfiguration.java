@@ -31,6 +31,7 @@ public class KontrolProtocolConfiguration extends AbstractConfiguration
         "Off",
         "Auto",
         "Loop",
+        "Metronome",
         "Quantize",
         "Redo",
         "Restart",
@@ -48,6 +49,8 @@ public class KontrolProtocolConfiguration extends AbstractConfiguration
         AUTO,
         /** The Loop button. */
         LOOP,
+        /** The Metronome button. */
+        METRONOME,
         /** The Quantize button. */
         QUANTIZE,
         /** The Redo button. */
@@ -87,7 +90,7 @@ public class KontrolProtocolConfiguration extends AbstractConfiguration
     @Override
     public void init (final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
-        final IEnumSetting modeSwitchButtonSetting = globalSettings.getEnumSetting ("Switch modes with", CATEGORY_HARDWARE_SETUP, MODE_SWITCH_BUTTONS, MODE_SWITCH_BUTTONS[this.version >= 3 ? 6 : 0]);
+        final IEnumSetting modeSwitchButtonSetting = globalSettings.getEnumSetting ("Switch modes with", CATEGORY_HARDWARE_SETUP, MODE_SWITCH_BUTTONS, MODE_SWITCH_BUTTONS[this.version >= 3 ? 7 : 0]);
         modeSwitchButtonSetting.addValueObserver (value -> {
             this.modeSwitchButton = SwitchButton.values ()[lookupIndex (MODE_SWITCH_BUTTONS, value)];
             this.notifyObservers (MODE_SWITCH_BUTTON);
@@ -152,7 +155,7 @@ public class KontrolProtocolConfiguration extends AbstractConfiguration
 
     /**
      * Get the button to use as the mode switcher.
-     * 
+     *
      * @return The mode switch button
      */
     public SwitchButton getModeSwitchButton ()

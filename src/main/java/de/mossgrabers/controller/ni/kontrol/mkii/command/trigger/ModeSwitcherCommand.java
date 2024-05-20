@@ -25,7 +25,7 @@ public class ModeSwitcherCommand implements TriggerCommand
 
     /**
      * Constructor.
-     * 
+     *
      * @param normalCommand The command to execute normally
      * @param switcherCommand The mode switcher to execute if configured in the settings
      * @param switchButton The switch button which triggers the switching if configured

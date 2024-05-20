@@ -385,7 +385,11 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
         {
             noteEditor.removeNote (clip, notePosition);
             if (noteEditor.getNotes ().isEmpty ())
+            {
                 this.surface.getModeManager ().restore ();
+                // Prevent note deletion on button-up!
+                this.surface.consumePads ();
+            }
             return;
         }
 
