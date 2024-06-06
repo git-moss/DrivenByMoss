@@ -225,9 +225,9 @@ public class MaschineJamControlSurface extends AbstractMaschineControlSurface<Ma
      * system exclusive message. The value is set via MIDI CC. In dual mode there is a dot and a
      * strip, the dot is always white and set via a system exclusive message.
      *
-     * @param configs The configuration of the 8 faders
+     * @param configurations The configuration of the 8 faders
      */
-    public void setupFaders (final FaderConfig [] configs)
+    public void setupFaders (final FaderConfig [] configurations)
     {
         final byte [] stripSetup = STRIP_SETUP.clone ();
         final byte [] stripDualValues = STRIP_DUAL_VALUE.clone ();
@@ -237,7 +237,7 @@ public class MaschineJamControlSurface extends AbstractMaschineControlSurface<Ma
 
         for (int i = 0; i < 8; i++)
         {
-            final FaderConfig faderConfig = configs[i];
+            final FaderConfig faderConfig = configurations[i];
             final FaderConfig currentFaderConfig = this.currentFaderConfigs[i];
 
             final boolean isDual = faderConfig.getType () == FaderConfig.TYPE_DUAL;
@@ -255,7 +255,7 @@ public class MaschineJamControlSurface extends AbstractMaschineControlSurface<Ma
             if (faderConfig.getValue () != currentFaderConfig.getValue () || hasSetupChanged)
                 this.output.sendCC (8 + i, faderConfig.getValue ());
 
-            stripDualValues[STRIP_VALUE_OFFSET + i] = (byte) faderConfig.getDualValue ();
+            stripDualValues[STRIP_VALUE_OFFSET + i] = (byte) Math.max (0, faderConfig.getDualValue ());
 
             this.currentFaderConfigs[i] = faderConfig;
         }

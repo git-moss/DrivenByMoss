@@ -92,7 +92,7 @@ public class FaderConfig
     /**
      * Get the second value of the fader, if type is DUAL.
      *
-     * @return The value, 0-127
+     * @return The value, 0-127 or -1 is not set
      */
     public int getDualValue ()
     {
