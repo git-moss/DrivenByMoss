@@ -665,20 +665,21 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
                 break;
 
             case EVENT_POT_TOUCH:
-                final int potID = data[SUB_CMD_START_POS + 1];
-                final int controlID = (data[SUB_CMD_START_POS + 3] << 7) + data[SUB_CMD_START_POS + 2];
-                if (potID < 0 || potID >= 12)
-                {
-                    this.host.error ("Touch event with knob ID outside of range: " + potID);
-                    return;
+                if (this.isOnline) {
+                    final int potID = data[SUB_CMD_START_POS + 1];
+                    final int controlID = (data[SUB_CMD_START_POS + 3] << 7) + data[SUB_CMD_START_POS + 2];
+                    if (potID < 0 || potID >= 12) {
+                        this.host.error("Touch event with knob ID outside of range: " + potID);
+                        return;
+                    }
+
+                    this.knobStates[potID] = data[SUB_CMD_START_POS + 4];
+
+                    final IMode active = this.modeManager.getActive();
+                    if (active instanceof final AbstractElectraOneMode electraMode)
+                        electraMode.setEditing(controlID, this.knobStates[potID] > 0);
+                    this.matchStates();
                 }
-
-                this.knobStates[potID] = data[SUB_CMD_START_POS + 4];
-
-                final IMode active = this.modeManager.getActive ();
-                if (active instanceof final AbstractElectraOneMode electraMode)
-                    electraMode.setEditing (controlID, this.knobStates[potID] > 0);
-                this.matchStates ();
                 break;
 
             default:
