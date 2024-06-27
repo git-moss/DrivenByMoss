@@ -4,13 +4,13 @@
 
 package de.mossgrabers.controller.ni.maschine.mk3;
 
-import de.mossgrabers.framework.controller.DefaultControllerDefinition;
-import de.mossgrabers.framework.utils.OperatingSystem;
-import de.mossgrabers.framework.utils.Pair;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+
+import de.mossgrabers.framework.controller.DefaultControllerDefinition;
+import de.mossgrabers.framework.utils.OperatingSystem;
+import de.mossgrabers.framework.utils.Pair;
 
 
 /**
@@ -38,7 +38,7 @@ public class MaschinePlusControllerDefinition extends DefaultControllerDefinitio
     {
         switch (os)
         {
-            case MAC:
+            case MAC, MAC_ARM:
             case WINDOWS:
             default:
                 return Collections.singletonList (this.addDeviceDiscoveryPair ("Maschine Plus Virtual", "Maschine Plus Virtual"));

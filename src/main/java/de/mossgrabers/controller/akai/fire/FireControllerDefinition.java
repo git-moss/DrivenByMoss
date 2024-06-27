@@ -4,12 +4,12 @@
 
 package de.mossgrabers.controller.akai.fire;
 
+import java.util.List;
+import java.util.UUID;
+
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
-
-import java.util.List;
-import java.util.UUID;
 
 
 /**
@@ -49,7 +49,7 @@ public class FireControllerDefinition extends DefaultControllerDefinition
                 midiDiscoveryPairs.addAll (this.createLinuxDeviceDiscoveryPairs ("FL STUDIO FIRE Jack 1", "FL STUDIO FIRE Jack 1"));
                 break;
 
-            case MAC:
+            case MAC, MAC_ARM:
                 for (int i = 1; i < 20; i++)
                 {
                     final String name = "FL STUDIO FIRE Jack " + i;

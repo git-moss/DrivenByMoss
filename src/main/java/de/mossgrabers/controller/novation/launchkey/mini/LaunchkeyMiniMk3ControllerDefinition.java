@@ -4,12 +4,12 @@
 
 package de.mossgrabers.controller.novation.launchkey.mini;
 
+import java.util.List;
+import java.util.UUID;
+
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
-
-import java.util.List;
-import java.util.UUID;
 
 
 /**
@@ -58,7 +58,7 @@ public class LaunchkeyMiniMk3ControllerDefinition extends DefaultControllerDefin
                 }));
                 break;
 
-            case MAC:
+            case MAC, MAC_ARM:
                 midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
                 {
                     "Launchkey Mini MK3 DAW Port",

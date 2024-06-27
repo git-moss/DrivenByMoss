@@ -4,12 +4,12 @@
 
 package de.mossgrabers.controller.novation.sl;
 
+import java.util.List;
+import java.util.UUID;
+
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
-
-import java.util.List;
-import java.util.UUID;
 
 
 /**
@@ -57,7 +57,7 @@ public class SLControllerDefinition extends DefaultControllerDefinition
                     }));
                     break;
 
-                case MAC:
+                case MAC, MAC_ARM:
                     midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (new String []
                     {
                         "SL MkII MIDI 2",

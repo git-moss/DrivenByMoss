@@ -4,12 +4,12 @@
 
 package de.mossgrabers.controller.novation.launchkey.maxi;
 
+import java.util.List;
+import java.util.UUID;
+
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
-
-import java.util.List;
-import java.util.UUID;
 
 
 /**
@@ -59,7 +59,7 @@ public class LaunchkeyMk3ControllerDefinition extends DefaultControllerDefinitio
                 }));
                 break;
 
-            case MAC:
+            case MAC, MAC_ARM:
                 for (final int element: KEY_SIZES)
                 {
                     final String deviceName = "Launchkey MK3 " + element;

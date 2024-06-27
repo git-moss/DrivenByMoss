@@ -4,12 +4,12 @@
 
 package de.mossgrabers.controller.ni.kontrol.mkii.controller;
 
-import de.mossgrabers.framework.utils.OperatingSystem;
-import de.mossgrabers.framework.utils.Pair;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import de.mossgrabers.framework.utils.OperatingSystem;
+import de.mossgrabers.framework.utils.Pair;
 
 
 /**
@@ -114,7 +114,7 @@ public class KontrolProtocolDeviceDescriptorV3 implements IKontrolProtocolDevice
         final List<Pair<String [], String []>> midiDiscoveryPairs = new ArrayList<> ();
         switch (os)
         {
-            case MAC:
+            case MAC, MAC_ARM:
                 for (final String [] ports: PORTS_MACOS)
                     midiDiscoveryPairs.add (new Pair<> (ports, ports));
                 break;

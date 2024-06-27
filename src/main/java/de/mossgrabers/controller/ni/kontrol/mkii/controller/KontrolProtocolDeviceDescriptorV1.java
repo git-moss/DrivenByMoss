@@ -88,7 +88,7 @@ public class KontrolProtocolDeviceDescriptorV1 implements IKontrolProtocolDevice
         String [] [] portNames;
         switch (os)
         {
-            case MAC:
+            case MAC, MAC_ARM:
                 portNames = PORTS_MACOS;
                 break;
 

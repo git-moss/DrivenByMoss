@@ -4,18 +4,18 @@
 
 package de.mossgrabers.controller.novation.launchpad.definition;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.UUID;
+
 import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.controller.novation.launchpad.definition.button.LaunchpadButton;
 import de.mossgrabers.framework.controller.grid.LightInfo;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
 import de.mossgrabers.framework.utils.StringUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.UUID;
 
 
 /**
@@ -75,7 +75,7 @@ public class LaunchpadProControllerDefinition extends AbstractLaunchpadDefinitio
                 midiDiscoveryPairs.add (this.addDeviceDiscoveryPair ("Launchpad Pro Standalone Port", "Launchpad Pro Standalone Port"));
                 break;
 
-            case MAC:
+            case MAC, MAC_ARM:
                 midiDiscoveryPairs.add (this.addDeviceDiscoveryPair ("Launchpad Pro Standalone Port", "Launchpad Pro Standalone Port"));
                 break;
 

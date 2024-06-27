@@ -4,13 +4,13 @@
 
 package de.mossgrabers.controller.ni.maschine.mk3;
 
-import de.mossgrabers.framework.controller.DefaultControllerDefinition;
-import de.mossgrabers.framework.utils.OperatingSystem;
-import de.mossgrabers.framework.utils.Pair;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
+
+import de.mossgrabers.framework.controller.DefaultControllerDefinition;
+import de.mossgrabers.framework.utils.OperatingSystem;
+import de.mossgrabers.framework.utils.Pair;
 
 
 /**
@@ -38,7 +38,7 @@ public class MaschineMk2ControllerDefinition extends DefaultControllerDefinition
     {
         switch (os)
         {
-            case MAC:
+            case MAC, MAC_ARM:
                 return Collections.singletonList (this.addDeviceDiscoveryPair ("Maschine MK2 Virtual Input", "Maschine MK2 Virtual Output"));
 
             case WINDOWS:

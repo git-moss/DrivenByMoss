@@ -4,13 +4,13 @@
 
 package de.mossgrabers.controller.ableton.push;
 
+import java.util.List;
+import java.util.UUID;
+
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
 import de.mossgrabers.framework.usb.UsbMatcher;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
-
-import java.util.List;
-import java.util.UUID;
 
 
 /**
@@ -52,7 +52,7 @@ public class Push3ControllerDefinition extends DefaultControllerDefinition
                 midiDiscoveryPairs.addAll (this.createDeviceDiscoveryPairs ("Ableton Push 3 MIDI"));
                 break;
 
-            case MAC:
+            case MAC, MAC_ARM:
                 midiDiscoveryPairs.add (this.addDeviceDiscoveryPair ("Ableton Push 3 Live Port"));
                 break;
 

@@ -4,12 +4,12 @@
 
 package de.mossgrabers.controller.esi.xjam;
 
+import java.util.List;
+import java.util.UUID;
+
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
-
-import java.util.List;
-import java.util.UUID;
 
 
 /**
@@ -40,7 +40,7 @@ public class XjamControllerDefinition extends DefaultControllerDefinition
         {
             default:
             case WINDOWS:
-            case MAC:
+            case MAC, MAC_ARM:
                 midiDiscoveryPairs.add (this.addDeviceDiscoveryPair ("Xjam", "Xjam"));
                 break;
 

@@ -4,12 +4,12 @@
 
 package de.mossgrabers.controller.novation.launchpad.definition;
 
-import de.mossgrabers.framework.utils.OperatingSystem;
-import de.mossgrabers.framework.utils.Pair;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import de.mossgrabers.framework.utils.OperatingSystem;
+import de.mossgrabers.framework.utils.Pair;
 
 
 /**
@@ -52,7 +52,7 @@ public class LaunchpadXControllerDefinition extends AbstractLaunchpadDefinition
                 midiDiscoveryPairs.add (this.addDeviceDiscoveryPair ("Launchpad X LPX MIDI Out", "Launchpad X LPX MIDI In"));
                 break;
 
-            case MAC:
+            case MAC, MAC_ARM:
                 midiDiscoveryPairs.add (this.addDeviceDiscoveryPair ("Launchpad X LPX MIDI Out", "Launchpad X LPX MIDI In"));
                 break;
 
