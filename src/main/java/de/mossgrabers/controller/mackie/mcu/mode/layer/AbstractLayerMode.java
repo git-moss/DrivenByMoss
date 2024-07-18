@@ -36,6 +36,9 @@ public abstract class AbstractLayerMode extends BaseMode<ILayer>
     protected AbstractLayerMode (final String name, final MCUControlSurface surface, final IModel model)
     {
         super (name, surface, model, getDevice (model).getLayerBank ());
+
+        final ISpecificDevice device = getDevice (model);
+        device.addHasDrumPadsObserver (hasDrumPads -> this.switchBanks (device.hasDrumPads () ? device.getDrumPadBank () : device.getLayerBank ()));
     }
 
 
@@ -43,8 +46,8 @@ public abstract class AbstractLayerMode extends BaseMode<ILayer>
     @Override
     protected void drawTrackNameHeader ()
     {
-        final ISpecificDevice cursorDevice = getDevice (this.model);
-        final IChannelBank<? extends IChannel> layerBank = cursorDevice.hasDrumPads () ? cursorDevice.getDrumPadBank () : cursorDevice.getLayerBank ();
+        final ISpecificDevice device = getDevice (this.model);
+        final IChannelBank<? extends IChannel> layerBank = device.hasDrumPads () ? device.getDrumPadBank () : device.getLayerBank ();
 
         final int extenderOffset = this.getExtenderOffset ();
 
@@ -82,8 +85,8 @@ public abstract class AbstractLayerMode extends BaseMode<ILayer>
             return;
         }
 
-        final ISpecificDevice cursorDevice = getDevice (this.model);
-        final IChannelBank<? extends IChannel> layerBank = cursorDevice.hasDrumPads () ? cursorDevice.getDrumPadBank () : cursorDevice.getLayerBank ();
+        final ISpecificDevice device = getDevice (this.model);
+        final IChannelBank<? extends IChannel> layerBank = device.hasDrumPads () ? device.getDrumPadBank () : device.getLayerBank ();
         final IChannel channel = layerBank.getItem (this.getExtenderOffset () + index);
         if (row == 2)
         {
@@ -109,8 +112,8 @@ public abstract class AbstractLayerMode extends BaseMode<ILayer>
         if (this.pinFXtoLastDevice)
             return super.getButtonColor (buttonID);
 
-        final ISpecificDevice cursorDevice = getDevice (this.model);
-        final IChannelBank<? extends IChannel> layerBank = cursorDevice.hasDrumPads () ? cursorDevice.getDrumPadBank () : cursorDevice.getLayerBank ();
+        final ISpecificDevice device = getDevice (this.model);
+        final IChannelBank<? extends IChannel> layerBank = device.hasDrumPads () ? device.getDrumPadBank () : device.getLayerBank ();
 
         final int extenderOffset = this.getExtenderOffset ();
         for (int i = 0; i < 8; i++)

@@ -4,19 +4,20 @@
 
 package de.mossgrabers.controller.akai.fire.mode;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.akai.fire.FireConfiguration;
 import de.mossgrabers.controller.akai.fire.controller.FireControlSurface;
-import de.mossgrabers.controller.akai.fire.graphics.canvas.component.TitleValueComponent;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
+import de.mossgrabers.framework.graphics.canvas.component.simple.TitleValueComponent;
 import de.mossgrabers.framework.mode.device.ParameterMode;
 import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
-
-import java.util.Optional;
+import de.mossgrabers.framework.parameterprovider.special.FourKnobProvider;
 
 
 /**
@@ -39,7 +40,7 @@ public class FireParameterMode extends ParameterMode<FireControlSurface, FireCon
 
         this.setControls (ContinuousID.createSequentialList (ContinuousID.KNOB1, 4));
 
-        this.setParameterProvider (new Fire4KnobProvider (surface, new BankParameterProvider (model.getCursorDevice ().getParameterBank ())));
+        this.setParameterProvider (new FourKnobProvider<> (surface, new BankParameterProvider (model.getCursorDevice ().getParameterBank ()), ButtonID.ALT));
     }
 
 

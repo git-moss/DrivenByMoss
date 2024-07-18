@@ -6,7 +6,6 @@ package de.mossgrabers.controller.akai.fire.mode;
 
 import de.mossgrabers.controller.akai.fire.FireConfiguration;
 import de.mossgrabers.controller.akai.fire.controller.FireControlSurface;
-import de.mossgrabers.controller.akai.fire.graphics.canvas.component.TitleValueComponent;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
@@ -16,6 +15,7 @@ import de.mossgrabers.framework.daw.clip.INoteClip;
 import de.mossgrabers.framework.daw.clip.NotePosition;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.featuregroup.IView;
+import de.mossgrabers.framework.graphics.canvas.component.simple.TitleValueComponent;
 import de.mossgrabers.framework.mode.AbstractNoteParameterMode;
 import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.parameter.NoteAttribute;

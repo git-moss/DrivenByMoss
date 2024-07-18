@@ -2,18 +2,18 @@
 // (c) 2017-2024
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.akai.fire.graphics.canvas.component;
+package de.mossgrabers.framework.graphics.canvas.component.simple;
+
+import java.util.Arrays;
 
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.graphics.IGraphicsConfiguration;
 import de.mossgrabers.framework.graphics.IGraphicsContext;
 import de.mossgrabers.framework.graphics.IGraphicsInfo;
 
-import java.util.Arrays;
-
 
 /**
- * A graphics component with a label and 16 channels (volume/vu/panorama).
+ * A graphics component with a label, value and fader (volume/vu/panorama).
  *
  * @author Jürgen Moßgraber
  */
@@ -22,6 +22,8 @@ public class TitleChannelsComponent extends AbstractBaseComponent
     private final boolean [] selected;
     private final int []     values;
     private final boolean    isPan;
+
+    protected int            rowHeight = DEFAULT_ROW_HEIGHT;
 
 
     /**
@@ -52,11 +54,11 @@ public class TitleChannelsComponent extends AbstractBaseComponent
         final ColorEx colorText = configuration.getColorText ();
         final ColorEx colorFader = configuration.getColorFader ();
 
-        gc.drawTextInHeight (this.label, 0, 0, ROW_HEIGHT, colorText, ROW_HEIGHT);
+        gc.drawTextInHeight (this.label, 0, 0, this.rowHeight, colorText, this.rowHeight);
 
-        final int channelWidth = WIDTH / this.values.length;
+        final int channelWidth = DEFAULT_WIDTH / this.values.length;
         final int halfChannelWidth = channelWidth / 2;
-        final int lowerHeight = HEIGHT - ROW_HEIGHT - 1;
+        final int lowerHeight = DEFAULT_HEIGHT - this.rowHeight - 1;
 
         for (int i = 0; i < this.values.length; i++)
         {
@@ -71,28 +73,28 @@ public class TitleChannelsComponent extends AbstractBaseComponent
                 if (this.selected[i])
                 {
                     if (faderHeight == center)
-                        gc.fillRectangle (left, HEIGHT - center + 1.0, halfChannelWidth + 1.0, 1, colorFader);
+                        gc.fillRectangle (left, DEFAULT_HEIGHT - center + 1.0, halfChannelWidth + 1.0, 1, colorFader);
                     else if (faderHeight > center)
-                        gc.fillRectangle (left, HEIGHT - (double) center, halfChannelWidth + 1.0, faderHeight - (double) center, colorFader);
+                        gc.fillRectangle (left, DEFAULT_HEIGHT - (double) center, halfChannelWidth + 1.0, faderHeight - (double) center, colorFader);
                     else
-                        gc.fillRectangle (left, HEIGHT - lowerHeight + (double) faderHeight, halfChannelWidth + 1.0, center - faderHeight + 2.0, colorFader);
+                        gc.fillRectangle (left, DEFAULT_HEIGHT - lowerHeight + (double) faderHeight, halfChannelWidth + 1.0, center - faderHeight + 2.0, colorFader);
                 }
                 else
                 {
                     if (faderHeight == center)
-                        gc.strokeRectangle (left + 1.0, HEIGHT - center + 1.0, halfChannelWidth, 1, colorFader);
+                        gc.strokeRectangle (left + 1.0, DEFAULT_HEIGHT - center + 1.0, halfChannelWidth, 1, colorFader);
                     else if (faderHeight > center)
-                        gc.strokeRectangle (left + 1.0, HEIGHT - (double) center, halfChannelWidth, faderHeight - (double) center, colorFader);
+                        gc.strokeRectangle (left + 1.0, DEFAULT_HEIGHT - (double) center, halfChannelWidth, faderHeight - (double) center, colorFader);
                     else
-                        gc.strokeRectangle (left + 1.0, HEIGHT - lowerHeight + (double) faderHeight, halfChannelWidth, center - faderHeight + 2.0, colorFader);
+                        gc.strokeRectangle (left + 1.0, DEFAULT_HEIGHT - lowerHeight + (double) faderHeight, halfChannelWidth, center - faderHeight + 2.0, colorFader);
                 }
             }
             else
             {
                 if (this.selected[i])
-                    gc.fillRectangle (left, HEIGHT - (double) faderHeight, halfChannelWidth + 1.0, faderHeight, colorFader);
+                    gc.fillRectangle (left, DEFAULT_HEIGHT - (double) faderHeight, halfChannelWidth + 1.0, faderHeight, colorFader);
                 else
-                    gc.strokeRectangle (left + 1.0, HEIGHT - (double) faderHeight, halfChannelWidth, faderHeight, colorFader);
+                    gc.strokeRectangle (left + 1.0, DEFAULT_HEIGHT - (double) faderHeight, halfChannelWidth, faderHeight, colorFader);
             }
         }
     }

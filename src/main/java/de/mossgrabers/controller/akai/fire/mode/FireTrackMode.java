@@ -4,9 +4,10 @@
 
 package de.mossgrabers.controller.akai.fire.mode;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.akai.fire.FireConfiguration;
 import de.mossgrabers.controller.akai.fire.controller.FireControlSurface;
-import de.mossgrabers.controller.akai.fire.graphics.canvas.component.TitleValueComponent;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
@@ -14,11 +15,11 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
+import de.mossgrabers.framework.graphics.canvas.component.simple.TitleValueComponent;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.track.TrackMode;
+import de.mossgrabers.framework.parameterprovider.special.FourKnobProvider;
 import de.mossgrabers.framework.parameterprovider.track.SelectedTrackParameterProvider;
-
-import java.util.Optional;
 
 
 /**
@@ -71,7 +72,7 @@ public class FireTrackMode extends TrackMode<FireControlSurface, FireConfigurati
         super (name, surface, model, false, null);
 
         this.setControls (ContinuousID.createSequentialList (ContinuousID.KNOB1, 4));
-        this.setParameterProvider (new Fire4KnobProvider (surface, new SelectedTrackParameterProvider (model)));
+        this.setParameterProvider (new FourKnobProvider<> (surface, new SelectedTrackParameterProvider (model), ButtonID.ALT));
     }
 
 

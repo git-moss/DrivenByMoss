@@ -4,20 +4,21 @@
 
 package de.mossgrabers.controller.akai.fire.mode;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.akai.fire.FireConfiguration;
 import de.mossgrabers.controller.akai.fire.controller.FireControlSurface;
-import de.mossgrabers.controller.akai.fire.graphics.canvas.component.TitleValueComponent;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
+import de.mossgrabers.framework.graphics.canvas.component.simple.TitleValueComponent;
 import de.mossgrabers.framework.mode.device.ProjectParamsMode;
 import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
-
-import java.util.Optional;
+import de.mossgrabers.framework.parameterprovider.special.FourKnobProvider;
 
 
 /**
@@ -39,8 +40,8 @@ public class FireUserMode extends ProjectParamsMode<FireControlSurface, FireConf
 
         this.notifyPageChange = false;
 
-        this.projectParameterProvider = new Fire4KnobProvider (surface, new BankParameterProvider (model.getProject ().getParameterBank ()));
-        this.trackParameterProvider = new Fire4KnobProvider (surface, new BankParameterProvider (model.getCursorTrack ().getParameterBank ()));
+        this.projectParameterProvider = new FourKnobProvider<> (surface, new BankParameterProvider (model.getProject ().getParameterBank ()), ButtonID.ALT);
+        this.trackParameterProvider = new FourKnobProvider<> (surface, new BankParameterProvider (model.getCursorTrack ().getParameterBank ()), ButtonID.ALT);
         this.setParameterProvider (this.projectParameterProvider);
     }
 

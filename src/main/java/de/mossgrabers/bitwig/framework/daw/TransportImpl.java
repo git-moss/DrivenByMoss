@@ -12,8 +12,8 @@ import com.bitwig.extension.controller.api.SettableEnumValue;
 import com.bitwig.extension.controller.api.TimeSignatureValue;
 import com.bitwig.extension.controller.api.Transport;
 
+import de.mossgrabers.bitwig.framework.daw.data.MetronomeVolumeParameterImpl;
 import de.mossgrabers.bitwig.framework.daw.data.ParameterImpl;
-import de.mossgrabers.bitwig.framework.daw.data.RangedValueImpl;
 import de.mossgrabers.bitwig.framework.daw.data.Util;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IApplication;
@@ -102,7 +102,7 @@ public class TransportImpl implements ITransport
         this.transport.isFillModeActive ().markInterested ();
 
         this.crossfadeParameter = new ParameterImpl (valueChanger, this.transport.crossfade ());
-        this.metronomeVolumeParameter = new RangedValueImpl ("Metronome Volume", valueChanger, this.transport.metronomeVolume ());
+        this.metronomeVolumeParameter = new MetronomeVolumeParameterImpl (valueChanger, this.transport.metronomeVolume ());
         this.transport.tempo ().markInterested ();
 
         final TimeSignatureValue ts = this.transport.timeSignature ();

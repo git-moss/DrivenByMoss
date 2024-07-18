@@ -2,26 +2,25 @@
 // (c) 2017-2024
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.akai.fire.graphics.canvas.component;
+package de.mossgrabers.framework.graphics.canvas.component.simple;
 
 import de.mossgrabers.framework.graphics.canvas.component.IComponent;
 
 
 /**
- * Base class for the Fire graphics components.
+ * Base class for graphics components with 3 rows.
  *
  * @author Jürgen Moßgraber
  */
 public abstract class AbstractBaseComponent implements IComponent
 {
-    protected static final int WIDTH      = 128;
-    protected static final int HEIGHT     = 64;
+    protected static final int DEFAULT_WIDTH      = 128;
+    protected static final int DEFAULT_HEIGHT     = 64;
+    protected static final int DEFAULT_ROW_HEIGHT = 20;
+    protected static final int CENTER             = DEFAULT_WIDTH / 2;
+    protected static final int TOP                = 44;
 
-    protected static final int ROW_HEIGHT = 20;
-    protected static final int CENTER     = WIDTH / 2;
-    protected static final int TOP        = 44;
-
-    protected static final int RESOLUTION = 1024;
+    protected static final int RESOLUTION         = 1024;
 
     protected final String     label;
 

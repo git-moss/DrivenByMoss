@@ -88,7 +88,7 @@ public class TempoParameter extends AbstractParameterImpl
     @Override
     public void resetValue ()
     {
-        this.setValue (0);
+        this.transport.setTempo (120);
     }
 
 
@@ -112,6 +112,6 @@ public class TempoParameter extends AbstractParameterImpl
     @Override
     public String getName ()
     {
-        return "Play Position";
+        return "Tempo";
     }
 }

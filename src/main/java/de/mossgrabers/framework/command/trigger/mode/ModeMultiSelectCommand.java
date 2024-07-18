@@ -68,7 +68,7 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
     }
 
 
-    private void switchMode (final boolean selectNext, final ButtonEvent event)
+    protected void switchMode (final boolean selectNext, final ButtonEvent event)
     {
         if (event != ButtonEvent.UP)
             return;

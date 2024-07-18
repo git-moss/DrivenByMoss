@@ -88,7 +88,7 @@ public class PlayPositionParameter extends AbstractParameterImpl
     @Override
     public void resetValue ()
     {
-        this.setValue (0);
+        this.transport.setPosition (0);
     }
 
 

@@ -4,6 +4,9 @@
 
 package de.mossgrabers.framework.controller.hardware;
 
+import de.mossgrabers.framework.observer.IValueObserver;
+
+
 /**
  * Interface for a proxy to a knob on a hardware controller.
  *
@@ -11,6 +14,14 @@ package de.mossgrabers.framework.controller.hardware;
  */
 public interface IHwRelativeKnob extends IHwContinuousControl
 {
+    /**
+     * Registers an observer to get notified when the value changes.
+     * 
+     * @param observer The observer to register
+     */
+    void addHasChangedObserver (IValueObserver<Void> observer);
+
+
     /**
      * Set the sensitivity of the relative knob.
      *

@@ -5,7 +5,6 @@
 package de.mossgrabers.controller.akai.fire.mode;
 
 import de.mossgrabers.controller.akai.fire.controller.FireControlSurface;
-import de.mossgrabers.controller.akai.fire.graphics.canvas.component.TitleChannelsComponent;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
@@ -13,6 +12,7 @@ import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
+import de.mossgrabers.framework.graphics.canvas.component.simple.TitleChannelsComponent;
 import de.mossgrabers.framework.mode.Modes;
 
 import java.util.Optional;

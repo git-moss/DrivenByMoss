@@ -30,7 +30,6 @@ de.mossgrabers.bitwig.controller.novation.launchpad.LaunchpadXControllerExtensio
 de.mossgrabers.bitwig.controller.novation.sl.SLMkIControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.novation.sl.SLMkIIControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.novation.slmkiii.SLMkIIIControllerExtensionDefinition
-de.mossgrabers.bitwig.controller.osc.OSCControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.ni.kontrol.mki.Kontrol1S25ExtensionDefinition
 de.mossgrabers.bitwig.controller.ni.kontrol.mki.Kontrol1S49ExtensionDefinition
 de.mossgrabers.bitwig.controller.ni.kontrol.mki.Kontrol1S61ExtensionDefinition
@@ -44,6 +43,8 @@ de.mossgrabers.bitwig.controller.ni.maschine.mk3.MaschineMk3ExtensionDefinition
 de.mossgrabers.bitwig.controller.ni.maschine.mk3.MaschinePlusExtensionDefinition
 de.mossgrabers.bitwig.controller.ni.maschine.mk3.MaschineStudioExtensionDefinition
 de.mossgrabers.bitwig.controller.ni.maschine.mk3.MaschineMikroMk3ExtensionDefinition
+de.mossgrabers.bitwig.controller.osc.OSCControllerExtensionDefinition
+de.mossgrabers.bitwig.controller.oxi.one.OxiOneControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.utilities.autocolor.AutoColorExtensionDefinition
 de.mossgrabers.bitwig.controller.utilities.midimonitor.MidiMonitorExtensionDefinition
 de.mossgrabers.bitwig.controller.yaeltex.turn.YaeltexTurnControllerExtensionDefinition

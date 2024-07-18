@@ -4,9 +4,10 @@
 
 package de.mossgrabers.controller.akai.fire.mode;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.akai.fire.FireConfiguration;
 import de.mossgrabers.controller.akai.fire.controller.FireControlSurface;
-import de.mossgrabers.controller.akai.fire.graphics.canvas.component.TitleValueComponent;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
@@ -17,14 +18,15 @@ import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
+import de.mossgrabers.framework.graphics.canvas.component.simple.TitleValueComponent;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.parameterprovider.device.SelectedLayerOrDrumPadParameterProvider;
-
-import java.util.Optional;
+import de.mossgrabers.framework.parameterprovider.special.FourKnobProvider;
 
 
 /**
- * The track mode. The knobs control the volume, the panorama and the sends of the selected track.
+ * The layer mode. The knobs control the volume, the panorama and the sends of the selected layer
+ * channel.
  *
  * @author Jürgen Moßgraber
  */
@@ -73,7 +75,7 @@ public class FireLayerMode extends AbstractParameterMode<FireControlSurface, Fir
         super (name, surface, model);
 
         this.setControls (ContinuousID.createSequentialList (ContinuousID.KNOB1, 4));
-        this.setParameterProvider (new Fire4KnobProvider (surface, new SelectedLayerOrDrumPadParameterProvider (this.getDrumDevice ())));
+        this.setParameterProvider (new FourKnobProvider<> (surface, new SelectedLayerOrDrumPadParameterProvider (this.getDrumDevice ()), ButtonID.ALT));
     }
 
 

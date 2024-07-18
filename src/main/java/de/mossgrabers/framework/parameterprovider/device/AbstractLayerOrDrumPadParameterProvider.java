@@ -4,13 +4,13 @@
 
 package de.mossgrabers.framework.parameterprovider.device;
 
+import java.util.Set;
+
 import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.bank.IChannelBank;
 import de.mossgrabers.framework.observer.IParametersAdjustObserver;
 import de.mossgrabers.framework.observer.IValueObserver;
-
-import java.util.Set;
 
 
 /**

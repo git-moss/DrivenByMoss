@@ -4,6 +4,9 @@
 
 package de.mossgrabers.bitwig.framework.hardware;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.HardwareBindable;
 import com.bitwig.extension.controller.api.RelativeHardwarControlBindable;
@@ -21,6 +24,7 @@ import de.mossgrabers.framework.controller.valuechanger.RelativeEncoding;
 import de.mossgrabers.framework.controller.valuechanger.RelativeValueChangers;
 import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
+import de.mossgrabers.framework.observer.IValueObserver;
 import de.mossgrabers.framework.parameter.IParameter;
 
 
@@ -40,6 +44,7 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
     private IParameter                           parameter;
     private boolean                              shouldAdaptSensitivity = true;
     private int                                  control;
+    private List<IValueObserver<Void>>           observers              = new ArrayList<> ();
 
 
     /**
@@ -77,6 +82,15 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
 
         this.defaultAction = this.controllerHost.createRelativeHardwareControlAdjustmentTarget (this::handleValue);
         this.defaultSimpleParameterAction = this.controllerHost.createRelativeHardwareControlAdjustmentTarget (this::handleSimpleParameterValue);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addHasChangedObserver (final IValueObserver<Void> observer)
+    {
+        this.observers.add (observer);
+        this.hardwareKnob.targetValue ().addValueObserver (newValue -> observer.update (null));
     }
 
 
@@ -183,6 +197,8 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
         if (this.command == null)
             return;
 
+        this.notifyHasChangedObservers ();
+
         // Convert the value back from the default 2s relative matcher, because we do the conversion
         // our own way
         final double a = value * 63.0;
@@ -196,6 +212,8 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
     {
         if (this.parameter == null)
             return;
+
+        this.notifyHasChangedObservers ();
 
         // Convert the value back from the default 2s relative matcher, because we do the conversion
         // our own way
@@ -245,5 +263,12 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
     public void setShouldAdaptSensitivity (final boolean shouldAdaptSensitivity)
     {
         this.shouldAdaptSensitivity = shouldAdaptSensitivity;
+    }
+
+
+    private void notifyHasChangedObservers ()
+    {
+        for (IValueObserver<Void> observer: this.observers)
+            observer.update (null);
     }
 }

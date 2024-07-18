@@ -88,8 +88,8 @@ public class LayerMode extends AbstractLayerMode
         // Overwrite the label of the first cell
         if (this.surface.getExtenderOffset () == 0 && this.configuration.isDisplayTrackNames ())
         {
-            final ISpecificDevice cursorDevice = getDevice (this.model);
-            final IChannelBank<? extends IChannel> layerBank = cursorDevice.hasDrumPads () ? cursorDevice.getDrumPadBank () : cursorDevice.getLayerBank ();
+            final ISpecificDevice device = getDevice (this.model);
+            final IChannelBank<? extends IChannel> layerBank = device.hasDrumPads () ? device.getDrumPadBank () : device.getLayerBank ();
             final Optional<? extends IChannel> selectedLayer = layerBank.getSelectedItem ();
             if (selectedLayer.isEmpty ())
                 return;
