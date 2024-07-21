@@ -4,6 +4,9 @@
 
 package de.mossgrabers.framework.view.sequencer;
 
+import java.util.List;
+import java.util.Optional;
+
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
@@ -18,9 +21,6 @@ import de.mossgrabers.framework.daw.clip.StepState;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.utils.ButtonEvent;
-
-import java.util.List;
-import java.util.Optional;
 
 
 /**
@@ -87,7 +87,7 @@ public abstract class AbstractDrumLaneView<S extends IControlSurface<C>, C exten
         if (!this.isActive ())
             return;
 
-        final int index = note - DRUM_START_KEY;
+        final int index = note - this.surface.getPadGrid ().getStartNote ();
         final int x = index % this.numColumns;
         final int y = index / this.numColumns;
         final int sound = y % this.lanes + this.scales.getDrumOffset ();

@@ -237,13 +237,36 @@ public class OxiOneControlSurface extends AbstractControlSurface<OxiOneConfigura
         BUTTON_LEDS.put (Integer.valueOf (BUTTON_UNDO), Integer.valueOf (LEDS_UNDO));
         BUTTON_LEDS.put (Integer.valueOf (BUTTON_LOAD), Integer.valueOf (LEDS_LOAD));
         BUTTON_LEDS.put (Integer.valueOf (BUTTON_SAVE), Integer.valueOf (LEDS_SAVE));
+        BUTTON_LEDS.put (Integer.valueOf (BUTTON_COPY), Integer.valueOf (LEDS_COPY));
+        BUTTON_LEDS.put (Integer.valueOf (BUTTON_PASTE), Integer.valueOf (LEDS_PASTE));
+        BUTTON_LEDS.put (Integer.valueOf (BUTTON_16_LEFT), Integer.valueOf (LEDS_16));
+        BUTTON_LEDS.put (Integer.valueOf (BUTTON_32_UP), Integer.valueOf (LEDS_32));
+        BUTTON_LEDS.put (Integer.valueOf (BUTTON_48_DOWN), Integer.valueOf (LEDS_48));
+        BUTTON_LEDS.put (Integer.valueOf (BUTTON_64_RIGHT), Integer.valueOf (LEDS_64));
+        BUTTON_LEDS.put (Integer.valueOf (BUTTON_SEQUENCER1), Integer.valueOf (LEDS_SEQ_1));
+        BUTTON_LEDS.put (Integer.valueOf (BUTTON_SEQUENCER2), Integer.valueOf (LEDS_SEQ_2));
+        BUTTON_LEDS.put (Integer.valueOf (BUTTON_SEQUENCER3), Integer.valueOf (LEDS_SEQ_3));
+        BUTTON_LEDS.put (Integer.valueOf (BUTTON_SEQUENCER4), Integer.valueOf (LEDS_SEQ_4));
+        BUTTON_LEDS.put (Integer.valueOf (BUTTON_MUTE), Integer.valueOf (LEDS_MUTE));
+        BUTTON_LEDS.put (Integer.valueOf (BUTTON_ARRANGER), Integer.valueOf (LEDS_ARRANGER_SHOW));
+        BUTTON_LEDS.put (Integer.valueOf (BUTTON_KEYBOARD), Integer.valueOf (LEDS_KEYBOARD));
+        BUTTON_LEDS.put (Integer.valueOf (BUTTON_ARP), Integer.valueOf (LEDS_ARP));
 
         SHIFTED_BUTTON_LEDS.put (Integer.valueOf (BUTTON_SHIFT), Integer.valueOf (LEDS_SHIFT));
         SHIFTED_BUTTON_LEDS.put (Integer.valueOf (BUTTON_STOP), Integer.valueOf (LEDS_SYNC));
         SHIFTED_BUTTON_LEDS.put (Integer.valueOf (BUTTON_REC), Integer.valueOf (LEDS_NO_LED));
         SHIFTED_BUTTON_LEDS.put (Integer.valueOf (BUTTON_PLAY), Integer.valueOf (LEDS_PLAY2));
         SHIFTED_BUTTON_LEDS.put (Integer.valueOf (BUTTON_UNDO), Integer.valueOf (LEDS_REDO));
-
+        SHIFTED_BUTTON_LEDS.put (Integer.valueOf (BUTTON_COPY), Integer.valueOf (LEDS_DUPLICATE));
+        SHIFTED_BUTTON_LEDS.put (Integer.valueOf (BUTTON_16_LEFT), Integer.valueOf (LEDS_LEFT));
+        SHIFTED_BUTTON_LEDS.put (Integer.valueOf (BUTTON_32_UP), Integer.valueOf (LEDS_UP));
+        SHIFTED_BUTTON_LEDS.put (Integer.valueOf (BUTTON_48_DOWN), Integer.valueOf (LEDS_DOWN));
+        SHIFTED_BUTTON_LEDS.put (Integer.valueOf (BUTTON_64_RIGHT), Integer.valueOf (LEDS_RIGHT));
+        SHIFTED_BUTTON_LEDS.put (Integer.valueOf (BUTTON_SEQUENCER1), Integer.valueOf (LEDS_SEQ_1_SEL));
+        SHIFTED_BUTTON_LEDS.put (Integer.valueOf (BUTTON_SEQUENCER2), Integer.valueOf (LEDS_SEQ_2_SEL));
+        SHIFTED_BUTTON_LEDS.put (Integer.valueOf (BUTTON_SEQUENCER3), Integer.valueOf (LEDS_SEQ_3_SEL));
+        SHIFTED_BUTTON_LEDS.put (Integer.valueOf (BUTTON_SEQUENCER4), Integer.valueOf (LEDS_SEQ_4_SEL));
+        SHIFTED_BUTTON_LEDS.put (Integer.valueOf (BUTTON_MUTE), Integer.valueOf (LEDS_NUDGE));
     }
 
     private static final byte [] ENTER_REMOTE_MODE =
@@ -419,7 +442,7 @@ public class OxiOneControlSurface extends AbstractControlSurface<OxiOneConfigura
 
     /**
      * Update an LED on the device.
-     * 
+     *
      * @param ledID The ID of the LED
      * @param enabled True to turn on the LED otherwise turn it off
      */
@@ -434,7 +457,7 @@ public class OxiOneControlSurface extends AbstractControlSurface<OxiOneConfigura
 
     /**
      * Handle incoming system exclusive messages.
-     * 
+     *
      * @param data The data of the system exclusive message
      */
     private void handleSysEx (final String data)

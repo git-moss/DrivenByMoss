@@ -77,11 +77,11 @@ public class OxiOnePadGrid extends BlinkingPadGrid
 
     /**
      * The color range of each R, G, B component is more like 4 distinguishable values than 255.
-     * 
+     *
      * @param colorPart The color component (R, G, or B) in the range of [0..1]
      * @return One of the 4 indices which is closest to the given value
      */
-    private static int crushBits (double colorPart)
+    private static int crushBits (final double colorPart)
     {
         if (colorPart == 0)
             return 0;

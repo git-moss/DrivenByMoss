@@ -11,6 +11,7 @@ import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.display.IDisplay;
 import de.mossgrabers.framework.daw.GrooveParameterID;
+import de.mossgrabers.framework.daw.IGroove;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.clip.INoteClip;
@@ -48,6 +49,7 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
 
     private final IModel        model;
     private final ITransport    transport;
+    private final IGroove       groove;
     private final S             surface;
     private final IDisplay      display;
 
@@ -64,6 +66,7 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
         this.surface = surface;
         this.display = this.surface == null ? null : this.surface.getDisplay ();
         this.transport = this.model == null ? null : this.model.getTransport ();
+        this.groove = this.model == null ? null : this.model.getGroove ();
     }
 
 
@@ -387,11 +390,47 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
 
 
     /**
+     * Display the groove state.
+     */
+    public void notifyGrooveEnablement ()
+    {
+        this.delayDisplay ( () -> "Groove: " + (this.groove.getParameter (GrooveParameterID.ENABLED).getValue () == 0 ? "Off" : "On"));
+    }
+
+
+    /**
      * Display the current shuffle amount.
      */
     public void notifyShuffle ()
     {
-        this.delayDisplay ( () -> "Shuffle: " + this.model.getGroove ().getParameter (GrooveParameterID.SHUFFLE_AMOUNT).getDisplayedValue ());
+        this.delayDisplay ( () -> "Shuffle: " + this.groove.getParameter (GrooveParameterID.SHUFFLE_AMOUNT).getDisplayedValue ());
+    }
+
+
+    /**
+     * Display the arranger repeat state.
+     */
+    public void notifyArrangerRepeat ()
+    {
+        this.delayDisplay ( () -> "Repeat: " + (this.transport.isLoop () ? "On" : "Off"));
+    }
+
+
+    /**
+     * Display the metronome state.
+     */
+    public void notifyMetronome ()
+    {
+        this.delayDisplay ( () -> "Metronome: " + (this.transport.isMetronomeOn () ? "On" : "Off"));
+    }
+
+
+    /**
+     * Display the metronome ticks state.
+     */
+    public void notifyMetronomeTicks ()
+    {
+        this.delayDisplay ( () -> "Ticks: " + (this.transport.isMetronomeTicksOn () ? "On" : "Off"));
     }
 
 

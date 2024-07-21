@@ -10,6 +10,7 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.daw.GrooveParameterID;
+import de.mossgrabers.framework.daw.IGroove;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.IItem;
@@ -40,15 +41,16 @@ public class OxiOneTransportMode extends AbstractParameterMode<OxiOneControlSurf
 
     private static final String [] SHIFTED_MENU      =
     {
-        "",
-        "",
-        "",
-        ""
+        "Tick",
+        "Shf",
+        "Mtr",
+        "Rept"
     };
 
     private int                    selectedParameter = 0;
     private final IParameter []    parameters        = new IParameter [4];
-    private boolean                isSlow;
+    private final ITransport       transport;
+    private final IGroove          groove;
 
 
     /**
@@ -61,14 +63,15 @@ public class OxiOneTransportMode extends AbstractParameterMode<OxiOneControlSurf
     {
         super ("Transport", surface, model, false);
 
-        final ITransport transport = this.model.getTransport ();
+        this.transport = this.model.getTransport ();
+        this.groove = this.model.getGroove ();
 
         this.setControls (ContinuousID.createSequentialList (ContinuousID.KNOB1, 4));
 
-        this.parameters[0] = new TempoParameter (model.getValueChanger (), transport, surface);
+        this.parameters[0] = new TempoParameter (model.getValueChanger (), this.transport, surface);
         this.parameters[1] = this.model.getGroove ().getParameter (GrooveParameterID.SHUFFLE_AMOUNT);
-        this.parameters[2] = transport.getMetronomeVolumeParameter ();
-        this.parameters[3] = new PlayPositionParameter (model.getValueChanger (), transport, surface);
+        this.parameters[2] = this.transport.getMetronomeVolumeParameter ();
+        this.parameters[3] = new PlayPositionParameter (model.getValueChanger (), this.transport, surface);
 
         this.setParameterProvider (new FourKnobProvider<> (surface, new CombinedParameterProvider ( // combine
                 new FixedParameterProvider (this.parameters[0]), // PlayPosition
@@ -106,14 +109,25 @@ public class OxiOneTransportMode extends AbstractParameterMode<OxiOneControlSurf
             switch (index)
             {
                 case 0:
-                    this.isSlow = !this.isSlow;
+                    this.transport.toggleMetronomeTicks ();
+                    this.mvHelper.notifyMetronomeTicks ();
                     break;
                 case 1:
+                    final IParameter enabledParameter = this.groove.getParameter (GrooveParameterID.ENABLED);
+                    if (enabledParameter != null)
+                    {
+                        enabledParameter.setNormalizedValue (enabledParameter.getValue () == 0 ? 1 : 0);
+                        this.mvHelper.notifyGrooveEnablement ();
+                        return;
+                    }
                     break;
                 case 2:
+                    this.transport.toggleMetronome ();
+                    this.mvHelper.notifyMetronome ();
                     break;
                 case 3:
-                    this.model.getTransport ().toggleLoop ();
+                    this.transport.toggleLoop ();
+                    this.mvHelper.notifyArrangerRepeat ();
                     break;
             }
         }

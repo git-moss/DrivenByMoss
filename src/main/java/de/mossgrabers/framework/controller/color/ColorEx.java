@@ -21,6 +21,8 @@ public class ColorEx
     public static final ColorEx GRAY          = ColorEx.fromRGB (128, 128, 128);
     /** Color dark gray. */
     public static final ColorEx DARK_GRAY     = ColorEx.fromRGB (89, 89, 89);
+    /** Color darker gray. */
+    public static final ColorEx DARKER_GRAY   = ColorEx.fromRGB (63, 63, 63);
     /** Color red. */
     public static final ColorEx RED           = ColorEx.fromRGB (255, 0, 0);
     /** Color dark red. */

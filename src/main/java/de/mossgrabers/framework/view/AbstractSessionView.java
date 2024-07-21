@@ -256,7 +256,7 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
 
 
     /**
-     * Toggles the birdseye view.
+     * Toggles the birds-eye view.
      */
     public void toggleBirdsEyeView ()
     {
@@ -412,7 +412,18 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
     protected void drawPad (final ISlot slot, final int x, final int y, final boolean isArmed)
     {
         final LightInfo color = this.getPadColor (slot, isArmed);
-        this.surface.getPadGrid ().lightEx (x, y, color.getColor (), color.getBlinkColor (), color.isFast ());
+        this.surface.getPadGrid ().lightEx (x, y + this.getYOffset (), color.getColor (), color.getBlinkColor (), color.isFast ());
+    }
+
+
+    /**
+     * Overwrite to offset the pads in the y direction.
+     * 
+     * @return The offset, 0 in the default implementation
+     */
+    protected int getYOffset ()
+    {
+        return 0;
     }
 
 
@@ -453,7 +464,7 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
 
     protected Pair<Integer, Integer> getPad (final int note)
     {
-        final int index = note - 36;
+        final int index = note - this.surface.getPadGrid ().getStartNote ();
         final int t = index % this.columns;
         final int s = this.rows - 1 - index / this.columns;
         final C configuration = this.surface.getConfiguration ();

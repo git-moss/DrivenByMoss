@@ -266,6 +266,8 @@ public enum ButtonID
     GROOVE,
     /** The Flip channels button. */
     FLIP,
+    /** A keyboard button. */
+    KEYBOARD,
 
     /** Toggle the audio engine on/off. */
     AUDIO_ENGINE,

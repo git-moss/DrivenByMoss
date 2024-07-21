@@ -104,7 +104,7 @@ public class TitleValueMenuComponent extends TitleValueComponent
     {
         if (this == obj)
             return true;
-        if (!super.equals (obj) || (this.getClass () != obj.getClass ()))
+        if (!super.equals (obj) || this.getClass () != obj.getClass ())
             return false;
         final TitleValueMenuComponent other = (TitleValueMenuComponent) obj;
         if (!Arrays.equals (this.menu, other.menu))

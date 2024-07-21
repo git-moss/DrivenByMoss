@@ -142,7 +142,7 @@ public class OxiOneColorManager extends ColorManager
         this.registerColor (OXI_ONE_COLOR_YELLOW, ColorEx.YELLOW);
         this.registerColor (OXI_ONE_COLOR_DARKER_YELLOW, ColorEx.DARKER_YELLOW);
         this.registerColor (OXI_ONE_COLOR_BROWN, ColorEx.BROWN);
-        this.registerColor (OXI_ONE_COLOR_GRAY, ColorEx.GRAY);
+        this.registerColor (OXI_ONE_COLOR_GRAY, ColorEx.DARKER_GRAY);
 
         // No idea
         this.registerColor (113, ColorEx.RED);
@@ -171,7 +171,7 @@ public class OxiOneColorManager extends ColorManager
         {
             return super.getColor (colorIndex, buttonID);
         }
-        catch (ColorIndexException ex)
+        catch (final ColorIndexException ex)
         {
             return ColorEx.RED;
         }

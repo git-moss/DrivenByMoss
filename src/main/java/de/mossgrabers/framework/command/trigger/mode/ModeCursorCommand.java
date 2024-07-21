@@ -4,6 +4,8 @@
 
 package de.mossgrabers.framework.command.trigger.mode;
 
+import java.util.function.BooleanSupplier;
+
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.configuration.Configuration;
@@ -13,11 +15,10 @@ import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.ScrollStates;
 
-import java.util.function.BooleanSupplier;
-
 
 /**
- * Command for navigating mode pages and items.
+ * Command for navigating mode pages and items. Left/right buttons move by items, up/down by pages.
+ * If isFlipped is set left/right and up/down is exchanged.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
@@ -31,6 +32,7 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
     protected final boolean         notifySelection;
     protected final BooleanSupplier alternateMode;
     protected ButtonEvent           triggerEvent = ButtonEvent.DOWN;
+    protected boolean               isFlipped;
 
 
     /**
@@ -57,6 +59,23 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
     public ModeCursorCommand (final Direction direction, final IModel model, final S surface, final boolean notifySelection)
     {
         this (direction, model, surface, notifySelection, null);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param direction The direction of the pushed cursor arrow
+     * @param model The model
+     * @param surface The surface
+     * @param notifySelection Set to true to show a notification message if an item is selected
+     * @param isFlipped If true selecting items or pages is flipped
+     */
+    public ModeCursorCommand (final Direction direction, final IModel model, final S surface, final boolean notifySelection, final boolean isFlipped)
+    {
+        this (direction, model, surface, notifySelection, null);
+
+        this.isFlipped = isFlipped;
     }
 
 
@@ -135,11 +154,10 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
      */
     protected void updateArrowStates ()
     {
-        final IMode mode = this.surface.getModeManager ().getActive ();
-        this.scrollStates.setCanScrollLeft (mode != null && mode.hasPreviousItem ());
-        this.scrollStates.setCanScrollRight (mode != null && mode.hasNextItem ());
-        this.scrollStates.setCanScrollUp (mode != null && mode.hasNextItemPage ());
-        this.scrollStates.setCanScrollDown (mode != null && mode.hasPreviousItemPage ());
+        this.scrollStates.setCanScrollLeft (this.canSelectItemOrPage (false, false));
+        this.scrollStates.setCanScrollRight (this.canSelectItemOrPage (false, true));
+        this.scrollStates.setCanScrollDown (this.canSelectItemOrPage (true, false));
+        this.scrollStates.setCanScrollUp (this.canSelectItemOrPage (true, true));
     }
 
 
@@ -148,9 +166,7 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
      */
     protected void scrollLeft ()
     {
-        final IMode activeMode = this.surface.getModeManager ().getActive ();
-        if (activeMode != null)
-            activeMode.selectPreviousItem ();
+        this.selectItemOrPage (false, false);
     }
 
 
@@ -159,9 +175,7 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
      */
     protected void scrollRight ()
     {
-        final IMode activeMode = this.surface.getModeManager ().getActive ();
-        if (activeMode != null)
-            activeMode.selectNextItem ();
+        this.selectItemOrPage (false, true);
     }
 
 
@@ -170,9 +184,7 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
      */
     protected void scrollUp ()
     {
-        final IMode activeMode = this.surface.getModeManager ().getActive ();
-        if (activeMode != null)
-            activeMode.selectNextItemPage ();
+        this.selectItemOrPage (true, true);
     }
 
 
@@ -181,9 +193,55 @@ public class ModeCursorCommand<S extends IControlSurface<C>, C extends Configura
      */
     protected void scrollDown ()
     {
+        this.selectItemOrPage (true, false);
+    }
+
+
+    /**
+     * Select the previous/next item or item page.
+     *
+     * @param isPage If true the previous/next page is selected otherwise the item
+     * @param isNext If true the next page/item is selected otherwise the previous
+     */
+    protected void selectItemOrPage (final boolean isPage, final boolean isNext)
+    {
         final IMode activeMode = this.surface.getModeManager ().getActive ();
-        if (activeMode != null)
-            activeMode.selectPreviousItemPage ();
+        if (activeMode == null)
+            return;
+
+        if (isPage ^ this.isFlipped)
+        {
+            if (isNext)
+                activeMode.selectNextItemPage ();
+            else
+                activeMode.selectPreviousItemPage ();
+            return;
+        }
+
+        if (isNext)
+            activeMode.selectNextItem ();
+        else
+            activeMode.selectPreviousItem ();
+    }
+
+
+    /**
+     * Get the scroll state for the previous/next item or item page.
+     *
+     * @param isPage If true the state of the previous/next page is returned otherwise the item
+     * @param isNext If true the state of the next page/item is returned otherwise the previous
+     * @return The state
+     */
+    protected boolean canSelectItemOrPage (final boolean isPage, final boolean isNext)
+    {
+        final IMode activeMode = this.surface.getModeManager ().getActive ();
+        if (activeMode == null)
+            return false;
+
+        if (isPage ^ this.isFlipped)
+            return isNext ? activeMode.hasNextItemPage () : activeMode.hasPreviousItemPage ();
+
+        return isNext ? activeMode.hasNextItem () : activeMode.hasPreviousItem ();
     }
 
 

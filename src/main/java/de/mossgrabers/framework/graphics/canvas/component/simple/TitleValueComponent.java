@@ -77,7 +77,7 @@ public class TitleValueComponent extends AbstractBaseComponent
 
     /**
      * Draw the element.
-     * 
+     *
      * @param gc The graphics context
      * @param faderTop The top of the fader
      * @param faderHeight The height of the fader
@@ -94,7 +94,7 @@ public class TitleValueComponent extends AbstractBaseComponent
 
     /**
      * Draw the parameter labels.
-     * 
+     *
      * @param gc The graphics context
      * @param colorText The color of the text
      */
@@ -107,7 +107,7 @@ public class TitleValueComponent extends AbstractBaseComponent
 
     /**
      * Draw the fader.
-     * 
+     *
      * @param gc The graphics context
      * @param colorFader The color of the fader
      * @param faderTop The y-top of the fader
@@ -136,7 +136,7 @@ public class TitleValueComponent extends AbstractBaseComponent
 
     /**
      * Draw the stereo VU.
-     * 
+     *
      * @param gc The graphics context
      * @param color The color of the VU
      */

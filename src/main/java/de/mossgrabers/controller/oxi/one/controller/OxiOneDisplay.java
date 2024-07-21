@@ -122,9 +122,9 @@ public class OxiOneDisplay extends AbstractGraphicDisplay
                             if (this.oledBitmap.get ((y + bit) * NUM_COLS + x))
                             {
                                 if (bit > 3)
-                                    nibble1 |= (1 << (bit - 4));
+                                    nibble1 |= 1 << bit - 4;
                                 else
-                                    nibble2 |= (1 << (bit));
+                                    nibble2 |= 1 << bit;
                             }
                         }
                         this.displayData[pos] = nibble1;

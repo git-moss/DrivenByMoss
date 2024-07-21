@@ -55,6 +55,40 @@ public class OxiOneParameterMode extends ParameterMode<OxiOneControlSurface, Oxi
 
     /** {@inheritDoc} */
     @Override
+    public void selectPreviousItem ()
+    {
+        if (this.selectedProviderIndex == 0)
+            this.model.getCursorDevice ().selectPrevious ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectNextItem ()
+    {
+        if (this.selectedProviderIndex == 0)
+            this.model.getCursorDevice ().selectNext ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasPreviousItem ()
+    {
+        return this.selectedProviderIndex == 0 && this.model.getCursorDevice ().canSelectPrevious ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasNextItem ()
+    {
+        return this.selectedProviderIndex == 0 && this.model.getCursorDevice ().canSelectNext ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void toggleDisplay ()
     {
         this.selectedProviderIndex = (this.selectedProviderIndex + 1) % 3;
@@ -91,7 +125,7 @@ public class OxiOneParameterMode extends ParameterMode<OxiOneControlSurface, Oxi
 
         final IParameterBank paramBank = this.getParamBank ();
         final Optional<String> pageName = paramBank.getPageBank ().getSelectedItem ();
-        String desc = name + ": " + (pageName.isPresent () ? pageName.get () : "None");
+        final String desc = name + ": " + (pageName.isPresent () ? pageName.get () : "None");
 
         final IParameter p = this.bank.getItem (offset + this.selectedKnobIndex);
         String paramLine = p.getName (5);
@@ -126,7 +160,7 @@ public class OxiOneParameterMode extends ParameterMode<OxiOneControlSurface, Oxi
     {
         if (this.selectedProviderIndex == 0)
             return this.model.getCursorDevice ().getParameterBank ();
-        else if (this.selectedProviderIndex == 1)
+        if (this.selectedProviderIndex == 1)
             return this.model.getProject ().getParameterBank ();
         return this.model.getCursorTrack ().getParameterBank ();
     }

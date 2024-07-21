@@ -9,12 +9,13 @@ import de.mossgrabers.controller.oxi.one.controller.OxiOneColorManager;
 import de.mossgrabers.controller.oxi.one.controller.OxiOneControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
+import de.mossgrabers.framework.controller.grid.LightInfo;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.featuregroup.AbstractView;
-import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.view.AbstractSessionView;
 
 
 /**
@@ -22,7 +23,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author Jürgen Moßgraber
  */
-public class OxiOneMixView extends AbstractView<OxiOneControlSurface, OxiOneConfiguration>
+public class OxiOneMixView extends AbstractSessionView<OxiOneControlSurface, OxiOneConfiguration>
 {
     /**
      * Constructor.
@@ -32,7 +33,22 @@ public class OxiOneMixView extends AbstractView<OxiOneControlSurface, OxiOneConf
      */
     public OxiOneMixView (final OxiOneControlSurface surface, final IModel model)
     {
-        super ("Track Mixer", surface, model);
+        super ("Track Mixer", surface, model, 4, 16, true);
+
+        final int redLo = OxiOneColorManager.OXI_ONE_COLOR_DARKER_RED;
+        final int redHi = OxiOneColorManager.OXI_ONE_COLOR_RED;
+        final int black = OxiOneColorManager.OXI_ONE_COLOR_BLACK;
+        final int white = OxiOneColorManager.OXI_ONE_COLOR_WHITE;
+        final int green = OxiOneColorManager.OXI_ONE_COLOR_GREEN;
+        final int amber = OxiOneColorManager.OXI_ONE_COLOR_ORANGE;
+        final LightInfo isRecording = new LightInfo (redHi, redHi, false);
+        final LightInfo isRecordingQueued = new LightInfo (redHi, black, true);
+        final LightInfo isPlaying = new LightInfo (green, green, false);
+        final LightInfo isPlayingQueued = new LightInfo (green, green, true);
+        final LightInfo hasContent = new LightInfo (amber, white, false);
+        final LightInfo noContent = new LightInfo (black, -1, false);
+        final LightInfo recArmed = new LightInfo (redLo, -1, false);
+        this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed);
     }
 
 
@@ -70,6 +86,8 @@ public class OxiOneMixView extends AbstractView<OxiOneControlSurface, OxiOneConf
                 padGrid.lightEx (i, 0, OxiOneColorManager.OXI_ONE_COLOR_BLACK);
             }
         }
+
+        super.drawGrid ();
     }
 
 
@@ -124,7 +142,7 @@ public class OxiOneMixView extends AbstractView<OxiOneControlSurface, OxiOneConf
                 break;
 
             default:
-                // Not used
+                super.onGridNote (note, velocity);
                 break;
         }
     }
@@ -132,60 +150,26 @@ public class OxiOneMixView extends AbstractView<OxiOneControlSurface, OxiOneConf
 
     /** {@inheritDoc} */
     @Override
-    public int getButtonColor (final ButtonID buttonID)
+    protected boolean handleButtonCombinations (final ITrack track, final ISlot slot)
     {
-        switch (buttonID)
+        if (!track.doesExist ())
+            return true;
+
+        // Stop clip
+        if (this.isButtonCombination (ButtonID.STOP))
         {
-            case SCENE1:
-            case SCENE4:
-                return 0;
-
-            case SCENE2:
-            case SCENE3:
-                return this.surface.isPressed (buttonID) ? 2 : 1;
-
-            default:
-                return super.getButtonColor (buttonID);
+            track.stop (this.isAlternateFunction ());
+            return true;
         }
+
+        return super.handleButtonCombinations (track, slot);
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
+    protected int getYOffset ()
     {
-        if (event != ButtonEvent.DOWN)
-            return;
-
-        switch (buttonID)
-        {
-            case ARROW_LEFT:
-                this.model.getCurrentTrackBank ().selectPreviousPage ();
-                break;
-
-            case ARROW_RIGHT:
-                this.model.getCurrentTrackBank ().selectNextPage ();
-                break;
-
-            case SCENE1:
-                this.model.getTransport ().selectLoopStart ();
-                break;
-
-            case SCENE2:
-                this.model.getProject ().clearMute ();
-                break;
-
-            case SCENE3:
-                this.model.getProject ().clearSolo ();
-                break;
-
-            case SCENE4:
-                this.model.getTransport ().selectLoopEnd ();
-                break;
-
-            default:
-                // Not used
-                break;
-        }
+        return 4;
     }
 }

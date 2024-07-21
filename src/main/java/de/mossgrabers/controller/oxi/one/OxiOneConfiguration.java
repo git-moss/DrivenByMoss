@@ -25,12 +25,9 @@ public class OxiOneConfiguration extends AbstractConfiguration
 {
     private static final Views [] PREFERRED_NOTE_VIEWS =
     {
+        Views.MIX,
         Views.PLAY,
-        Views.PIANO,
-        Views.DRUM64,
-        Views.DRUM4,
-        Views.SEQUENCER,
-        Views.POLY_SEQUENCER
+        Views.DRUM8
     };
 
     /** Should all track states be colored? */
@@ -82,19 +79,9 @@ public class OxiOneConfiguration extends AbstractConfiguration
         this.activateBehaviourOnStopSetting (globalSettings);
         this.activateBehaviourOnPauseSetting (globalSettings);
 
-        // Corrected label (removed automation)
-        final IEnumSetting flipRecordSetting = globalSettings.getEnumSetting ("Flip arranger and clip record", CATEGORY_TRANSPORT, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
-        flipRecordSetting.addValueObserver (value -> {
-            this.flipRecord = "On".equals (value);
-            this.notifyObservers (FLIP_RECORD);
-        });
-        this.isSettingActive.add (FLIP_RECORD);
-
         ///////////////////////////
         // Play and Sequence
 
-        this.activateAccentActiveSetting (globalSettings);
-        this.activateAccentValueSetting (globalSettings);
         this.activateQuantizeAmountSetting (globalSettings);
         this.activateMidiEditChannelSetting (documentSettings);
         this.activatePreferredNoteViewSetting (globalSettings, PREFERRED_NOTE_VIEWS);
@@ -126,7 +113,7 @@ public class OxiOneConfiguration extends AbstractConfiguration
 
     /**
      * Should all track states be colored?
-     * 
+     *
      * @return True if all color track states should be colored
      */
     public boolean isColorTrackStates ()

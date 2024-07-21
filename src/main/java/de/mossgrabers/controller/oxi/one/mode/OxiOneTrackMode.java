@@ -79,6 +79,9 @@ public class OxiOneTrackMode extends TrackMode<OxiOneControlSurface, OxiOneConfi
     {
         super ("Track", surface, model, false, null);
 
+        this.isAlternativeFunction = () -> false;
+        this.scrollBank = true;
+
         this.setControls (ContinuousID.createSequentialList (ContinuousID.KNOB1, 4));
         this.setParameterProvider (new FourKnobProvider<> (surface, new SelectedTrackParameterProvider (model), ButtonID.SHIFT));
     }

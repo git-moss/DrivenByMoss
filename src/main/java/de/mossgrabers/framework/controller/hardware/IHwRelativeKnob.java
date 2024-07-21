@@ -16,7 +16,7 @@ public interface IHwRelativeKnob extends IHwContinuousControl
 {
     /**
      * Registers an observer to get notified when the value changes.
-     * 
+     *
      * @param observer The observer to register
      */
     void addHasChangedObserver (IValueObserver<Void> observer);

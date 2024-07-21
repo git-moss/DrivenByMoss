@@ -44,7 +44,7 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
     private IParameter                           parameter;
     private boolean                              shouldAdaptSensitivity = true;
     private int                                  control;
-    private List<IValueObserver<Void>>           observers              = new ArrayList<> ();
+    private final List<IValueObserver<Void>>           observers              = new ArrayList<> ();
 
 
     /**
@@ -268,7 +268,7 @@ public class HwRelativeKnobImpl extends AbstractHwContinuousControl implements I
 
     private void notifyHasChangedObservers ()
     {
-        for (IValueObserver<Void> observer: this.observers)
+        for (final IValueObserver<Void> observer: this.observers)
             observer.update (null);
     }
 }

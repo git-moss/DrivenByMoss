@@ -13,6 +13,7 @@ import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
+import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.data.ISend;
@@ -70,6 +71,7 @@ public class OxiOneLayerMode extends AbstractParameterMode<OxiOneControlSurface,
 
     private Modes                  selectedParameter = Modes.VOLUME;
     private boolean                isMixerMode       = false;
+    protected final ICursorDevice  cursorDevice;
 
 
     /**
@@ -80,10 +82,14 @@ public class OxiOneLayerMode extends AbstractParameterMode<OxiOneControlSurface,
      */
     public OxiOneLayerMode (final OxiOneControlSurface surface, final IModel model)
     {
-        super ("Layer", surface, model);
+        super (Modes.NAME_LAYER, surface, model, true, model.getCursorDevice ().getLayerBank ());
+
+        this.isAlternativeFunction = () -> false;
+        this.cursorDevice = this.model.getCursorDevice ();
 
         this.setControls (ContinuousID.createSequentialList (ContinuousID.KNOB1, 4));
         this.setParameterProvider (new FourKnobProvider<> (surface, new SelectedLayerOrDrumPadParameterProvider (this.getDrumDevice ()), ButtonID.SHIFT));
+        this.cursorDevice.addHasDrumPadsObserver (hasDrumPads -> this.switchBanks (this.cursorDevice.hasDrumPads () ? this.cursorDevice.getDrumPadBank () : this.cursorDevice.getLayerBank ()));
     }
 
 

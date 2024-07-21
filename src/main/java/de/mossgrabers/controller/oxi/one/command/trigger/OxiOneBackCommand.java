@@ -39,7 +39,7 @@ public class OxiOneBackCommand extends ModeMultiSelectCommand<OxiOneControlSurfa
 
     /**
      * Set the 'knob has been used' state.
-     * 
+     *
      * @param hasKnobBeenUsed The state
      */
     public void setHasKnobBeenUsed (final boolean hasKnobBeenUsed)
@@ -57,7 +57,7 @@ public class OxiOneBackCommand extends ModeMultiSelectCommand<OxiOneControlSurfa
             if (event == ButtonEvent.DOWN)
             {
                 final IMode active = this.surface.getModeManager ().getActive ();
-                if (active instanceof IOxiModeDisplay modeDisplay)
+                if (active instanceof final IOxiModeDisplay modeDisplay)
                     modeDisplay.toggleDisplay ();
             }
             return;
