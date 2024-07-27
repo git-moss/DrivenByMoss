@@ -11,9 +11,7 @@ import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
-import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
-import de.mossgrabers.framework.view.Views;
 
 
 /**
@@ -23,17 +21,10 @@ import de.mossgrabers.framework.view.Views;
  */
 public class OxiOneConfiguration extends AbstractConfiguration
 {
-    private static final Views [] PREFERRED_NOTE_VIEWS =
-    {
-        Views.MIX,
-        Views.PLAY,
-        Views.DRUM8
-    };
-
     /** Should all track states be colored? */
-    public static final Integer   COLOR_TRACK_STATES   = Integer.valueOf (100);
+    public static final Integer COLOR_TRACK_STATES = Integer.valueOf (100);
 
-    private boolean               colorTrackStates;
+    private boolean             colorTrackStates;
 
 
     /**
@@ -46,6 +37,9 @@ public class OxiOneConfiguration extends AbstractConfiguration
     public OxiOneConfiguration (final IHost host, final IValueChanger valueChanger, final List<ArpeggiatorMode> arpeggiatorModes)
     {
         super (host, valueChanger, arpeggiatorModes);
+
+        // Force note on velocity to 127 since the pads only send 1
+        this.accentActive = true;
     }
 
 
@@ -84,15 +78,6 @@ public class OxiOneConfiguration extends AbstractConfiguration
 
         this.activateQuantizeAmountSetting (globalSettings);
         this.activateMidiEditChannelSetting (documentSettings);
-        this.activatePreferredNoteViewSetting (globalSettings, PREFERRED_NOTE_VIEWS);
-        this.activateStartWithSessionViewSetting (globalSettings);
-
-        ///////////////////////////
-        // Drum Sequencer
-
-        if (this.host.supports (Capability.HAS_DRUM_DEVICE))
-            this.activateTurnOffEmptyDrumPadsSetting (globalSettings);
-        this.activateUseCombinationButtonToSoundSetting (globalSettings);
 
         ///////////////////////////
         // Workflow

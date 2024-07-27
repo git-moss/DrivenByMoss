@@ -4,7 +4,8 @@
 
 package de.mossgrabers.controller.ni.kontrol.mki.mode;
 
-import de.mossgrabers.controller.ni.kontrol.mki.Kontrol1Configuration;
+import java.util.Locale;
+
 import de.mossgrabers.controller.ni.kontrol.mki.controller.Kontrol1ControlSurface;
 import de.mossgrabers.controller.ni.kontrol.mki.controller.Kontrol1Display;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -12,8 +13,6 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.scale.Scales;
-
-import java.util.Locale;
 
 
 /**
@@ -23,7 +22,7 @@ import java.util.Locale;
  */
 public class ScaleMode extends AbstractKontrol1Mode<IItem>
 {
-    final Scales scales;
+    private final Scales scales;
 
 
     /**
@@ -66,7 +65,6 @@ public class ScaleMode extends AbstractKontrol1Mode<IItem>
                     this.scales.nextScale ();
                 else
                     this.scales.prevScale ();
-                this.updateScalePreferences ();
                 break;
 
             case 1:
@@ -74,13 +72,14 @@ public class ScaleMode extends AbstractKontrol1Mode<IItem>
                     this.scales.setScaleOffsetByIndex (this.scales.getScaleOffsetIndex () + 1);
                 else
                     this.scales.setScaleOffsetByIndex (this.scales.getScaleOffsetIndex () - 1);
-                this.updateScalePreferences ();
                 break;
 
             default:
                 // Not used
-                break;
+                return;
         }
+
+        this.updateScalePreferences ();
     }
 
 
@@ -152,8 +151,6 @@ public class ScaleMode extends AbstractKontrol1Mode<IItem>
 
     private void updateScalePreferences ()
     {
-        final Kontrol1Configuration config = this.surface.getConfiguration ();
-        config.setScale (this.scales.getScale ().getName ());
-        config.setScaleBase (Scales.BASES.get (this.scales.getScaleOffsetIndex ()));
+        this.scales.updateScaleProperties (this.surface.getConfiguration ());
     }
 }

@@ -13,14 +13,10 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.clip.INoteClip;
 import de.mossgrabers.framework.daw.clip.NotePosition;
-import de.mossgrabers.framework.daw.clip.StepState;
 import de.mossgrabers.framework.daw.data.IDrumPad;
 import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.featuregroup.IMode;
-import de.mossgrabers.framework.featuregroup.ModeManager;
-import de.mossgrabers.framework.mode.INoteEditorMode;
-import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.framework.view.sequencer.AbstractDrum4View;
@@ -45,62 +41,6 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
     public Drum4View (final FireControlSurface surface, final IModel model)
     {
         super (surface, model, 4, 4, 16, 16, true, false);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onGridNote (final int note, final int velocity)
-    {
-        if (!this.isActive ())
-            return;
-
-        final int index = note - DRUM_START_KEY;
-        final int x = index % this.numColumns;
-        final int y = index / this.numColumns;
-
-        final int sound = y % this.lanes + this.scales.getDrumOffset ();
-        final int step = this.numColumns * (y / this.lanes) + x;
-
-        final int channel = this.configuration.getMidiEditChannel ();
-        final int vel = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).getPressedVelocity ();
-        final INoteClip clip = this.getClip ();
-        final NotePosition notePosition = new NotePosition (channel, step, sound);
-
-        if (this.handleSequencerAreaButtonCombinations (clip, notePosition, y, velocity, vel))
-            return;
-
-        // Handle note editor mode
-        final ModeManager modeManager = this.surface.getModeManager ();
-        if (velocity > 0)
-        {
-            final IMode activeMode = modeManager.getActive ();
-            if (activeMode instanceof final INoteEditorMode noteMode)
-            {
-                // Store existing note for editing
-                final StepState state = clip.getStep (notePosition).getState ();
-                if (state == StepState.START)
-                {
-                    this.editNote (clip, notePosition, true);
-                    if (noteMode.getNoteEditor ().getNotes ().isEmpty ())
-                    {
-                        this.surface.getDisplay ().notify ("Edit Notes: Off");
-                        this.isNoteEdited = false;
-                    }
-                }
-                return;
-            }
-        }
-        else
-        {
-            if (this.isNoteEdited)
-                this.isNoteEdited = false;
-            if (modeManager.isActive (Modes.NOTE))
-                return;
-        }
-
-        if (velocity == 0)
-            clip.toggleStep (notePosition, vel);
     }
 
 

@@ -404,9 +404,9 @@ public abstract class AbstractConfiguration implements Configuration
     protected boolean                                 drawRecordStripe                    = true;
     protected int                                     convertAftertouch                   = 0;
     /** Accent button active. */
-    private boolean                                   accentActive                        = false;
+    protected boolean                                 accentActive                        = false;
     /** Fixed velocity value for accent. */
-    private int                                       fixedAccentValue                    = 127;
+    protected int                                     fixedAccentValue                    = 127;
     private int                                       quantizeAmount                      = 100;
     protected boolean                                 flipRecord                          = false;
     private int                                       newClipLength                       = 2;

@@ -4,6 +4,8 @@
 
 package de.mossgrabers.framework.view.sequencer;
 
+import java.util.List;
+
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
@@ -19,8 +21,6 @@ import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.TransposeView;
-
-import java.util.List;
 
 
 /**
@@ -349,14 +349,22 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
     }
 
 
+    /** {@inheritDoc} */
+    @Override
+    public void resetOctave ()
+    {
+        this.updateOctave (this.offsetY);
+    }
+
+
     /**
-     * Calculates how many seminotes are between the first and last 'pad'.
+     * Calculates how many semi-notes are between the first and last 'pad'.
      *
-     * @return The number of seminotes
+     * @return The number of semi-notes
      */
     protected int getScrollOffset ()
     {
-        // In chromatic mode all seminotes are present
+        // In chromatic mode all semi-notes are present
         if (this.scales.isChromatic ())
             return this.numSequencerRows;
 

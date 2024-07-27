@@ -20,7 +20,6 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.graphics.canvas.component.IComponent;
 import de.mossgrabers.framework.graphics.canvas.component.simple.TitleChannelsMenuComponent;
 import de.mossgrabers.framework.graphics.canvas.component.simple.TitleValueMenuComponent;
-import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.mode.track.TrackMode;
 import de.mossgrabers.framework.parameterprovider.special.FourKnobProvider;
 import de.mossgrabers.framework.parameterprovider.track.SelectedTrackParameterProvider;
@@ -33,7 +32,7 @@ import de.mossgrabers.framework.parameterprovider.track.SelectedTrackParameterPr
  */
 public class OxiOneTrackMode extends TrackMode<OxiOneControlSurface, OxiOneConfiguration> implements IOxiModeDisplay
 {
-    private static final String [] MENU              =
+    private static final String [] MENU          =
     {
         "Vol",
         "Pan",
@@ -41,7 +40,7 @@ public class OxiOneTrackMode extends TrackMode<OxiOneControlSurface, OxiOneConfi
         "S2"
     };
 
-    private static final String [] SHIFTED_MENU      =
+    private static final String [] SHIFTED_MENU  =
     {
         "S3",
         "S4",
@@ -49,24 +48,8 @@ public class OxiOneTrackMode extends TrackMode<OxiOneControlSurface, OxiOneConfi
         "S6"
     };
 
-    private static final Modes []  MODES             =
-    {
-        Modes.VOLUME,
-        Modes.PAN,
-        Modes.SEND1,
-        Modes.SEND2
-    };
-
-    private static final Modes []  ALT_MODES         =
-    {
-        Modes.SEND3,
-        Modes.SEND4,
-        Modes.SEND5,
-        Modes.SEND6
-    };
-
-    private Modes                  selectedParameter = Modes.VOLUME;
-    private boolean                isMixerMode       = false;
+    private int                    selectedIndex = 0;
+    private boolean                isMixerMode   = false;
 
 
     /**
@@ -127,27 +110,23 @@ public class OxiOneTrackMode extends TrackMode<OxiOneControlSurface, OxiOneConfi
 
             final ISendBank sendBank = track.getSendBank ();
 
-            switch (this.selectedParameter)
+            switch (this.selectedIndex)
             {
-                case VOLUME:
+                case 0:
                     label = "Vol: " + track.getVolumeStr ();
                     value = track.getVolume ();
                     break;
 
-                case PAN:
+                case 1:
                     label = "Pan: " + track.getPanStr ();
                     value = track.getPan ();
                     isPan = true;
                     break;
 
-                case SEND1, SEND2, SEND3, SEND4, SEND5, SEND6:
-                    final int sendIndex = this.selectedParameter.ordinal () - Modes.SEND1.ordinal ();
+                default:
+                    final int sendIndex = this.selectedIndex - 2;
                     label = getSendLabel (sendBank, sendIndex);
                     value = getSendValue (sendBank, sendIndex);
-                    break;
-
-                default:
-                    // Not used
                     break;
             }
         }
@@ -174,9 +153,9 @@ public class OxiOneTrackMode extends TrackMode<OxiOneControlSurface, OxiOneConfi
         final boolean isMode = this.isAnyKnobTouched () || !this.model.getTransport ().isPlaying ();
         if (isMode)
         {
-            switch (this.selectedParameter)
+            switch (this.selectedIndex)
             {
-                case VOLUME:
+                case 0:
                     for (int i = 0; i < size; i++)
                     {
                         final IChannel channel = trackBank.getItem (i);
@@ -185,7 +164,7 @@ public class OxiOneTrackMode extends TrackMode<OxiOneControlSurface, OxiOneConfi
                     }
                     break;
 
-                case PAN:
+                case 1:
                     for (int i = 0; i < size; i++)
                     {
                         final IChannel channel = trackBank.getItem (i);
@@ -194,13 +173,8 @@ public class OxiOneTrackMode extends TrackMode<OxiOneControlSurface, OxiOneConfi
                     }
                     break;
 
-                case SEND1:
-                case SEND2:
-                case SEND3:
-                case SEND4:
-                case SEND5:
-                case SEND6:
-                    final int sendIndex = this.selectedParameter.ordinal () - Modes.SEND1.ordinal ();
+                default:
+                    final int sendIndex = this.selectedIndex - 2;
                     for (int i = 0; i < size; i++)
                     {
                         final IChannel channel = trackBank.getItem (i);
@@ -215,10 +189,6 @@ public class OxiOneTrackMode extends TrackMode<OxiOneControlSurface, OxiOneConfi
                         }
                     }
                     break;
-
-                default:
-                    // Not used
-                    break;
             }
         }
         else
@@ -231,7 +201,7 @@ public class OxiOneTrackMode extends TrackMode<OxiOneControlSurface, OxiOneConfi
             }
         }
 
-        return new TitleChannelsMenuComponent (label, selected, values, this.selectedParameter == Modes.PAN && isMode);
+        return new TitleChannelsMenuComponent (label, selected, values, this.selectedIndex == 1 && isMode);
     }
 
 
@@ -240,18 +210,13 @@ public class OxiOneTrackMode extends TrackMode<OxiOneControlSurface, OxiOneConfi
      */
     protected void updateMode ()
     {
-        int index = -1;
-        final Modes [] ms = this.surface.isPressed (ButtonID.SHIFT) ? MODES : ALT_MODES;
-        for (int i = 0; i < ms.length; i++)
+        if (this.surface.isShiftPressed ())
         {
-            if (ms[i] == this.selectedParameter)
-            {
-                index = i;
-                break;
-            }
+            if (this.selectedIndex < 4)
+                this.selectedIndex += 4;
         }
-        if (index >= 0)
-            this.selectedParameter = this.surface.isPressed (ButtonID.SHIFT) ? ALT_MODES[index] : MODES[index];
+        else if (this.selectedIndex >= 4)
+            this.selectedIndex -= 4;
     }
 
 
@@ -259,7 +224,7 @@ public class OxiOneTrackMode extends TrackMode<OxiOneControlSurface, OxiOneConfi
     @Override
     public void onKnobTouch (final int index, final boolean isTouched)
     {
-        this.selectedParameter = this.surface.isPressed (ButtonID.SHIFT) ? ALT_MODES[index] : MODES[index];
+        this.selectedIndex = this.surface.isShiftPressed () ? 4 + index : index;
 
         this.setTouchedKnob (index, isTouched);
 
@@ -268,30 +233,26 @@ public class OxiOneTrackMode extends TrackMode<OxiOneControlSurface, OxiOneConfi
             return;
 
         final ITrack track = trackOptional.get ();
-        switch (this.selectedParameter)
+        switch (this.selectedIndex)
         {
-            case VOLUME:
+            case 0:
                 if (isTouched && this.surface.isDeletePressed ())
                     track.resetVolume ();
                 track.touchVolume (isTouched);
                 break;
 
-            case PAN:
+            case 1:
                 if (isTouched && this.surface.isDeletePressed ())
                     track.resetPan ();
                 track.touchPan (isTouched);
                 break;
 
-            case SEND1, SEND2, SEND3, SEND4, SEND5, SEND6:
-                final int sendIndex = this.selectedParameter.ordinal () - Modes.SEND1.ordinal ();
+            default:
+                final int sendIndex = this.selectedIndex - 2;
                 final ISend item = track.getSendBank ().getItem (sendIndex);
                 if (isTouched && this.surface.isDeletePressed ())
                     item.resetValue ();
                 item.touchValue (isTouched);
-                break;
-
-            default:
-                // Not used
                 break;
         }
     }

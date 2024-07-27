@@ -344,7 +344,7 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
         {
             case 0:
                 this.scales.toggleChromatic ();
-                this.surface.getDisplay ().notify ("Chromatic: " + (this.scales.isChromatic () ? "On" : "Off"));
+                display.notify ("Chromatic: " + (this.scales.isChromatic () ? "On" : "Off"));
                 this.configuration.setScaleInKey (!this.scales.isChromatic ());
                 break;
 
@@ -493,9 +493,7 @@ public class PlayView extends AbstractPlayView<MaschineControlSurface, MaschineC
     private void update ()
     {
         this.updateNoteMapping ();
-        this.configuration.setScale (this.scales.getScale ().getName ());
-        this.configuration.setScaleBase (Scales.BASES.get (this.scales.getScaleOffsetIndex ()));
-        this.configuration.setScaleLayout (this.scales.getScaleLayout ().getName ());
+        this.scales.updateScaleProperties (this.configuration);
     }
 
 

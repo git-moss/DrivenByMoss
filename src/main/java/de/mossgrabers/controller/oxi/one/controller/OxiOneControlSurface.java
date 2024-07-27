@@ -251,6 +251,12 @@ public class OxiOneControlSurface extends AbstractControlSurface<OxiOneConfigura
         BUTTON_LEDS.put (Integer.valueOf (BUTTON_ARRANGER), Integer.valueOf (LEDS_ARRANGER_SHOW));
         BUTTON_LEDS.put (Integer.valueOf (BUTTON_KEYBOARD), Integer.valueOf (LEDS_KEYBOARD));
         BUTTON_LEDS.put (Integer.valueOf (BUTTON_ARP), Integer.valueOf (LEDS_ARP));
+        BUTTON_LEDS.put (Integer.valueOf (BUTTON_MOD), Integer.valueOf (LEDS_MOD));
+        BUTTON_LEDS.put (Integer.valueOf (BUTTON_LFO), Integer.valueOf (LEDS_LFO));
+        BUTTON_LEDS.put (Integer.valueOf (BUTTON_STEP_CHORD), Integer.valueOf (LEDS_STEP_CHORD));
+        BUTTON_LEDS.put (Integer.valueOf (BUTTON_DIVISION), Integer.valueOf (LEDS_DIVISION));
+        BUTTON_LEDS.put (Integer.valueOf (BUTTON_INIT), Integer.valueOf (LEDS_INIT));
+        BUTTON_LEDS.put (Integer.valueOf (BUTTON_END), Integer.valueOf (LEDS_END));
 
         SHIFTED_BUTTON_LEDS.put (Integer.valueOf (BUTTON_SHIFT), Integer.valueOf (LEDS_SHIFT));
         SHIFTED_BUTTON_LEDS.put (Integer.valueOf (BUTTON_STOP), Integer.valueOf (LEDS_SYNC));
@@ -267,6 +273,8 @@ public class OxiOneControlSurface extends AbstractControlSurface<OxiOneConfigura
         SHIFTED_BUTTON_LEDS.put (Integer.valueOf (BUTTON_SEQUENCER3), Integer.valueOf (LEDS_SEQ_3_SEL));
         SHIFTED_BUTTON_LEDS.put (Integer.valueOf (BUTTON_SEQUENCER4), Integer.valueOf (LEDS_SEQ_4_SEL));
         SHIFTED_BUTTON_LEDS.put (Integer.valueOf (BUTTON_MUTE), Integer.valueOf (LEDS_NUDGE));
+        SHIFTED_BUTTON_LEDS.put (Integer.valueOf (BUTTON_KEYBOARD), Integer.valueOf (LEDS_PREVIEW));
+        SHIFTED_BUTTON_LEDS.put (Integer.valueOf (BUTTON_ARP), Integer.valueOf (LEDS_ARP_HOLD));
     }
 
     private static final byte [] ENTER_REMOTE_MODE =

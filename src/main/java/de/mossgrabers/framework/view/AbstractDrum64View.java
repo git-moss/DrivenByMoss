@@ -4,6 +4,8 @@
 
 package de.mossgrabers.framework.view;
 
+import java.util.Optional;
+
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
@@ -18,8 +20,6 @@ import de.mossgrabers.framework.featuregroup.AbstractView;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
-
-import java.util.Optional;
 
 
 /**
@@ -42,7 +42,7 @@ public abstract class AbstractDrum64View<S extends IControlSurface<C>, C extends
     protected int []           pressedKeys    = new int [128];
     protected int              columns;
     protected int              rows;
-    protected int              drumOctave;
+    protected int              drumOctave     = 0;
 
     private final int          xblocks;
     private final int          yblocks;
@@ -80,8 +80,6 @@ public abstract class AbstractDrum64View<S extends IControlSurface<C>, C extends
         this.yblocks = this.rows / 4;
 
         this.offsetY = DRUM_START_KEY;
-
-        this.drumOctave = 0;
 
         final ITrackBank tb = model.getTrackBank ();
         tb.addSelectionObserver ( (final int index, final boolean isSelected) -> this.clearPressedKeys ());
@@ -226,22 +224,8 @@ public abstract class AbstractDrum64View<S extends IControlSurface<C>, C extends
     @Override
     public void onOctaveDown (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
-            return;
-
-        this.clearPressedKeys ();
-        final int oldDrumOctave = this.drumOctave;
-        this.drumOctave = Math.max (-2, this.drumOctave - 1);
-        this.offsetY = DRUM_START_KEY + this.drumOctave * BLOCK_SIZE;
-        this.updateNoteMapping ();
-        this.surface.getDisplay ().notify (this.getDrumRangeText ());
-
-        if (oldDrumOctave != this.drumOctave)
-        {
-            final IDrumPadBank drumPadBank = this.getDrumPadBank ();
-            for (int i = 0; i < BLOCK_SIZE; i++)
-                drumPadBank.scrollBackwards ();
-        }
+        if (event == ButtonEvent.DOWN)
+            this.setOctave (this.drumOctave - 1);
     }
 
 
@@ -249,12 +233,24 @@ public abstract class AbstractDrum64View<S extends IControlSurface<C>, C extends
     @Override
     public void onOctaveUp (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
-            return;
+        if (event == ButtonEvent.DOWN)
+            this.setOctave (this.drumOctave + 1);
+    }
 
+
+    /** {@inheritDoc} */
+    @Override
+    public void resetOctave ()
+    {
+        this.setOctave (0);
+    }
+
+
+    private void setOctave (final int octave)
+    {
         this.clearPressedKeys ();
         final int oldDrumOctave = this.drumOctave;
-        this.drumOctave = Math.min (1, this.drumOctave + 1);
+        this.drumOctave = Math.max (-2, Math.min (1, octave));
         this.offsetY = DRUM_START_KEY + this.drumOctave * BLOCK_SIZE;
         this.updateNoteMapping ();
         this.surface.getDisplay ().notify (this.getDrumRangeText ());

@@ -150,12 +150,7 @@ public class SequencerView extends AbstractNoteSequencerView<MaschineJamControlS
 
     private void updateScaleConfig ()
     {
-        final MaschineJamConfiguration config = this.surface.getConfiguration ();
-        config.setScale (this.scales.getScale ().getName ());
-        config.setScaleBase (Scales.BASES.get (this.scales.getScaleOffsetIndex ()));
-        config.setScaleInKey (!this.scales.isChromatic ());
-        config.setScaleLayout (this.scales.getScaleLayout ().getName ());
-
+        this.scales.updateScaleProperties (this.configuration);
         this.updateNoteMapping ();
     }
 

@@ -4,6 +4,8 @@
 
 package de.mossgrabers.framework.view;
 
+import java.util.Arrays;
+
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.grid.ILightGuide;
@@ -13,8 +15,6 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.AbstractView;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
-
-import java.util.Arrays;
 
 
 /**
@@ -184,13 +184,12 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
     }
 
 
-    /**
-     * Reset octave.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void resetOctave ()
     {
         this.keyManager.clearPressedKeys ();
-        this.scales.setOctave (0);
+        this.scales.resetOctave ();
         this.updateNoteMapping ();
     }
 
@@ -280,10 +279,6 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
     protected void updateScale ()
     {
         this.updateNoteMapping ();
-        final C config = this.surface.getConfiguration ();
-        config.setScale (this.scales.getScale ().getName ());
-        config.setScaleBase (Scales.BASES.get (this.scales.getScaleOffsetIndex ()));
-        config.setScaleInKey (!this.scales.isChromatic ());
-        config.setScaleLayout (this.scales.getScaleLayout ().getName ());
+        this.scales.updateScaleProperties (this.surface.getConfiguration ());
     }
 }

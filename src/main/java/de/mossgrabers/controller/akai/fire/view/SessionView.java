@@ -286,4 +286,12 @@ public class SessionView extends AbstractSessionView<FireControlSurface, FireCon
 
         sceneBank.scrollBackwards ();
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void resetOctave ()
+    {
+        // Currently, not used
+    }
 }

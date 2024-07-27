@@ -159,7 +159,7 @@ public class CursorCommand<S extends IControlSurface<C>, C extends Configuration
 
     /**
      * Check if the shifted commands should be used.
-     * 
+     *
      * @return True if shifted
      */
     protected boolean isShifted ()

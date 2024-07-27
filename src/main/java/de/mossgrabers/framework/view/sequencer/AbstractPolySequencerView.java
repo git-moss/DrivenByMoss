@@ -4,6 +4,10 @@
 
 package de.mossgrabers.framework.view.sequencer;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
@@ -22,10 +26,6 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractPlayView;
 import de.mossgrabers.framework.view.TransposeView;
 import de.mossgrabers.framework.view.Views;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -94,26 +94,7 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
     @Override
     public void onOctaveDown (final ButtonEvent event)
     {
-        if (event != ButtonEvent.DOWN)
-            return;
-
-        if (this.surface.isShiftPressed ())
-        {
-            this.getClip ().transpose (-1);
-            return;
-        }
-
-        if (this.surface.isSelectPressed ())
-        {
-            this.getClip ().transpose (-12);
-            return;
-        }
-
-        this.keyManager.clearPressedKeys ();
-        this.scales.decOctave ();
-        this.updateNoteMapping ();
-        this.clearEditNotes ();
-        this.surface.getDisplay ().notify (this.scales.getRangeText ());
+        this.changeOctave (false, event);
     }
 
 
@@ -121,23 +102,43 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
     @Override
     public void onOctaveUp (final ButtonEvent event)
     {
+        this.changeOctave (true, event);
+    }
+
+
+    private void changeOctave (final boolean increase, final ButtonEvent event)
+    {
         if (event != ButtonEvent.DOWN)
             return;
 
         if (this.surface.isShiftPressed ())
         {
-            this.getClip ().transpose (1);
+            this.getClip ().transpose (increase ? 1 : -1);
             return;
         }
 
         if (this.surface.isSelectPressed ())
         {
-            this.getClip ().transpose (12);
+            this.getClip ().transpose (increase ? 12 : -12);
             return;
         }
 
+        this.setOctave (this.scales.getOctave () + (increase ? 1 : -1));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void resetOctave ()
+    {
+        this.setOctave (this.scales.getDefaultOctave ());
+    }
+
+
+    private void setOctave (final int octave)
+    {
         this.keyManager.clearPressedKeys ();
-        this.scales.incOctave ();
+        this.scales.setOctave (octave);
         this.updateNoteMapping ();
         this.clearEditNotes ();
         this.surface.getDisplay ().notify (this.scales.getRangeText ());

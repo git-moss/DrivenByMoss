@@ -91,15 +91,19 @@ public abstract class AbstractDrumLaneView<S extends IControlSurface<C>, C exten
         final int x = index % this.numColumns;
         final int y = index / this.numColumns;
         final int sound = y % this.lanes + this.scales.getDrumOffset ();
-        final int laneOffset = (this.allRows - 1 - y) / this.lanes * this.numColumns;
         final int vel = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).getPressedVelocity ();
+        final int step = (this.allRows - 1 - y) / this.lanes * this.numColumns + x;
+        final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), step, sound);
 
-        final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), laneOffset + x, sound);
+        final INoteClip clip = this.getClip ();
+        if (this.handleSequencerAreaButtonCombinations (clip, notePosition, y, velocity, vel))
+            return;
 
-        if (this.handleSequencerAreaButtonCombinations (this.getClip (), notePosition, y, velocity, vel))
+        if (this.handleNoteEditor (clip, notePosition, velocity))
             return;
 
         this.handleSequencerArea (velocity, vel, notePosition);
+
     }
 
 
@@ -112,10 +116,8 @@ public abstract class AbstractDrumLaneView<S extends IControlSurface<C>, C exten
      */
     protected void handleSequencerArea (final int velocity, final int downVelocity, final NotePosition notePosition)
     {
-        if (velocity != 0)
-            return;
-
-        this.getClip ().toggleStep (notePosition, downVelocity);
+        if (velocity == 0)
+            this.getClip ().toggleStep (notePosition, downVelocity);
     }
 
 

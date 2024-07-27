@@ -44,4 +44,10 @@ public interface TransposeView
      * @return True if enabled
      */
     boolean isOctaveDownButtonOn ();
+
+
+    /**
+     * Resets the octave.
+     */
+    void resetOctave ();
 }

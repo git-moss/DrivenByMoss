@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.akai.fire.mode;
 
+import java.util.List;
+
 import de.mossgrabers.controller.akai.fire.FireConfiguration;
 import de.mossgrabers.controller.akai.fire.controller.FireControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -24,15 +26,13 @@ import de.mossgrabers.framework.parameterprovider.special.FixedParameterProvider
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
 
-import java.util.List;
-
 
 /**
  * Note edit knob mode.
  *
  * @author Jürgen Moßgraber
  */
-public class NoteMode extends AbstractNoteParameterMode<FireControlSurface, FireConfiguration, IItem>
+public class FireNoteMode extends AbstractNoteParameterMode<FireControlSurface, FireConfiguration, IItem>
 {
     protected static final List<ContinuousID> KNOB_IDS = ContinuousID.createSequentialList (ContinuousID.KNOB1, 4);
     static
@@ -51,7 +51,7 @@ public class NoteMode extends AbstractNoteParameterMode<FireControlSurface, Fire
      * @param surface The control surface
      * @param model The model
      */
-    public NoteMode (final FireControlSurface surface, final IModel model)
+    public FireNoteMode (final FireControlSurface surface, final IModel model)
     {
         super ("Note Edit", surface, model, false, null, KNOB_IDS);
 
@@ -128,7 +128,7 @@ public class NoteMode extends AbstractNoteParameterMode<FireControlSurface, Fire
         if (notes.isEmpty ())
             desc = "Select a note";
         else if (notes.size () > 1)
-            desc = "Step: * - " + notes.size ();
+            desc = notes.size () + " notes sel.";
         else
         {
             final NotePosition notePosition = notes.get (0);

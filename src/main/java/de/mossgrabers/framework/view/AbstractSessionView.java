@@ -418,7 +418,7 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
 
     /**
      * Overwrite to offset the pads in the y direction.
-     * 
+     *
      * @return The offset, 0 in the default implementation
      */
     protected int getYOffset ()

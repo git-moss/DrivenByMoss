@@ -9,6 +9,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
+import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.scale.ScaleGrid.Orientation;
 
@@ -22,8 +23,11 @@ import de.mossgrabers.framework.scale.ScaleGrid.Orientation;
  */
 public class Scales
 {
-    private static final int            DRUM_NOTE_LOWER          = 4;
-    private static final int            DRUM_NOTE_UPPER          = 100;
+    /** The lowest drum note. */
+    public static final int             DRUM_NOTE_LOWER          = 4;
+    /** The highest drum note. */
+    public static final int             DRUM_NOTE_UPPER          = 100;
+
     private static final int            DRUM_DEFAULT_OFFSET      = 16;
 
     /** The names of notes. */
@@ -32,7 +36,7 @@ public class Scales
     /** The names of the base notes. */
     public static final List<String>    BASES                    = List.of ("C", "G", "D", "A", "E", "B", "F", "Bb", "Eb", "Ab", "Db", "Gb");
 
-    /** The semitone offsets of the base notes. */
+    /** The semi-tone offsets of the base notes. */
     private static final int []         OFFSETS                  =
     {
         0,
@@ -102,6 +106,7 @@ public class Scales
     private int                         scaleShift               = 3;
     private int                         semitoneShift            = 5;
     private int                         octave                   = 0;
+    private final int                   defaultOctave;
     private int                         drumOffset;
     private int                         drumDefaultOffset;
     private int                         pianoOctave              = 0;
@@ -130,12 +135,30 @@ public class Scales
      */
     public Scales (final IValueChanger valueChanger, final int startNote, final int endNote, final int numColumns, final int numRows)
     {
+        this (valueChanger, startNote, endNote, numColumns, numRows, 0);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param valueChanger A value changer
+     * @param startNote The first MIDI note of the pad grid
+     * @param endNote The last MIDI note of the pad grid
+     * @param numColumns The number of columns of the pad grid
+     * @param numRows The number of rows of the pad grid
+     * @param defaultOctave The fault octave
+     */
+    public Scales (final IValueChanger valueChanger, final int startNote, final int endNote, final int numColumns, final int numRows, final int defaultOctave)
+    {
         this.valueChanger = valueChanger;
         this.startNote = startNote;
         this.endNote = endNote; // last note + 1
         this.numColumns = numColumns;
         this.numRows = numRows;
 
+        this.defaultOctave = defaultOctave;
+        this.octave = this.defaultOctave;
         this.drumOffset = this.drumNoteStart;
         this.drumDefaultOffset = DRUM_DEFAULT_OFFSET;
 
@@ -496,11 +519,11 @@ public class Scales
 
 
     /**
-     * Resets the octave offset for the drum layout.
+     * Resets the octave offset.
      */
-    public void resetDrumOctave ()
+    public void resetOctave ()
     {
-        this.drumOffset = this.drumNoteStart;
+        this.setOctave (this.defaultOctave);
     }
 
 
@@ -554,6 +577,15 @@ public class Scales
     public void decDrumOctave ()
     {
         this.decDrumOffset (this.drumDefaultOffset);
+    }
+
+
+    /**
+     * Resets the octave offset for the drum layout.
+     */
+    public void resetDrumOctave ()
+    {
+        this.drumOffset = this.drumNoteStart;
     }
 
 
@@ -1181,5 +1213,41 @@ public class Scales
     public void setEndNote (final int endNote)
     {
         this.endNote = endNote;
+    }
+
+
+    /**
+     * Update the configuration properties from this scale settings if they are different.
+     * 
+     * @param configuration The configuration to which to write the changed properties
+     */
+    public void updateScaleProperties (final Configuration configuration)
+    {
+        final String name = this.getScale ().getName ();
+        if (!configuration.getScale ().equals (name))
+            configuration.setScale (name);
+
+        final String scaleBase = Scales.BASES.get (this.getScaleOffsetIndex ());
+        if (!configuration.getScaleBase ().equals (scaleBase))
+            configuration.setScaleBase (scaleBase);
+
+        final boolean isChromatic = this.isChromatic ();
+        if (configuration.isScaleInKey () == isChromatic)
+            configuration.setScaleInKey (!isChromatic);
+
+        final String scaleLayoutName = this.getScaleLayout ().getName ();
+        if (!configuration.getScaleLayout ().equals (scaleLayoutName))
+            configuration.setScaleLayout (scaleLayoutName);
+    }
+
+
+    /**
+     * Get the default octave.
+     * 
+     * @return The default octave
+     */
+    public int getDefaultOctave ()
+    {
+        return this.defaultOctave;
     }
 }

@@ -1,5 +1,8 @@
 package de.mossgrabers.controller.novation.launchcontrol.mode.main;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControlXLColorManager;
 import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControlXLControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -16,9 +19,6 @@ import de.mossgrabers.framework.parameter.NoteParameter;
 import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.CombinedParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.FixedParameterProvider;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -99,7 +99,7 @@ public class XLNoteEditMode extends XLBaseNoteEditMode
     public void selectPreviousItem ()
     {
         this.scales.prevScale ();
-        this.configuration.setScale (this.scales.getScale ().getName ());
+        this.scales.updateScaleProperties (this.configuration);
         this.mvHelper.notifyScale (this.scales);
     }
 
@@ -109,7 +109,7 @@ public class XLNoteEditMode extends XLBaseNoteEditMode
     public void selectNextItem ()
     {
         this.scales.nextScale ();
-        this.configuration.setScale (this.scales.getScale ().getName ());
+        this.scales.updateScaleProperties (this.configuration);
         this.mvHelper.notifyScale (this.scales);
     }
 

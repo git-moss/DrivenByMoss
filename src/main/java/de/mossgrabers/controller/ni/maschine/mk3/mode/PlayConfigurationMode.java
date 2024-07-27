@@ -18,6 +18,7 @@ import de.mossgrabers.framework.scale.ScaleLayout;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
+import de.mossgrabers.framework.view.TransposeView;
 import de.mossgrabers.framework.view.Views;
 
 
@@ -144,7 +145,7 @@ public class PlayConfigurationMode extends BaseMode
                     break;
 
                 case 7:
-                    ((PlayView) this.surface.getViewManager ().get (Views.PLAY)).resetOctave ();
+                    ((TransposeView) this.surface.getViewManager ().get (Views.PLAY)).resetOctave ();
                     break;
 
                 default:

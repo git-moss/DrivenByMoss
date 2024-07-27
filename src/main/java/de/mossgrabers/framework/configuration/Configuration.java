@@ -4,14 +4,14 @@
 
 package de.mossgrabers.framework.configuration;
 
+import java.util.List;
+
 import de.mossgrabers.framework.configuration.AbstractConfiguration.RecordFunction;
 import de.mossgrabers.framework.configuration.AbstractConfiguration.TransportBehavior;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 import de.mossgrabers.framework.observer.ISettingObserver;
 import de.mossgrabers.framework.view.Views;
-
-import java.util.List;
 
 
 /**

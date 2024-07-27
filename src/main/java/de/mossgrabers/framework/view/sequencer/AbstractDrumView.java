@@ -610,9 +610,8 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     }
 
 
-    /**
-     * Reset the drum octave to 0.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void resetOctave ()
     {
         this.keyManager.clearPressedKeys ();

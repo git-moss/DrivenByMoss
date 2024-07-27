@@ -226,6 +226,14 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
 
     /** {@inheritDoc} */
     @Override
+    public void resetOctave ()
+    {
+        // Currently, not used
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public boolean isOctaveUpButtonOn ()
     {
         return this.isActive ();

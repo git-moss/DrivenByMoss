@@ -159,6 +159,14 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
 
     /** {@inheritDoc} */
     @Override
+    public void resetOctave ()
+    {
+        // Currently, not used
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
         super.onButton (buttonID, event, velocity);
