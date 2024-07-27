@@ -4,12 +4,12 @@
 
 package de.mossgrabers.controller.oxi.one;
 
-import java.util.List;
-import java.util.UUID;
-
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
+
+import java.util.List;
+import java.util.UUID;
 
 
 /**
@@ -20,7 +20,6 @@ import de.mossgrabers.framework.utils.Pair;
 public class OxiOneControllerDefinition extends DefaultControllerDefinition
 {
     private static final UUID EXTENSION_ID = UUID.fromString ("85593F1C-52FD-423F-BCAC-80D90EEB9ACA");
-
 
     /**
      * Constructor.
@@ -43,8 +42,7 @@ public class OxiOneControllerDefinition extends DefaultControllerDefinition
                 break;
 
             case LINUX:
-                midiDiscoveryPairs.addAll (this.createDeviceDiscoveryPairs ("OXI ONE"));
-                midiDiscoveryPairs.addAll (this.createLinuxDeviceDiscoveryPairs ("OXI ONE", "OXI ONE"));
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair ("OXI ONE MIDI 1", "OXI ONE MIDI 1"));
                 midiDiscoveryPairs.addAll (this.createLinuxDeviceDiscoveryPairs ("OXI ONE Jack 1", "OXI ONE Jack 1"));
                 break;
 

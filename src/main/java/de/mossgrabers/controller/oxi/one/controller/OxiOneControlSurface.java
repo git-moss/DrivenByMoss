@@ -4,11 +4,6 @@
 
 package de.mossgrabers.controller.oxi.one.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import de.mossgrabers.controller.oxi.one.OxiOneConfiguration;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -21,6 +16,11 @@ import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.graphics.canvas.component.LabelComponent;
 import de.mossgrabers.framework.graphics.canvas.component.LabelComponent.LabelLayout;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -322,7 +322,6 @@ public class OxiOneControlSurface extends AbstractControlSurface<OxiOneConfigura
         (byte) 0xF7
     };
 
-
     /**
      * Constructor.
      *
@@ -472,9 +471,7 @@ public class OxiOneControlSurface extends AbstractControlSurface<OxiOneConfigura
     {
         if (ACKNOWLEDGE.equalsIgnoreCase (data))
         {
-            this.scheduleTask ( () -> {
-                this.forceFlush ();
-            }, 3000);
+            this.scheduleTask (this::forceFlush, 3000);
         }
     }
 }

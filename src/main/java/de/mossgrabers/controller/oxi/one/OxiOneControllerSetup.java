@@ -75,7 +75,6 @@ public class OxiOneControllerSetup extends AbstractControllerSetup<OxiOneControl
 {
     private OxiOneBackCommand backCommand = null;
 
-
     /**
      * Constructor.
      *
@@ -565,7 +564,7 @@ public class OxiOneControllerSetup extends AbstractControllerSetup<OxiOneControl
         surface.getViewManager ().setActive (Views.MIX);
         surface.getModeManager ().setActive (Modes.TRACK);
 
-        surface.enterRemoteMode ();
+        surface.scheduleTask (surface::enterRemoteMode, 3000);
     }
 
 
