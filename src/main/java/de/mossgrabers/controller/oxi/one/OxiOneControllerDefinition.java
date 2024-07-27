@@ -47,12 +47,8 @@ public class OxiOneControllerDefinition extends DefaultControllerDefinition
                 break;
 
             case MAC, MAC_ARM:
-                for (int i = 1; i < 20; i++)
-                {
-                    final String name = "OXI ONE Jack " + i;
-                    midiDiscoveryPairs.add (this.addDeviceDiscoveryPair (name, name));
-                }
-                midiDiscoveryPairs.addAll (this.createDeviceDiscoveryPairs ("OXI ONE"));
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair ("OXI ONE Jack 1", "OXI ONE Jack 1"));
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair ("OXI ONE Anschluss 1", "OXI ONE Anschluss 1"));
                 break;
 
             default:
