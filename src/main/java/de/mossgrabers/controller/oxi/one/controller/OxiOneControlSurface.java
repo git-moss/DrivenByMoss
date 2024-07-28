@@ -473,8 +473,6 @@ public class OxiOneControlSurface extends AbstractControlSurface<OxiOneConfigura
     private void handleSysEx (final String data)
     {
         if (ACKNOWLEDGE.equalsIgnoreCase (data))
-        {
             this.scheduleTask (this::forceFlush, 3000);
-        }
     }
 }

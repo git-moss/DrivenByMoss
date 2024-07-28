@@ -4,6 +4,9 @@
 
 package de.mossgrabers.controller.oxi.one.controller;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.color.ColorManager;
@@ -18,7 +21,7 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
  */
 public class OxiOnePadGrid extends BlinkingPadGrid
 {
-    private static final int [] COLOR_INDICES =
+    private static final int []         COLOR_INDICES =
     {
         1,
         9,
@@ -26,7 +29,8 @@ public class OxiOnePadGrid extends BlinkingPadGrid
         255
     };
 
-    private final byte []       data          = new byte [16];
+    private final byte []               header        = new byte [7];
+    private final ByteArrayOutputStream byteBuffer    = new ByteArrayOutputStream ();
 
 
     /**
@@ -39,14 +43,35 @@ public class OxiOnePadGrid extends BlinkingPadGrid
     {
         super (colorManager, output, 8, 16, 0);
 
-        this.data[0] = (byte) 0xF0;
-        this.data[1] = 0x00;
-        this.data[2] = 0x21;
-        this.data[3] = 0x5B;
-        this.data[4] = 0x00;
-        this.data[5] = 0x01;
-        this.data[6] = 0x01;
-        this.data[15] = (byte) 0xF7;
+        this.header[0] = (byte) 0xF0;
+        this.header[1] = 0x00;
+        this.header[2] = 0x21;
+        this.header[3] = 0x5B;
+        this.header[4] = 0x00;
+        this.header[5] = 0x01;
+        this.header[6] = 0x01;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void updateController ()
+    {
+        try
+        {
+            synchronized (this.byteBuffer)
+            {
+                this.byteBuffer.reset ();
+                this.byteBuffer.write (this.header);
+                super.updateController ();
+                this.byteBuffer.write ((byte) 0xF7);
+                this.output.sendSysex (this.byteBuffer.toByteArray ());
+            }
+        }
+        catch (final IOException ex)
+        {
+            throw new RuntimeException ("Could not create sysex message.");
+        }
     }
 
 
@@ -54,24 +79,25 @@ public class OxiOnePadGrid extends BlinkingPadGrid
     @Override
     protected void sendPadUpdate (final int note, final int colorIndex)
     {
-        this.data[7] = (byte) (note / 16); // y
-        this.data[8] = (byte) (note % 16); // x
+        synchronized (this.byteBuffer)
+        {
+            this.byteBuffer.write ((byte) (note / 16)); // y
+            this.byteBuffer.write ((byte) (note % 16)); // x
 
-        final ColorEx color = this.colorManager.getColor (colorIndex, ButtonID.PAD1);
+            final ColorEx color = this.colorManager.getColor (colorIndex, ButtonID.PAD1);
 
-        final int red = crushBits (color.getRed ());
-        this.data[9] = (byte) ((red & 0xF0) >> 4);
-        this.data[10] = (byte) (red & 0xF);
+            final int red = crushBits (color.getRed ());
+            this.byteBuffer.write ((byte) ((red & 0xF0) >> 4));
+            this.byteBuffer.write ((byte) (red & 0xF));
 
-        final int green = crushBits (color.getGreen ());
-        this.data[11] = (byte) ((green & 0xF0) >> 4);
-        this.data[12] = (byte) (green & 0xF);
+            final int green = crushBits (color.getGreen ());
+            this.byteBuffer.write ((byte) ((green & 0xF0) >> 4));
+            this.byteBuffer.write ((byte) (green & 0xF));
 
-        final int blue = crushBits (color.getBlue ());
-        this.data[13] = (byte) ((blue & 0xF0) >> 4);
-        this.data[14] = (byte) (blue & 0xF);
-
-        this.output.sendSysex (this.data);
+            final int blue = crushBits (color.getBlue ());
+            this.byteBuffer.write ((byte) ((blue & 0xF0) >> 4));
+            this.byteBuffer.write ((byte) (blue & 0xF));
+        }
     }
 
 
