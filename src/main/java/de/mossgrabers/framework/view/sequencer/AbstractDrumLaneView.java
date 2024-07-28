@@ -96,10 +96,7 @@ public abstract class AbstractDrumLaneView<S extends IControlSurface<C>, C exten
         final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), step, sound);
 
         final INoteClip clip = this.getClip ();
-        if (this.handleSequencerAreaButtonCombinations (clip, notePosition, y, velocity, vel))
-            return;
-
-        if (this.handleNoteEditor (clip, notePosition, velocity))
+        if (this.handleSequencerAreaButtonCombinations (clip, notePosition, y, velocity, vel) || this.handleNoteEditor (clip, notePosition, velocity))
             return;
 
         this.handleSequencerArea (velocity, vel, notePosition);

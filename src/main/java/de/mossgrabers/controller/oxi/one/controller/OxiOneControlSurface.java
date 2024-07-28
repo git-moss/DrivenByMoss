@@ -4,6 +4,11 @@
 
 package de.mossgrabers.controller.oxi.one.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import de.mossgrabers.controller.oxi.one.OxiOneConfiguration;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -16,11 +21,6 @@ import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.graphics.canvas.component.LabelComponent;
 import de.mossgrabers.framework.graphics.canvas.component.LabelComponent.LabelLayout;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -257,6 +257,7 @@ public class OxiOneControlSurface extends AbstractControlSurface<OxiOneConfigura
         BUTTON_LEDS.put (Integer.valueOf (BUTTON_DIVISION), Integer.valueOf (LEDS_DIVISION));
         BUTTON_LEDS.put (Integer.valueOf (BUTTON_INIT), Integer.valueOf (LEDS_INIT));
         BUTTON_LEDS.put (Integer.valueOf (BUTTON_END), Integer.valueOf (LEDS_END));
+        BUTTON_LEDS.put (Integer.valueOf (BUTTON_RANDOM), Integer.valueOf (LEDS_RANDOM));
 
         SHIFTED_BUTTON_LEDS.put (Integer.valueOf (BUTTON_SHIFT), Integer.valueOf (LEDS_SHIFT));
         SHIFTED_BUTTON_LEDS.put (Integer.valueOf (BUTTON_STOP), Integer.valueOf (LEDS_SYNC));
@@ -275,6 +276,7 @@ public class OxiOneControlSurface extends AbstractControlSurface<OxiOneConfigura
         SHIFTED_BUTTON_LEDS.put (Integer.valueOf (BUTTON_MUTE), Integer.valueOf (LEDS_NUDGE));
         SHIFTED_BUTTON_LEDS.put (Integer.valueOf (BUTTON_KEYBOARD), Integer.valueOf (LEDS_PREVIEW));
         SHIFTED_BUTTON_LEDS.put (Integer.valueOf (BUTTON_ARP), Integer.valueOf (LEDS_ARP_HOLD));
+        SHIFTED_BUTTON_LEDS.put (Integer.valueOf (BUTTON_RANDOM), Integer.valueOf (LEDS_RANDOM2));
     }
 
     private static final byte [] ENTER_REMOTE_MODE =
@@ -322,6 +324,7 @@ public class OxiOneControlSurface extends AbstractControlSurface<OxiOneConfigura
         (byte) 0xF7
     };
 
+
     /**
      * Constructor.
      *
@@ -333,7 +336,7 @@ public class OxiOneControlSurface extends AbstractControlSurface<OxiOneConfigura
      */
     public OxiOneControlSurface (final IHost host, final ColorManager colorManager, final OxiOneConfiguration configuration, final IMidiOutput output, final IMidiInput input)
     {
-        super (host, configuration, colorManager, output, input, new OxiOnePadGrid (colorManager, output), 306, 154);
+        super (host, configuration, colorManager, output, input, new OxiOnePadGrid (colorManager, output), 290, 140);
 
         this.input.setSysexCallback (this::handleSysEx);
     }

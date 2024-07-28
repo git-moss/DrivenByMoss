@@ -138,14 +138,11 @@ public class OxiOneColorManager extends ColorManager
         this.registerColor (OXI_ONE_COLOR_ORANGE, ColorEx.ORANGE);
         this.registerColor (OXI_ONE_COLOR_DARK_ORANGE, ColorEx.DARK_ORANGE);
         this.registerColor (OXI_ONE_COLOR_DARKER_ORANGE, ColorEx.DARKER_ORANGE);
-        this.registerColor (OXI_ONE_COLOR_DARK_YELLOW, ColorEx.DARK_YELLOW);
         this.registerColor (OXI_ONE_COLOR_YELLOW, ColorEx.YELLOW);
+        this.registerColor (OXI_ONE_COLOR_DARK_YELLOW, ColorEx.DARK_YELLOW);
         this.registerColor (OXI_ONE_COLOR_DARKER_YELLOW, ColorEx.DARKER_YELLOW);
         this.registerColor (OXI_ONE_COLOR_BROWN, ColorEx.BROWN);
         this.registerColor (OXI_ONE_COLOR_GRAY, ColorEx.DARKER_GRAY);
-
-        // No idea
-        this.registerColor (113, ColorEx.RED);
 
         this.registerColor (SCALE_COLOR_OCTAVE, ColorEx.BLUE);
         this.registerColor (SCALE_COLOR_NOTE, ColorEx.WHITE);
@@ -161,19 +158,26 @@ public class OxiOneColorManager extends ColorManager
     @Override
     public ColorEx getColor (final int colorIndex, final ButtonID buttonID)
     {
-        if (ButtonID.isPad (buttonID))
+        if (ButtonID.isInRange (buttonID, ButtonID.PAD1, 128))
         {
             if (colorIndex >= DAW_COLOR_START)
                 return DAWColor.getColorEntry (colorIndex - DAW_COLOR_START);
+
+            try
+            {
+                return super.getColor (colorIndex, buttonID);
+            }
+            catch (final ColorIndexException ex)
+            {
+                return ColorEx.RED;
+            }
         }
 
-        try
-        {
-            return super.getColor (colorIndex, buttonID);
-        }
-        catch (final ColorIndexException ex)
-        {
-            return ColorEx.RED;
-        }
+        if (colorIndex == this.getColorIndex (ColorManager.BUTTON_STATE_OFF))
+            return ColorEx.BLACK;
+        if (colorIndex == this.getColorIndex (ColorManager.BUTTON_STATE_ON))
+            return ColorEx.DARK_GRAY;
+        // ColorManager.BUTTON_STATE_HI
+        return ColorEx.LIGHT_GRAY;
     }
 }

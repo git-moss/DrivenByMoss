@@ -45,13 +45,6 @@ public class HwLightImpl extends AbstractHwControl implements IHwLight
         final ObjectHardwareProperty<InternalHardwareLightState> state = hardwareLight.state ();
         state.setValueSupplier (valueSupplier);
         state.onUpdateHardware (hardwareUpdater);
-
-        // TODO Test with next BW Update
-        // hardwareLight.setColorToStateFunction (color -> {
-        //
-        // return new EncodedColorLightState (-1, null);
-        //
-        // });
     }
 
 

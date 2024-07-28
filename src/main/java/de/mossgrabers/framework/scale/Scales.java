@@ -1218,7 +1218,7 @@ public class Scales
 
     /**
      * Update the configuration properties from this scale settings if they are different.
-     * 
+     *
      * @param configuration The configuration to which to write the changed properties
      */
     public void updateScaleProperties (final Configuration configuration)
@@ -1243,7 +1243,7 @@ public class Scales
 
     /**
      * Get the default octave.
-     * 
+     *
      * @return The default octave
      */
     public int getDefaultOctave ()

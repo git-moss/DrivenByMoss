@@ -20,8 +20,11 @@ import de.mossgrabers.controller.oxi.one.mode.OxiOneSeqConfigMode;
 import de.mossgrabers.controller.oxi.one.mode.OxiOneTrackMode;
 import de.mossgrabers.controller.oxi.one.mode.OxiOneTransportMode;
 import de.mossgrabers.controller.oxi.one.view.OxiOneDrum8View;
+import de.mossgrabers.controller.oxi.one.view.OxiOneDrumView128;
 import de.mossgrabers.controller.oxi.one.view.OxiOneMixView;
 import de.mossgrabers.controller.oxi.one.view.OxiOnePlayView;
+import de.mossgrabers.controller.oxi.one.view.OxiOnePolySequencerView;
+import de.mossgrabers.controller.oxi.one.view.OxiOneSequencerView;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.core.NopCommand;
 import de.mossgrabers.framework.command.trigger.Direction;
@@ -32,8 +35,8 @@ import de.mossgrabers.framework.command.trigger.application.SaveCommand;
 import de.mossgrabers.framework.command.trigger.application.UndoCommand;
 import de.mossgrabers.framework.command.trigger.mode.CursorCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeSelectCommand;
+import de.mossgrabers.framework.command.trigger.transport.ConfiguredRecordCommand;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
-import de.mossgrabers.framework.command.trigger.transport.RecordCommand;
 import de.mossgrabers.framework.command.trigger.transport.StopCommand;
 import de.mossgrabers.framework.command.trigger.view.ViewButtonCommand;
 import de.mossgrabers.framework.command.trigger.view.ViewMultiSelectCommand;
@@ -75,6 +78,7 @@ public class OxiOneControllerSetup extends AbstractControllerSetup<OxiOneControl
 {
     private OxiOneBackCommand backCommand = null;
 
+
     /**
      * Constructor.
      *
@@ -103,10 +107,9 @@ public class OxiOneControllerSetup extends AbstractControllerSetup<OxiOneControl
         ms.setNumScenes (4);
         ms.setNumSends (6);
         ms.setHasFullFlatTrackList (true);
-        // TODO check additional drum devices
         ms.setAdditionalDrumDevices (new int []
         {
-            64,
+            128,
             16
         });
 
@@ -183,16 +186,10 @@ public class OxiOneControllerSetup extends AbstractControllerSetup<OxiOneControl
 
         viewManager.register (Views.MIX, new OxiOneMixView (surface, this.model));
         viewManager.register (Views.PLAY, new OxiOnePlayView (surface, this.model));
+        viewManager.register (Views.DRUM64, new OxiOneDrumView128 (surface, this.model));
         viewManager.register (Views.DRUM8, new OxiOneDrum8View (surface, this.model));
-
-        // TODO implement all views
-
-        // viewManager.register (Views.SEQUENCER, new SequencerView (surface, this.model));
-        // viewManager.register (Views.POLY_SEQUENCER, new PolySequencerView (surface, this.model,
-        // true));
-        //
-        // viewManager.register (Views.DRUM, new DrumXoXView (surface, this.model));
-        // viewManager.register (Views.DRUM64, new DrumView64 (surface, this.model));
+        viewManager.register (Views.SEQUENCER, new OxiOneSequencerView (surface, this.model));
+        viewManager.register (Views.POLY_SEQUENCER, new OxiOnePolySequencerView (surface, this.model, true));
     }
 
 
@@ -219,7 +216,7 @@ public class OxiOneControllerSetup extends AbstractControllerSetup<OxiOneControl
             }
         }, 1, OxiOneControlSurface.BUTTON_STOP, () -> !t.isPlaying () ? 1 : 0);
 
-        this.addButton (ButtonID.RECORD, "REC", new RecordCommand<> (this.model, surface), 1, OxiOneControlSurface.BUTTON_REC, () -> {
+        this.addButton (ButtonID.RECORD, "REC", new ConfiguredRecordCommand<> (this.model, surface), 1, OxiOneControlSurface.BUTTON_REC, () -> {
 
             int state = 0;
             if (t.isLauncherOverdub ())
@@ -240,7 +237,7 @@ public class OxiOneControllerSetup extends AbstractControllerSetup<OxiOneControl
 
         this.addButton (ButtonID.SESSION, "MIXER", new ViewMultiSelectCommand<> (this.model, surface, Views.MIX), 1, OxiOneControlSurface.BUTTON_ARRANGER, () -> viewManager.isActive (Views.MIX) ? 1 : 0);
 
-        this.addButton (ButtonID.KEYBOARD, "KEYBOARD", new ViewMultiSelectCommand<> (this.model, surface, Views.PLAY)
+        this.addButton (ButtonID.KEYBOARD, "KEYBOARD", new ViewMultiSelectCommand<> (this.model, surface, true, Views.PLAY, Views.DRUM64)
         {
 
             /** {@inheritDoc} */
@@ -255,11 +252,11 @@ public class OxiOneControllerSetup extends AbstractControllerSetup<OxiOneControl
 
             if (surface.isShiftPressed ())
                 return modeManager.isActive (Modes.SCALES) ? 2 : 0;
-            return viewManager.isActive (Views.PLAY) ? 1 : 0;
+            return viewManager.isActive (Views.PLAY, Views.DRUM64) ? 1 : 0;
 
         });
 
-        this.addButton (ButtonID.SEQUENCER, "SEQUENCE", new ViewMultiSelectCommand<> (this.model, surface, Views.DRUM8)
+        this.addButton (ButtonID.SEQUENCER, "SEQUENCE", new ViewMultiSelectCommand<> (this.model, surface, true, Views.DRUM8, Views.SEQUENCER, Views.POLY_SEQUENCER)
         {
 
             /** {@inheritDoc} */
@@ -274,7 +271,7 @@ public class OxiOneControllerSetup extends AbstractControllerSetup<OxiOneControl
 
             if (surface.isShiftPressed ())
                 return modeManager.isActive (Modes.REPEAT_NOTE) ? 2 : 0;
-            return viewManager.isActive (Views.DRUM8) ? 1 : 0;
+            return viewManager.isActive (Views.DRUM8, Views.SEQUENCER, Views.POLY_SEQUENCER) ? 1 : 0;
 
         });
 
@@ -296,6 +293,17 @@ public class OxiOneControllerSetup extends AbstractControllerSetup<OxiOneControl
         this.addButton (ButtonID.SETUP, "Y Div", new ModeSelectCommand<> (this.model, surface, Modes.SETUP), 1, OxiOneControlSurface.BUTTON_DIVISION, () -> modeManager.isActive (Modes.SETUP));
         this.addButton (ButtonID.PUNCH_IN, "Init", NopCommand.INSTANCE, 1, OxiOneControlSurface.BUTTON_INIT);
         this.addButton (ButtonID.PUNCH_OUT, "End", NopCommand.INSTANCE, 1, OxiOneControlSurface.BUTTON_END);
+        this.addButton (ButtonID.QUANTIZE, "Random", (event, velocity) -> {
+
+            if (event == ButtonEvent.UP)
+            {
+                if (surface.isShiftPressed ())
+                    this.model.getCursorDevice ().toggleWindowOpen ();
+                else
+                    this.model.getCursorClip ().quantize (this.configuration.getQuantizeAmount () / 100.0);
+            }
+
+        }, 1, OxiOneControlSurface.BUTTON_RANDOM);
 
         this.addButton (ButtonID.SCENE1, "1", new ViewButtonCommand<> (ButtonID.SCENE1, surface), 1, OxiOneControlSurface.BUTTON_SEQUENCER1, () -> this.getSceneButtonColor (0));
         this.addButton (ButtonID.SCENE2, "2", new ViewButtonCommand<> (ButtonID.SCENE2, surface), 1, OxiOneControlSurface.BUTTON_SEQUENCER2, () -> this.getSceneButtonColor (1));
@@ -387,7 +395,7 @@ public class OxiOneControllerSetup extends AbstractControllerSetup<OxiOneControl
 
         if (event == ButtonEvent.LONG)
         {
-            if (mode instanceof IOxiModeReset resetMode)
+            if (mode instanceof final IOxiModeReset resetMode)
                 resetMode.resetValue (knobIndex);
             else
                 mode.getParameterProvider ().get (knobIndex).resetValue ();
@@ -424,118 +432,174 @@ public class OxiOneControllerSetup extends AbstractControllerSetup<OxiOneControl
     {
         final OxiOneControlSurface surface = this.getSurface ();
 
-        // TODO Implement simulator
+        surface.getButton (ButtonID.PAD1).setBounds (89.75, 120.0, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD2).setBounds (101.75, 120.0, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD3).setBounds (113.75, 120.0, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD4).setBounds (125.75, 120.0, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD5).setBounds (137.75, 120.0, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD6).setBounds (149.75, 120.0, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD7).setBounds (161.75, 120.0, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD8).setBounds (173.75, 120.0, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD9).setBounds (185.75, 120.0, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD10).setBounds (197.75, 120.0, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD11).setBounds (209.75, 120.0, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD12).setBounds (221.75, 120.0, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD13).setBounds (233.75, 120.0, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD14).setBounds (245.75, 120.0, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD15).setBounds (257.75, 120.0, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD16).setBounds (270.0, 120.0, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD17).setBounds (89.75, 107.5, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD18).setBounds (102.0, 107.5, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD19).setBounds (114.0, 107.5, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD20).setBounds (126.0, 107.5, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD21).setBounds (138.0, 107.5, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD22).setBounds (150.0, 107.5, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD23).setBounds (162.0, 107.5, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD24).setBounds (174.0, 107.5, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD25).setBounds (186.0, 107.5, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD26).setBounds (198.0, 107.5, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD27).setBounds (210.0, 107.5, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD28).setBounds (222.0, 107.5, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD29).setBounds (234.0, 107.5, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD30).setBounds (246.0, 107.5, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD31).setBounds (258.0, 107.5, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD32).setBounds (270.0, 107.5, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD33).setBounds (89.75, 95.75, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD34).setBounds (102.0, 95.75, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD35).setBounds (114.0, 95.75, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD36).setBounds (126.0, 95.75, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD37).setBounds (138.0, 95.75, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD38).setBounds (150.0, 95.75, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD39).setBounds (162.0, 95.75, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD40).setBounds (174.0, 95.75, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD41).setBounds (185.75, 95.75, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD42).setBounds (197.75, 95.75, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD43).setBounds (209.75, 95.75, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD44).setBounds (221.75, 95.75, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD45).setBounds (233.75, 95.75, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD46).setBounds (245.75, 95.75, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD47).setBounds (257.75, 95.75, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD48).setBounds (269.75, 95.75, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD49).setBounds (89.75, 84.0, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD50).setBounds (102.0, 84.0, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD51).setBounds (114.0, 84.0, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD52).setBounds (126.0, 84.0, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD53).setBounds (138.0, 84.0, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD54).setBounds (150.0, 84.0, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD55).setBounds (162.0, 84.0, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD56).setBounds (174.0, 84.0, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD57).setBounds (186.0, 84.0, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD58).setBounds (198.0, 84.0, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD59).setBounds (210.0, 84.0, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD60).setBounds (222.0, 84.0, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD61).setBounds (234.0, 84.0, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD62).setBounds (246.0, 84.0, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD63).setBounds (258.0, 84.0, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD64).setBounds (270.0, 84.0, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD65).setBounds (89.75, 72.5, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD66).setBounds (101.75, 72.25, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD67).setBounds (113.75, 72.25, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD68).setBounds (125.75, 72.25, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD69).setBounds (137.75, 72.25, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD70).setBounds (149.75, 72.25, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD71).setBounds (161.75, 72.25, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD72).setBounds (173.75, 72.25, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD73).setBounds (185.75, 72.25, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD74).setBounds (197.75, 72.25, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD75).setBounds (209.75, 72.25, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD76).setBounds (221.75, 72.25, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD77).setBounds (233.75, 72.25, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD78).setBounds (245.75, 72.25, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD79).setBounds (257.75, 72.25, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD80).setBounds (269.75, 72.25, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD81).setBounds (89.75, 60.75, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD82).setBounds (102.0, 60.75, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD83).setBounds (114.0, 60.75, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD84).setBounds (126.0, 60.75, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD85).setBounds (138.0, 60.75, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD86).setBounds (150.0, 60.75, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD87).setBounds (162.0, 60.75, 10.0, 10.0);
+        surface.getButton (ButtonID.PAD88).setBounds (174.0, 60.75, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS1).setBounds (186.0, 60.75, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS2).setBounds (198.0, 60.75, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS3).setBounds (210.0, 60.75, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS4).setBounds (222.0, 60.75, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS5).setBounds (234.0, 60.75, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS6).setBounds (246.0, 60.75, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS7).setBounds (258.0, 60.75, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS8).setBounds (270.0, 60.75, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS9).setBounds (89.75, 49.0, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS10).setBounds (101.75, 49.0, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS11).setBounds (113.75, 49.0, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS12).setBounds (125.75, 49.0, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS13).setBounds (137.75, 49.0, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS14).setBounds (149.75, 49.0, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS15).setBounds (161.75, 49.0, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS16).setBounds (173.75, 49.0, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS17).setBounds (185.75, 49.0, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS18).setBounds (197.75, 49.0, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS19).setBounds (209.75, 49.0, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS20).setBounds (221.75, 49.0, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS21).setBounds (233.75, 49.0, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS22).setBounds (245.75, 49.0, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS23).setBounds (257.75, 49.0, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS24).setBounds (269.75, 49.0, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS25).setBounds (89.75, 37.5, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS26).setBounds (102.0, 37.5, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS27).setBounds (114.0, 37.5, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS28).setBounds (125.75, 37.5, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS29).setBounds (137.75, 37.5, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS30).setBounds (149.75, 37.5, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS31).setBounds (161.75, 37.5, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS32).setBounds (173.75, 37.5, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS33).setBounds (185.75, 37.5, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS34).setBounds (197.75, 37.5, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS35).setBounds (209.75, 37.5, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS36).setBounds (221.75, 37.5, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS37).setBounds (233.75, 37.5, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS38).setBounds (245.75, 37.5, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS39).setBounds (257.75, 37.5, 10.0, 10.0);
+        surface.getButton (ButtonID.MORE_PADS40).setBounds (269.75, 37.5, 10.0, 10.0);
+        surface.getButton (ButtonID.SHIFT).setBounds (6.5, 121.75, 10.0, 10.0);
+        surface.getButton (ButtonID.PLAY).setBounds (55.25, 121.75, 10.0, 10.0);
+        surface.getButton (ButtonID.STOP).setBounds (25.0, 121.75, 10.0, 10.0);
+        surface.getButton (ButtonID.RECORD).setBounds (39.75, 121.75, 10.0, 10.0);
+        surface.getButton (ButtonID.LOAD).setBounds (22.25, 53.75, 10.0, 10.0);
+        surface.getButton (ButtonID.SAVE).setBounds (22.25, 65.25, 10.0, 10.0);
+        surface.getButton (ButtonID.DUPLICATE).setBounds (36.25, 53.75, 10.0, 10.0);
+        surface.getButton (ButtonID.DELETE).setBounds (36.25, 65.25, 10.0, 10.0);
+        surface.getButton (ButtonID.SESSION).setBounds (6.5, 72.75, 10.0, 10.0);
+        surface.getButton (ButtonID.KEYBOARD).setBounds (6.5, 89.0, 10.0, 10.0);
+        surface.getButton (ButtonID.SEQUENCER).setBounds (6.5, 105.0, 10.0, 10.0);
+        surface.getButton (ButtonID.UNDO).setBounds (49.75, 53.75, 10.0, 10.0);
+        surface.getButton (ButtonID.NOTE).setBounds (36.25, 78.25, 10.0, 10.0);
+        surface.getButton (ButtonID.REPEAT).setBounds (49.75, 78.25, 10.0, 10.0);
+        surface.getButton (ButtonID.ACCENT).setBounds (49.75, 90.0, 10.0, 10.0);
+        surface.getButton (ButtonID.SETUP).setBounds (36.25, 90.0, 10.0, 10.0);
+        surface.getButton (ButtonID.PUNCH_IN).setBounds (22.25, 78.25, 10.0, 10.0);
+        surface.getButton (ButtonID.PUNCH_OUT).setBounds (22.25, 90.0, 10.0, 10.0);
+        surface.getButton (ButtonID.QUANTIZE).setBounds (49.75, 65.25, 10.0, 10.0);
+        surface.getButton (ButtonID.SCENE1).setBounds (70.75, 62.75, 10.0, 10.0);
+        surface.getButton (ButtonID.SCENE2).setBounds (70.75, 77.0, 10.0, 10.0);
+        surface.getButton (ButtonID.SCENE3).setBounds (70.75, 90.75, 10.0, 10.0);
+        surface.getButton (ButtonID.SCENE4).setBounds (70.75, 104.75, 10.0, 10.0);
+        surface.getButton (ButtonID.MUTE).setBounds (70.5, 121.75, 10.0, 10.0);
+        surface.getButton (ButtonID.ARROW_UP).setBounds (32.5, 104.75, 10.0, 10.0);
+        surface.getButton (ButtonID.ARROW_DOWN).setBounds (44.5, 104.75, 10.0, 10.0);
+        surface.getButton (ButtonID.ARROW_LEFT).setBounds (20.5, 104.75, 10.0, 10.0);
+        surface.getButton (ButtonID.ARROW_RIGHT).setBounds (57.25, 104.75, 10.0, 10.0);
+        surface.getButton (ButtonID.KNOB1_TOUCH).setBounds (8.0, 39.5, 10.0, 10.0);
+        surface.getButton (ButtonID.KNOB2_TOUCH).setBounds (20.0, 39.5, 10.0, 10.0);
+        surface.getButton (ButtonID.KNOB3_TOUCH).setBounds (32.0, 39.5, 10.0, 10.0);
+        surface.getButton (ButtonID.KNOB4_TOUCH).setBounds (44.0, 39.5, 10.0, 10.0);
+        surface.getButton (ButtonID.CONTROL).setBounds (6.5, 57.25, 10.0, 10.0);
 
-        // surface.getButton (ButtonID.PAD1).setBounds (27.0, 107.75, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD2).setBounds (44.0, 107.75, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD3).setBounds (61.25, 107.75, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD4).setBounds (78.25, 107.75, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD5).setBounds (95.25, 107.75, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD6).setBounds (112.5, 107.75, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD7).setBounds (129.75, 107.75, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD8).setBounds (146.5, 107.75, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD9).setBounds (163.75, 107.75, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD10).setBounds (180.75, 107.75, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD11).setBounds (198.0, 107.75, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD12).setBounds (214.5, 107.75, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD13).setBounds (232.0, 107.75, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD14).setBounds (249.25, 107.5, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD15).setBounds (266.25, 107.75, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD16).setBounds (283.0, 107.75, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD17).setBounds (27.0, 85.25, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD18).setBounds (44.0, 85.25, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD19).setBounds (61.25, 85.25, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD20).setBounds (78.25, 85.25, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD21).setBounds (95.25, 85.25, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD22).setBounds (112.5, 85.25, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD23).setBounds (129.75, 85.25, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD24).setBounds (146.5, 85.25, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD25).setBounds (163.75, 85.25, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD26).setBounds (180.75, 85.25, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD27).setBounds (198.0, 85.25, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD28).setBounds (214.5, 85.25, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD29).setBounds (232.0, 85.25, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD30).setBounds (249.25, 85.0, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD31).setBounds (266.25, 85.25, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD32).setBounds (283.0, 85.25, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD33).setBounds (27.0, 63.75, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD34).setBounds (44.0, 63.75, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD35).setBounds (61.25, 63.75, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD36).setBounds (78.25, 63.75, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD37).setBounds (95.25, 63.75, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD38).setBounds (112.5, 63.75, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD39).setBounds (129.75, 63.75, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD40).setBounds (146.5, 63.75, 12.0, 18.25);
-        // surface.getButton (ButtonID.PAD41).setBounds (163.75, 63.75, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD42).setBounds (180.75, 63.75, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD43).setBounds (198.0, 63.75, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD44).setBounds (214.5, 63.75, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD45).setBounds (232.0, 63.75, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD46).setBounds (249.25, 63.5, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD47).setBounds (266.25, 63.75, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD48).setBounds (283.0, 63.75, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD49).setBounds (27.0, 42.5, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD50).setBounds (44.0, 42.5, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD51).setBounds (61.25, 42.5, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD52).setBounds (78.25, 42.5, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD53).setBounds (95.25, 42.5, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD54).setBounds (112.5, 42.5, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD55).setBounds (129.75, 42.5, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD56).setBounds (146.5, 42.5, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD57).setBounds (163.75, 42.75, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD58).setBounds (180.75, 42.75, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD59).setBounds (198.0, 42.75, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD60).setBounds (214.5, 42.75, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD61).setBounds (232.0, 42.75, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD62).setBounds (249.25, 42.5, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD63).setBounds (266.25, 42.75, 12.75, 18.25);
-        // surface.getButton (ButtonID.PAD64).setBounds (283.0, 42.75, 12.75, 18.25);
-        //
-        // surface.getButton (ButtonID.BANK_RIGHT).setBounds (4.75, 29.0, 10.0, 10.0);
-        // surface.getButton (ButtonID.PLAY).setBounds (236.5, 134.0, 17.25, 11.75);
-        // surface.getButton (ButtonID.STOP).setBounds (258.5, 134.0, 17.25, 11.75);
-        // surface.getButton (ButtonID.RECORD).setBounds (280.75, 134.0, 17.25, 11.75);
-        // surface.getButton (ButtonID.METRONOME).setBounds (214.25, 134.0, 17.25, 11.75);
-        //
-        // surface.getButton (ButtonID.SELECT).setBounds (238.25, 2.5, 18.25, 10.0);
-        //
-        // surface.getButton (ButtonID.SEQUENCER).setBounds (4.5, 134.0, 17.25, 11.75);
-        // surface.getButton (ButtonID.NOTE).setBounds (27.0, 134.0, 17.25, 11.75);
-        // surface.getButton (ButtonID.DRUM).setBounds (49.25, 134.0, 17.25, 11.75);
-        // surface.getButton (ButtonID.SESSION).setBounds (71.75, 134.0, 17.25, 11.75);
-        // surface.getButton (ButtonID.SHIFT).setBounds (94.25, 134.0, 17.25, 11.75);
-        // surface.getButton (ButtonID.ALT).setBounds (116.5, 134.0, 17.25, 11.75);
-        //
-        // surface.getButton (ButtonID.ARROW_LEFT).setBounds (261.0, 18.0, 18.0, 10.0);
-        // surface.getButton (ButtonID.ARROW_RIGHT).setBounds (281.75, 18.0, 18.0, 10.0);
-        // surface.getButton (ButtonID.ARROW_UP).setBounds (138.25, 12.25, 18.5, 9.5);
-        // surface.getButton (ButtonID.ARROW_DOWN).setBounds (138.25, 23.75, 18.5, 9.5);
-        //
-        // surface.getButton (ButtonID.SCENE1).setBounds (4.75, 42.75, 10.0, 17.25);
-        // surface.getButton (ButtonID.SCENE2).setBounds (4.75, 63.75, 10.0, 17.25);
-        // surface.getButton (ButtonID.SCENE3).setBounds (4.75, 86.0, 10.0, 17.25);
-        // surface.getButton (ButtonID.SCENE4).setBounds (4.75, 107.75, 10.0, 17.25);
-        //
-        // surface.getButton (ButtonID.BROWSE).setBounds (214.25, 17.0, 17.25, 11.75);
-        //
-        // surface.getContinuous (ContinuousID.KNOB1).setBounds (27.5, 12.75, 22.0, 19.25);
-        // surface.getContinuous (ContinuousID.KNOB2).setBounds (55.0, 12.75, 22.0, 19.25);
-        // surface.getContinuous (ContinuousID.KNOB3).setBounds (82.75, 12.75, 22.0, 19.25);
-        // surface.getContinuous (ContinuousID.KNOB4).setBounds (110.25, 12.75, 22.0, 19.25);
-        // surface.getContinuous (ContinuousID.VIEW_SELECTION).setBounds (238.25, 13.5, 17.75,
-        // 17.25);
-        //
-        // surface.getLight (OutputID.LED1).setBounds (4.75, 4.0, 5.5, 4.25);
-        // surface.getLight (OutputID.LED2).setBounds (4.75, 10.0, 5.5, 4.25);
-        // surface.getLight (OutputID.LED3).setBounds (4.75, 16.25, 5.5, 4.25);
-        // surface.getLight (OutputID.LED4).setBounds (4.75, 22.25, 5.5, 4.25);
-        // surface.getLight (OutputID.LED5).setBounds (18.0, 42.75, 5.0, 17.25);
-        // surface.getLight (OutputID.LED6).setBounds (18.0, 63.75, 5.0, 17.25);
-        // surface.getLight (OutputID.LED7).setBounds (18.0, 86.0, 5.0, 17.25);
-        // surface.getLight (OutputID.LED8).setBounds (18.0, 107.75, 5.0, 17.25);
-        //
-        // surface.getGraphicsDisplay ().getHardwareDisplay ().setBounds (165.25, 11.75, 40.75,
-        // 20.75);
+        surface.getContinuous (ContinuousID.KNOB1).setBounds (8.0, 28.0, 10.0, 10.0);
+        surface.getContinuous (ContinuousID.KNOB2).setBounds (20.0, 28.0, 10.0, 10.0);
+        surface.getContinuous (ContinuousID.KNOB3).setBounds (32.0, 28.0, 10.0, 10.0);
+        surface.getContinuous (ContinuousID.KNOB4).setBounds (44.0, 28.0, 10.0, 10.0);
+
+        surface.getGraphicsDisplay ().getHardwareDisplay ().setBounds (8.0, 2.0, 44, 22);
     }
 
 

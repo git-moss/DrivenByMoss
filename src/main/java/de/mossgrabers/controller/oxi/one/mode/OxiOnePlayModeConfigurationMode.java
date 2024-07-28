@@ -68,7 +68,7 @@ public class OxiOnePlayModeConfigurationMode extends AbstractMode<OxiOneControlS
 
         final IGraphicDisplay display = this.surface.getGraphicsDisplay ();
 
-        String desc = "";
+        final String desc = "";
         String label = "";
         int value = -1;
 
@@ -142,13 +142,13 @@ public class OxiOnePlayModeConfigurationMode extends AbstractMode<OxiOneControlS
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        final boolean isInc = value <= 63;
+        final boolean isInc = this.model.getValueChanger ().isIncrease (value);
 
         switch (this.selectedIndex)
         {
             case 0:
                 final IView activeView = this.surface.getViewManager ().getActive ();
-                if (activeView instanceof TransposeView transposeView)
+                if (activeView instanceof final TransposeView transposeView)
                 {
                     if (isInc)
                         transposeView.onOctaveUp (ButtonEvent.DOWN);
@@ -200,13 +200,13 @@ public class OxiOnePlayModeConfigurationMode extends AbstractMode<OxiOneControlS
 
     /** {@inheritDoc} */
     @Override
-    public void resetValue (int index)
+    public void resetValue (final int index)
     {
         switch (this.selectedIndex)
         {
             case 0:
                 final IView activeView = this.surface.getViewManager ().getActive ();
-                if (activeView instanceof TransposeView transposeView)
+                if (activeView instanceof final TransposeView transposeView)
                     transposeView.resetOctave ();
                 else
                     this.scales.setOctave (2);

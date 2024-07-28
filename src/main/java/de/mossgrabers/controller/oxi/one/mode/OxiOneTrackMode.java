@@ -18,7 +18,7 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.graphics.canvas.component.IComponent;
-import de.mossgrabers.framework.graphics.canvas.component.simple.TitleChannelsMenuComponent;
+import de.mossgrabers.framework.graphics.canvas.component.simple.TitleChannelsComponent;
 import de.mossgrabers.framework.graphics.canvas.component.simple.TitleValueMenuComponent;
 import de.mossgrabers.framework.mode.track.TrackMode;
 import de.mossgrabers.framework.parameterprovider.special.FourKnobProvider;
@@ -201,7 +201,7 @@ public class OxiOneTrackMode extends TrackMode<OxiOneControlSurface, OxiOneConfi
             }
         }
 
-        return new TitleChannelsMenuComponent (label, selected, values, this.selectedIndex == 1 && isMode);
+        return new TitleChannelsComponent (label, selected, values, this.selectedIndex == 1 && isMode);
     }
 
 

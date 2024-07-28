@@ -11,6 +11,7 @@ import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 
 
@@ -72,12 +73,20 @@ public class OxiOneConfiguration extends AbstractConfiguration
 
         this.activateBehaviourOnStopSetting (globalSettings);
         this.activateBehaviourOnPauseSetting (globalSettings);
+        this.activateRecordButtonSetting (globalSettings);
+        this.activateShiftedRecordButtonSetting (globalSettings);
 
         ///////////////////////////
         // Play and Sequence
 
         this.activateQuantizeAmountSetting (globalSettings);
         this.activateMidiEditChannelSetting (documentSettings);
+
+        ///////////////////////////
+        // Drum Sequencer
+
+        if (this.host.supports (Capability.HAS_DRUM_DEVICE))
+            this.activateTurnOffEmptyDrumPadsSetting (globalSettings);
 
         ///////////////////////////
         // Workflow

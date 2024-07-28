@@ -4,6 +4,14 @@
 
 package de.mossgrabers.bitwig.framework.daw;
 
+import com.bitwig.extension.controller.api.BrowserFilterColumn;
+import com.bitwig.extension.controller.api.BrowserResultsItemBank;
+import com.bitwig.extension.controller.api.CursorBrowserResultItem;
+import com.bitwig.extension.controller.api.CursorDevice;
+import com.bitwig.extension.controller.api.CursorTrack;
+import com.bitwig.extension.controller.api.InsertionPoint;
+import com.bitwig.extension.controller.api.PopupBrowser;
+
 import de.mossgrabers.bitwig.framework.daw.data.BrowserColumnImpl;
 import de.mossgrabers.bitwig.framework.daw.data.BrowserColumnItemImpl;
 import de.mossgrabers.bitwig.framework.daw.data.ChannelImpl;
@@ -17,14 +25,6 @@ import de.mossgrabers.framework.daw.data.IBrowserColumn;
 import de.mossgrabers.framework.daw.data.IBrowserColumnItem;
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.IItem;
-
-import com.bitwig.extension.controller.api.BrowserFilterColumn;
-import com.bitwig.extension.controller.api.BrowserResultsItemBank;
-import com.bitwig.extension.controller.api.CursorBrowserResultItem;
-import com.bitwig.extension.controller.api.CursorDevice;
-import com.bitwig.extension.controller.api.CursorTrack;
-import com.bitwig.extension.controller.api.InsertionPoint;
-import com.bitwig.extension.controller.api.PopupBrowser;
 
 
 /**
@@ -71,7 +71,8 @@ public class BrowserImpl extends AbstractBrowser
 
         this.filterColumns = new BrowserFilterColumn []
         {
-            // TODO Remove this for the time being until the browser API gets adapted to Bitwig 5
+            // TODO API extension required - Remove this for the time being until the browser API
+            // gets adapted to Bitwig 5
             // this.browser.smartCollectionColumn (),
             this.browser.locationColumn (),
             this.browser.fileTypeColumn (),
@@ -149,7 +150,8 @@ public class BrowserImpl extends AbstractBrowser
     public String getSelectedContentType ()
     {
         return "Result";
-        // TODO Currently not working in Bitwig 5, requires adaption to the new browser
+        // TODO API extension required - Currently not working in Bitwig 5, requires adaption to the
+        // new browser
         // return this.browser.selectedContentTypeName ().get ();
     }
 

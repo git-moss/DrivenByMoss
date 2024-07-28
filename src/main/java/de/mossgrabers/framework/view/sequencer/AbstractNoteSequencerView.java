@@ -116,7 +116,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
         if (!this.isActive ())
             return;
 
-        final int index = note - 36;
+        final int index = note - this.surface.getPadGrid ().getStartNote ();
         final int x = index % this.numDisplayCols;
         final int y = index / this.numDisplayCols;
 

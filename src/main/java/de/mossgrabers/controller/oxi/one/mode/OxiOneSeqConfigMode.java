@@ -19,6 +19,7 @@ import de.mossgrabers.framework.featuregroup.IView;
 import de.mossgrabers.framework.graphics.canvas.component.simple.TitleValueMenuComponent;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.view.TransposeView;
 import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
 import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
 
@@ -69,11 +70,11 @@ public class OxiOneSeqConfigMode extends AbstractParameterMode<OxiOneControlSurf
 
         final IGraphicDisplay display = this.surface.getGraphicsDisplay ();
 
-        String desc = "";
+        final String desc = "";
         String label = "";
         int value = -1;
 
-        final Optional<INoteClip> clipOpt = getClip ();
+        final Optional<INoteClip> clipOpt = this.getClip ();
         if (clipOpt.isPresent ())
         {
             final INoteClip clip = clipOpt.get ();
@@ -84,7 +85,7 @@ public class OxiOneSeqConfigMode extends AbstractParameterMode<OxiOneControlSurf
                 case 0:
                     final Scales scales = this.model.getScales ();
                     label = scales.getDrumRangeText ();
-                    value = (int) ((scales.getDrumOffset () / (double) (Scales.DRUM_NOTE_UPPER - Scales.DRUM_NOTE_LOWER)) * upperBound);
+                    value = (int) (scales.getDrumOffset () / (double) (Scales.DRUM_NOTE_UPPER - Scales.DRUM_NOTE_LOWER) * upperBound);
                     break;
 
                 case 1:
@@ -138,9 +139,9 @@ public class OxiOneSeqConfigMode extends AbstractParameterMode<OxiOneControlSurf
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        final boolean isInc = value <= 63;
+        final boolean isInc = this.model.getValueChanger ().isIncrease (value);
 
-        final Optional<INoteClip> clipOpt = getClip ();
+        final Optional<INoteClip> clipOpt = this.getClip ();
         if (clipOpt.isEmpty ())
             return;
 
@@ -149,8 +150,15 @@ public class OxiOneSeqConfigMode extends AbstractParameterMode<OxiOneControlSurf
         {
             case 0:
                 final IView activeView = this.surface.getViewManager ().getActive ();
-                if (activeView instanceof AbstractDrumView drumView)
+                if (activeView instanceof final AbstractDrumView drumView)
                     drumView.changeOctave (ButtonEvent.DOWN, isInc, 8, true, false);
+                else if (activeView instanceof final TransposeView transView)
+                {
+                    if (isInc)
+                        transView.onOctaveUp (ButtonEvent.DOWN);
+                    else
+                        transView.onOctaveDown (ButtonEvent.DOWN);
+                }
                 break;
 
             case 1:
@@ -173,9 +181,9 @@ public class OxiOneSeqConfigMode extends AbstractParameterMode<OxiOneControlSurf
 
     /** {@inheritDoc} */
     @Override
-    public void resetValue (int index)
+    public void resetValue (final int index)
     {
-        final Optional<INoteClip> clipOpt = getClip ();
+        final Optional<INoteClip> clipOpt = this.getClip ();
         if (clipOpt.isEmpty ())
             return;
 
@@ -185,7 +193,7 @@ public class OxiOneSeqConfigMode extends AbstractParameterMode<OxiOneControlSurf
         {
             case 0:
                 final IView activeView = this.surface.getViewManager ().getActive ();
-                if (activeView instanceof AbstractDrumView drumView)
+                if (activeView instanceof final AbstractDrumView drumView)
                     drumView.resetOctave ();
                 break;
 
@@ -206,7 +214,7 @@ public class OxiOneSeqConfigMode extends AbstractParameterMode<OxiOneControlSurf
 
     /**
      * Set the resolution index.
-     * 
+     *
      * @param clip The clip for which to set the resolution
      *
      * @param selectedResolutionIndex The index 0-7
@@ -221,7 +229,7 @@ public class OxiOneSeqConfigMode extends AbstractParameterMode<OxiOneControlSurf
 
     /**
      * Get the resolution index.
-     * 
+     *
      * @param clip The clip for which to get the resolution
      *
      * @return The index 0-7
@@ -234,7 +242,7 @@ public class OxiOneSeqConfigMode extends AbstractParameterMode<OxiOneControlSurf
 
     private Optional<INoteClip> getClip ()
     {
-        if (this.surface.getViewManager ().getActive () instanceof AbstractSequencerView sequencer)
+        if (this.surface.getViewManager ().getActive () instanceof final AbstractSequencerView sequencer)
             return Optional.of (sequencer.getClip ());
         return Optional.empty ();
     }

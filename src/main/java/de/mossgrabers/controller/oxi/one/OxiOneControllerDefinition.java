@@ -21,6 +21,7 @@ public class OxiOneControllerDefinition extends DefaultControllerDefinition
 {
     private static final UUID EXTENSION_ID = UUID.fromString ("85593F1C-52FD-423F-BCAC-80D90EEB9ACA");
 
+
     /**
      * Constructor.
      */

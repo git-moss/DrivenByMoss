@@ -43,9 +43,11 @@ public abstract class AbstractDrum64View<S extends IControlSurface<C>, C extends
     protected int              columns;
     protected int              rows;
     protected int              drumOctave     = 0;
+    protected int              drumStartKey   = DRUM_START_KEY;
 
     private final int          xblocks;
     private final int          yblocks;
+    private final int          numPadGrid;
 
 
     /**
@@ -70,16 +72,17 @@ public abstract class AbstractDrum64View<S extends IControlSurface<C>, C extends
      */
     protected AbstractDrum64View (final S surface, final IModel model, final int columns, final int rows)
     {
-        super ("Drum 64", surface, model);
+        super ("Drum " + columns * rows, surface, model);
 
         this.columns = columns;
         this.rows = rows;
+        this.numPadGrid = this.columns * this.rows;
+
+        this.offsetY = this.drumStartKey;
 
         // The number of 4x4 blocks in x and y direction
         this.xblocks = this.columns / 4;
         this.yblocks = this.rows / 4;
-
-        this.offsetY = DRUM_START_KEY;
 
         final ITrackBank tb = model.getTrackBank ();
         tb.addSelectionObserver ( (final int index, final boolean isSelected) -> this.clearPressedKeys ());
@@ -114,7 +117,7 @@ public abstract class AbstractDrum64View<S extends IControlSurface<C>, C extends
         if (!this.model.canSelectedTrackHoldNotes ())
             return;
 
-        final int index = note - 36;
+        final int index = note - this.drumStartKey;
         final int x = index % this.columns;
         final int y = index / this.columns;
         final int xblockPos = x / 4;
@@ -251,7 +254,7 @@ public abstract class AbstractDrum64View<S extends IControlSurface<C>, C extends
         this.clearPressedKeys ();
         final int oldDrumOctave = this.drumOctave;
         this.drumOctave = Math.max (-2, Math.min (1, octave));
-        this.offsetY = DRUM_START_KEY + this.drumOctave * BLOCK_SIZE;
+        this.offsetY = this.drumStartKey + this.drumOctave * BLOCK_SIZE;
         this.updateNoteMapping ();
         this.surface.getDisplay ().notify (this.getDrumRangeText ());
         if (oldDrumOctave != this.drumOctave)
@@ -355,7 +358,7 @@ public abstract class AbstractDrum64View<S extends IControlSurface<C>, C extends
                         final int x = xblock * 4 + blockX;
                         final int y = yblock * 4 + blockY;
 
-                        final int note = 36 + y * this.columns + x;
+                        final int note = this.drumStartKey + y * this.columns + x;
                         noteMap[note] = index + this.offsetY;
                         if (noteMap[note] < -1 || noteMap[note] > 127)
                             noteMap[note] = -1;
@@ -372,8 +375,8 @@ public abstract class AbstractDrum64View<S extends IControlSurface<C>, C extends
 
     private String getDrumRangeText ()
     {
-        final int s = DRUM_START_KEY + this.drumOctave * 64;
-        return Scales.formatDrumNote (s) + " to " + Scales.formatDrumNote (s + 63);
+        final int s = this.drumStartKey + this.drumOctave * this.numPadGrid;
+        return Scales.formatDrumNote (s) + " to " + Scales.formatDrumNote (s + this.numPadGrid - 1);
     }
 
 
@@ -405,6 +408,6 @@ public abstract class AbstractDrum64View<S extends IControlSurface<C>, C extends
 
     protected IDrumPadBank getDrumPadBank ()
     {
-        return this.model.getDrumDevice (64).getDrumPadBank ();
+        return this.model.getDrumDevice (this.numPadGrid).getDrumPadBank ();
     }
 }

@@ -13,7 +13,7 @@ public interface IOxiModeReset
 {
     /**
      * Resets a setting to its default value.
-     * 
+     *
      * @param index The index of the value
      */
     void resetValue (final int index);

@@ -22,7 +22,7 @@ import de.mossgrabers.framework.daw.data.bank.ILayerBank;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
 import de.mossgrabers.framework.graphics.canvas.component.IComponent;
-import de.mossgrabers.framework.graphics.canvas.component.simple.TitleChannelsMenuComponent;
+import de.mossgrabers.framework.graphics.canvas.component.simple.TitleChannelsComponent;
 import de.mossgrabers.framework.graphics.canvas.component.simple.TitleValueMenuComponent;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.parameterprovider.device.SelectedLayerOrDrumPadParameterProvider;
@@ -243,7 +243,7 @@ public class OxiOneLayerMode extends AbstractParameterMode<OxiOneControlSurface,
             }
         }
 
-        return new TitleChannelsMenuComponent (label, selected, values, this.selectedParameter == Modes.PAN && isMode);
+        return new TitleChannelsComponent (label, selected, values, this.selectedParameter == Modes.PAN && isMode);
     }
 
 

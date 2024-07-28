@@ -564,7 +564,7 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
 
     /**
      * If there is a note editor available this method handles adding and removing notes from it.
-     * 
+     *
      * @param clip The clip which contains the notes
      * @param notePosition The note position
      * @param velocity The velocity of the pad press

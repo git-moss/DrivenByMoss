@@ -103,47 +103,60 @@ public class OxiOneMixView extends AbstractSessionView<OxiOneControlSurface, Oxi
     @Override
     public void onGridNote (final int note, final int velocity)
     {
-        if (velocity == 0)
-            return;
-
-        final int index = note % 16;
-        final int what = note / 16;
-
-        final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
-
-        switch (what)
+        final int row = note / 16;
+        if (row < 4)
         {
-            case 7:
-                final OxiOneConfiguration configuration = this.surface.getConfiguration ();
-                if (configuration.isDeleteModeActive ())
+            super.onGridNote (note, velocity);
+        }
+        else
+        {
+            final int index = note % 16;
+            final ITrack track = this.model.getCurrentTrackBank ().getItem (index);
+
+            if (velocity == 0)
+            {
+                switch (row)
                 {
-                    configuration.toggleDeleteModeActive ();
-                    track.remove ();
+                    case 7:
+                        final OxiOneConfiguration configuration = this.surface.getConfiguration ();
+                        if (configuration.isDeleteModeActive ())
+                        {
+                            configuration.toggleDeleteModeActive ();
+                            track.remove ();
+                        }
+                        else if (configuration.isDuplicateModeActive ())
+                        {
+                            configuration.toggleDuplicateModeActive ();
+                            track.duplicate ();
+                        }
+                        else
+                            track.selectOrExpandGroup ();
+                        break;
+
+                    case 6:
+                        track.toggleMute ();
+                        break;
+
+                    case 5:
+                        track.toggleSolo ();
+                        break;
+
+                    case 4:
+                        track.toggleRecArm ();
+                        break;
+
+                    default:
+                        // Handled above
+                        break;
                 }
-                else if (configuration.isDuplicateModeActive ())
-                {
-                    configuration.toggleDuplicateModeActive ();
-                    track.duplicate ();
-                }
-                else
-                    track.selectOrExpandGroup ();
-                break;
+            }
+        }
 
-            case 6:
-                track.toggleMute ();
-                break;
-
-            case 5:
-                track.toggleSolo ();
-                break;
-
-            case 4:
-                track.toggleRecArm ();
-                break;
-
-            default:
-                super.onGridNote (note, velocity);
-                break;
+        // Revert to last view of the selected track
+        if (velocity == 0 && this.surface.isPressed (ButtonID.SESSION))
+        {
+            this.surface.setTriggerConsumed (ButtonID.SESSION);
+            this.surface.recallPreferredView (this.model.getCursorTrack ());
         }
     }
 

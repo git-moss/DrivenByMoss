@@ -169,7 +169,7 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
         if (!isKeyboardEnabled)
             return;
 
-        final int index = note - 36;
+        final int index = note - this.surface.getPadGrid ().getStartNote ();
         final int x = index % this.numColumns;
         final int y = index / this.numColumns;
 
@@ -187,7 +187,7 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
 
 
     /**
-     * Handle button presses in the note area of the poly sequencer.
+     * Handle button presses in the note area of the poly-sequencer.
      *
      * @param note The played note
      * @param velocity The velocity

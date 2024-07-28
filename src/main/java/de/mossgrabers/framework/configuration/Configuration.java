@@ -175,7 +175,7 @@ public interface Configuration
     /**
      * Get the quantize amount.
      *
-     * @return The quantize amount
+     * @return The quantize amount in the range of [1..100]
      */
     int getQuantizeAmount ();
 

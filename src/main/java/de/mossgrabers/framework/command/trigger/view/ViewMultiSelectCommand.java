@@ -4,6 +4,10 @@
 
 package de.mossgrabers.framework.command.trigger.view;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
@@ -11,10 +15,6 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 
 /**
@@ -30,6 +30,7 @@ public class ViewMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
     protected final List<Views> viewIds = new ArrayList<> ();
     private final boolean       displayName;
     private final ButtonEvent   triggerEvent;
+    private boolean             storePreferred;
 
 
     /**
@@ -50,16 +51,49 @@ public class ViewMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
      *
      * @param model The model
      * @param surface The surface
-     * @param displayName Displays a popup with the views name if true
+     * @param storePreferred If true the selected views are stored as the favorite view of the
+     *            currently selected track
+     * @param viewIds The list with IDs of the views to select
+     */
+    public ViewMultiSelectCommand (final IModel model, final S surface, final boolean storePreferred, final Views... viewIds)
+    {
+        this (model, surface, true, ButtonEvent.DOWN, storePreferred, viewIds);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param model The model
+     * @param surface The surface
+     * @param displayName Displays a pop-up with the views name if true
      * @param triggerEvent The event to trigger this command
      * @param viewIds The list with IDs of the views to select
      */
     public ViewMultiSelectCommand (final IModel model, final S surface, final boolean displayName, final ButtonEvent triggerEvent, final Views... viewIds)
     {
+        this (model, surface, displayName, triggerEvent, false, viewIds);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param model The model
+     * @param surface The surface
+     * @param displayName Displays a pop-up with the views name if true
+     * @param triggerEvent The event to trigger this command
+     * @param storePreferred If true the selected views are stored as the favorite view of the
+     *            currently selected track
+     * @param viewIds The list with IDs of the views to select
+     */
+    public ViewMultiSelectCommand (final IModel model, final S surface, final boolean displayName, final ButtonEvent triggerEvent, final boolean storePreferred, final Views... viewIds)
+    {
         super (model, surface);
 
         this.displayName = displayName;
         this.triggerEvent = triggerEvent;
+        this.storePreferred = storePreferred;
         this.viewIds.addAll (Arrays.asList (viewIds));
     }
 
@@ -79,7 +113,10 @@ public class ViewMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
         final Views viewId = this.viewIds.get (index);
         if (viewManager.isActive (viewId))
             return;
-        viewManager.setActive (viewId);
+        if (this.storePreferred)
+            this.activatePreferredView (viewId);
+        else
+            viewManager.setActive (viewId);
         if (this.displayName)
             this.surface.getDisplay ().notify (viewManager.get (viewId).getName ());
     }

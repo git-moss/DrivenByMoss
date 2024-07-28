@@ -73,7 +73,7 @@ public class OxiOneRepeatModeConfigurationMode extends AbstractMode<OxiOneContro
 
         final IGraphicDisplay display = this.surface.getGraphicsDisplay ();
 
-        String desc = "";
+        final String desc = "";
         String label = "";
         int value = -1;
 
@@ -104,7 +104,7 @@ public class OxiOneRepeatModeConfigurationMode extends AbstractMode<OxiOneContro
             case 3:
                 if (this.host.supports (Capability.NOTE_REPEAT_MODE))
                 {
-                    ArpeggiatorMode noteRepeatMode = this.configuration.getNoteRepeatMode ();
+                    final ArpeggiatorMode noteRepeatMode = this.configuration.getNoteRepeatMode ();
                     label = "Mode: " + noteRepeatMode.getName ();
                     value = (int) (noteRepeatMode.ordinal () / (double) (ArpeggiatorMode.values ().length - 1) * upperBound);
                 }
@@ -115,7 +115,7 @@ public class OxiOneRepeatModeConfigurationMode extends AbstractMode<OxiOneContro
                 {
                     final int noteRepeatOctave = this.configuration.getNoteRepeatOctave ();
                     label = "Octave Range: " + noteRepeatOctave;
-                    value = (int) (noteRepeatOctave / (double) (8) * upperBound);
+                    value = (int) (noteRepeatOctave / (double) 8 * upperBound);
                 }
                 break;
 
@@ -165,8 +165,8 @@ public class OxiOneRepeatModeConfigurationMode extends AbstractMode<OxiOneContro
     @Override
     public void onKnobValue (final int index, final int value)
     {
-        final boolean isInc = value <= 63;
         final IValueChanger valueChanger = this.model.getValueChanger ();
+        final boolean isInc = valueChanger.isIncrease (value);
 
         switch (this.selectedIndex)
         {
@@ -175,7 +175,7 @@ public class OxiOneRepeatModeConfigurationMode extends AbstractMode<OxiOneContro
                 break;
 
             case 1:
-                final int sel = Resolution.change (Resolution.getMatch (this.configuration.getNoteRepeatPeriod ().getValue ()), valueChanger.isIncrease (value));
+                final int sel = Resolution.change (Resolution.getMatch (this.configuration.getNoteRepeatPeriod ().getValue ()), isInc);
                 this.configuration.setNoteRepeatPeriod (Resolution.values ()[sel]);
                 break;
 
@@ -211,7 +211,7 @@ public class OxiOneRepeatModeConfigurationMode extends AbstractMode<OxiOneContro
 
     /** {@inheritDoc} */
     @Override
-    public void resetValue (int index)
+    public void resetValue (final int index)
     {
         switch (this.selectedIndex)
         {
