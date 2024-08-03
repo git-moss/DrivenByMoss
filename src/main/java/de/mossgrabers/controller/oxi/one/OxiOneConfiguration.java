@@ -81,6 +81,7 @@ public class OxiOneConfiguration extends AbstractConfiguration
 
         this.activateQuantizeAmountSetting (globalSettings);
         this.activateMidiEditChannelSetting (documentSettings);
+        this.activateTurnOffScalePadsSetting (globalSettings);
 
         ///////////////////////////
         // Drum Sequencer

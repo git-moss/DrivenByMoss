@@ -22,6 +22,7 @@ import de.mossgrabers.framework.daw.clip.StepState;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
+import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractPlayView;
 import de.mossgrabers.framework.view.TransposeView;
@@ -513,7 +514,13 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
         {
             if (this.keyManager.isKeyPressed (note))
                 return isRecording ? AbstractPlayView.COLOR_RECORD : AbstractPlayView.COLOR_PLAY;
-            return this.getPadColor (note, this.useDawColors ? track : null);
+
+            final String padColor = this.getPadColor (note, this.useDawColors ? track : null);
+
+            if (this.configuration.isTurnOffScalePads () && Scales.SCALE_COLOR_NOTE.equals (padColor))
+                return Scales.SCALE_COLOR_OFF;
+
+            return padColor;
         }
         return AbstractPlayView.COLOR_OFF;
     }

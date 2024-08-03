@@ -157,6 +157,11 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
                     if (left <= distance && y == left || left > distance && y == sum - left)
                         colorID = AbstractSequencerView.COLOR_STEP_HILITE_NO_CONTENT;
                 }
+                else
+                {
+                    if (this.configuration.isTurnOffScalePads () && Scales.SCALE_COLOR_NOTE.equals (colorID))
+                        colorID = Scales.SCALE_COLOR_OFF;
+                }
                 padGrid.lightEx (x, this.numDisplayRows - 1 - y, colorID);
             }
         }

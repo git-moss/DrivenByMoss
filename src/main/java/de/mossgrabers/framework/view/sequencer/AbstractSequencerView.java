@@ -28,6 +28,7 @@ import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.INoteEditor;
 import de.mossgrabers.framework.mode.INoteEditorMode;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
 
@@ -512,7 +513,13 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
         {
             if (highlight)
                 return COLOR_STEP_HILITE_NO_CONTENT;
-            return this.getPadColor (pad, this.useDawColors ? this.model.getCursorTrack () : null);
+
+            final String padColor = this.getPadColor (pad, this.useDawColors ? this.model.getCursorTrack () : null);
+
+            if (this.configuration.isTurnOffScalePads () && Scales.SCALE_COLOR_NOTE.equals (padColor))
+                return Scales.SCALE_COLOR_OFF;
+
+            return padColor;
         }
 
         return this.getStepColor (stepInfo, highlight, Optional.empty (), channel, step, note, editNotes);

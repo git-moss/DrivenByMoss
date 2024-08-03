@@ -14,6 +14,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IDevice;
 import de.mossgrabers.framework.daw.data.IItem;
+import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.bank.IBank;
 import de.mossgrabers.framework.daw.data.bank.IDeviceBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
@@ -25,11 +26,9 @@ import de.mossgrabers.framework.parameterprovider.special.ResetParameterProvider
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 
-import java.util.Optional;
-
 
 /**
- * Mode for editing device remote control parameters.
+ * Mode for editing device remote control parameters of a device.
  *
  * @author Jürgen Moßgraber
  */
@@ -39,22 +38,35 @@ public class ParametersMode extends AbstractParametersMode<IItem>
 
     private final BrowserCommand<SLMkIIIControlSurface, SLMkIIIConfiguration> browserCommand;
 
+    private final ISpecificDevice                                                   device;
+
+    private final int                                                               color;
+    private final int                                                               halfColor;
+
 
     /**
      * Constructor.
      *
      * @param surface The control surface
      * @param model The model
+     * @param deviceName The name of the device
+     * @param device The device
+     * @param color The color to use for the mode controls
+     * @param halfColor The lighter color to use for the mode controls
      */
-    public ParametersMode (final SLMkIIIControlSurface surface, final IModel model)
+    public ParametersMode (final SLMkIIIControlSurface surface, final IModel model, final String deviceName, final ISpecificDevice device, final int color, final int halfColor)
     {
-        super ("Parameters", surface, model, null);
+        super (deviceName + " Parameters", surface, model, null);
+
+        this.device = device;
+        this.color = color;
+        this.halfColor = halfColor;
 
         this.setShowDevices (true);
 
         this.browserCommand = new BrowserCommand<> (model, surface);
 
-        final IParameterProvider parameterProvider = new BankParameterProvider (this.model.getCursorDevice ().getParameterBank ());
+        final IParameterProvider parameterProvider = new BankParameterProvider (device.getParameterBank ());
         this.setParameterProvider (parameterProvider);
         this.setParameterProvider (ButtonID.DELETE, new ResetParameterProvider (parameterProvider));
     }
@@ -68,10 +80,11 @@ public class ParametersMode extends AbstractParametersMode<IItem>
     @SuppressWarnings("unchecked")
     public final void setShowDevices (final boolean showDevices)
     {
-        this.showDevices = showDevices;
-
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        this.switchBanks ((IBank<IItem>) (this.showDevices ? cursorDevice.getDeviceBank () : cursorDevice.getParameterBank ()));
+        if (this.device instanceof final ICursorDevice cursorDevice)
+        {
+            this.showDevices = showDevices;
+            this.switchBanks ((IBank<IItem>) (this.showDevices ? cursorDevice.getDeviceBank () : this.device.getParameterBank ()));
+        }
     }
 
 
@@ -107,14 +120,13 @@ public class ParametersMode extends AbstractParametersMode<IItem>
             return;
         }
 
-        final ICursorDevice cd = this.model.getCursorDevice ();
-        if (!cd.doesExist ())
+        if (!this.device.doesExist ())
             return;
 
         // Normal behavior - parameters
         if (!this.showDevices)
         {
-            final IParameterPageBank parameterPageBank = cd.getParameterBank ().getPageBank ();
+            final IParameterPageBank parameterPageBank = this.device.getParameterBank ().getPageBank ();
             if (parameterPageBank.getSelectedItemIndex () == index)
                 this.setShowDevices (!this.isShowDevices ());
             else
@@ -126,7 +138,7 @@ public class ParametersMode extends AbstractParametersMode<IItem>
         if (this.surface.isPressed (ButtonID.DUPLICATE))
         {
             this.surface.setTriggerConsumed (ButtonID.DUPLICATE);
-            cd.duplicate ();
+            this.device.duplicate ();
             return;
         }
 
@@ -134,15 +146,16 @@ public class ParametersMode extends AbstractParametersMode<IItem>
         if (this.surface.isPressed (ButtonID.DELETE))
         {
             this.surface.setTriggerConsumed (ButtonID.DELETE);
-            cd.getDeviceBank ().getItem (index).remove ();
+            if (this.device instanceof final ICursorDevice cursorDevice)
+                cursorDevice.getDeviceBank ().getItem (index).remove ();
             return;
         }
 
         // Normal behavior - devices
-        if (cd.getIndex () == index)
+        if (this.device.getIndex () == index)
             this.setShowDevices (!this.isShowDevices ());
-        else
-            cd.getDeviceBank ().getItem (index).select ();
+        else if (this.device instanceof final ICursorDevice cursorDevice)
+            cursorDevice.getDeviceBank ().getItem (index).select ();
     }
 
 
@@ -153,35 +166,34 @@ public class ParametersMode extends AbstractParametersMode<IItem>
      */
     private void onButtonShifted (final int index)
     {
-        final ICursorDevice cd = this.model.getCursorDevice ();
         switch (index)
         {
             case 0:
-                if (cd.doesExist ())
-                    cd.toggleEnabledState ();
+                if (this.device.doesExist ())
+                    this.device.toggleEnabledState ();
                 break;
             case 1:
-                if (cd.doesExist ())
-                    cd.toggleParameterPageSectionVisible ();
+                if (this.device.doesExist ())
+                    this.device.toggleParameterPageSectionVisible ();
                 break;
             case 2:
-                if (cd.doesExist ())
-                    cd.toggleExpanded ();
+                if (this.device.doesExist ())
+                    this.device.toggleExpanded ();
                 break;
             case 3:
-                if (cd.doesExist ())
-                    cd.toggleWindowOpen ();
+                if (this.device.doesExist ())
+                    this.device.toggleWindowOpen ();
                 break;
             case 4:
-                if (cd.doesExist ())
-                    cd.togglePinned ();
+                if (this.device.doesExist () && this.device instanceof final ICursorDevice cursorDevice)
+                    cursorDevice.togglePinned ();
                 break;
             case 5:
-                if (cd.doesExist ())
+                if (this.device.doesExist ())
                     this.browserCommand.startBrowser (true, true);
                 break;
             case 6:
-                if (cd.doesExist ())
+                if (this.device.doesExist ())
                     this.browserCommand.startBrowser (false, false);
                 break;
             case 7:
@@ -207,26 +219,25 @@ public class ParametersMode extends AbstractParametersMode<IItem>
         if (this.surface.isLongPressed (ButtonID.ARROW_UP))
             return this.getButtonColorArrowUp (buttonID);
 
-        final ICursorDevice cd = this.model.getCursorDevice ();
-        if (!cd.doesExist ())
+        if (!this.device.doesExist ())
             return 0;
 
         // Colors normal behavior
         final int index = buttonID.ordinal () - ButtonID.ROW1_1.ordinal ();
-        if (this.showDevices)
+        if (this.showDevices && this.device instanceof final ICursorDevice cursorDevice)
         {
-            final IDeviceBank bank = cd.getDeviceBank ();
+            final IDeviceBank bank = cursorDevice.getDeviceBank ();
             final IDevice item = bank.getItem (index);
             if (!item.doesExist ())
                 return SLMkIIIColorManager.SLMKIII_BLACK;
-            return index == cd.getIndex () ? SLMkIIIColorManager.SLMKIII_MINT : SLMkIIIColorManager.SLMKIII_MINT_HALF;
+            return index == this.device.getIndex () ? SLMkIIIColorManager.SLMKIII_MINT : SLMkIIIColorManager.SLMKIII_MINT_HALF;
         }
 
-        final IParameterPageBank bank = cd.getParameterBank ().getPageBank ();
+        final IParameterPageBank bank = this.device.getParameterBank ().getPageBank ();
         final int selectedItemIndex = bank.getSelectedItemIndex ();
         if (bank.getItem (index).isEmpty ())
             return SLMkIIIColorManager.SLMKIII_BLACK;
-        return index == selectedItemIndex ? SLMkIIIColorManager.SLMKIII_PURPLE : SLMkIIIColorManager.SLMKIII_PURPLE_HALF;
+        return index == selectedItemIndex ? this.color : this.halfColor;
     }
 
 
@@ -238,8 +249,7 @@ public class ParametersMode extends AbstractParametersMode<IItem>
      */
     private int getButtonColorShifted (final ButtonID buttonID)
     {
-        final ICursorDevice cd = this.model.getCursorDevice ();
-        if (!cd.doesExist ())
+        if (!this.device.doesExist ())
         {
             if (buttonID == ButtonID.ROW1_8 && this.model.getCursorTrack ().doesExist ())
                 return SLMkIIIColorManager.SLMKIII_RED_HALF;
@@ -249,15 +259,15 @@ public class ParametersMode extends AbstractParametersMode<IItem>
         switch (buttonID)
         {
             case ROW1_1:
-                return cd.isEnabled () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_RED_HALF;
+                return this.device.isEnabled () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_RED_HALF;
             case ROW1_2:
-                return cd.isParameterPageSectionVisible () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_RED_HALF;
+                return this.device.isParameterPageSectionVisible () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_RED_HALF;
             case ROW1_3:
-                return cd.isExpanded () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_RED_HALF;
+                return this.device.isExpanded () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_RED_HALF;
             case ROW1_4:
-                return cd.isWindowOpen () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_RED_HALF;
+                return this.device.isWindowOpen () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_RED_HALF;
             case ROW1_5:
-                return cd.isPinned () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_RED_HALF;
+                return this.device instanceof final ICursorDevice cursorDevice && cursorDevice.isPinned () ? SLMkIIIColorManager.SLMKIII_RED : SLMkIIIColorManager.SLMKIII_RED_HALF;
             case ROW1_6, ROW1_7, ROW1_8:
             default:
                 return SLMkIIIColorManager.SLMKIII_RED_HALF;
@@ -272,36 +282,34 @@ public class ParametersMode extends AbstractParametersMode<IItem>
         final SLMkIIIDisplay d = this.surface.getDisplay ();
         d.clear ();
 
-        final ICursorDevice cd = this.model.getCursorDevice ();
-        if (!cd.doesExist ())
+        if (!this.device.doesExist ())
         {
             d.setBlock (1, 1, " Please  select or").setBlock (1, 2, "add a    device.");
-            d.setCell (0, 8, "No device");
+            d.setCell (0, 8, this.model.getCursorTrack ().getName (8)).setCell (1, 8, "No device");
 
             d.hideAllElements ();
 
             // Row 4
-            this.drawRow4 (d, cd, null);
+            this.drawRow4 (d, null);
         }
         else
         {
-            final IParameterBank parameterBank = cd.getParameterBank ();
+            final IParameterBank parameterBank = this.device.getParameterBank ();
             final IParameterPageBank parameterPageBank = parameterBank.getPageBank ();
-            final Optional<String> selectedPage = parameterPageBank.getSelectedItem ();
-            d.setCell (0, 8, cd.getName (9)).setCell (1, 8, selectedPage.isPresent () ? selectedPage.get () : "");
+            d.setCell (0, 8, this.model.getCursorTrack ().getName (8)).setCell (1, 8, this.device.getName (9));
 
             // Row 1 & 2
             for (int i = 0; i < 8; i++)
             {
                 final IParameter param = parameterBank.getItem (i);
                 d.setCell (0, i, param.doesExist () ? StringUtils.fixASCII (param.getName (9)) : "").setCell (1, i, StringUtils.fixASCII (param.getDisplayedValue (9)));
-                final int color = param.doesExist () ? SLMkIIIColorManager.SLMKIII_PURPLE : SLMkIIIColorManager.SLMKIII_BLACK;
-                d.setPropertyColor (i, 0, color);
-                d.setPropertyColor (i, 1, color);
+                final int c = param.doesExist () ? this.color : SLMkIIIColorManager.SLMKIII_BLACK;
+                d.setPropertyColor (i, 0, c);
+                d.setPropertyColor (i, 1, c);
             }
 
             // Row 4
-            this.drawRow4 (d, cd, parameterPageBank);
+            this.drawRow4 (d, parameterPageBank);
         }
 
         this.setButtonInfo (d);
@@ -309,11 +317,11 @@ public class ParametersMode extends AbstractParametersMode<IItem>
     }
 
 
-    private void drawRow4 (final SLMkIIIDisplay d, final ICursorDevice cd, final IParameterPageBank parameterPageBank)
+    private void drawRow4 (final SLMkIIIDisplay d, final IParameterPageBank parameterPageBank)
     {
         if (this.surface.isShiftPressed ())
         {
-            this.drawRow4Shifted (d, cd);
+            this.drawRow4Shifted (d);
             return;
         }
 
@@ -323,7 +331,7 @@ public class ParametersMode extends AbstractParametersMode<IItem>
             return;
         }
 
-        if (!cd.doesExist ())
+        if (!this.device.doesExist ())
         {
             for (int i = 0; i < 8; i++)
             {
@@ -333,9 +341,9 @@ public class ParametersMode extends AbstractParametersMode<IItem>
             return;
         }
 
-        if (this.showDevices)
+        if (this.showDevices && this.device instanceof final ICursorDevice cursorDevice)
         {
-            final IDeviceBank deviceBank = cd.getDeviceBank ();
+            final IDeviceBank deviceBank = cursorDevice.getDeviceBank ();
             for (int i = 0; i < 8; i++)
             {
                 final IDevice device = deviceBank.getItem (i);
@@ -345,7 +353,7 @@ public class ParametersMode extends AbstractParametersMode<IItem>
                 d.setCell (3, i, sb.toString ());
 
                 d.setPropertyColor (i, 2, device.doesExist () ? SLMkIIIColorManager.SLMKIII_MINT : SLMkIIIColorManager.SLMKIII_BLACK);
-                d.setPropertyValue (i, 1, device.doesExist () && i == cd.getIndex () ? 1 : 0);
+                d.setPropertyValue (i, 1, device.doesExist () && i == cursorDevice.getIndex () ? 1 : 0);
             }
         }
         else
@@ -355,36 +363,36 @@ public class ParametersMode extends AbstractParametersMode<IItem>
                 final String item = parameterPageBank.getItem (i);
                 d.setCell (3, i, item.isEmpty () ? "" : item);
 
-                d.setPropertyColor (i, 2, item.isEmpty () ? SLMkIIIColorManager.SLMKIII_BLACK : SLMkIIIColorManager.SLMKIII_PURPLE);
+                d.setPropertyColor (i, 2, item.isEmpty () ? SLMkIIIColorManager.SLMKIII_BLACK : this.color);
                 d.setPropertyValue (i, 1, parameterPageBank.getSelectedItemIndex () == i ? 1 : 0);
             }
         }
     }
 
 
-    private void drawRow4Shifted (final SLMkIIIDisplay d, final ICursorDevice cd)
+    private void drawRow4Shifted (final SLMkIIIDisplay d)
     {
-        if (cd.doesExist ())
+        if (this.device.doesExist ())
         {
             d.setCell (3, 0, "On/Off");
             d.setPropertyColor (0, 2, SLMkIIIColorManager.SLMKIII_RED);
-            d.setPropertyValue (0, 1, cd.isEnabled () ? 1 : 0);
+            d.setPropertyValue (0, 1, this.device.isEnabled () ? 1 : 0);
 
             d.setCell (3, 1, "Params");
             d.setPropertyColor (1, 2, SLMkIIIColorManager.SLMKIII_RED);
-            d.setPropertyValue (1, 1, cd.isParameterPageSectionVisible () ? 1 : 0);
+            d.setPropertyValue (1, 1, this.device.isParameterPageSectionVisible () ? 1 : 0);
 
             d.setCell (3, 2, "Expanded");
             d.setPropertyColor (2, 2, SLMkIIIColorManager.SLMKIII_RED);
-            d.setPropertyValue (2, 1, cd.isExpanded () ? 1 : 0);
+            d.setPropertyValue (2, 1, this.device.isExpanded () ? 1 : 0);
 
             d.setCell (3, 3, "Window");
             d.setPropertyColor (3, 2, SLMkIIIColorManager.SLMKIII_RED);
-            d.setPropertyValue (3, 1, cd.isWindowOpen () ? 1 : 0);
+            d.setPropertyValue (3, 1, this.device.isWindowOpen () ? 1 : 0);
 
             d.setCell (3, 4, "Pin");
             d.setPropertyColor (4, 2, SLMkIIIColorManager.SLMKIII_RED);
-            d.setPropertyValue (4, 1, cd.isPinned () ? 1 : 0);
+            d.setPropertyValue (4, 1, this.device instanceof final ICursorDevice cursorDevice && cursorDevice.isPinned () ? 1 : 0);
 
             d.setCell (3, 5, "<< Insert");
             d.setPropertyColor (5, 2, SLMkIIIColorManager.SLMKIII_RED);
@@ -416,6 +424,6 @@ public class ParametersMode extends AbstractParametersMode<IItem>
     @Override
     public int getModeColor ()
     {
-        return SLMkIIIColorManager.SLMKIII_PURPLE;
+        return this.color;
     }
 }

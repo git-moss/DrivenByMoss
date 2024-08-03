@@ -53,7 +53,8 @@ public class SLMkIIIProjectParamsMode extends AbstractParametersMode<IParameter>
         }
 
         // Normal behavior - user parameters
-        this.selectItemPage (index);
+        final IParameterPageBank parameterPageBank = ((IParameterBank) this.bank).getPageBank ();
+        parameterPageBank.selectPage (index);
     }
 
 
@@ -79,13 +80,13 @@ public class SLMkIIIProjectParamsMode extends AbstractParametersMode<IParameter>
         final SLMkIIIDisplay d = this.surface.getDisplay ();
         d.clear ();
 
-        d.setCell (0, 8, "Projct FX").setCell (1, 8, "Page");
+        d.setCell (0, 8, "Projct FX").setCell (1, 8, StringUtils.limit (this.model.getProject ().getName (), 9));
 
         // Row 1 & 2
         for (int i = 0; i < this.bank.getPageSize (); i++)
         {
             final IParameter param = this.bank.getItem (i);
-            d.setCell (0, i, param.doesExist () ? StringUtils.fixASCII (param.getName (9)) : "").setCell (1, i, StringUtils.fixASCII (param.getDisplayedValue (9)));
+            d.setCell (0, i, param.doesExist () ? StringUtils.fixASCII (param.getName (8)) : "").setCell (1, i, StringUtils.fixASCII (param.getDisplayedValue (9)));
 
             final int color = param.doesExist () ? SLMkIIIColorManager.SLMKIII_WHITE : SLMkIIIColorManager.SLMKIII_BLACK;
             d.setPropertyColor (i, 0, color);

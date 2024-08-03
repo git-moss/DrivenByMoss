@@ -483,6 +483,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         this.activatePreferredNoteViewSetting (globalSettings, PREFERRED_NOTE_VIEWS);
         this.activateStartWithSessionViewSetting (globalSettings);
         this.activateMidiEditChannelSetting (documentSettings);
+        this.activateTurnOffScalePadsSetting (globalSettings);
 
         ///////////////////////////
         // Drum Sequencer

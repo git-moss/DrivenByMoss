@@ -53,7 +53,8 @@ public class SLMkIIITrackParamsMode extends AbstractParametersMode<IParameter>
         }
 
         // Normal behavior - user parameters
-        this.selectItemPage (index);
+        final IParameterPageBank parameterPageBank = ((IParameterBank) this.bank).getPageBank ();
+        parameterPageBank.selectPage (index);
     }
 
 
@@ -79,7 +80,7 @@ public class SLMkIIITrackParamsMode extends AbstractParametersMode<IParameter>
         final SLMkIIIDisplay d = this.surface.getDisplay ();
         d.clear ();
 
-        d.setCell (0, 8, "Track FX").setCell (1, 8, "Page");
+        d.setCell (0, 8, "Track FX").setCell (1, 8, this.model.getCursorTrack ().getName (8));
 
         // Row 1 & 2
         for (int i = 0; i < this.bank.getPageSize (); i++)

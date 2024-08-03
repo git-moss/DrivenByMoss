@@ -53,6 +53,7 @@ import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChang
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
+import de.mossgrabers.framework.daw.constants.DeviceID;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.DeviceInquiry;
@@ -130,6 +131,7 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         ms.setHasFullFlatTrackList (true);
         ms.setNumScenes (2);
         ms.setNumSends (8);
+        ms.enableDevice (DeviceID.FIRST_INSTRUMENT);
         this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
         this.model.getTrackBank ().setIndication (true);
     }
@@ -173,7 +175,8 @@ public class SLMkIIIControllerSetup extends AbstractControllerSetup<SLMkIIIContr
         modeManager.register (Modes.PAN, new SLMkIIIPanMode (surface, this.model));
         for (int i = 0; i < 8; i++)
             modeManager.register (Modes.get (Modes.SEND1, i), new SLMkIIISendMode (i, surface, this.model));
-        modeManager.register (Modes.DEVICE_PARAMS, new ParametersMode (surface, this.model));
+        modeManager.register (Modes.DEVICE_PARAMS, new ParametersMode (surface, this.model, "Cursor Device", this.model.getCursorDevice (), SLMkIIIColorManager.SLMKIII_PURPLE, SLMkIIIColorManager.SLMKIII_PURPLE_HALF));
+        modeManager.register (Modes.INSTRUMENT_DEVICE_PARAMS, new ParametersMode (surface, this.model, "First Device", this.model.getSpecificDevice (DeviceID.FIRST_INSTRUMENT), SLMkIIIColorManager.SLMKIII_YELLOW, SLMkIIIColorManager.SLMKIII_YELLOW_HALF));
         modeManager.register (Modes.BROWSER, new BrowserMode (surface, this.model));
         modeManager.register (Modes.USER, new SLMkIIIProjectParamsMode (surface, this.model));
         modeManager.register (Modes.TRACK_DETAILS, new SLMkIIITrackParamsMode (surface, this.model));

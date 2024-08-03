@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.novation.launchpad;
 
+import java.util.List;
+
 import de.mossgrabers.controller.novation.launchpad.definition.ILaunchpadControllerDefinition;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
@@ -12,8 +14,6 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 import de.mossgrabers.framework.view.Views;
-
-import java.util.List;
 
 
 /**
@@ -93,6 +93,7 @@ public class LaunchpadConfiguration extends AbstractConfiguration
         this.activateQuantizeAmountSetting (globalSettings);
         this.activatePreferredNoteViewSetting (globalSettings, PREFERRED_NOTE_VIEWS);
         this.activateStartWithSessionViewSetting (globalSettings);
+        this.activateTurnOffScalePadsSetting (globalSettings);
 
         ///////////////////////////
         // Transport

@@ -261,6 +261,14 @@ public interface Configuration
 
 
     /**
+     * Turn off the LEDs of pads which represent notes in the scale?
+     *
+     * @return True if should turned off
+     */
+    boolean isTurnOffScalePads ();
+
+
+    /**
      * Should the drum pads sound with or without using a combination button?
      *
      * @return True if use combination button

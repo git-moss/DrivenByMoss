@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.akai.apc;
 
+import java.util.List;
+
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
@@ -11,8 +13,6 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 import de.mossgrabers.framework.view.Views;
-
-import java.util.List;
 
 
 /**
@@ -79,6 +79,8 @@ public class APCConfiguration extends AbstractConfiguration
         this.activateQuantizeAmountSetting (globalSettings);
         this.activatePreferredNoteViewSetting (globalSettings, PREFERRED_NOTE_VIEWS);
         this.activateStartWithSessionViewSetting (globalSettings);
+        if (this.isMkII)
+            this.activateTurnOffScalePadsSetting (globalSettings);
 
         ///////////////////////////
         // Transport

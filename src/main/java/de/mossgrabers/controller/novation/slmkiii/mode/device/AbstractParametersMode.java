@@ -32,7 +32,7 @@ public abstract class AbstractParametersMode<B extends IItem> extends BaseMode<B
         "",
         "",
         "",
-        "",
+        "First Ins",
         "Projct FX",
         "Track FX"
     };
@@ -58,21 +58,24 @@ public abstract class AbstractParametersMode<B extends IItem> extends BaseMode<B
         switch (index)
         {
             case 0:
-                this.surface.getModeManager ().setActive (Modes.DEVICE_PARAMS);
+                modeManager.setActive (Modes.DEVICE_PARAMS);
                 ((ParametersMode) modeManager.get (Modes.DEVICE_PARAMS)).setShowDevices (true);
                 break;
 
             case 1:
-                this.surface.getModeManager ().setActive (Modes.DEVICE_PARAMS);
+                modeManager.setActive (Modes.DEVICE_PARAMS);
                 ((ParametersMode) modeManager.get (Modes.DEVICE_PARAMS)).setShowDevices (false);
                 break;
 
+            case 5:
+                modeManager.setActive (Modes.INSTRUMENT_DEVICE_PARAMS);
+                break;
             case 6:
-                this.surface.getModeManager ().setActive (Modes.USER);
+                modeManager.setActive (Modes.USER);
                 break;
 
             case 7:
-                this.surface.getModeManager ().setActive (Modes.TRACK_DETAILS);
+                modeManager.setActive (Modes.TRACK_DETAILS);
                 break;
 
             default:
@@ -99,6 +102,9 @@ public abstract class AbstractParametersMode<B extends IItem> extends BaseMode<B
                 if (isDeviceParams && !((ParametersMode) modeManager.get (Modes.DEVICE_PARAMS)).isShowDevices ())
                     return SLMkIIIColorManager.SLMKIII_PURPLE;
                 return SLMkIIIColorManager.SLMKIII_PURPLE_HALF;
+
+            case ROW1_6:
+                return modeManager.isActive (Modes.INSTRUMENT_DEVICE_PARAMS) ? SLMkIIIColorManager.SLMKIII_YELLOW : SLMkIIIColorManager.SLMKIII_YELLOW_HALF;
 
             case ROW1_7:
                 return modeManager.isActive (Modes.USER) ? SLMkIIIColorManager.SLMKIII_WHITE : SLMkIIIColorManager.SLMKIII_WHITE_HALF;
@@ -140,6 +146,11 @@ public abstract class AbstractParametersMode<B extends IItem> extends BaseMode<B
                     if (isDeviceParams && !((ParametersMode) modeManager.get (Modes.DEVICE_PARAMS)).isShowDevices ())
                         isActive = true;
                     color = SLMkIIIColorManager.SLMKIII_PURPLE;
+                    break;
+
+                case 5:
+                    isActive = modeManager.isActive (Modes.INSTRUMENT_DEVICE_PARAMS);
+                    color = SLMkIIIColorManager.SLMKIII_YELLOW;
                     break;
 
                 case 6:

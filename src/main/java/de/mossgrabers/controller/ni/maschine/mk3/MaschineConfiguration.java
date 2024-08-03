@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.ni.maschine.mk3;
 
+import java.util.List;
+
 import de.mossgrabers.controller.ni.maschine.Maschine;
 import de.mossgrabers.controller.ni.maschine.core.RibbonMode;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
@@ -13,8 +15,6 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 import de.mossgrabers.framework.scale.ScaleLayout;
-
-import java.util.List;
 
 
 /**
@@ -81,6 +81,7 @@ public class MaschineConfiguration extends AbstractConfiguration
         this.activateAccentActiveSetting (globalSettings);
         this.activateAccentValueSetting (globalSettings);
         this.activateQuantizeAmountSetting (globalSettings);
+        this.activateTurnOffScalePadsSetting (globalSettings);
 
         final String [] ribbonModeNames = RibbonMode.getNames ();
         this.ribbonModeSetting = globalSettings.getEnumSetting ("Ribbon Mode", CATEGORY_PLAY_AND_SEQUENCE, ribbonModeNames, ribbonModeNames[0]);

@@ -41,9 +41,9 @@ public class OxiOneMixView extends AbstractSessionView<OxiOneControlSurface, Oxi
         final int white = OxiOneColorManager.OXI_ONE_COLOR_WHITE;
         final int green = OxiOneColorManager.OXI_ONE_COLOR_GREEN;
         final int amber = OxiOneColorManager.OXI_ONE_COLOR_ORANGE;
-        final LightInfo isRecording = new LightInfo (redHi, redHi, false);
+        final LightInfo isRecording = new LightInfo (redHi, -1, false);
         final LightInfo isRecordingQueued = new LightInfo (redHi, black, true);
-        final LightInfo isPlaying = new LightInfo (green, green, false);
+        final LightInfo isPlaying = new LightInfo (green, -1, false);
         final LightInfo isPlayingQueued = new LightInfo (green, green, true);
         final LightInfo hasContent = new LightInfo (amber, white, false);
         final LightInfo noContent = new LightInfo (black, -1, false);
