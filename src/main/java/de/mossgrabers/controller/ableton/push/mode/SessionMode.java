@@ -30,6 +30,7 @@ import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
+import de.mossgrabers.framework.parameterprovider.track.VolumeParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.Pair;
 import de.mossgrabers.framework.utils.StringUtils;
@@ -76,6 +77,8 @@ public class SessionMode extends AbstractTrackMode implements IPush3Encoder
         this.startSceneCommand = new StartSceneCommand<> (model, surface, -1, this.sceneBank);
 
         this.rowDisplayMode = this.isPushModern ? RowDisplayMode.ALL : RowDisplayMode.UPPER;
+
+        this.setParameterProvider (new VolumeParameterProvider (model));
     }
 
 

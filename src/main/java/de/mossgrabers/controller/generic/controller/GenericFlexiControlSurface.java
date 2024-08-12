@@ -6,14 +6,17 @@ package de.mossgrabers.controller.generic.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import de.mossgrabers.controller.generic.GenericFlexiConfiguration;
 import de.mossgrabers.controller.generic.flexihandler.IFlexiCommandHandler;
 import de.mossgrabers.controller.generic.flexihandler.utils.CommandSlot;
+import de.mossgrabers.controller.generic.flexihandler.utils.KnobMode;
 import de.mossgrabers.controller.generic.flexihandler.utils.MidiValue;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
@@ -22,7 +25,6 @@ import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.daw.midi.MidiConstants;
 import de.mossgrabers.framework.mode.Modes;
-import de.mossgrabers.framework.utils.Pair;
 import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.nativefiledialogs.FileFilter;
 import de.mossgrabers.nativefiledialogs.NativeFileDialogs;
@@ -37,22 +39,24 @@ import de.mossgrabers.nativefiledialogs.PlatformNotSupported;
  */
 public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFlexiConfiguration>
 {
-    private static final FileFilter []                    FILE_FILTERS    =
+    private static final FileFilter []                    FILE_FILTERS          =
     {
         new FileFilter ("Configuration", "properties"),
         new FileFilter ("All files", "*")
     };
 
-    private final int []                                  valueCache      = new int [GenericFlexiConfiguration.NUM_SLOTS];
-    private final Map<FlexiCommand, IFlexiCommandHandler> handlers        = new EnumMap<> (FlexiCommand.class);
+    private final int []                                  valueCache            = new int [GenericFlexiConfiguration.NUM_SLOTS];
+    private final Map<FlexiCommand, IFlexiCommandHandler> handlers              = new EnumMap<> (FlexiCommand.class);
     private NativeFileDialogs                             dialogs;
 
-    private long                                          lastReceived    = 0;
-    private int                                           lastCCReceived  = -1;
-    private final int []                                  lastCCValues    = new int [128];
+    private long                                          lastReceived          = 0;
+    private int                                           lastCCReceived        = -1;
+    private final int []                                  lastCCValues          = new int [128];
 
-    private boolean                                       isShiftPressed  = false;
-    private boolean                                       isUpdatingValue = false;
+    private boolean                                       isShiftPressed        = false;
+    private boolean                                       isUpdatingValue       = false;
+    private int                                           functionLayer         = 0;
+    private int                                           previousFunctionLayer = 0;
 
 
     /**
@@ -189,7 +193,8 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
             // Note on/off
             case MidiConstants.CMD_NOTE_OFF, MidiConstants.CMD_NOTE_ON:
                 this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE.get (CommandSlot.TYPE_NOTE + 1), data1, channel, false);
-                this.handleCommand (this.configuration.getSlotCommand (CommandSlot.TYPE_NOTE, data1, channel), MidiValue.get (code == MidiConstants.CMD_NOTE_OFF ? 0 : data2, false));
+                final MidiValue midiValue = MidiValue.get (code == MidiConstants.CMD_NOTE_OFF ? 0 : data2, false);
+                this.handleCommand (this.processFunctionLayer (this.configuration.getSlotCommands (CommandSlot.TYPE_NOTE, data1, channel), midiValue), midiValue);
                 break;
 
             case MidiConstants.CMD_PROGRAM_CHANGE:
@@ -202,13 +207,44 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
 
             case MidiConstants.CMD_PITCHBEND:
                 this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE.get (CommandSlot.TYPE_PITCH_BEND + 1), data1, channel, true);
-                this.handleCommand (this.configuration.getSlotCommand (CommandSlot.TYPE_PITCH_BEND, data1, channel), MidiValue.get (data1 + data2 * 128, true));
+                final MidiValue value = MidiValue.get (data1 + data2 * 128, true);
+                this.handleCommand (this.processFunctionLayer (this.configuration.getSlotCommands (CommandSlot.TYPE_PITCH_BEND, data1, channel), value), value);
                 break;
 
             default:
                 // Not used
                 break;
         }
+    }
+
+
+    private CommandSlot processFunctionLayer (final List<CommandSlot> commandSlots, final MidiValue value)
+    {
+        // Check for layer switcher command
+        for (final CommandSlot commandSlot: commandSlots)
+        {
+            final FlexiCommand command = commandSlot.getCommand ();
+            final int functionOrdinal = command.ordinal ();
+            if (functionOrdinal >= FlexiCommand.FUNCTION_LAYER1.ordinal () && functionOrdinal <= FlexiCommand.FUNCTION_LAYER10_TEMP.ordinal ())
+            {
+                final int fl = commandSlot.getFunctionLayer ();
+                if (fl < 0 || fl == this.functionLayer)
+                {
+                    this.switchFunctionLayer (commandSlot, value);
+                    return null;
+                }
+            }
+        }
+
+        // Only accept commands for the active function layer
+        for (final CommandSlot slot: commandSlots)
+        {
+            final int fl = slot.getFunctionLayer ();
+            if (fl < 0 || fl == this.functionLayer)
+                return slot;
+        }
+
+        return null;
     }
 
 
@@ -233,20 +269,20 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
 
         this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE.get (CommandSlot.TYPE_CC + 1), data1, channel, isHighRes);
 
-        int slotIndex = -1;
         int value = 0;
         boolean isHighResValue = false;
+
+        CommandSlot matchedCommandSlot = null;
 
         // Check for high resolution related setting
         if (data1 >= 0 && data1 < 32)
         {
-            final Optional<Pair<Integer, CommandSlot>> optional = this.configuration.getSlot (CommandSlot.TYPE_CC, data1, channel);
-            if (optional.isPresent ())
+            for (final CommandSlot commandSlot: this.configuration.getSlotCommands (CommandSlot.TYPE_CC, data1, channel))
             {
-                final Pair<Integer, CommandSlot> pair = optional.get ();
-                if (pair.getValue ().getResolution ())
+                final int fl = commandSlot.getFunctionLayer ();
+                if (fl < 0 || fl == this.functionLayer && commandSlot.getResolution ())
                 {
-                    slotIndex = pair.getKey ().intValue ();
+                    matchedCommandSlot = commandSlot;
                     value = data2 * 128 + this.lastCCValues[data1 + 32];
                     isHighResValue = true;
                 }
@@ -255,13 +291,11 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         else if (data1 >= 32 && data1 < 64)
         {
             final int firstCC = data1 - 32;
-            final Optional<Pair<Integer, CommandSlot>> optional = this.configuration.getSlot (CommandSlot.TYPE_CC, firstCC, channel);
-            if (optional.isPresent ())
+            for (final CommandSlot commandSlot: this.configuration.getSlotCommands (CommandSlot.TYPE_CC, firstCC, channel))
             {
-                final Pair<Integer, CommandSlot> pair = optional.get ();
-                if (pair.getValue ().getResolution ())
+                if (commandSlot.getFunctionLayer () == this.functionLayer && commandSlot.getResolution ())
                 {
-                    slotIndex = pair.getKey ().intValue ();
+                    matchedCommandSlot = commandSlot;
                     value = this.lastCCValues[firstCC] * 128 + data2;
                     isHighResValue = true;
                 }
@@ -269,17 +303,20 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         }
 
         // No Hi-Res
-        if (slotIndex == -1)
+        final List<CommandSlot> commandSlots = new ArrayList<> ();
+        if (matchedCommandSlot == null)
         {
-            final Optional<Pair<Integer, CommandSlot>> optional = this.configuration.getSlot (CommandSlot.TYPE_CC, data1, channel);
-            if (optional.isPresent ())
+            for (final CommandSlot commandSlot: this.configuration.getSlotCommands (CommandSlot.TYPE_CC, data1, channel))
             {
-                slotIndex = optional.get ().getKey ().intValue ();
+                commandSlots.add (commandSlot);
                 value = data2;
             }
         }
+        else
+            commandSlots.add (matchedCommandSlot);
 
-        this.handleCommand (slotIndex, MidiValue.get (value, isHighResValue));
+        final MidiValue midiValue = MidiValue.get (value, isHighResValue);
+        this.handleCommand (this.processFunctionLayer (commandSlots, midiValue), midiValue);
     }
 
 
@@ -292,19 +329,19 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
     private void handleProgramChange (final int channel, final int data1)
     {
         this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE.get (CommandSlot.TYPE_PROGRAM_CHANGE + 1), data1, channel, false);
-        final int slotIndex = this.configuration.getSlotCommand (CommandSlot.TYPE_PROGRAM_CHANGE, data1, channel);
-        if (slotIndex < 0)
+        final CommandSlot commandSlot = this.processFunctionLayer (this.configuration.getSlotCommands (CommandSlot.TYPE_PROGRAM_CHANGE, data1, channel), MidiValue.get (127, false));
+        if (commandSlot == null)
             return;
-        final CommandSlot commandSlot = this.configuration.getCommandSlots ()[slotIndex];
+
         if (commandSlot.getCommand ().isTrigger ())
         {
-            this.handleCommand (slotIndex, MidiValue.get (127, false));
-            this.handleCommand (slotIndex, MidiValue.get (0, false));
+            this.handleCommand (commandSlot, MidiValue.get (127, false));
+            this.handleCommand (commandSlot, MidiValue.get (0, false));
         }
         else
         {
             // Note: there is no data2 value for PC
-            this.handleCommand (slotIndex, MidiValue.get (data1, false));
+            this.handleCommand (commandSlot, MidiValue.get (data1, false));
         }
     }
 
@@ -325,11 +362,11 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
         final int number = data[4];
 
         this.configuration.setLearnValues (GenericFlexiConfiguration.OPTIONS_TYPE.get (CommandSlot.TYPE_MMC + 1), number, channel, false);
-        final int slotIndex = this.configuration.getSlotCommand (CommandSlot.TYPE_MMC, number, channel);
-        if (slotIndex == -1)
+        final CommandSlot commandSlot = this.processFunctionLayer (this.configuration.getSlotCommands (CommandSlot.TYPE_MMC, number, channel), MidiValue.get (127, false));
+        if (commandSlot == null)
             return;
-        this.handleCommand (slotIndex, MidiValue.get (127, false));
-        this.handleCommand (slotIndex, MidiValue.get (0, false));
+        this.handleCommand (commandSlot, MidiValue.get (127, false));
+        this.handleCommand (commandSlot, MidiValue.get (0, false));
     }
 
 
@@ -456,20 +493,16 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
     /**
      * Handle a command.
      *
-     * @param slotIndex The slot index where the command is stored
+     * @param commandSlot The command slot to execute
      * @param value The received parameter value to handle
      */
-    private void handleCommand (final int slotIndex, final MidiValue value)
+    private void handleCommand (final CommandSlot commandSlot, final MidiValue value)
     {
-        if (slotIndex < 0)
-            return;
-
-        final CommandSlot commandSlot = this.configuration.getCommandSlots ()[slotIndex];
-        final FlexiCommand command = commandSlot.getCommand ();
-        if (command == FlexiCommand.OFF)
+        if (commandSlot == null)
             return;
 
         this.isUpdatingValue = true;
+        final FlexiCommand command = commandSlot.getCommand ();
         final IFlexiCommandHandler commandHandler = this.handlers.get (command);
         if (commandHandler == null)
         {
@@ -521,5 +554,40 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
                 // Other types not supported
                 break;
         }
+    }
+
+
+    private void switchFunctionLayer (final CommandSlot commandSlot, final MidiValue value)
+    {
+        final FlexiCommand command = commandSlot.getCommand ();
+        final KnobMode knobMode = commandSlot.getKnobMode ();
+
+        final int oldLayer = this.functionLayer;
+
+        switch (command)
+        {
+            case FUNCTION_LAYER1, FUNCTION_LAYER2, FUNCTION_LAYER3, FUNCTION_LAYER4, FUNCTION_LAYER5, FUNCTION_LAYER6, FUNCTION_LAYER7, FUNCTION_LAYER8, FUNCTION_LAYER9, FUNCTION_LAYER10:
+                if (knobMode == KnobMode.ABSOLUTE_TOGGLE || knobMode == KnobMode.ABSOLUTE && value.isPositive ())
+                    this.functionLayer = command.ordinal () - FlexiCommand.FUNCTION_LAYER1.ordinal ();
+                break;
+
+            case FUNCTION_LAYER2_TEMP, FUNCTION_LAYER3_TEMP, FUNCTION_LAYER4_TEMP, FUNCTION_LAYER5_TEMP, FUNCTION_LAYER6_TEMP, FUNCTION_LAYER7_TEMP, FUNCTION_LAYER8_TEMP, FUNCTION_LAYER9_TEMP, FUNCTION_LAYER10_TEMP:
+                // Note: this is one off since there is no 'activate layer 1 temporarily'!
+                final int layerIndex = command.ordinal () - FlexiCommand.FUNCTION_LAYER2_TEMP.ordinal () + 1;
+                if (knobMode == KnobMode.ABSOLUTE_TOGGLE && this.functionLayer != layerIndex || knobMode == KnobMode.ABSOLUTE && value.isPositive ())
+                {
+                    this.previousFunctionLayer = oldLayer;
+                    this.functionLayer = layerIndex;
+                }
+                else
+                    this.functionLayer = this.previousFunctionLayer;
+                break;
+
+            default:
+                return;
+        }
+
+        if (oldLayer != this.functionLayer)
+            this.getHost ().showNotification ("Functions Layer " + (this.functionLayer + 1));
     }
 }

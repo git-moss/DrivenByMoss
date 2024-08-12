@@ -558,6 +558,10 @@ public class DeviceModule extends AbstractModule
         final IChannel layer = layerBank.getItem (layerIndex);
         switch (command)
         {
+            case TAG_ACTIVATED:
+                layer.setIsActivated (toInteger (value) > 0);
+                break;
+
             case TAG_SELECT, TAG_SELECTED:
                 layer.select ();
                 break;

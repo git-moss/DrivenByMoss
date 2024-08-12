@@ -4,16 +4,16 @@
 
 package de.mossgrabers.framework.utils;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.observer.INoteObserver;
 import de.mossgrabers.framework.scale.Scales;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
 
 /**
@@ -152,6 +152,22 @@ public class KeyManager implements INoteObserver
     public int getMidiNoteFromGrid (final int note)
     {
         return this.padGrid == null ? -1 : this.map (this.padGrid.translateToGrid (note));
+    }
+
+
+    /**
+     * Get the MIDI notes from the grid for all currently pressed keys.
+     *
+     * @return The translated notes depending on applied scales, etc.
+     */
+    public List<Integer> getMidiNotesFromPressedKeys ()
+    {
+        final List<Integer> pressed = this.getPressedKeys ();
+        final int size = pressed.size ();
+        final List<Integer> notes = new ArrayList<> (size);
+        for (int i = 0; i < size; i++)
+            notes.add (Integer.valueOf (this.map (pressed.get (i).intValue ())));
+        return notes;
     }
 
 

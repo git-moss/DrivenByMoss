@@ -22,7 +22,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class StopCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractDoubleTriggerCommand<S, C>
 {
-    private final ITransport transport;
+    protected final ITransport transport;
 
 
     /**

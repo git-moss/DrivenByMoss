@@ -15,7 +15,7 @@ import de.mossgrabers.framework.view.sequencer.AbstractPolySequencerView;
 
 
 /**
- * The Poly Sequencer view.
+ * The Poly-Sequencer view.
  *
  * @author Jürgen Moßgraber
  */

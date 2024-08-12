@@ -14,7 +14,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * Command for toggling the Groove enablement.
+ * Command for toggling the Groove on/off.
  *
  * @author Jürgen Moßgraber
  */

@@ -546,4 +546,12 @@ public interface Configuration
      * @return True if session view should be active
      */
     boolean shouldStartWithSessionView ();
+
+
+    /**
+     * Should played chords be displayed?
+     *
+     * @return True if enabled
+     */
+    boolean isShowPlayedChords ();
 }

@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.generic.flexihandler;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.generic.GenericFlexiConfiguration;
 import de.mossgrabers.controller.generic.controller.FlexiCommand;
 import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
@@ -17,8 +19,6 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.parameter.IParameter;
-
-import java.util.Optional;
 
 
 /**
@@ -55,6 +55,8 @@ public class FxTrackHandler extends AbstractHandler
             FlexiCommand.FX_TRACK_SELECT_NEXT_BANK_PAGE,
             FlexiCommand.FX_TRACK_SELECT_PREVIOUS_TRACK,
             FlexiCommand.FX_TRACK_SELECT_NEXT_TRACK,
+            FlexiCommand.FX_TRACK_SCROLL_BANK_PAGE_BY_1_LEFT,
+            FlexiCommand.FX_TRACK_SCROLL_BANK_PAGE_BY_1_RIGHT,
             FlexiCommand.FX_TRACK_SCROLL_TRACKS,
             FlexiCommand.FX_TRACK_1_SELECT,
             FlexiCommand.FX_TRACK_2_SELECT,
@@ -262,6 +264,16 @@ public class FxTrackHandler extends AbstractHandler
 
         switch (command)
         {
+            case TRACK_SELECT_PREVIOUS_BANK_PAGE:
+                return toMidiValue (effectTrackBank.canScrollPageBackwards ());
+            case TRACK_SELECT_NEXT_BANK_PAGE:
+                return toMidiValue (effectTrackBank.canScrollPageForwards ());
+
+            case TRACK_SELECT_PREVIOUS_TRACK, TRACK_SCROLL_BANK_PAGE_BY_1_LEFT:
+                return toMidiValue (effectTrackBank.canScrollBackwards ());
+            case TRACK_SELECT_NEXT_TRACK, TRACK_SCROLL_BANK_PAGE_BY_1_RIGHT:
+                return toMidiValue (effectTrackBank.canScrollForwards ());
+
             case FX_TRACK_1_SELECT, FX_TRACK_2_SELECT, FX_TRACK_3_SELECT, FX_TRACK_4_SELECT, FX_TRACK_5_SELECT, FX_TRACK_6_SELECT, FX_TRACK_7_SELECT, FX_TRACK_8_SELECT:
                 return toMidiValue (effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_SELECT.ordinal ()).isSelected ());
 
@@ -356,6 +368,16 @@ public class FxTrackHandler extends AbstractHandler
             case FX_TRACK_SELECT_NEXT_TRACK:
                 if (isButtonPressed)
                     this.scrollTrackRight (false);
+                break;
+
+            case TRACK_SCROLL_BANK_PAGE_BY_1_LEFT:
+                if (isButtonPressed)
+                    effectTrackBank.scrollBackwards ();
+                break;
+
+            case TRACK_SCROLL_BANK_PAGE_BY_1_RIGHT:
+                if (isButtonPressed)
+                    effectTrackBank.scrollForwards ();
                 break;
 
             case FX_TRACK_SCROLL_TRACKS:

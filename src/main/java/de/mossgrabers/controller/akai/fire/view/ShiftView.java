@@ -14,7 +14,9 @@ import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.clip.IClip;
+import de.mossgrabers.framework.daw.constants.AutomationMode;
 import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
@@ -141,12 +143,22 @@ public class ShiftView extends AbstractShiftView<FireControlSurface, FireConfigu
         for (int i = 0; i < 8; i++)
             padGrid.light (44 + i, DAWColor.getColorID ((i == clipLengthIndex ? DAWColor.DAW_COLOR_RED : DAWColor.DAW_COLOR_LIGHT_ORANGE).getColor ()));
 
-        // Not used
-        for (int i = 0; i < 8; i++)
-        {
+        // Automation Mode
+        final ITransport transport = this.model.getTransport ();
+        final AutomationMode [] automationWriteModes = transport.getAutomationWriteModes ();
+        final AutomationMode writeMode = transport.getAutomationWriteMode ();
+        for (int i = 0; i < automationWriteModes.length; i++)
+            padGrid.light (60 + i, DAWColor.getColorID ((automationWriteModes[i] == writeMode ? DAWColor.DAW_COLOR_RED : DAWColor.DAW_COLOR_GRAY).getColor ()));
+        for (int i = automationWriteModes.length; i < 8; i++)
             padGrid.light (60 + i, 0);
+
+        // Not used
+        for (int i = 0; i < 5; i++)
             padGrid.light (76 + i, 0);
-        }
+
+        padGrid.light (81, DAWColor.getColorID ((this.model.getCursorTrack ().isPinned () ? DAWColor.DAW_COLOR_RED : DAWColor.DAW_COLOR_GREEN).getColor ()));
+        padGrid.light (82, DAWColor.getColorID ((this.model.getCursorDevice ().isPinned () ? DAWColor.DAW_COLOR_RED : DAWColor.DAW_COLOR_GREEN).getColor ()));
+        padGrid.light (83, DAWColor.getColorID ((this.model.getCursorClip ().isPinned () ? DAWColor.DAW_COLOR_RED : DAWColor.DAW_COLOR_GREEN).getColor ()));
 
         padGrid.light (92, 0);
         padGrid.light (96, 0);
@@ -272,6 +284,28 @@ public class ShiftView extends AbstractShiftView<FireControlSurface, FireConfigu
                 final int newClipLength = note - 44;
                 configuration.setNewClipLength (newClipLength);
                 this.surface.getDisplay ().notify ("Clip len: " + AbstractConfiguration.getNewClipLengthValue (newClipLength));
+                break;
+
+            case 60, 61, 62, 63, 64, 65, 66, 67:
+                final ITransport transport = this.model.getTransport ();
+                final AutomationMode [] automationWriteModes = transport.getAutomationWriteModes ();
+                final int autoIndex = note - 60;
+                if (autoIndex < automationWriteModes.length)
+                {
+                    transport.setAutomationWriteMode (automationWriteModes[note - 60]);
+                    this.mvHelper.notifyAutomationWriteMode ();
+                }
+                break;
+
+            // Pinning
+            case 81:
+                this.model.getCursorTrack ().togglePinned ();
+                break;
+            case 82:
+                this.model.getCursorDevice ().togglePinned ();
+                break;
+            case 83:
+                this.model.getCursorClip ().togglePinned ();
                 break;
 
             case 93:

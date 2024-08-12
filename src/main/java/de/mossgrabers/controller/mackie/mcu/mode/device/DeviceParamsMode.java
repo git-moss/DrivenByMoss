@@ -4,20 +4,27 @@
 
 package de.mossgrabers.controller.mackie.mcu.mode.device;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
 import de.mossgrabers.controller.mackie.mcu.mode.BaseMode;
+import de.mossgrabers.framework.controller.color.ColorEx;
+import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ICursorDevice;
+import de.mossgrabers.framework.daw.data.IDevice;
 import de.mossgrabers.framework.daw.data.IEqualizerDevice;
 import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.IDeviceBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.RangeFilterParameterProvider;
 import de.mossgrabers.framework.parameterprovider.track.VolumeParameterProvider;
-
-import java.util.Optional;
+import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.utils.StringUtils;
 
 
 /**
@@ -110,6 +117,38 @@ public class DeviceParamsMode extends BaseMode<IParameter>
 
     /** {@inheritDoc} */
     @Override
+    public void updateDisplay ()
+    {
+        if (this.surface.isShiftPressed ())
+        {
+            final ColorEx [] colors = new ColorEx [8];
+            final ITextDisplay d = this.surface.getTextDisplay ().clear ();
+            final int textLength = this.getTextLength ();
+            final IDeviceBank deviceBank = this.model.getCursorDevice ().getDeviceBank ();
+            final int extenderOffset = this.getExtenderOffset ();
+            for (int i = 0; i < 8; i++)
+            {
+                final IDevice device = deviceBank.getItem (extenderOffset + i);
+                if (device.doesExist ())
+                {
+                    d.setCell (0, i, StringUtils.shortenAndFixASCII (device.getName (), textLength));
+                    colors[i] = ColorEx.WHITE;
+                }
+                else
+                    colors[i] = ColorEx.BLACK;
+            }
+            d.allDone ();
+
+            this.surface.sendDisplayColor (colors);
+            return;
+        }
+
+        super.updateDisplay ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     protected void drawTrackNameHeader ()
     {
         if (this.pinFXtoLastDevice)
@@ -117,4 +156,52 @@ public class DeviceParamsMode extends BaseMode<IParameter>
         else
             this.drawParameterHeader ();
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onButton (final int row, final int index, final ButtonEvent event)
+    {
+        if (this.surface.isShiftPressed () && row == 0)
+        {
+            if (event == ButtonEvent.DOWN)
+            {
+                final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+                if (cursorDevice.doesExist ())
+                {
+                    final IDeviceBank deviceBank = cursorDevice.getDeviceBank ();
+                    final int pageSize = deviceBank.getPageSize ();
+                    final int pos = (cursorDevice.getPosition () / pageSize) * pageSize;
+                    deviceBank.selectItemAtPosition (pos + this.getExtenderOffset () + index);
+                }
+            }
+            return;
+        }
+
+        super.onButton (row, index, event);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateKnobLEDs ()
+    {
+        if (!this.surface.isShiftPressed ())
+        {
+            super.updateKnobLEDs ();
+            return;
+        }
+
+        final int upperBound = this.model.getValueChanger ().getUpperBound ();
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        final IDeviceBank deviceBank = cursorDevice.getDeviceBank ();
+        final int extenderOffset = this.getExtenderOffset ();
+
+        for (int i = 0; i < 8; i++)
+        {
+            final IDevice device = deviceBank.getItem (extenderOffset + i);
+            this.surface.setKnobLED (i, MCUControlSurface.KNOB_LED_MODE_WRAP, device.doesExist () && device.getPosition () == cursorDevice.getPosition () ? upperBound - 1 : 0, upperBound);
+        }
+    }
+
 }

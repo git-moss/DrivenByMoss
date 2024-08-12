@@ -4,6 +4,7 @@
 
 package de.mossgrabers.controller.mackie.hui;
 
+import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.IntSupplier;
 
@@ -16,9 +17,11 @@ import de.mossgrabers.controller.mackie.hui.command.trigger.ZoomCommand;
 import de.mossgrabers.controller.mackie.hui.controller.HUIControlSurface;
 import de.mossgrabers.controller.mackie.hui.controller.HUIDisplay;
 import de.mossgrabers.controller.mackie.hui.controller.HUISegmentDisplay;
-import de.mossgrabers.controller.mackie.hui.mode.track.AbstractTrackMode;
+import de.mossgrabers.controller.mackie.hui.mode.HUIMode;
+import de.mossgrabers.controller.mackie.hui.mode.device.DeviceParamsMode;
 import de.mossgrabers.controller.mackie.hui.mode.track.PanMode;
 import de.mossgrabers.controller.mackie.hui.mode.track.SendMode;
+import de.mossgrabers.controller.mackie.hui.mode.track.TrackMode;
 import de.mossgrabers.controller.mackie.hui.mode.track.VolumeMode;
 import de.mossgrabers.framework.command.continuous.JogWheelCommand;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
@@ -31,9 +34,11 @@ import de.mossgrabers.framework.command.trigger.application.PanelLayoutCommand;
 import de.mossgrabers.framework.command.trigger.application.SaveCommand;
 import de.mossgrabers.framework.command.trigger.application.UndoCommand;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
+import de.mossgrabers.framework.command.trigger.device.AddEffectCommand;
 import de.mossgrabers.framework.command.trigger.mode.ButtonRowModeCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeCursorCommand;
 import de.mossgrabers.framework.command.trigger.mode.ModeSelectCommand;
+import de.mossgrabers.framework.command.trigger.track.AddTrackCommand;
 import de.mossgrabers.framework.command.trigger.track.MuteCommand;
 import de.mossgrabers.framework.command.trigger.track.RecArmAllCommand;
 import de.mossgrabers.framework.command.trigger.track.RecArmCommand;
@@ -66,7 +71,9 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.constants.AutomationMode;
+import de.mossgrabers.framework.daw.constants.DeviceID;
 import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
@@ -143,11 +150,10 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
     {
         final ModelSetup ms = new ModelSetup ();
         ms.enableMainDrumDevice (false);
+        ms.enableDevice (DeviceID.EQ);
         ms.setHasFullFlatTrackList (true);
         ms.setNumTracks (8 * this.numHUIDevices);
-        ms.setNumSends (5);
-        ms.setNumParamPages (0);
-        ms.setNumParams (0);
+        ms.setNumSends (6);
         ms.setNumScenes (0);
         ms.setNumFilterColumnEntries (8);
         ms.setNumResults (8);
@@ -189,10 +195,13 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         {
             final HUIControlSurface surface = this.getSurface (index);
             final ModeManager modeManager = surface.getModeManager ();
+            modeManager.register (Modes.TRACK, new TrackMode (surface, this.model));
             modeManager.register (Modes.VOLUME, new VolumeMode (surface, this.model));
             modeManager.register (Modes.PAN, new PanMode (surface, this.model));
             for (int i = 0; i < 5; i++)
                 modeManager.register (Modes.get (Modes.SEND1, i), new SendMode (i, surface, this.model));
+            modeManager.register (Modes.DEVICE_PARAMS, new DeviceParamsMode (surface, this.model));
+            modeManager.register (Modes.EQ_DEVICE_PARAMS, new DeviceParamsMode ("Equalizer", this.model.getSpecificDevice (DeviceID.EQ), surface, this.model));
         }
     }
 
@@ -258,25 +267,29 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
                 final int channelIdx = index * 8 + channel;
 
                 this.addButtonHUI (surface, ButtonID.get (ButtonID.FADER_TOUCH_1, channel), "Fader " + (channel + 1), new FaderTouchCommand (channelIdx, this.model, surface), HUIControlSurface.HUI_FADER1 + channel * 8);
-                this.addButtonHUI (surface, ButtonID.get (ButtonID.ROW1_1, channel), "VSelect " + (channel + 1), new ButtonRowModeCommand<> (0, channel, this.model, surface), HUIControlSurface.HUI_VSELECT1 + channel * 8);
 
                 final ButtonID selectButtonID = ButtonID.get (ButtonID.ROW_SELECT_1, channel);
                 this.addButtonHUI (surface, selectButtonID, "Select " + (channel + 1), new SelectCommand<> (channelIdx, this.model, surface), HUIControlSurface.HUI_SELECT1 + channel * 8, () -> this.getButtonColor (surface, selectButtonID));
 
-                final ButtonID muteButtonID = ButtonID.get (ButtonID.ROW4_1, channel);
-                this.addButtonHUI (surface, muteButtonID, "Mute " + (channel + 1), new MuteCommand<> (channelIdx, this.model, surface), HUIControlSurface.HUI_MUTE1 + channel * 8, () -> this.getButtonColor (surface, muteButtonID));
+                final ButtonRowModeCommand<HUIControlSurface, HUIConfiguration> knobPressCommand = new ButtonRowModeCommand<> (0, channel, this.model, surface);
+                this.addButtonHUI (surface, ButtonID.get (ButtonID.ROW1_1, channel), "VSelect " + (channel + 1), knobPressCommand, HUIControlSurface.HUI_VSELECT1 + channel * 8);
+
+                final ButtonID recArmButtonID = ButtonID.get (ButtonID.ROW2_1, channel);
+                this.addButtonHUI (surface, recArmButtonID, "Arm " + (channel + 1), new RecArmCommand<> (channelIdx, this.model, surface), HUIControlSurface.HUI_ARM1 + channel * 8, () -> this.getButtonColor (surface, recArmButtonID));
 
                 final ButtonID soloButtonID = ButtonID.get (ButtonID.ROW3_1, channel);
                 this.addButtonHUI (surface, soloButtonID, "Solo " + (channel + 1), new SoloCommand<> (channelIdx, this.model, surface), HUIControlSurface.HUI_SOLO1 + channel * 8, () -> this.getButtonColor (surface, soloButtonID));
+
+                final ButtonID muteButtonID = ButtonID.get (ButtonID.ROW4_1, channel);
+                this.addButtonHUI (surface, muteButtonID, "Mute " + (channel + 1), new MuteCommand<> (channelIdx, this.model, surface), HUIControlSurface.HUI_MUTE1 + channel * 8, () -> this.getButtonColor (surface, muteButtonID));
 
                 // HUI_INSERT1 is used on icon for selection
                 final ButtonID insertButtonID = ButtonID.get (ButtonID.ROW5_1, channel);
                 this.addButtonHUI (surface, insertButtonID, "Insert " + (channel + 1), new SelectCommand<> (channelIdx, this.model, surface), HUIControlSurface.HUI_INSERT1 + channel * 8, () -> this.getButtonColor (surface, insertButtonID));
 
-                final ButtonID recArmButtonID = ButtonID.get (ButtonID.ROW2_1, channel);
-                this.addButtonHUI (surface, recArmButtonID, "Arm " + (channel + 1), new RecArmCommand<> (channelIdx, this.model, surface), HUIControlSurface.HUI_ARM1 + channel * 8, () -> this.getButtonColor (surface, recArmButtonID));
-
-                // HUI_AUTO1, not supported
+                // HUI_AUTO1 is used for knob press as well (e.g. used like this with X-Touch)
+                final ButtonID autoArmButtonID = ButtonID.get (ButtonID.ROW6_1, channel);
+                this.addButtonHUI (surface, autoArmButtonID, "Auto " + (channel + 1), knobPressCommand, HUIControlSurface.HUI_AUTO1 + channel * 8);
             }
 
             // Key commands
@@ -304,14 +317,14 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
             this.addButtonHUI (surface, ButtonID.MOVE_BANK_RIGHT, "Bank Right", new ModeCursorCommand<> (Direction.UP, this.model, surface), HUIControlSurface.HUI_BANK_RIGHT);
 
             // Assignment (mode selection)
-            // HUI_ASSIGN1_OUTPUT, not supported
-            // HUI_ASSIGN1_INPUT, not supported
+            this.addButtonHUI (surface, ButtonID.TRACK, "Track", new ModeSelectCommand<> (this.model, surface, Modes.TRACK), HUIControlSurface.HUI_ASSIGN1_INPUT, () -> modeManager.isActive (Modes.TRACK));
             this.addButtonHUI (surface, ButtonID.PAN_SEND, "Panorama", new ModeSelectCommand<> (this.model, surface, Modes.PAN), HUIControlSurface.HUI_ASSIGN1_PAN, () -> modeManager.isActive (Modes.PAN));
             this.addButtonHUI (surface, ButtonID.SEND1, "Send 1", new ModeSelectCommand<> (this.model, surface, Modes.SEND1), HUIControlSurface.HUI_ASSIGN1_SEND_A, () -> modeManager.isActive (Modes.SEND1));
             this.addButtonHUI (surface, ButtonID.SEND2, "Send 2", new ModeSelectCommand<> (this.model, surface, Modes.SEND2), HUIControlSurface.HUI_ASSIGN1_SEND_B, () -> modeManager.isActive (Modes.SEND2));
             this.addButtonHUI (surface, ButtonID.SEND3, "Send 3", new ModeSelectCommand<> (this.model, surface, Modes.SEND3), HUIControlSurface.HUI_ASSIGN1_SEND_C, () -> modeManager.isActive (Modes.SEND3));
             this.addButtonHUI (surface, ButtonID.SEND4, "Send 4", new ModeSelectCommand<> (this.model, surface, Modes.SEND4), HUIControlSurface.HUI_ASSIGN1_SEND_D, () -> modeManager.isActive (Modes.SEND4));
             this.addButtonHUI (surface, ButtonID.SEND5, "Send 5", new ModeSelectCommand<> (this.model, surface, Modes.SEND5), HUIControlSurface.HUI_ASSIGN1_SEND_E, () -> modeManager.isActive (Modes.SEND5));
+            this.addButtonHUI (surface, ButtonID.PAGE_LEFT, "EQ", new ModeSelectCommand<> (this.model, surface, Modes.EQ_DEVICE_PARAMS), HUIControlSurface.HUI_ASSIGN1_OUTPUT, () -> modeManager.isActive (Modes.EQ_DEVICE_PARAMS));
 
             // Assignment 2
             // HUI_ASSIGN2_ASSIGN, not supported
@@ -319,7 +332,7 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
             // HUI_ASSIGN2_SUSPEND, not supported
             // HUI_ASSIGN2_SHIFT, not supported
             // HUI_ASSIGN2_MUTE, not supported
-            // HUI_ASSIGN2_BYPASS, not supported
+            this.addButtonHUI (surface, ButtonID.DEVICE, "Device", new ModeSelectCommand<> (this.model, surface, Modes.DEVICE_PARAMS), HUIControlSurface.HUI_ASSIGN2_BYPASS, () -> modeManager.isActive (Modes.DEVICE_PARAMS));
 
             // HUI_ASSIGN2_RECRDYAL
             this.addButtonHUI (surface, ButtonID.REC_ARM_ALL, "RecRdyAll", new RecArmAllCommand<> (this.model, surface), HUIControlSurface.HUI_ASSIGN2_RECRDYAL);
@@ -419,7 +432,9 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
             // HUI_STATUS_GROUP, not supported
 
             // Edit
-            // HUI_EDIT_PASTE, not supported
+            this.addButtonHUI (surface, ButtonID.ADD_TRACK, "Paste", new AddTrackCommand<> (this.model, surface), HUIControlSurface.HUI_EDIT_PASTE);
+            this.addButtonHUI (surface, ButtonID.ADD_EFFECT, "Copy", new AddEffectCommand<> (this.model, surface), HUIControlSurface.HUI_EDIT_COPY);
+
             // HUI_EDIT_CUT, not supported
             // HUI_EDIT_CAPTURE, not supported
             // HUI_EDIT_DELETE, not supported
@@ -489,13 +504,13 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
         {
             final HUIControlSurface surface = this.getSurface (index);
 
-            for (int i = 0; i < 8; i++)
+            for (int channel = 0; channel < 8; channel++)
             {
-                final IHwFader fader = surface.createFader (ContinuousID.get (ContinuousID.FADER1, i), "Fader " + (i + 1), true);
-                fader.bind (new WorkaroundFader (index * 8 + i, this.model, surface));
+                final IHwFader fader = surface.createFader (ContinuousID.get (ContinuousID.FADER1, channel), "Fader " + (channel + 1), true);
+                fader.bind (new WorkaroundFader (index * 8 + channel, this.model, surface));
 
-                final IHwRelativeKnob knob = surface.createRelativeKnob (ContinuousID.get (ContinuousID.KNOB1, i), "Knob " + (i + 1));
-                knob.bind (new KnobRowModeCommand<> (i, this.model, surface));
+                final IHwRelativeKnob knob = surface.createRelativeKnob (ContinuousID.get (ContinuousID.KNOB1, channel), "Knob " + (channel + 1));
+                knob.bind (new KnobRowModeCommand<> (channel, this.model, surface));
             }
             final IHwFader fader = surface.createFader (ContinuousID.FADER_MASTER, "Master", true);
             if (this.configuration.hasMotorFaders ())
@@ -726,8 +741,8 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
             return;
 
         final IMode mode = surface.getModeManager ().get (modeID);
-        if (mode instanceof final AbstractTrackMode abstractMode)
-            abstractMode.updateKnobLEDs ();
+        if (mode instanceof final HUIMode huiMode)
+            huiMode.updateKnobLEDs ();
         this.updateIndication (modeID);
     }
 
@@ -738,19 +753,33 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
             return;
         this.currentMode = mode;
 
-        final ITrackBank tb = this.model.getTrackBank ();
-        final boolean isVolume = Modes.VOLUME == mode;
-        final boolean isPan = Modes.PAN == mode;
+        // Modes.SEND1
 
-        for (int i = 0; i < tb.getPageSize (); i++)
+        final boolean isTrack = mode == Modes.TRACK;
+        final boolean isVolume = mode == Modes.VOLUME;
+        final boolean isPan = mode == Modes.PAN;
+        final boolean isDevice = mode == Modes.DEVICE_PARAMS;
+        final boolean isEqDevice = mode == Modes.EQ_DEVICE_PARAMS;
+
+        final ITrackBank tb = this.model.getTrackBank ();
+        final Optional<ITrack> selectedTrack = tb.getSelectedItem ();
+        final IParameterBank parameterBank = this.model.getCursorDevice ().getParameterBank ();
+        final IParameterBank eqParameterBank = this.model.getSpecificDevice (DeviceID.EQ).getParameterBank ();
+
+        for (int i = 0; i < 8; i++)
         {
+            final boolean hasTrackSel = selectedTrack.isPresent () && selectedTrack.get ().getIndex () == i;
             final ITrack track = tb.getItem (i);
-            track.setVolumeIndication (isVolume);
-            track.setPanIndication (isPan);
+
+            track.setVolumeIndication ((isTrack && hasTrackSel) || isVolume);
+            track.setPanIndication ((isTrack && hasTrackSel) || isPan);
 
             final ISendBank sendBank = track.getSendBank ();
-            for (int j = 0; j < sendBank.getPageSize (); j++)
-                sendBank.getItem (j).setIndication (mode.ordinal () - Modes.SEND1.ordinal () == j);
+            for (int j = 0; j < 6; j++)
+                sendBank.getItem (j).setIndication ((isTrack && hasTrackSel) || mode == Modes.get (Modes.SEND1, j));
+
+            parameterBank.getItem (i).setIndication (isDevice);
+            eqParameterBank.getItem (i).setIndication (isEqDevice);
         }
     }
 }

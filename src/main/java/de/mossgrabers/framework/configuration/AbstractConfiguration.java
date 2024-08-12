@@ -376,6 +376,7 @@ public abstract class AbstractConfiguration implements Configuration
     private IEnumSetting                              midiEditChannelSetting;
     private IIntegerSetting                           pitchBendRangeSetting;
     private IEnumSetting                              enableMPESetting;
+    private IEnumSetting                              showPlayedChordsSetting;
 
     private final List<IEnumSetting>                  instrumentSettings                  = new ArrayList<> (7);
     private final List<IEnumSetting>                  audioSettings                       = new ArrayList<> (3);
@@ -444,6 +445,7 @@ public abstract class AbstractConfiguration implements Configuration
 
     private boolean                                   isMPEEnabled                        = false;
     private int                                       mpePitchBendRange                   = 48;
+    private boolean                                   showPlayedChords                    = true;
 
 
     /**
@@ -1669,6 +1671,18 @@ public abstract class AbstractConfiguration implements Configuration
     }
 
 
+    /**
+     * Activate the setting to display played chords.
+     *
+     * @param settingsUI The settings
+     * @param category The category to use
+     */
+    protected void activateShowPlayedChordsSetting (final ISettingsUI settingsUI, final String category)
+    {
+        this.showPlayedChordsSetting.addValueObserver (value -> this.showPlayedChords = ON_OFF_OPTIONS[1].equals (value));
+    }
+
+
     /** {@inheritDoc} */
     @Override
     public void notifyAllObservers ()
@@ -1926,6 +1940,14 @@ public abstract class AbstractConfiguration implements Configuration
     public boolean isMPEEnabled ()
     {
         return this.isMPEEnabled;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isShowPlayedChords ()
+    {
+        return this.showPlayedChords;
     }
 
 

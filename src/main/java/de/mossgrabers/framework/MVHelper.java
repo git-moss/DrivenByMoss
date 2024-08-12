@@ -467,6 +467,33 @@ public class MVHelper<S extends IControlSurface<C>, C extends Configuration>
 
 
     /**
+     * Display the state of the clip launcher automation.
+     */
+    public void notifyClipLauncherAutomation ()
+    {
+        this.delayDisplay ( () -> "Lnchr Autom.: " + (this.transport.isWritingClipLauncherAutomation () ? "On" : "Off"));
+    }
+
+
+    /**
+     * Display the state of the arranger automation.
+     */
+    public void notifyArrangerAutomation ()
+    {
+        this.delayDisplay ( () -> "Arr. Autom.: " + (this.transport.isWritingArrangerAutomation () ? "On" : "Off"));
+    }
+
+
+    /**
+     * Display the active automation write mode.
+     */
+    public void notifyAutomationWriteMode ()
+    {
+        this.delayDisplay ( () -> "Autom.: " + this.transport.getAutomationWriteMode ().getLabel ());
+    }
+
+
+    /**
      * Notify a text after 200ms.
      *
      * @param supplier The supplier to provide the text

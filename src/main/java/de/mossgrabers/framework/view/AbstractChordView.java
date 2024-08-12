@@ -4,11 +4,15 @@
 
 package de.mossgrabers.framework.view;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.MidiConstants;
+import de.mossgrabers.framework.utils.ChordIdentifier;
 
 
 /**
@@ -45,6 +49,8 @@ public class AbstractChordView<S extends IControlSurface<C>, C extends Configura
         { 3, 5, 11 },   // Add eleventh (11)
     };
     // @formatter:on
+
+    private List<Integer>          currentChord    = new ArrayList<> ();
 
 
     /**
@@ -93,5 +99,27 @@ public class AbstractChordView<S extends IControlSurface<C>, C extends Configura
             vel = config.isAccentActive () ? config.getFixedAccentValue () : velocity;
         for (final int element: chord)
             input.sendRawMidiEvent (MidiConstants.CMD_NOTE_ON + channel, element, vel);
+
+        synchronized (this.currentChord)
+        {
+            this.currentChord.clear ();
+            if (velocity > 0)
+            {
+                this.currentChord.add (Integer.valueOf (note));
+                for (int i = 0; i < chord.length; i++)
+                    this.currentChord.add (Integer.valueOf (chord[i]));
+            }
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected String getChordName ()
+    {
+        synchronized (this.currentChord)
+        {
+            return ChordIdentifier.identifyChord (this.currentChord);
+        }
     }
 }

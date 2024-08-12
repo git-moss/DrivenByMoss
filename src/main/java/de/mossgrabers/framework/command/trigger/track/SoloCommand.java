@@ -4,6 +4,8 @@
 
 package de.mossgrabers.framework.command.trigger.track;
 
+import java.util.Optional;
+
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.IControlSurface;
@@ -12,11 +14,9 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
-import java.util.Optional;
-
 
 /**
- * A command to toggle mute on a track. Additionally, toggles auto monitor if shifted.
+ * A command to toggle solo on a track. Additionally, toggles auto monitor if shifted.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration

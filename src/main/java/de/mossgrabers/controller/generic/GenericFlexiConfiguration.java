@@ -37,7 +37,6 @@ import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 import de.mossgrabers.framework.observer.IValueObserver;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.FileEx;
-import de.mossgrabers.framework.utils.Pair;
 
 
 /**
@@ -52,6 +51,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     private static final String                      TAG_MIDI_CHANNEL             = "MIDI_CHANNEL";
     private static final String                      TAG_RESOLUTION               = "RESOLUTION";
     private static final String                      TAG_KNOB_MODE                = "KNOB_MODE";
+    private static final String                      TAG_FUNCTION_LAYER           = "FUNCTION_LAYER";
     private static final String                      TAG_SEND_VALUE               = "SEND_VALUE";
     private static final String                      TAG_SEND_VALUE_WHEN_RECEIVED = "SEND_VALUE_WHEN_RECEIVED";
     private static final String                      TAG_COMMAND                  = "COMMAND";
@@ -72,7 +72,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     public static final List<String>                 OPTIONS_TYPE                 = List.of ("Off", "CC", "Note", "Program Change", "Pitchbend", "MMC");
 
     // @formatter:off
-    static final List<String>                        NUMBER_NAMES              = List.of (
+    static final List<String>                        NUMBER_NAMES                 = List.of (
         "00  MMC Reserved for extensions, CC Bank Select (MSB)",
         "01  MMC Stop, CC Modulation Wheel (MSB)",
         "02  MMC Play, CC Breath Controller (MSB)",
@@ -245,6 +245,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
     private static final List<String>                CONTROLLER_CHANNELS          = KEYBOARD_CHANNELS.subList (1, KEYBOARD_CHANNELS.size ());
     private static final List<String>                OPTIONS_RESOLUTION           = List.of ("7-bit", "14-bit");
+    private static final List<String>                FUNCTION_LAYERS              = List.of ("All", "Layer 1", "Layer 2", "Layer 3", "Layer 4", "Layer 5", "Layer 6", "Layer 7", "Layer 8", "Layer 9", "Layer 10");
 
     /** A setting of a slot has changed. */
     static final Integer                             SLOT_CHANGE                  = Integer.valueOf (1000);
@@ -258,6 +259,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     private IEnumSetting                             midiChannelSetting;
     private IEnumSetting                             resolutionSetting;
     private IEnumSetting                             knobModeSetting;
+    private IEnumSetting                             functionLayerSetting;
     private IEnumSetting                             sendValueSetting;
     private IEnumSetting                             sendValueWhenReceivedSetting;
     private final List<IEnumSetting>                 functionSettings             = new ArrayList<> (CommandCategory.values ().length);
@@ -374,9 +376,9 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         this.numberSetting = globalSettings.getEnumSetting ("Number:", category, NUMBER_NAMES, NUMBER_NAMES.get (0));
         this.midiChannelSetting = globalSettings.getEnumSetting ("Midi Channel:", category, CONTROLLER_CHANNELS, CONTROLLER_CHANNELS.get (0));
         this.resolutionSetting = globalSettings.getEnumSetting ("Resolution:", category, OPTIONS_RESOLUTION, OPTIONS_RESOLUTION.get (0));
-
         final String [] knobModeLabels = KnobMode.getLabels ();
         this.knobModeSetting = globalSettings.getEnumSetting ("Knob Mode:", category, knobModeLabels, knobModeLabels[0]);
+        this.functionLayerSetting = globalSettings.getEnumSetting ("Functions Layer:", category, FUNCTION_LAYERS, FUNCTION_LAYERS.get (0));
 
         ///////////////////////////////////////////////
         // Selected Slot - MIDI device update
@@ -468,6 +470,8 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
             this.getSelectedSlot ().setKnobMode (KnobMode.lookupByLabel (value));
             this.fixKnobMode ();
         });
+        this.functionLayerSetting.addValueObserver (value -> this.getSelectedSlot ().setFunctionLayer (lookupIndex (FUNCTION_LAYERS, value) - 1));
+
         this.sendValueSetting.addValueObserver (value -> this.getSelectedSlot ().setSendValue (AbstractConfiguration.lookupIndex (AbstractConfiguration.ON_OFF_OPTIONS, value) > 0));
         this.sendValueWhenReceivedSetting.addValueObserver (value -> this.getSelectedSlot ().setSendValueWhenReceived (AbstractConfiguration.lookupIndex (AbstractConfiguration.ON_OFF_OPTIONS, value) > 0));
 
@@ -531,6 +535,12 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         this.activateNoteRepeatSetting (documentSettings);
 
         this.slotSelectionSetting.addValueObserver (this::selectSlot);
+
+        ///////////////////////////////////////////////
+        // Transport
+
+        this.activateBehaviourOnPauseSetting (globalSettings);
+        this.activateBehaviourOnStopSetting (globalSettings);
     }
 
 
@@ -610,15 +620,16 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
 
 
     /**
-     * Get a matching configured slot command, if available.
+     * Get all matching configured slot commands, if any.
      *
      * @param type The type
      * @param number The number
      * @param midiChannel The MIDI channel
-     * @return The slot index or -1 if not found
+     * @return The list with all matching slot command, might be empty
      */
-    public int getSlotCommand (final int type, final int number, final int midiChannel)
+    public List<CommandSlot> getSlotCommands (final int type, final int number, final int midiChannel)
     {
+        final List<CommandSlot> results = new ArrayList<> ();
         for (int i = 0; i < this.commandSlots.length; i++)
         {
             final CommandSlot slot = this.commandSlots[i];
@@ -626,34 +637,10 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
             {
                 final int channel = slot.getMidiChannel ();
                 if (channel == midiChannel || channel == 16)
-                    return i;
+                    results.add (slot);
             }
         }
-        return -1;
-    }
-
-
-    /**
-     * Get a matching configured slot, if available.
-     *
-     * @param type The type
-     * @param number The number
-     * @param midiChannel The MIDI channel
-     * @return The slot or empty if not found
-     */
-    public Optional<Pair<Integer, CommandSlot>> getSlot (final int type, final int number, final int midiChannel)
-    {
-        for (int i = 0; i < this.commandSlots.length; i++)
-        {
-            final CommandSlot slot = this.commandSlots[i];
-            if (slot.getCommand () != FlexiCommand.OFF && slot.getType () == type && (type == CommandSlot.TYPE_PITCH_BEND || slot.getNumber () == number))
-            {
-                final int channel = slot.getMidiChannel ();
-                if (channel == midiChannel || channel == 16)
-                    return Optional.of (new Pair<> (Integer.valueOf (i), slot));
-            }
-        }
-        return Optional.empty ();
+        return results;
     }
 
 
@@ -874,6 +861,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
             props.put (slotName + TAG_MIDI_CHANNEL, Integer.toString (slot.getMidiChannel ()));
             props.put (slotName + TAG_RESOLUTION, Boolean.toString (slot.getResolution ()));
             props.put (slotName + TAG_KNOB_MODE, Integer.toString (slot.getKnobMode ().ordinal ()));
+            props.put (slotName + TAG_FUNCTION_LAYER, Integer.toString (slot.getFunctionLayer ()));
             props.put (slotName + TAG_COMMAND, slot.getCommand ().getName ());
             props.put (slotName + TAG_SEND_VALUE, Boolean.toString (slot.isSendValue ()));
             props.put (slotName + TAG_SEND_VALUE_WHEN_RECEIVED, Boolean.toString (slot.isSendValueWhenReceived ()));
@@ -924,12 +912,14 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
                     final String numberProperty = props.getProperty (slotName + TAG_NUMBER);
                     final String midiChannelProperty = props.getProperty (slotName + TAG_MIDI_CHANNEL);
                     final String knobModeProperty = props.getProperty (slotName + TAG_KNOB_MODE);
+                    final String functionLayerProperty = props.getProperty (slotName + TAG_FUNCTION_LAYER);
 
                     slot.setType (type);
                     slot.setNumber (numberProperty == null ? 0 : Integer.parseInt (numberProperty));
                     slot.setMidiChannel (midiChannelProperty == null ? 0 : Integer.parseInt (midiChannelProperty));
                     slot.setResolution (Boolean.parseBoolean (props.getProperty (slotName + TAG_RESOLUTION)));
                     slot.setKnobMode (readKnobMode (knobModeProperty));
+                    slot.setFunctionLayer (functionLayerProperty == null ? 0 : Integer.parseInt (functionLayerProperty));
                     slot.setCommand (command);
                     slot.setSendValue (Boolean.parseBoolean (props.getProperty (slotName + TAG_SEND_VALUE)));
                     slot.setSendValueWhenReceived (Boolean.parseBoolean (props.getProperty (slotName + TAG_SEND_VALUE_WHEN_RECEIVED)));
@@ -1004,6 +994,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         this.setMidiChannel (slot.getMidiChannel ());
         this.setResolution (slot.getResolution ());
         this.setKnobMode (slot.getKnobMode ());
+        this.setFunctionLayer (slot.getFunctionLayer () + 1);
         this.setSendValue (slot.isSendValue ());
         this.setSendValueWhenReceived (slot.isSendValueWhenReceived ());
         this.setCommand (slot.getCommand ());
@@ -1016,6 +1007,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         this.midiChannelSetting.setVisible (visible);
         this.resolutionSetting.setVisible (visible);
         this.knobModeSetting.setVisible (visible);
+        this.functionLayerSetting.setVisible (visible);
         this.sendValueSetting.setVisible (visible);
         this.sendValueWhenReceivedSetting.setVisible (visible);
         for (final IEnumSetting fs: this.functionSettings)
@@ -1075,6 +1067,17 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     private void setKnobMode (final KnobMode value)
     {
         this.knobModeSetting.set (value.getLabel ());
+    }
+
+
+    /**
+     * Set the function layer.
+     *
+     * @param functionLayerIndex The function layer index
+     */
+    private void setFunctionLayer (final int functionLayerIndex)
+    {
+        this.functionLayerSetting.set (FUNCTION_LAYERS.get (functionLayerIndex));
     }
 
 

@@ -122,7 +122,7 @@ public class FireConfiguration extends AbstractConfiguration
         ///////////////////////////
         // Hardware
 
-        final IIntegerSetting padBrightnessSetting = globalSettings.getRangeSetting ("Pad Brightness", CATEGORY_HARDWARE_SETUP, 0, 100, 1, "%", 100);
+        final IIntegerSetting padBrightnessSetting = globalSettings.getRangeSetting ("Pad Brightness", CATEGORY_HARDWARE_SETUP, 0, 100, 1, "%", 20);
         padBrightnessSetting.addValueObserver (value -> {
             this.padBrightness = value.intValue ();
             this.notifyObservers (PAD_BRIGHTNESS);

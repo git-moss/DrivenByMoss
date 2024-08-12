@@ -13,6 +13,7 @@ import de.mossgrabers.controller.generic.flexihandler.utils.MidiValue;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IScene;
+import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 
 
 /**
@@ -63,6 +64,8 @@ public class SceneHandler extends AbstractHandler
             FlexiCommand.SCENE_8_LAUNCH_ALT_SCENE,
             FlexiCommand.SCENE_SELECT_PREVIOUS_BANK,
             FlexiCommand.SCENE_SELECT_NEXT_BANK,
+            FlexiCommand.SCENE_SCROLL_BANK_PAGE_BY_1_LEFT,
+            FlexiCommand.SCENE_SCROLL_BANK_PAGE_BY_1_RIGHT,
             FlexiCommand.SCENE_CREATE_SCENE,
             FlexiCommand.SCENE_CREATE_SCENE_FROM_PLAYING_CLIPS
         };
@@ -73,7 +76,23 @@ public class SceneHandler extends AbstractHandler
     @Override
     public int getCommandValue (final FlexiCommand command)
     {
-        return -1;
+        final ISceneBank sceneBank = this.model.getSceneBank ();
+
+        switch (command)
+        {
+            case SCENE_SELECT_PREVIOUS_BANK:
+                return toMidiValue (sceneBank.canScrollPageBackwards ());
+            case SCENE_SELECT_NEXT_BANK:
+                return toMidiValue (sceneBank.canScrollPageForwards ());
+
+            case SCENE_SCROLL_BANK_PAGE_BY_1_LEFT:
+                return toMidiValue (sceneBank.canScrollBackwards ());
+            case SCENE_SCROLL_BANK_PAGE_BY_1_RIGHT:
+                return toMidiValue (sceneBank.canScrollForwards ());
+
+            default:
+                return -1;
+        }
     }
 
 
@@ -83,13 +102,15 @@ public class SceneHandler extends AbstractHandler
     {
         final boolean isButtonPressed = this.isButtonPressed (knobMode, value);
 
+        final ISceneBank sceneBank = this.model.getSceneBank ();
+
         switch (command)
         {
             // Scene 1-8: Launch Scene
             case SCENE_1_LAUNCH_SCENE, SCENE_2_LAUNCH_SCENE, SCENE_3_LAUNCH_SCENE, SCENE_4_LAUNCH_SCENE, SCENE_5_LAUNCH_SCENE, SCENE_6_LAUNCH_SCENE, SCENE_7_LAUNCH_SCENE, SCENE_8_LAUNCH_SCENE:
                 if (isButtonPressed)
                 {
-                    final IScene scene = this.model.getSceneBank ().getItem (command.ordinal () - FlexiCommand.SCENE_1_LAUNCH_SCENE.ordinal ());
+                    final IScene scene = sceneBank.getItem (command.ordinal () - FlexiCommand.SCENE_1_LAUNCH_SCENE.ordinal ());
                     scene.select ();
                     scene.launch (isButtonPressed, false);
                 }
@@ -99,7 +120,7 @@ public class SceneHandler extends AbstractHandler
             case SCENE_1_LAUNCH_ALT_SCENE, SCENE_2_LAUNCH_ALT_SCENE, SCENE_3_LAUNCH_ALT_SCENE, SCENE_4_LAUNCH_ALT_SCENE, SCENE_5_LAUNCH_ALT_SCENE, SCENE_6_LAUNCH_ALT_SCENE, SCENE_7_LAUNCH_ALT_SCENE, SCENE_8_LAUNCH_ALT_SCENE:
                 if (isButtonPressed)
                 {
-                    final IScene scene = this.model.getSceneBank ().getItem (command.ordinal () - FlexiCommand.SCENE_1_LAUNCH_ALT_SCENE.ordinal ());
+                    final IScene scene = sceneBank.getItem (command.ordinal () - FlexiCommand.SCENE_1_LAUNCH_ALT_SCENE.ordinal ());
                     scene.select ();
                     scene.launch (isButtonPressed, true);
                 }
@@ -108,13 +129,23 @@ public class SceneHandler extends AbstractHandler
             // Scene: Select Previous Bank
             case SCENE_SELECT_PREVIOUS_BANK:
                 if (isButtonPressed)
-                    this.model.getSceneBank ().selectPreviousPage ();
+                    sceneBank.selectPreviousPage ();
                 break;
 
             // Scene: Select Next Bank
             case SCENE_SELECT_NEXT_BANK:
                 if (isButtonPressed)
-                    this.model.getSceneBank ().selectNextPage ();
+                    sceneBank.selectNextPage ();
+                break;
+
+            case SCENE_SCROLL_BANK_PAGE_BY_1_LEFT:
+                if (isButtonPressed)
+                    sceneBank.scrollBackwards ();
+                break;
+
+            case SCENE_SCROLL_BANK_PAGE_BY_1_RIGHT:
+                if (isButtonPressed)
+                    sceneBank.scrollForwards ();
                 break;
 
             // Scene: Create Scene

@@ -22,6 +22,7 @@ import de.mossgrabers.controller.generic.flexihandler.DeviceHandler;
 import de.mossgrabers.controller.generic.flexihandler.EqHandler;
 import de.mossgrabers.controller.generic.flexihandler.FxTrackHandler;
 import de.mossgrabers.controller.generic.flexihandler.GlobalHandler;
+import de.mossgrabers.controller.generic.flexihandler.GrooveHandler;
 import de.mossgrabers.controller.generic.flexihandler.InstrumentDeviceHandler;
 import de.mossgrabers.controller.generic.flexihandler.LayerHandler;
 import de.mossgrabers.controller.generic.flexihandler.LayoutHandler;
@@ -328,6 +329,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
     private void registerHandlers (final GenericFlexiControlSurface surface)
     {
         surface.registerHandler (new GlobalHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.signedBit2RelativeValueChanger, this.offsetBinaryRelativeValueChanger));
+        surface.registerHandler (new GrooveHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.signedBit2RelativeValueChanger, this.offsetBinaryRelativeValueChanger));
         surface.registerHandler (new TransportHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.signedBit2RelativeValueChanger, this.offsetBinaryRelativeValueChanger));
         surface.registerHandler (new LayoutHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.signedBit2RelativeValueChanger, this.offsetBinaryRelativeValueChanger));
         surface.registerHandler (new TrackHandler (this.model, surface, this.configuration, this.absoluteLowResValueChanger, this.signedBitRelativeValueChanger, this.signedBit2RelativeValueChanger, this.offsetBinaryRelativeValueChanger));

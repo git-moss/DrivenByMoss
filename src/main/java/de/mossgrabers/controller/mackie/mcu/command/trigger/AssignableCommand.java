@@ -23,8 +23,10 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class AssignableCommand extends FootswitchCommand<MCUControlSurface, MCUConfiguration>
 {
-    private final ModeSwitcher   switcher;
-    private final MCUFlipCommand flipCommand;
+    private final ModeSwitcher            switcher;
+    private final MCUFlipCommand          flipCommand;
+    private final MCUMoveTrackBankCommand previousTrackCommand;
+    private final MCUMoveTrackBankCommand nextTrackCommand;
 
 
     /**
@@ -40,6 +42,9 @@ public class AssignableCommand extends FootswitchCommand<MCUControlSurface, MCUC
 
         this.switcher = new ModeSwitcher (surface);
         this.flipCommand = new MCUFlipCommand (model, surface);
+
+        this.previousTrackCommand = new MCUMoveTrackBankCommand (this.model, surface, true, true);
+        this.nextTrackCommand = new MCUMoveTrackBankCommand (this.model, surface, true, false);
     }
 
 
@@ -98,6 +103,14 @@ public class AssignableCommand extends FootswitchCommand<MCUControlSurface, MCUC
             case MCUConfiguration.FOOTSWITCH_DEVICE_ON_OFF:
                 if (event == ButtonEvent.DOWN)
                     this.model.getCursorDevice ().toggleEnabledState ();
+                break;
+
+            case MCUConfiguration.PREV_CHANNEL:
+                this.previousTrackCommand.execute (event, velocity);
+                break;
+
+            case MCUConfiguration.NEXT_CHANNEL:
+                this.nextTrackCommand.execute (event, velocity);
                 break;
 
             case MCUConfiguration.FOOTSWITCH_ACTION:
@@ -179,6 +192,8 @@ public class AssignableCommand extends FootswitchCommand<MCUControlSurface, MCUC
             case AbstractConfiguration.FOOTSWITCH_QUANTIZE:
             case MCUConfiguration.FOOTSWITCH_PREV_MODE:
             case MCUConfiguration.FOOTSWITCH_NEXT_MODE:
+            case MCUConfiguration.PREV_CHANNEL:
+            case MCUConfiguration.NEXT_CHANNEL:
             default:
                 return false;
         }

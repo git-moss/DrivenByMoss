@@ -235,6 +235,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             ms.setNumFxTracks (8);
             ms.setNumDeviceLayers (numReduced);
             ms.setNumDrumPadLayers (numReduced);
+            ms.setNumDevicesInBank (numReduced);
             ms.setNumParams (numReduced);
         }
         else
@@ -242,6 +243,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             ms.setNumTracks (8 * this.numMCUDevices);
             ms.setNumDeviceLayers (8 * this.numMCUDevices);
             ms.setNumDrumPadLayers (8 * this.numMCUDevices);
+            ms.setNumDevicesInBank (8 * this.numMCUDevices);
             ms.setNumParams (8 * this.numMCUDevices);
         }
 

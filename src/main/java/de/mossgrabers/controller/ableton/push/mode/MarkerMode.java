@@ -14,6 +14,7 @@ import de.mossgrabers.framework.daw.data.IMarker;
 import de.mossgrabers.framework.daw.data.bank.IMarkerBank;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.featuregroup.AbstractMode;
+import de.mossgrabers.framework.parameterprovider.track.VolumeParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 
@@ -49,6 +50,8 @@ public class MarkerMode extends BaseMode<IMarker>
     public MarkerMode (final PushControlSurface surface, final IModel model)
     {
         super ("Marker", surface, model, model.getMarkerBank ());
+
+        this.setParameterProvider (new VolumeParameterProvider (model));
     }
 
 

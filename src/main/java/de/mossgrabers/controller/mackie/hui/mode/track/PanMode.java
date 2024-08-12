@@ -4,12 +4,12 @@
 
 package de.mossgrabers.controller.mackie.hui.mode.track;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.mackie.hui.controller.HUIControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.Modes;
-
-import java.util.Optional;
 
 
 /**
@@ -68,7 +68,7 @@ public class PanMode extends AbstractTrackMode
 
     /** {@inheritDoc} */
     @Override
-    protected void resetParameter (final int index)
+    public void resetParameter (final int index)
     {
         final Optional<ITrack> track = this.getTrack (index);
         if (track.isPresent ())

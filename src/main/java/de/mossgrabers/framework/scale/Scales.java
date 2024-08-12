@@ -827,7 +827,7 @@ public class Scales
 
 
     /**
-     * Calculate the additional notes of a chord. Adds the given intervals.Respects the current
+     * Calculate the additional notes of a chord. Adds the given intervals. Respects the current
      * octave, scale and scale base.
      *
      * @param baseNote The MIDI base note

@@ -152,8 +152,8 @@ public class PlayView extends AbstractPlayView<FireControlSurface, FireConfigura
         {
             if (isAltPressed)
             {
-                this.scales.prevScaleOffset ();
-                this.mvHelper.delayDisplay ( () -> Scales.BASES.get (this.scales.getScaleOffsetIndex ()));
+                this.scales.prevScaleLayout ();
+                this.mvHelper.delayDisplay ( () -> this.scales.getScaleLayout ().getName ());
             }
             else
             {
@@ -163,8 +163,8 @@ public class PlayView extends AbstractPlayView<FireControlSurface, FireConfigura
         }
         else if (isAltPressed)
         {
-            this.scales.prevScaleLayout ();
-            this.mvHelper.delayDisplay ( () -> this.scales.getScaleLayout ().getName ());
+            this.scales.prevScaleOffset ();
+            this.mvHelper.delayDisplay ( () -> Scales.BASES.get (this.scales.getScaleOffsetIndex ()));
         }
         else
         {
@@ -181,8 +181,8 @@ public class PlayView extends AbstractPlayView<FireControlSurface, FireConfigura
         {
             if (isAltPressed)
             {
-                this.scales.nextScaleOffset ();
-                this.mvHelper.delayDisplay ( () -> Scales.BASES.get (this.scales.getScaleOffsetIndex ()));
+                this.scales.nextScaleLayout ();
+                this.mvHelper.delayDisplay ( () -> this.scales.getScaleLayout ().getName ());
             }
             else
             {
@@ -192,8 +192,8 @@ public class PlayView extends AbstractPlayView<FireControlSurface, FireConfigura
         }
         else if (isAltPressed)
         {
-            this.scales.nextScaleLayout ();
-            this.mvHelper.delayDisplay ( () -> this.scales.getScaleLayout ().getName ());
+            this.scales.nextScaleOffset ();
+            this.mvHelper.delayDisplay ( () -> Scales.BASES.get (this.scales.getScaleOffsetIndex ()));
         }
         else
         {

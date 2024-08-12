@@ -46,8 +46,11 @@ public class FireStopCommand extends StopCommand<FireControlSurface, FireConfigu
     @Override
     public void executeShifted (final ButtonEvent event)
     {
-        if (event == ButtonEvent.UP)
-            this.model.getTransport ().toggleWriteClipLauncherAutomation ();
+        if (event != ButtonEvent.UP)
+            return;
+
+        this.transport.toggleWriteClipLauncherAutomation ();
+        this.mvHelper.notifyClipLauncherAutomation ();
     }
 
 
@@ -58,7 +61,10 @@ public class FireStopCommand extends StopCommand<FireControlSurface, FireConfigu
      */
     public void executeAlt (final ButtonEvent event)
     {
-        if (event == ButtonEvent.UP)
-            this.model.getTransport ().toggleWriteArrangerAutomation ();
+        if (event != ButtonEvent.UP)
+            return;
+
+        this.transport.toggleWriteArrangerAutomation ();
+        this.mvHelper.notifyArrangerAutomation ();
     }
 }

@@ -106,8 +106,12 @@ public class MCUConfiguration extends AbstractConfiguration
     public static final int           FOOTSWITCH_PUNCH_OUT                  = 21;
     /** Use a Function button to toggle the selected device on/off. */
     public static final int           FOOTSWITCH_DEVICE_ON_OFF              = 22;
+    /** Use a Function button to switch to previous channel. */
+    public static final int           PREV_CHANNEL                          = 23;
+    /** Use a Function button to switch to next channel. */
+    public static final int           NEXT_CHANNEL                          = 24;
     /** Use a Function button to execute an action. */
-    public static final int           FOOTSWITCH_ACTION                     = 23;
+    public static final int           FOOTSWITCH_ACTION                     = 25;
 
     private static final String       CATEGORY_EXTENDER_SETUP               = "Extender Setup (requires restart)";
     private static final String       CATEGORY_SEGMENT_DISPLAY              = "Segment Display";
@@ -160,6 +164,8 @@ public class MCUConfiguration extends AbstractConfiguration
         "Punch In",
         "Punch Out",
         "Device on/off",
+        "Channel Prev",
+        "Channel Next",
         "Action"
     };
 
