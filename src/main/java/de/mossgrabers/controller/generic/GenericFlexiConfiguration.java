@@ -630,9 +630,8 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     public List<CommandSlot> getSlotCommands (final int type, final int number, final int midiChannel)
     {
         final List<CommandSlot> results = new ArrayList<> ();
-        for (int i = 0; i < this.commandSlots.length; i++)
+        for (final CommandSlot slot: this.commandSlots)
         {
-            final CommandSlot slot = this.commandSlots[i];
             if (slot.getCommand () != FlexiCommand.OFF && slot.getType () == type && (type == CommandSlot.TYPE_PITCH_BEND || slot.getNumber () == number))
             {
                 final int channel = slot.getMidiChannel ();

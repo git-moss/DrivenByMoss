@@ -9,6 +9,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import de.mossgrabers.controller.mackie.mcu.MCUConfiguration;
+import de.mossgrabers.controller.mackie.mcu.MCUConfiguration.MainDisplay;
 import de.mossgrabers.controller.mackie.mcu.MCUConfiguration.SecondDisplay;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.display.AbstractTextDisplay;
@@ -26,8 +27,10 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public class MCUDisplay extends AbstractTextDisplay
 {
-    private static final String         SYSEX_DISPLAY_HEADER1_MAIN     = "F0 00 00 66 14 12 ";
-    private static final String         SYSEX_DISPLAY_HEADER1_EXTENDER = "F0 00 00 66 15 12 ";
+    private static final String         SYSEX_DISPLAY_HEADER           = "F0 00 00 66 ";
+    private static final String         SYSEX_DISPLAY_HEADER_MAIN      = SYSEX_DISPLAY_HEADER + "14 ";
+    private static final String         SYSEX_DISPLAY_HEADER1_MAIN     = SYSEX_DISPLAY_HEADER_MAIN + "12 ";
+    private static final String         SYSEX_DISPLAY_HEADER1_EXTENDER = SYSEX_DISPLAY_HEADER + "15 12 ";
     private static final String         SYSEX_DISPLAY_HEADER2          = "F0 00 00 67 15 13 ";
 
     private final boolean               isFirstDisplay;
@@ -53,7 +56,7 @@ public class MCUDisplay extends AbstractTextDisplay
      */
     public MCUDisplay (final IHost host, final IMidiOutput output, final boolean isFirst, final boolean isMCUExtender, final boolean isMainDevice, final Configuration configuration)
     {
-        super (host, output, 2 /* No of rows */, !isFirst && isMainDevice ? 9 : 8 /* No of cells */, 56);
+        super (host, output, 2 /* No of rows */, !isFirst && isMainDevice ? 9 : 8 /* No of cells */, 7 * 8);
 
         this.isFirstDisplay = isFirst;
         this.isMainDevice = isMainDevice;
@@ -73,7 +76,7 @@ public class MCUDisplay extends AbstractTextDisplay
     public void updateShortSecondDisplay ()
     {
         if (!this.isFirstDisplay && this.isMainDevice && this.configuration instanceof final MCUConfiguration conf)
-            this.setNumberOfCells (this.noOfLines, conf.hasDisplay2 () == SecondDisplay.QCON ? 9 : 8, this.noOfCharacters);
+            this.setNumberOfCells (this.noOfLines, conf.getSecondDisplayType () == SecondDisplay.QCON ? 9 : 8, this.noOfCharacters);
     }
 
 
@@ -85,6 +88,17 @@ public class MCUDisplay extends AbstractTextDisplay
     public void insertSpace (final boolean enable)
     {
         this.insertSpace = enable;
+    }
+
+
+    /**
+     * Changes the number of characters available on the display.
+     *
+     * @param numberOfCharacters The number of characters of a row
+     */
+    public void changeDisplaySize (final int numberOfCharacters)
+    {
+        this.setNumberOfCells (this.noOfLines, this.noOfCells, numberOfCharacters);
     }
 
 
@@ -114,7 +128,7 @@ public class MCUDisplay extends AbstractTextDisplay
     protected void updateLine (final int row, final String text, final String previousText)
     {
         String t = text;
-        if (!this.isFirstDisplay && this.isMainDevice && this.configuration instanceof final MCUConfiguration conf && conf.hasDisplay2 () == SecondDisplay.QCON)
+        if (!this.isFirstDisplay && this.isMainDevice && this.configuration instanceof final MCUConfiguration conf && conf.getSecondDisplayType () == SecondDisplay.QCON)
         {
             // If a 9th master cell should be added
             if (row == 0)
@@ -137,11 +151,32 @@ public class MCUDisplay extends AbstractTextDisplay
         executor.execute ( () -> {
             try
             {
-                final int length = text.length ();
-                final int [] array = new int [length];
-                for (int i = 0; i < length; i++)
-                    array[i] = text.charAt (i);
-                this.output.sendSysex (new StringBuilder (this.getHeader ()).append (row == 0 ? "00 " : "38 ").append (StringUtils.toHexStr (array)).append ("F7").toString ());
+                int offset = 0;
+                String t = text;
+                if (this.isAsparion () && previousText != null && text.length () == previousText.length ())
+                {
+                    for (int i = 0; i < text.length (); i++)
+                    {
+                        if (text.charAt (i) != previousText.charAt (i))
+                        {
+                            offset = i;
+                            break;
+                        }
+                    }
+                    int end = offset + 1;
+                    for (int i = previousText.length () - 1; i > offset; i--)
+                    {
+                        if (text.charAt (i) != previousText.charAt (i))
+                        {
+                            end = i;
+                            break;
+                        }
+                    }
+                    t = text.substring (offset, end + 1);
+                }
+
+                final String hexStr = StringUtils.toHexStr (t.getBytes ());
+                this.output.sendSysex (new StringBuilder (this.getHeader (row, offset)).append (hexStr).append ("F7").toString ());
             }
             catch (final RuntimeException ex)
             {
@@ -151,11 +186,29 @@ public class MCUDisplay extends AbstractTextDisplay
     }
 
 
-    private String getHeader ()
+    private String getHeader (final int row, final int offset)
     {
+        final StringBuilder header = new StringBuilder ();
+        final boolean isAsparion = this.isAsparion ();
+
         if (this.isFirstDisplay)
-            return this.isExtender ? SYSEX_DISPLAY_HEADER1_EXTENDER : SYSEX_DISPLAY_HEADER1_MAIN;
-        return SYSEX_DISPLAY_HEADER2;
+        {
+            if (isAsparion)
+                header.append (SYSEX_DISPLAY_HEADER_MAIN).append ("1A ").append (StringUtils.toHexStr (offset)).append (' ').append (row == 0 ? "01 " : "02 ");
+            else
+                header.append (this.isExtender ? SYSEX_DISPLAY_HEADER1_EXTENDER : SYSEX_DISPLAY_HEADER1_MAIN);
+        }
+        else
+        {
+            if (isAsparion)
+                header.append (SYSEX_DISPLAY_HEADER_MAIN).append ("19 ").append (StringUtils.toHexStr (offset)).append (' ');
+            else
+                header.append (SYSEX_DISPLAY_HEADER2);
+        }
+
+        if (!isAsparion)
+            header.append (row == 0 ? "00 " : "38 ");
+        return header.toString ();
     }
 
 
@@ -166,7 +219,12 @@ public class MCUDisplay extends AbstractTextDisplay
         if (this.isShutdown)
             return;
 
-        this.notifyOnDisplay ("Please  start " + this.host.getName () + " ...     ");
+        if (this.isFirstDisplay)
+        {
+            final boolean isAsparion = this.isAsparion ();
+            final String text = isAsparion ? "Please start " : "Please  start ";
+            this.notifyOnDisplay (text + this.host.getName () + " ...     ");
+        }
 
         // Prevent further sends
         this.isShutdown = true;
@@ -201,5 +259,11 @@ public class MCUDisplay extends AbstractTextDisplay
             this.host.error ("Display shutdown interrupted.", ex);
             Thread.currentThread ().interrupt ();
         }
+    }
+
+
+    private boolean isAsparion ()
+    {
+        return this.configuration instanceof final MCUConfiguration conf && conf.getMainDisplayType () == MainDisplay.ASPARION;
     }
 }

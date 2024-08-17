@@ -4,7 +4,7 @@
 
 package de.mossgrabers.controller.mackie.mcu.mode.track;
 
-import de.mossgrabers.controller.mackie.mcu.MCUConfiguration;
+import de.mossgrabers.controller.mackie.mcu.MCUConfiguration.MainDisplay;
 import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
 import de.mossgrabers.controller.mackie.mcu.mode.BaseMode;
 import de.mossgrabers.framework.controller.color.ColorEx;
@@ -121,8 +121,8 @@ public class MasterMode extends BaseMode<ITrack>
     @Override
     public void updateDisplay ()
     {
-        final MCUConfiguration conf = this.surface.getConfiguration ();
-        if (!conf.hasDisplay1 ())
+        final MainDisplay mainDisplayType = this.configuration.getMainDisplayType ();
+        if (mainDisplayType == MainDisplay.OFF)
             return;
 
         this.drawDisplay2 ();
@@ -139,7 +139,7 @@ public class MasterMode extends BaseMode<ITrack>
             final int textLength = this.getTextLength ();
             final IApplication application = this.model.getApplication ();
             d.setCell (0, 0, "Volume").setCell (0, 1, "Pan");
-            if (conf.shouldUse7Characters ())
+            if (mainDisplayType == MainDisplay.MACKIE_7_CHARACTERS)
             {
                 d.setBlock (0, 1, "  AudioEngine:").setCell (0, 4, application.isEngineActive () ? "On" : "Off");
                 d.setCell (0, 5, "Prjct:").setBlock (0, 3, projectName);

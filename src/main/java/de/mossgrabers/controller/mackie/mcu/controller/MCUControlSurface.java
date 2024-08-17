@@ -9,6 +9,7 @@ import java.util.List;
 
 import de.mossgrabers.controller.mackie.mcu.MCUConfiguration;
 import de.mossgrabers.controller.mackie.mcu.MCUConfiguration.DisplayColors;
+import de.mossgrabers.controller.mackie.mcu.MCUConfiguration.MainDisplay;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorEx;
@@ -16,6 +17,7 @@ import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
+import de.mossgrabers.framework.utils.StringUtils;
 
 
 /**
@@ -191,10 +193,12 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
     private int                           activeVuMode             = VUMODE_LED;
     private final int []                  knobValues               = new int [8];
     private byte []                       currentColors            = new byte [8];
+    private final int [] []               currentAsparionColors    = new int [8] [3];
 
     private final List<MCUControlSurface> surfaces;
     private final int                     extenderOffset;
     private final boolean                 isMainDevice;
+    private int []                        itemIndices              = new int [0];
 
 
     /**
@@ -219,6 +223,8 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
 
         Arrays.fill (this.knobValues, -1);
         Arrays.fill (this.currentColors, (byte) -1);
+        for (int i = 0; i < 8; i++)
+            Arrays.fill (this.currentAsparionColors[i], -1);
     }
 
 
@@ -236,9 +242,14 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
         output.sendChannelAftertouch (1, 0x10, 0);
         output.sendPitchbend (8, 0, 0);
 
+        // Switch off knob LEDs
+        for (int i = 0; i < 8; i++)
+            this.setKnobLED (i, KNOB_LED_MODE_SINGLE_DOT, 0, 127);
+
+        final boolean isAsparion = this.configuration.hasDisplayColors () == DisplayColors.ASPARION;
         final ColorEx [] colors = new ColorEx [8];
         for (int i = 0; i < 8; i++)
-            colors[i] = ColorEx.WHITE;
+            colors[i] = isAsparion ? ColorEx.BLACK : ColorEx.WHITE;
         this.sendDisplayColor (colors);
 
         super.internalShutdown ();
@@ -267,18 +278,50 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
      */
     public void setKnobLED (final int index, final int knobLEDMode, final int value, final int maxValue)
     {
-        // value = 0 turns the LEDs off, value range is 1-11, center is 6
-        int rescale = (int) Math.round (value * 11.0 / maxValue);
-        if (value > 0 && rescale == 0)
-            rescale = 1;
-        int v = knobLEDMode << 4;
-        v += rescale;
+        int v = 0;
+
+        final boolean isAsparion = this.configuration.hasDisplayColors () == DisplayColors.ASPARION;
+        if (isAsparion)
+        {
+            v = (int) Math.round (value * 127.0 / maxValue);
+        }
+        else
+        {
+            // value = 0 turns the LEDs off, value range is 1-11, center is 6
+            int rescale = (int) Math.round (value * 11.0 / maxValue);
+            if (value > 0 && rescale == 0)
+                rescale = 1;
+            v = knobLEDMode << 4;
+            v += rescale;
+        }
 
         if (this.knobValues[index] == v)
             return;
 
         this.knobValues[index] = v;
-        this.output.sendCC (0x30 + index, v);
+
+        if (isAsparion)
+            this.output.sendCCEx (knobLEDMode == MCUControlSurface.KNOB_LED_MODE_BOOST_CUT ? 2 : 1, 0x30 + index, v);
+        else
+            this.output.sendCC (0x30 + index, v);
+    }
+
+
+    /**
+     * Set the indices for the Asparion displays.
+     *
+     * @param values The indices for each slot
+     */
+    public void setItemIndices (final int [] values)
+    {
+        if (this.configuration.getMainDisplayType () != MainDisplay.ASPARION || Arrays.compare (this.itemIndices, values) == 0)
+            return;
+
+        this.itemIndices = values;
+        final StringBuilder msg = new StringBuilder (SYSEX_HDR).append ("17 00 ");
+        for (final int itemIndex: this.itemIndices)
+            msg.append (StringUtils.toHexStr (itemIndex % 128)).append (' ');
+        this.output.sendSysex (msg.append ("F7").toString ());
     }
 
 
@@ -359,65 +402,81 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
      */
     public void sendDisplayColor (final ColorEx [] colors)
     {
-        final DisplayColors hasDisplayColors = this.configuration.hasDisplayColors ();
-        if (hasDisplayColors == DisplayColors.OFF)
-            return;
-
-        final byte [] sysexMessage;
-        if (hasDisplayColors == DisplayColors.BEHRINGER)
+        final IMidiOutput midiOutput = this.getMidiOutput ();
+        switch (this.configuration.hasDisplayColors ())
         {
-            ColorEx [] cs = colors;
-            if (this.isMainDevice && this.getTextDisplay ().isNotificationActive ())
-            {
-                cs = new ColorEx [8];
-                Arrays.fill (cs, ColorEx.WHITE);
-            }
+            case BEHRINGER:
+                ColorEx [] cs = colors;
+                if (this.isMainDevice && this.getTextDisplay ().isNotificationActive ())
+                {
+                    cs = new ColorEx [8];
+                    Arrays.fill (cs, ColorEx.WHITE);
+                }
 
-            final byte [] displayColors = new byte [8];
-            for (int i = 0; i < 8; i++)
-                displayColors[i] = toIndex (cs[i] == null ? ColorEx.BLACK : cs[i]);
+                final byte [] displayColors = new byte [8];
+                for (int i = 0; i < 8; i++)
+                    displayColors[i] = toIndex (cs[i] == null ? ColorEx.BLACK : cs[i]);
 
-            if (Arrays.compare (displayColors, this.currentColors) == 0)
+                if (Arrays.compare (displayColors, this.currentColors) == 0)
+                    return;
+
+                this.currentColors = displayColors;
+
+                final byte [] msg1 = new byte [15];
+                msg1[0] = (byte) 0xF0;
+                msg1[1] = 0x00;
+                msg1[2] = 0x00;
+                msg1[3] = 0x66;
+                msg1[4] = this.isMainDevice ? (byte) 0x14 : (byte) 0x15;
+                msg1[5] = 0x72;
+                for (int i = 0; i < 8; i++)
+                    msg1[6 + i] = displayColors[i];
+                msg1[14] = (byte) 0xF7;
+                midiOutput.sendSysex (msg1);
+                break;
+
+            case ICON:
+                final byte [] msg2 = new byte [31];
+                msg2[0] = (byte) 0xF0;
+                msg2[1] = 0x00;
+                msg2[2] = 0x02;
+                msg2[3] = 0x4E;
+                msg2[4] = 0x16;
+                msg2[5] = 0x14;
+                for (int i = 0; i < 8; i++)
+                {
+                    final int [] rgb = colors[i].toIntRGB127 ();
+                    msg2[6 + 3 * i + 0] = (byte) rgb[0];
+                    msg2[6 + 3 * i + 1] = (byte) rgb[1];
+                    msg2[6 + 3 * i + 2] = (byte) rgb[2];
+                }
+                msg2[30] = (byte) 0xF7;
+
+                if (Arrays.compare (msg2, this.currentColors) == 0)
+                    return;
+                this.currentColors = msg2;
+                midiOutput.sendSysex (msg2);
+                break;
+
+            case ASPARION:
+                for (int i = 0; i < 8; i++)
+                {
+                    final int [] rgb = colors[i].toIntRGB127 ();
+                    if (Arrays.compare (rgb, this.currentAsparionColors[i]) == 0)
+                        return;
+                    this.currentAsparionColors[i] = rgb;
+
+                    final int note = 0x20 + i;
+                    midiOutput.sendNoteEx (1, note, rgb[0]);
+                    midiOutput.sendNoteEx (2, note, rgb[1]);
+                    midiOutput.sendNoteEx (3, note, rgb[2]);
+                }
+                break;
+
+            case OFF:
+            default:
                 return;
-
-            this.currentColors = displayColors;
-
-            sysexMessage = new byte [15];
-            sysexMessage[0] = (byte) 0xF0;
-            sysexMessage[1] = 0x00;
-            sysexMessage[2] = 0x00;
-            sysexMessage[3] = 0x66;
-            sysexMessage[4] = this.isMainDevice ? (byte) 0x14 : (byte) 0x15;
-            sysexMessage[5] = 0x72;
-            for (int i = 0; i < 8; i++)
-                sysexMessage[6 + i] = displayColors[i];
-            sysexMessage[14] = (byte) 0xF7;
         }
-        else
-        {
-            // iCON style
-            sysexMessage = new byte [31];
-            sysexMessage[0] = (byte) 0xF0;
-            sysexMessage[1] = 0x00;
-            sysexMessage[2] = 0x02;
-            sysexMessage[3] = 0x4E;
-            sysexMessage[4] = 0x16;
-            sysexMessage[5] = 0x14;
-            for (int i = 0; i < 8; i++)
-            {
-                final int [] rgb = colors[i].toIntRGB127 ();
-                sysexMessage[6 + 3 * i + 0] = (byte) rgb[0];
-                sysexMessage[6 + 3 * i + 1] = (byte) rgb[1];
-                sysexMessage[6 + 3 * i + 2] = (byte) rgb[2];
-            }
-            sysexMessage[30] = (byte) 0xF7;
-
-            if (Arrays.compare (sysexMessage, this.currentColors) == 0)
-                return;
-            this.currentColors = sysexMessage;
-        }
-
-        this.getMidiOutput ().sendSysex (sysexMessage);
     }
 
 

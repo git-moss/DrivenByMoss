@@ -19,7 +19,15 @@ public interface ITextDisplay extends IDisplay
      *
      * @return The number of lines (rows)
      */
-    int getNoOfLines ();
+    int getNumberOfLines ();
+
+
+    /**
+     * Get the number of characters of cell.
+     *
+     * @return The number of characters
+     */
+    int getNumberOfCellCharacters ();
 
 
     /**

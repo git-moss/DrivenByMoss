@@ -26,6 +26,7 @@ public class ModeSelectCommand<S extends IControlSurface<C>, C extends Configura
     protected final ModeManager modeManager;
     protected final Modes       modeId;
     protected final boolean     toggle;
+    protected final boolean     notify;
 
 
     /**
@@ -82,8 +83,26 @@ public class ModeSelectCommand<S extends IControlSurface<C>, C extends Configura
      */
     public ModeSelectCommand (final ModeManager modeManager, final IModel model, final S surface, final Modes modeId, final boolean toggle)
     {
+        this (modeManager, model, surface, modeId, toggle, true);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param modeManager The mode manager to use, uses the default mode manager if null
+     * @param model The model
+     * @param surface The surface
+     * @param modeId The ID of the mode to select
+     * @param toggle Activates the previous mode if the mode is already active and this flag is set
+     *            to true
+     * @param notify If true the mode change is notified in the display
+     */
+    public ModeSelectCommand (final ModeManager modeManager, final IModel model, final S surface, final Modes modeId, final boolean toggle, final boolean notify)
+    {
         super (model, surface);
 
+        this.notify = notify;
         this.modeManager = modeManager == null ? surface.getModeManager () : modeManager;
         this.modeId = modeId;
         this.toggle = toggle;
@@ -113,6 +132,7 @@ public class ModeSelectCommand<S extends IControlSurface<C>, C extends Configura
      */
     protected void displayMode ()
     {
-        this.surface.getDisplay ().notify (this.modeManager.getActive ().getName ());
+        if (this.notify)
+            this.surface.getDisplay ().notify (this.modeManager.getActive ().getName ());
     }
 }

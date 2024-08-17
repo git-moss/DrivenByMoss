@@ -218,7 +218,7 @@ public class ChordIdentifier
 
     /**
      * Returns the name of the chord for the given notes.
-     * 
+     *
      * @param notes The notes for which to identify the chord
      * @return The name of the chord or null if the notes contains less than 3 notes or is not
      *         known.
@@ -240,11 +240,11 @@ public class ChordIdentifier
             return null;
 
         final StringBuilder sb = new StringBuilder ();
-        for (int i = 0; i < pitchClasses.length; i++)
+        for (final int pitchClass: pitchClasses)
         {
             if (sb.length () > 0)
                 sb.append (", ");
-            sb.append (Scales.NOTE_NAMES.get (pitchClasses[i]));
+            sb.append (Scales.NOTE_NAMES.get (pitchClass));
         }
         return sb.toString ();
     }

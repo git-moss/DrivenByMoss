@@ -7,6 +7,7 @@ package de.mossgrabers.controller.mackie.mcu.command.trigger;
 import java.util.Optional;
 
 import de.mossgrabers.controller.mackie.mcu.MCUConfiguration;
+import de.mossgrabers.controller.mackie.mcu.MCUConfiguration.MainDisplay;
 import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
 import de.mossgrabers.controller.mackie.mcu.mode.device.UserMode;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
@@ -82,6 +83,8 @@ public class MCUMoveTrackBankCommand extends AbstractTriggerCommand<MCUControlSu
             return;
         }
 
+        final boolean shouldNotify = this.surface.getConfiguration ().getMainDisplayType () != MainDisplay.ASPARION;
+
         final ModeManager modeManager = this.surface.getModeManager ();
         final Modes activeID = modeManager.getActiveID ();
         switch (activeID)
@@ -97,7 +100,8 @@ public class MCUMoveTrackBankCommand extends AbstractTriggerCommand<MCUControlSu
                     else
                         cursorDevice.selectNext ();
                 }
-                this.notifySelectedDeviceAndParameterPage ();
+                if (shouldNotify)
+                    this.notifySelectedDeviceAndParameterPage ();
                 break;
 
             case USER:
@@ -111,7 +115,8 @@ public class MCUMoveTrackBankCommand extends AbstractTriggerCommand<MCUControlSu
                     for (final FeatureGroupManager<Modes, IMode> mm: modeManager.getConnectedManagers ())
                         ((UserMode) mm.get (Modes.USER)).setMode (this.moveLeft);
                 }
-                this.notifySelectedProjectAndParameterPage ();
+                if (shouldNotify)
+                    this.notifySelectedProjectAndParameterPage ();
                 break;
 
             case MARKERS:

@@ -179,7 +179,15 @@ public class DummyDisplay implements ITextDisplay
 
     /** {@inheritDoc} */
     @Override
-    public int getNoOfLines ()
+    public int getNumberOfLines ()
+    {
+        return 0;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getNumberOfCellCharacters ()
     {
         return 0;
     }

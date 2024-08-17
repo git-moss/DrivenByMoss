@@ -771,12 +771,12 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
             final boolean hasTrackSel = selectedTrack.isPresent () && selectedTrack.get ().getIndex () == i;
             final ITrack track = tb.getItem (i);
 
-            track.setVolumeIndication ((isTrack && hasTrackSel) || isVolume);
-            track.setPanIndication ((isTrack && hasTrackSel) || isPan);
+            track.setVolumeIndication (isTrack && hasTrackSel || isVolume);
+            track.setPanIndication (isTrack && hasTrackSel || isPan);
 
             final ISendBank sendBank = track.getSendBank ();
             for (int j = 0; j < 6; j++)
-                sendBank.getItem (j).setIndication ((isTrack && hasTrackSel) || mode == Modes.get (Modes.SEND1, j));
+                sendBank.getItem (j).setIndication (isTrack && hasTrackSel || mode == Modes.get (Modes.SEND1, j));
 
             parameterBank.getItem (i).setIndication (isDevice);
             eqParameterBank.getItem (i).setIndication (isEqDevice);

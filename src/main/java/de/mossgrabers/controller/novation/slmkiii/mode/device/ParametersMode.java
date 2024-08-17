@@ -38,10 +38,10 @@ public class ParametersMode extends AbstractParametersMode<IItem>
 
     private final BrowserCommand<SLMkIIIControlSurface, SLMkIIIConfiguration> browserCommand;
 
-    private final ISpecificDevice                                                   device;
+    private final ISpecificDevice                                             device;
 
-    private final int                                                               color;
-    private final int                                                               halfColor;
+    private final int                                                         color;
+    private final int                                                         halfColor;
 
 
     /**

@@ -118,9 +118,7 @@ public class TrackMode extends AbstractTrackMode
     public void resetParameter (final int index)
     {
         final Optional<ITrack> trackOpt = this.model.getTrackBank ().getSelectedItem ();
-        if (!trackOpt.isPresent ())
-            return;
-        if (this.surface.getExtenderOffset () > 0)
+        if (!trackOpt.isPresent () || this.surface.getExtenderOffset () > 0)
             return;
 
         final ITrack track = trackOpt.get ();

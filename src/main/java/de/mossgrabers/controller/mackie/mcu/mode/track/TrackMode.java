@@ -4,6 +4,10 @@
 
 package de.mossgrabers.controller.mackie.mcu.mode.track;
 
+import java.util.Arrays;
+import java.util.Optional;
+
+import de.mossgrabers.controller.mackie.mcu.MCUConfiguration.MainDisplay;
 import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
@@ -16,9 +20,6 @@ import de.mossgrabers.framework.parameterprovider.track.SelectedTrackParameterPr
 import de.mossgrabers.framework.parameterprovider.track.SendParameterProvider;
 import de.mossgrabers.framework.parameterprovider.track.VolumeParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
-
-import java.util.Arrays;
-import java.util.Optional;
 
 
 /**
@@ -74,14 +75,26 @@ public class TrackMode extends AbstractTrackMode
     protected void drawTrackNameHeader ()
     {
         this.drawParameterHeader ();
+
+        if (this.surface.getConfiguration ().getMainDisplayType () == MainDisplay.ASPARION && this.surface.getSurfaceID () == 0)
+        {
+            final Optional<ITrack> selectedTrack = this.model.getCurrentTrackBank ().getSelectedItem ();
+            if (selectedTrack.isEmpty ())
+                return;
+
+            final ITextDisplay display = this.surface.getTextDisplay ();
+            display.clearRow (0);
+            display.setCell (0, 0, StringUtils.shortenAndFixASCII (selectedTrack.get ().getName (), this.getTextLength ()));
+            display.done (0);
+        }
     }
 
 
     /** {@inheritDoc} */
     @Override
-    protected void drawParameterHeader ()
+    protected void drawParameterHeader (final ITextDisplay display, final int row)
     {
-        super.drawParameterHeader ();
+        super.drawParameterHeader (display, row);
 
         if (this.getExtenderOffset () == 0 && this.configuration.isDisplayTrackNames ())
         {
@@ -89,9 +102,24 @@ public class TrackMode extends AbstractTrackMode
             if (selectedTrack.isEmpty ())
                 return;
 
-            final ITextDisplay d = this.surface.getTextDisplay ();
-            d.setCell (0, 0, StringUtils.shortenAndFixASCII (selectedTrack.get ().getName (), this.getTextLength ()));
-            d.done (0);
+            display.setCell (row, 0, StringUtils.shortenAndFixASCII (selectedTrack.get ().getName (), this.getTextLength ()));
+            display.done (row);
         }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void updateItemIndices ()
+    {
+        final int [] indices = new int [8];
+        Arrays.fill (indices, 0);
+        if (this.getExtenderOffset () == 0)
+        {
+            final ITrack selectedTrack = this.model.getCursorTrack ();
+            if (selectedTrack.doesExist ())
+                indices[0] = selectedTrack.getPosition () + 1;
+        }
+        this.surface.setItemIndices (indices);
     }
 }

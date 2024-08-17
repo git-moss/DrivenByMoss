@@ -139,4 +139,31 @@ public abstract class AbstractLayerMode extends BaseMode<ILayer>
     {
         return model.getSpecificDevice (DeviceID.FIRST_INSTRUMENT);
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void updateDisplay ()
+    {
+        super.updateDisplay ();
+        this.updateItemIndices ();
+    }
+
+
+    protected void updateItemIndices ()
+    {
+        final ISpecificDevice device = getDevice (this.model);
+        final IChannelBank<? extends IChannel> layerBank = device.hasDrumPads () ? device.getDrumPadBank () : device.getLayerBank ();
+        final int extenderOffset = this.getExtenderOffset ();
+        final int [] indices = new int [8];
+        for (int i = 0; i < 8; i++)
+        {
+            final IChannel item = layerBank.getItem (extenderOffset + i);
+            if (item.doesExist ())
+                indices[i] = item.getPosition () + (device.hasDrumPads () ? 0 : 1);
+            else
+                indices[i] = 0;
+        }
+        this.surface.setItemIndices (indices);
+    }
 }

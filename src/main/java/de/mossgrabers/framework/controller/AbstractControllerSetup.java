@@ -4,6 +4,11 @@
 
 package de.mossgrabers.framework.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.BooleanSupplier;
+import java.util.function.IntSupplier;
+
 import de.mossgrabers.framework.command.core.ContinuousCommand;
 import de.mossgrabers.framework.command.core.PitchbendCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
@@ -38,11 +43,6 @@ import de.mossgrabers.framework.utils.IntConsumerSupplier;
 import de.mossgrabers.framework.utils.TestCallback;
 import de.mossgrabers.framework.utils.TestFramework;
 import de.mossgrabers.framework.view.Views;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.BooleanSupplier;
-import java.util.function.IntSupplier;
 
 
 /**
@@ -166,8 +166,15 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
     @Override
     public void flush ()
     {
-        for (final S surface: this.surfaces)
-            surface.flush ();
+        try
+        {
+            for (final S surface: this.surfaces)
+                surface.flush ();
+        }
+        catch (final Exception ex)
+        {
+            this.host.error ("Error during flush.", ex);
+        }
     }
 
 

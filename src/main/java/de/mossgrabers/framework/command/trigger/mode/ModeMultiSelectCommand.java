@@ -133,6 +133,9 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
         this.currentModeID = modeID;
         this.modeManager.setActive (modeID);
 
+        if (!this.shouldNotify ())
+            return;
+
         if (Modes.isSendMode (modeID))
         {
             final int sendIndex = modeID.ordinal () - Modes.SEND1.ordinal ();
@@ -140,5 +143,16 @@ public class ModeMultiSelectCommand<S extends IControlSurface<C>, C extends Conf
         }
         else
             this.surface.getDisplay ().notify (this.modeManager.get (modeID).getName ());
+    }
+
+
+    /**
+     * Overwrite if it should conditionally notify.
+     *
+     * @return True to notify
+     */
+    protected boolean shouldNotify ()
+    {
+        return true;
     }
 }

@@ -4,8 +4,10 @@
 
 package de.mossgrabers.controller.mackie.mcu.mode.device;
 
+import java.util.Arrays;
 import java.util.Optional;
 
+import de.mossgrabers.controller.mackie.mcu.MCUConfiguration.MainDisplay;
 import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
 import de.mossgrabers.controller.mackie.mcu.mode.BaseMode;
 import de.mossgrabers.framework.controller.color.ColorEx;
@@ -144,6 +146,21 @@ public class DeviceParamsMode extends BaseMode<IParameter>
         }
 
         super.updateDisplay ();
+
+        final int [] indices = new int [8];
+        Arrays.fill (indices, 0);
+        if (this.getExtenderOffset () == 0)
+        {
+            final ITrack selectedTrack = this.model.getCursorTrack ();
+            if (selectedTrack.doesExist ())
+                indices[0] = selectedTrack.getPosition () + 1;
+            if (this.device.doesExist ())
+            {
+                indices[1] = this.device.getPosition () + 1;
+                indices[2] = this.device.getParameterBank ().getPageBank ().getSelectedItemIndex () + 1;
+            }
+        }
+        this.surface.setItemIndices (indices);
     }
 
 
@@ -152,9 +169,36 @@ public class DeviceParamsMode extends BaseMode<IParameter>
     protected void drawTrackNameHeader ()
     {
         if (this.pinFXtoLastDevice)
+        {
             super.drawTrackNameHeader ();
-        else
-            this.drawParameterHeader ();
+            return;
+        }
+
+        this.drawParameterHeader ();
+
+        if (this.surface.getConfiguration ().getMainDisplayType () == MainDisplay.ASPARION && this.surface.getSurfaceID () == 0)
+        {
+            final ITextDisplay display = this.surface.getTextDisplay ();
+            display.clearRow (0);
+
+            final ITrack selectedTrack = this.model.getCursorTrack ();
+            if (selectedTrack.doesExist ())
+            {
+                final int textLength = this.getTextLength ();
+                display.setCell (0, 0, StringUtils.shortenAndFixASCII (selectedTrack.getName (), textLength));
+
+                if (this.device.doesExist ())
+                {
+                    display.setCell (0, 1, StringUtils.shortenAndFixASCII (this.device.getName (), textLength));
+
+                    final Optional<String> selectedPage = this.device.getParameterBank ().getPageBank ().getSelectedItem ();
+                    if (selectedPage.isPresent ())
+                        display.setCell (0, 2, StringUtils.shortenAndFixASCII (selectedPage.get (), textLength));
+                }
+            }
+
+            display.done (0);
+        }
     }
 
 
@@ -171,7 +215,7 @@ public class DeviceParamsMode extends BaseMode<IParameter>
                 {
                     final IDeviceBank deviceBank = cursorDevice.getDeviceBank ();
                     final int pageSize = deviceBank.getPageSize ();
-                    final int pos = (cursorDevice.getPosition () / pageSize) * pageSize;
+                    final int pos = cursorDevice.getPosition () / pageSize * pageSize;
                     deviceBank.selectItemAtPosition (pos + this.getExtenderOffset () + index);
                 }
             }
@@ -203,5 +247,4 @@ public class DeviceParamsMode extends BaseMode<IParameter>
             this.surface.setKnobLED (i, MCUControlSurface.KNOB_LED_MODE_WRAP, device.doesExist () && device.getPosition () == cursorDevice.getPosition () ? upperBound - 1 : 0, upperBound);
         }
     }
-
 }

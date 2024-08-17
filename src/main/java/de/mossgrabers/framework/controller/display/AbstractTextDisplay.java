@@ -92,9 +92,17 @@ public abstract class AbstractTextDisplay implements ITextDisplay
 
     /** {@inheritDoc} */
     @Override
-    public int getNoOfLines ()
+    public int getNumberOfLines ()
     {
         return this.noOfLines;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getNumberOfCellCharacters ()
+    {
+        return this.noOfCharacters;
     }
 
 

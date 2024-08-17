@@ -50,7 +50,7 @@ public class AbstractChordView<S extends IControlSurface<C>, C extends Configura
     };
     // @formatter:on
 
-    private List<Integer>          currentChord    = new ArrayList<> ();
+    private final List<Integer>    currentChord    = new ArrayList<> ();
 
 
     /**
@@ -106,8 +106,8 @@ public class AbstractChordView<S extends IControlSurface<C>, C extends Configura
             if (velocity > 0)
             {
                 this.currentChord.add (Integer.valueOf (note));
-                for (int i = 0; i < chord.length; i++)
-                    this.currentChord.add (Integer.valueOf (chord[i]));
+                for (final int element: chord)
+                    this.currentChord.add (Integer.valueOf (element));
             }
         }
     }

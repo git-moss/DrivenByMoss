@@ -4,6 +4,9 @@
 
 package de.mossgrabers.controller.mackie.mcu.mode.layer;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
@@ -18,9 +21,6 @@ import de.mossgrabers.framework.parameterprovider.special.EmptyParameterProvider
 import de.mossgrabers.framework.parameterprovider.special.RangeFilterParameterProvider;
 import de.mossgrabers.framework.parameterprovider.track.VolumeParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
-
-import java.util.Arrays;
-import java.util.Optional;
 
 
 /**
@@ -81,9 +81,9 @@ public class LayerMode extends AbstractLayerMode
 
     /** {@inheritDoc} */
     @Override
-    protected void drawParameterHeader ()
+    protected void drawParameterHeader (final ITextDisplay display, final int row)
     {
-        super.drawParameterHeader ();
+        super.drawParameterHeader (display, row);
 
         // Overwrite the label of the first cell
         if (this.surface.getExtenderOffset () == 0 && this.configuration.isDisplayTrackNames ())
@@ -94,9 +94,26 @@ public class LayerMode extends AbstractLayerMode
             if (selectedLayer.isEmpty ())
                 return;
 
-            final ITextDisplay d = this.surface.getTextDisplay ();
-            d.setCell (0, 0, StringUtils.shortenAndFixASCII (selectedLayer.get ().getName (), this.getTextLength ()));
-            d.done (0);
+            display.setCell (row, 0, StringUtils.shortenAndFixASCII (selectedLayer.get ().getName (), this.getTextLength ()));
+            display.done (row);
         }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void updateItemIndices ()
+    {
+        final int [] indices = new int [8];
+        Arrays.fill (indices, 0);
+        if (this.getExtenderOffset () == 0)
+        {
+            final ISpecificDevice device = getDevice (this.model);
+            final IChannelBank<? extends IChannel> layerBank = device.hasDrumPads () ? device.getDrumPadBank () : device.getLayerBank ();
+            final Optional<? extends IChannel> selectedItem = layerBank.getSelectedItem ();
+            if (selectedItem.isPresent ())
+                indices[0] = selectedItem.get ().getPosition () + 1;
+        }
+        this.surface.setItemIndices (indices);
     }
 }

@@ -6,8 +6,8 @@ package de.mossgrabers.controller.mackie.mcu.command.trigger;
 
 import de.mossgrabers.controller.mackie.mcu.MCUConfiguration;
 import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
+import de.mossgrabers.controller.mackie.mcu.mode.MCUMultiModeSwitcherCommand;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
-import de.mossgrabers.framework.command.trigger.mode.ModeSelectCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -20,8 +20,8 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class PanCommand extends AbstractTriggerCommand<MCUControlSurface, MCUConfiguration>
 {
-    private final ModeSelectCommand<MCUControlSurface, MCUConfiguration> trackModesCommand;
-    private final ModeSelectCommand<MCUControlSurface, MCUConfiguration> layerModesCommand;
+    private final MCUMultiModeSwitcherCommand trackModesCommand;
+    private final MCUMultiModeSwitcherCommand layerModesCommand;
 
 
     /**
@@ -34,8 +34,8 @@ public class PanCommand extends AbstractTriggerCommand<MCUControlSurface, MCUCon
     {
         super (model, surface);
 
-        this.trackModesCommand = new ModeSelectCommand<> (model, surface, Modes.PAN);
-        this.layerModesCommand = new ModeSelectCommand<> (model, surface, Modes.DEVICE_LAYER_PAN);
+        this.trackModesCommand = new MCUMultiModeSwitcherCommand (model, surface, Modes.PAN, Modes.TRACK);
+        this.layerModesCommand = new MCUMultiModeSwitcherCommand (model, surface, Modes.DEVICE_LAYER_PAN, Modes.DEVICE_LAYER);
     }
 
 

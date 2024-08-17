@@ -105,7 +105,7 @@ public class CommandSlot
 
     /**
      * Get the function layer.
-     * 
+     *
      * @return The index of the layer, -1 index All Layers
      */
     public int getFunctionLayer ()
@@ -182,7 +182,7 @@ public class CommandSlot
 
     /**
      * Set the function layer.
-     * 
+     *
      * @param layerIndex The index of the layer
      */
     public void setFunctionLayer (final int layerIndex)

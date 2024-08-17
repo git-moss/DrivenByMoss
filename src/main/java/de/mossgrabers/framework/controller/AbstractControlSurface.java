@@ -354,7 +354,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     @Override
     public void addTextDisplay (final ITextDisplay display)
     {
-        display.setHardwareDisplay (this.surfaceFactory.createTextDisplay (this.surfaceID, OutputID.get (OutputID.DISPLAY1, this.textDisplays.size ()), display.getNoOfLines ()));
+        display.setHardwareDisplay (this.surfaceFactory.createTextDisplay (this.surfaceID, OutputID.get (OutputID.DISPLAY1, this.textDisplays.size ()), display.getNumberOfLines ()));
         this.textDisplays.add (display);
     }
 

@@ -4,12 +4,17 @@
 
 package de.mossgrabers.controller.mackie.mcu.mode.device;
 
+import java.util.Arrays;
+import java.util.Optional;
+
+import de.mossgrabers.controller.mackie.mcu.MCUConfiguration.MainDisplay;
 import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
 import de.mossgrabers.controller.mackie.mcu.mode.BaseMode;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.bank.IBank;
+import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
@@ -83,13 +88,37 @@ public class UserMode extends BaseMode<IParameter>
         for (int i = 0; i < 8; i++)
         {
             final IParameter param = this.bank.getItem (extenderOffset + i);
-            d.setCell (0, i, param.doesExist () ? StringUtils.shortenAndFixASCII (param.getName (textLength), textLength) : "").setCell (1, i, StringUtils.shortenAndFixASCII (param.getDisplayedValue (textLength), textLength));
+            d.setCell (0, i, param.doesExist () ? StringUtils.shortenAndFixASCII (param.getName (textLength), textLength) : "");
+            d.setCell (1, i, StringUtils.shortenAndFixASCII (param.getDisplayedValue (textLength), textLength));
             colors[i] = param.doesExist () ? ColorEx.WHITE : ColorEx.BLACK;
+        }
+
+        if (this.surface.getConfiguration ().getMainDisplayType () == MainDisplay.ASPARION && this.surface.getSurfaceID () == 0)
+        {
+            d.clearRow (0);
+            d.setCell (0, 0, this.isProjectMode ? "Project" : "Track");
+            d.setCell (0, 1, "Parameters");
+
+            if (this.bank instanceof final IParameterBank parameterBank)
+            {
+                final Optional<String> selectedPage = parameterBank.getPageBank ().getSelectedItem ();
+                if (selectedPage.isPresent ())
+                    d.setCell (0, 2, StringUtils.shortenAndFixASCII (selectedPage.get (), this.getTextLength ()));
+            }
         }
 
         d.allDone ();
 
         this.surface.sendDisplayColor (colors);
+
+        final int [] indices = new int [8];
+        Arrays.fill (indices, 0);
+        if (this.getExtenderOffset () == 0)
+        {
+            if (this.bank instanceof final IParameterBank parameterBank)
+                indices[2] = parameterBank.getPageBank ().getSelectedItemIndex () + 1;
+        }
+        this.surface.setItemIndices (indices);
     }
 
 

@@ -97,7 +97,7 @@ public abstract class AbstractView<S extends IControlSurface<C>, C extends Confi
         if (!this.surface.getConfiguration ().isShowPlayedChords ())
             return;
 
-        final String chord = getChordName ();
+        final String chord = this.getChordName ();
         if (chord != null && !this.previousChord.equals (chord))
         {
             this.surface.getDisplay ().notify (chord);

@@ -19,7 +19,7 @@ public interface HUIMode
 
     /**
      * Reset the parameter.
-     * 
+     *
      * @param index THe index of the parameter
      */
     void resetParameter (int index);
