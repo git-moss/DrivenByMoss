@@ -15,6 +15,7 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 import de.mossgrabers.framework.scale.ScaleLayout;
+import de.mossgrabers.framework.view.Views;
 
 
 /**
@@ -24,15 +25,21 @@ import de.mossgrabers.framework.scale.ScaleLayout;
  */
 public class MaschineConfiguration extends AbstractConfiguration
 {
-    /** Setting for the ribbon mode. */
-    public static final Integer RIBBON_MODE = Integer.valueOf (50);
+    private static final Views [] PREFERRED_NOTE_VIEWS =
+    {
+        Views.PLAY,
+        Views.DRUM
+    };
 
-    private final Maschine      maschine;
+    /** Setting for the ribbon mode. */
+    public static final Integer   RIBBON_MODE          = Integer.valueOf (50);
+
+    private final Maschine        maschine;
 
     /** What does the ribbon send? **/
-    private RibbonMode          ribbonMode  = RibbonMode.PITCH_DOWN;
+    private RibbonMode            ribbonMode           = RibbonMode.PITCH_DOWN;
 
-    private IEnumSetting        ribbonModeSetting;
+    private IEnumSetting          ribbonModeSetting;
 
 
     /**
@@ -82,6 +89,8 @@ public class MaschineConfiguration extends AbstractConfiguration
         this.activateAccentValueSetting (globalSettings);
         this.activateQuantizeAmountSetting (globalSettings);
         this.activateTurnOffScalePadsSetting (globalSettings);
+        this.activateShowPlayedChordsSetting (globalSettings);
+        this.activateStartupViewSetting (globalSettings, PREFERRED_NOTE_VIEWS);
 
         final String [] ribbonModeNames = RibbonMode.getNames ();
         this.ribbonModeSetting = globalSettings.getEnumSetting ("Ribbon Mode", CATEGORY_PLAY_AND_SEQUENCE, ribbonModeNames, ribbonModeNames[0]);

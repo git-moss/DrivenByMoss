@@ -76,7 +76,7 @@ public class APCminiConfiguration extends AbstractConfiguration
         // Play and Sequence
 
         this.activateQuantizeAmountSetting (globalSettings);
-        this.activatePreferredNoteViewSetting (globalSettings, PREFERRED_NOTE_VIEWS);
+        this.activateStartupViewSetting (globalSettings, PREFERRED_NOTE_VIEWS);
         this.activateStartWithSessionViewSetting (globalSettings);
 
         ///////////////////////////

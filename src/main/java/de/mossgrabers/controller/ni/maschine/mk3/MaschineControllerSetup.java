@@ -1131,7 +1131,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
     {
         final MaschineControlSurface surface = this.getSurface ();
         surface.getModeManager ().setActive (Modes.VOLUME);
-        surface.getViewManager ().setActive (Views.PLAY);
+        surface.getViewManager ().setActive (this.configuration.getStartupView ());
     }
 
 

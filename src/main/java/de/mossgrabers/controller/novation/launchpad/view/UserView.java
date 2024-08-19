@@ -84,9 +84,10 @@ public class UserView extends AbstractFaderView
         if (!ButtonID.isSceneButton (buttonID))
             return;
         final int index = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
-        final IParameterBank bank = this.getBank ();
-        bank.scrollTo (index * bank.getPageSize ());
+        final IParameterPageBank pageBank = this.getBank ().getPageBank ();
+        pageBank.selectPage (index);
         this.bindCurrentPage ();
+        this.notifyPage ();
     }
 
 
@@ -100,16 +101,9 @@ public class UserView extends AbstractFaderView
         final int index = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
         final IParameterPageBank pageBank = this.getBank ().getPageBank ();
 
-        final int pageSize = pageBank.getPageSize ();
-        final int lastPage = pageBank.getItemCount () / pageSize;
-        if (index > lastPage || lastPage <= 0)
-            return LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
-
-        final int selected = pageBank.getScrollPosition () / pageSize;
-        if (index == selected)
+        if (pageBank.getSelectedItemIndex () == index)
             return LaunchpadColorManager.LAUNCHPAD_COLOR_ORCHID_HI;
-
-        return LaunchpadColorManager.LAUNCHPAD_COLOR_ORCHID_LO;
+        return index < pageBank.getItemCount () ? LaunchpadColorManager.LAUNCHPAD_COLOR_ORCHID_LO : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
     }
 
 

@@ -219,12 +219,8 @@ public class MCUDisplay extends AbstractTextDisplay
         if (this.isShutdown)
             return;
 
-        if (this.isFirstDisplay)
-        {
-            final boolean isAsparion = this.isAsparion ();
-            final String text = isAsparion ? "Please start " : "Please  start ";
-            this.notifyOnDisplay (text + this.host.getName () + " ...     ");
-        }
+        this.clear ().allDone ();
+        this.flush ();
 
         // Prevent further sends
         this.isShutdown = true;

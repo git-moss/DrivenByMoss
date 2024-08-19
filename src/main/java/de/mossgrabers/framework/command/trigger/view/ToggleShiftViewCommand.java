@@ -52,9 +52,13 @@ public class ToggleShiftViewCommand<S extends IControlSurface<C>, C extends Conf
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
+        if (this.surface.isPressed (ButtonID.ALT))
+            return;
+
         switch (event)
         {
             case DOWN:
+                this.surface.setKnobSensitivityIsSlow (true);
                 this.handleOnDown ();
                 break;
 
@@ -63,11 +67,10 @@ public class ToggleShiftViewCommand<S extends IControlSurface<C>, C extends Conf
                 return;
 
             case UP:
+                this.surface.setKnobSensitivityIsSlow (false);
                 this.handleUp ();
                 break;
         }
-
-        this.surface.setKnobSensitivityIsSlow (this.surface.isShiftPressed ());
     }
 
 
@@ -77,6 +80,7 @@ public class ToggleShiftViewCommand<S extends IControlSurface<C>, C extends Conf
         {
             this.viewManager.restore ();
             this.surface.setTriggerConsumed (ButtonID.SHIFT);
+            this.surface.setKnobSensitivityIsSlow (false);
             return;
         }
 

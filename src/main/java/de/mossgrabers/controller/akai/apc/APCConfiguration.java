@@ -77,10 +77,13 @@ public class APCConfiguration extends AbstractConfiguration
         // Play and Sequence
 
         this.activateQuantizeAmountSetting (globalSettings);
-        this.activatePreferredNoteViewSetting (globalSettings, PREFERRED_NOTE_VIEWS);
+        this.activateStartupViewSetting (globalSettings, PREFERRED_NOTE_VIEWS);
         this.activateStartWithSessionViewSetting (globalSettings);
         if (this.isMkII)
+        {
             this.activateTurnOffScalePadsSetting (globalSettings);
+            this.activateShowPlayedChordsSetting (globalSettings);
+        }
 
         ///////////////////////////
         // Transport

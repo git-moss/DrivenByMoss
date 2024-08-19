@@ -19,6 +19,7 @@ import de.mossgrabers.framework.daw.data.IEqualizerDevice;
 import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IDeviceBank;
+import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.parameterprovider.IParameterProvider;
@@ -191,9 +192,13 @@ public class DeviceParamsMode extends BaseMode<IParameter>
                 {
                     display.setCell (0, 1, StringUtils.shortenAndFixASCII (this.device.getName (), textLength));
 
-                    final Optional<String> selectedPage = this.device.getParameterBank ().getPageBank ().getSelectedItem ();
+                    final IParameterPageBank pageBank = this.device.getParameterBank ().getPageBank ();
+                    final Optional<String> selectedPage = pageBank.getSelectedItem ();
                     if (selectedPage.isPresent ())
+                    {
                         display.setCell (0, 2, StringUtils.shortenAndFixASCII (selectedPage.get (), textLength));
+                        display.setCell (0, 3, "Page " + (pageBank.getSelectedItemIndex () + 1) + "/" + pageBank.getItemCount ());
+                    }
                 }
             }
 

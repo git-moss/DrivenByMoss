@@ -540,7 +540,7 @@ public class MaschineJamControllerSetup extends AbstractControllerSetup<Maschine
     {
         final MaschineJamControlSurface surface = this.getSurface ();
         surface.getModeManager ().setActive (Modes.VOLUME);
-        surface.getViewManager ().setActive (this.configuration.shouldStartWithSessionView () ? Views.SESSION : this.configuration.getPreferredNoteView ());
+        surface.getViewManager ().setActive (this.configuration.shouldStartWithSessionView () ? Views.SESSION : this.configuration.getStartupView ());
     }
 
 

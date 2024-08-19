@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.novation.launchpad.view;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.novation.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.controller.novation.launchpad.command.trigger.SelectSessionViewCommand;
 import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadColorManager;
@@ -27,8 +29,6 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.Pair;
 import de.mossgrabers.framework.utils.ScrollStates;
 import de.mossgrabers.framework.view.AbstractSessionView;
-
-import java.util.Optional;
 
 
 /**
@@ -276,6 +276,9 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
             return;
         final int index = note - 36;
         this.onGridNoteBirdsEyeView (index % this.columns, this.rows - 1 - index / this.columns, 0);
+
+        if (this.surface.isPressed (ButtonID.SESSION))
+            this.setBirdsEyeActive (false);
     }
 
 

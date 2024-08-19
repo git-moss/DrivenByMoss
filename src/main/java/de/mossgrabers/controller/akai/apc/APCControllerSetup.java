@@ -670,7 +670,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
     {
         final APCControlSurface surface = this.getSurface ();
         surface.getModeManager ().setActive (Modes.PAN);
-        surface.getViewManager ().setActive (this.configuration.shouldStartWithSessionView () ? Views.SESSION : this.configuration.getPreferredNoteView ());
+        surface.getViewManager ().setActive (this.configuration.shouldStartWithSessionView () ? Views.SESSION : this.configuration.getStartupView ());
     }
 
 

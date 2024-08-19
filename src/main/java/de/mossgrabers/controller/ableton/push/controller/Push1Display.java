@@ -281,4 +281,24 @@ public class Push1Display extends AbstractTextDisplay
         }
         return menu;
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void updateNotification ()
+    {
+        final int blockLength = 17;
+        final String trimmed = this.notificationMessage.trim ();
+        final int length = trimmed.length ();
+        if (length > blockLength)
+        {
+            super.updateNotification ();
+            return;
+        }
+
+        String text = this.currentMessage[0].substring (0, this.noOfCharacters - blockLength) + StringUtils.pad (trimmed, blockLength);
+        this.updateLine (0, text, this.currentMessage[0]);
+        text = this.currentMessage[1].substring (0, this.noOfCharacters - blockLength) + StringUtils.pad ("", blockLength);
+        this.updateLine (1, text, this.currentMessage[1]);
+    }
 }

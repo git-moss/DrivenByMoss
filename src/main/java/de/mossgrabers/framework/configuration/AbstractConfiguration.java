@@ -131,7 +131,7 @@ public abstract class AbstractConfiguration implements Configuration
     /** Setting for the foot-switch functionality. */
     public static final Integer      FOOTSWITCH_4                    = Integer.valueOf (44);
     /** Preferred note view. */
-    public static final Integer      PREFERRED_NOTE_VIEW             = Integer.valueOf (45);
+    public static final Integer      STARTUP_VIEW                    = Integer.valueOf (45);
     /** Start with session view if active. */
     public static final Integer      START_WITH_SESSION_VIEW         = Integer.valueOf (46);
     /** The MPE on/off setting has changed. */
@@ -438,7 +438,7 @@ public abstract class AbstractConfiguration implements Configuration
 
     private RecordFunction                            recordButtonFunction                = RecordFunction.RECORD_ARRANGER;
     private RecordFunction                            shiftedRecordButtonFunction         = RecordFunction.NEW_CLIP;
-    private Views                                     preferredNoteView                   = Views.PLAY;
+    private Views                                     startupView                         = Views.PLAY;
     protected Views                                   preferredAudioView                  = Views.PLAY;
     private boolean                                   startWithSessionView                = false;
     private boolean                                   useCombinationButtonToSoundDrumPads = false;
@@ -1605,24 +1605,24 @@ public abstract class AbstractConfiguration implements Configuration
 
 
     /**
-     * Activate the preferred note view setting.
+     * Activate the preferred startup view setting.
      *
      * @param settingsUI The settings
      * @param views The available views for selection
      */
-    protected void activatePreferredNoteViewSetting (final ISettingsUI settingsUI, final Views [] views)
+    protected void activateStartupViewSetting (final ISettingsUI settingsUI, final Views [] views)
     {
         final String [] labels = new String [views.length];
         for (int i = 0; i < views.length; i++)
             labels[i] = Views.getViewName (views[i]);
 
-        final IEnumSetting preferredNoteViewSetting = settingsUI.getEnumSetting ("Default note view", CATEGORY_PLAY_AND_SEQUENCE, labels, labels[0]);
-        preferredNoteViewSetting.addValueObserver (value -> {
-            this.preferredNoteView = Views.getViewByName (value);
-            this.notifyObservers (PREFERRED_NOTE_VIEW);
+        final IEnumSetting startupViewSetting = settingsUI.getEnumSetting ("Startup view", CATEGORY_PLAY_AND_SEQUENCE, labels, labels[0]);
+        startupViewSetting.addValueObserver (value -> {
+            this.startupView = Views.getViewByName (value);
+            this.notifyObservers (STARTUP_VIEW);
         });
 
-        this.isSettingActive.add (PREFERRED_NOTE_VIEW);
+        this.isSettingActive.add (STARTUP_VIEW);
     }
 
 
@@ -1675,10 +1675,10 @@ public abstract class AbstractConfiguration implements Configuration
      * Activate the setting to display played chords.
      *
      * @param settingsUI The settings
-     * @param category The category to use
      */
-    protected void activateShowPlayedChordsSetting (final ISettingsUI settingsUI, final String category)
+    protected void activateShowPlayedChordsSetting (final ISettingsUI settingsUI)
     {
+        this.showPlayedChordsSetting = settingsUI.getEnumSetting ("Notify played chords", CATEGORY_PLAY_AND_SEQUENCE, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
         this.showPlayedChordsSetting.addValueObserver (value -> this.showPlayedChords = ON_OFF_OPTIONS[1].equals (value));
     }
 
@@ -1833,9 +1833,9 @@ public abstract class AbstractConfiguration implements Configuration
 
     /** {@inheritDoc} */
     @Override
-    public Views getPreferredNoteView ()
+    public Views getStartupView ()
     {
-        return this.preferredNoteView;
+        return this.startupView;
     }
 
 

@@ -13,6 +13,7 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
+import de.mossgrabers.framework.view.Views;
 
 
 /**
@@ -22,10 +23,20 @@ import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
  */
 public class OxiOneConfiguration extends AbstractConfiguration
 {
-    /** Should all track states be colored? */
-    public static final Integer COLOR_TRACK_STATES = Integer.valueOf (100);
+    private static final Views [] PREFERRED_NOTE_VIEWS =
+    {
+        Views.MIX,
+        Views.PLAY,
+        Views.DRUM64,
+        Views.DRUM8,
+        Views.SEQUENCER,
+        Views.POLY_SEQUENCER
+    };
 
-    private boolean             colorTrackStates;
+    /** Should all track states be colored? */
+    public static final Integer   COLOR_TRACK_STATES   = Integer.valueOf (100);
+
+    private boolean               colorTrackStates;
 
 
     /**
@@ -82,6 +93,8 @@ public class OxiOneConfiguration extends AbstractConfiguration
         this.activateQuantizeAmountSetting (globalSettings);
         this.activateMidiEditChannelSetting (documentSettings);
         this.activateTurnOffScalePadsSetting (globalSettings);
+        this.activateShowPlayedChordsSetting (globalSettings);
+        this.activateStartupViewSetting (globalSettings, PREFERRED_NOTE_VIEWS);
 
         ///////////////////////////
         // Drum Sequencer

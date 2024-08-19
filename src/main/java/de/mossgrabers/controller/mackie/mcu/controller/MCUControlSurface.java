@@ -242,6 +242,10 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
         output.sendChannelAftertouch (1, 0x10, 0);
         output.sendPitchbend (8, 0, 0);
 
+        final int [] values = new int [8];
+        Arrays.fill (values, 0);
+        this.setItemIndices (values);
+
         // Switch off knob LEDs
         for (int i = 0; i < 8; i++)
             this.setKnobLED (i, KNOB_LED_MODE_SINGLE_DOT, 0, 127);

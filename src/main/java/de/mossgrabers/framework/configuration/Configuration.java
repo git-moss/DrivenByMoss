@@ -529,7 +529,7 @@ public interface Configuration
      *
      * @return The preferred note view
      */
-    Views getPreferredNoteView ();
+    Views getStartupView ();
 
 
     /**

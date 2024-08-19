@@ -80,9 +80,10 @@ public class MaschineJamConfiguration extends AbstractConfiguration
         this.activateAccentActiveSetting (globalSettings);
         this.activateAccentValueSetting (globalSettings);
         this.activateQuantizeAmountSetting (globalSettings);
-        this.activatePreferredNoteViewSetting (globalSettings, PREFERRED_NOTE_VIEWS);
+        this.activateStartupViewSetting (globalSettings, PREFERRED_NOTE_VIEWS);
         this.activateStartWithSessionViewSetting (globalSettings);
         this.activateTurnOffScalePadsSetting (globalSettings);
+        this.activateShowPlayedChordsSetting (globalSettings);
 
         ///////////////////////////
         // Drum Sequencer

@@ -625,8 +625,8 @@ public class OxiOneControllerSetup extends AbstractControllerSetup<OxiOneControl
     public void startup ()
     {
         final OxiOneControlSurface surface = this.getSurface ();
-        surface.getViewManager ().setActive (Views.MIX);
         surface.getModeManager ().setActive (Modes.TRACK);
+        surface.getViewManager ().setActive (this.configuration.getStartupView ());
 
         surface.scheduleTask (surface::enterRemoteMode, 3000);
     }

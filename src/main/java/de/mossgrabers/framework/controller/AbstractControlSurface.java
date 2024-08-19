@@ -280,7 +280,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
         Views preferredView = this.viewManager.getPreferredView (track.getPosition ());
         if (preferredView == null)
-            preferredView = track.canHoldNotes () ? this.configuration.getPreferredNoteView () : this.configuration.getPreferredAudioView ();
+            preferredView = track.canHoldNotes () ? this.configuration.getStartupView () : this.configuration.getPreferredAudioView ();
         final IView view = this.viewManager.get (preferredView);
         if (view == null)
             return;
