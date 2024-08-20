@@ -4,15 +4,15 @@
 
 package de.mossgrabers.bitwig.framework.daw.data.bank;
 
+import java.util.Optional;
+
+import com.bitwig.extension.controller.api.Bank;
+
 import de.mossgrabers.bitwig.framework.daw.data.Util;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.bank.AbstractItemBank;
-
-import com.bitwig.extension.controller.api.Bank;
-
-import java.util.Optional;
 
 
 /**
@@ -192,7 +192,7 @@ public abstract class AbstractItemBankImpl<B extends Bank<?>, T extends IItem> e
         if (!this.canScrollPageBackwards ())
             return;
         this.scrollPageBackwards ();
-        this.host.scheduleTask ( () -> this.getItem (this.getPageSize () - 1).select (), 75);
+        this.host.scheduleTask ( () -> this.getItem (0).select (), 75);
     }
 
 
