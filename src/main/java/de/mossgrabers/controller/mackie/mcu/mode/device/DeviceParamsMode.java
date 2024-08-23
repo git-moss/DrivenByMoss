@@ -122,24 +122,46 @@ public class DeviceParamsMode extends BaseMode<IParameter>
     @Override
     public void updateDisplay ()
     {
-        if (this.surface.isShiftPressed ())
+        final boolean isShiftPressed = this.surface.isShiftPressed ();
+        if (isShiftPressed || this.surface.isSelectPressed ())
         {
             final ColorEx [] colors = new ColorEx [8];
             final ITextDisplay d = this.surface.getTextDisplay ().clear ();
             final int textLength = this.getTextLength ();
-            final IDeviceBank deviceBank = this.model.getCursorDevice ().getDeviceBank ();
-            final int extenderOffset = this.getExtenderOffset ();
-            for (int i = 0; i < 8; i++)
+            final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+            if (isShiftPressed)
             {
-                final IDevice device = deviceBank.getItem (extenderOffset + i);
-                if (device.doesExist ())
+                final IDeviceBank deviceBank = cursorDevice.getDeviceBank ();
+                final int extenderOffset = this.getExtenderOffset ();
+                for (int i = 0; i < 8; i++)
                 {
-                    d.setCell (0, i, StringUtils.shortenAndFixASCII (device.getName (), textLength));
-                    colors[i] = ColorEx.WHITE;
+                    final IDevice device = deviceBank.getItem (extenderOffset + i);
+                    if (device.doesExist ())
+                    {
+                        d.setCell (0, i, StringUtils.shortenAndFixASCII (device.getName (), textLength));
+                        colors[i] = ColorEx.WHITE;
+                    }
+                    else
+                        colors[i] = ColorEx.BLACK;
                 }
-                else
-                    colors[i] = ColorEx.BLACK;
             }
+            else
+            {
+                final IParameterPageBank pageBank = cursorDevice.getParameterBank ().getPageBank ();
+                final int extenderOffset = this.getExtenderOffset ();
+                for (int i = 0; i < 8; i++)
+                {
+                    final String page = pageBank.getItem (extenderOffset + i);
+                    if (page != null && !page.isBlank ())
+                    {
+                        d.setCell (0, i, StringUtils.shortenAndFixASCII (page, textLength));
+                        colors[i] = ColorEx.WHITE;
+                    }
+                    else
+                        colors[i] = ColorEx.BLACK;
+                }
+            }
+
             d.allDone ();
 
             this.surface.sendDisplayColor (colors);
@@ -211,20 +233,38 @@ public class DeviceParamsMode extends BaseMode<IParameter>
     @Override
     public void onButton (final int row, final int index, final ButtonEvent event)
     {
-        if (this.surface.isShiftPressed () && row == 0)
+        if (row == 0)
         {
-            if (event == ButtonEvent.DOWN)
+            if (this.surface.isShiftPressed ())
             {
-                final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-                if (cursorDevice.doesExist ())
+                if (event == ButtonEvent.DOWN)
                 {
-                    final IDeviceBank deviceBank = cursorDevice.getDeviceBank ();
-                    final int pageSize = deviceBank.getPageSize ();
-                    final int pos = cursorDevice.getPosition () / pageSize * pageSize;
-                    deviceBank.selectItemAtPosition (pos + this.getExtenderOffset () + index);
+                    final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+                    if (cursorDevice.doesExist ())
+                    {
+                        final IDeviceBank deviceBank = cursorDevice.getDeviceBank ();
+                        final int pageSize = deviceBank.getPageSize ();
+                        final int pos = cursorDevice.getPosition () / pageSize * pageSize;
+                        deviceBank.selectItemAtPosition (pos + this.getExtenderOffset () + index);
+                    }
                 }
+                return;
             }
-            return;
+            else if (this.surface.isSelectPressed ())
+            {
+                if (event == ButtonEvent.DOWN)
+                {
+                    final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+                    if (cursorDevice.doesExist ())
+                    {
+                        final IParameterPageBank pageBank = cursorDevice.getParameterBank ().getPageBank ();
+                        final int pageSize = pageBank.getPageSize ();
+                        final int pos = pageBank.getSelectedItemPosition () / pageSize * pageSize;
+                        pageBank.selectItemAtPosition (pos + this.getExtenderOffset () + index);
+                    }
+                }
+                return;
+            }
         }
 
         super.onButton (row, index, event);
@@ -235,21 +275,37 @@ public class DeviceParamsMode extends BaseMode<IParameter>
     @Override
     public void updateKnobLEDs ()
     {
-        if (!this.surface.isShiftPressed ())
+        final boolean isShiftPressed = this.surface.isShiftPressed ();
+        if (isShiftPressed || this.surface.isSelectPressed ())
         {
-            super.updateKnobLEDs ();
+            final int upperBound = this.model.getValueChanger ().getUpperBound ();
+            final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+            final int extenderOffset = this.getExtenderOffset ();
+
+            if (isShiftPressed)
+            {
+                final IDeviceBank deviceBank = cursorDevice.getDeviceBank ();
+                final int selectedPosition = cursorDevice.getPosition ();
+                for (int i = 0; i < 8; i++)
+                {
+                    final IDevice device = deviceBank.getItem (extenderOffset + i);
+                    this.surface.setKnobLED (i, MCUControlSurface.KNOB_LED_MODE_WRAP, device.doesExist () && device.getPosition () == selectedPosition ? upperBound - 1 : 0, upperBound);
+                }
+            }
+            else
+            {
+                final IParameterPageBank pageBank = cursorDevice.getParameterBank ().getPageBank ();
+                final int selectedPosition = pageBank.getSelectedItemPosition ();
+                for (int i = 0; i < 8; i++)
+                {
+                    final String page = pageBank.getItem (extenderOffset + i);
+                    this.surface.setKnobLED (i, MCUControlSurface.KNOB_LED_MODE_WRAP, page != null && !page.isBlank () && extenderOffset + i == selectedPosition ? upperBound - 1 : 0, upperBound);
+                }
+            }
+
             return;
         }
 
-        final int upperBound = this.model.getValueChanger ().getUpperBound ();
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        final IDeviceBank deviceBank = cursorDevice.getDeviceBank ();
-        final int extenderOffset = this.getExtenderOffset ();
-
-        for (int i = 0; i < 8; i++)
-        {
-            final IDevice device = deviceBank.getItem (extenderOffset + i);
-            this.surface.setKnobLED (i, MCUControlSurface.KNOB_LED_MODE_WRAP, device.doesExist () && device.getPosition () == cursorDevice.getPosition () ? upperBound - 1 : 0, upperBound);
-        }
+        super.updateKnobLEDs ();
     }
 }
