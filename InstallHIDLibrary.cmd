@@ -1,4 +1,4 @@
-set JAVA_HOME=%JAVA_HOME17%
+set JAVA_HOME=%JAVA_HOME21%
 set SOURCE=C:/Privat/Programming/Libraries/USB/purejavahidapi/target
 set DESTINATION=./maven-local-repository
 
