@@ -119,6 +119,7 @@ public class FireConfiguration extends AbstractConfiguration
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);
         this.activateKnobSpeedSetting (globalSettings);
+        this.activateColorTrackStates (globalSettings);
 
         ///////////////////////////
         // Hardware

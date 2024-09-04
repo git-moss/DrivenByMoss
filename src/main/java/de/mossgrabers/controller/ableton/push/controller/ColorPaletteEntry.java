@@ -5,18 +5,18 @@
 package de.mossgrabers.controller.ableton.push.controller;
 
 /**
- * A color palette entry of the Push 2.
+ * A color palette entry of the Push 2/3.
  *
  * @author Jürgen Moßgraber
  */
-public class PaletteEntry
+public class ColorPaletteEntry
 {
-    enum State
+    static enum State
     {
-        INIT,
         READ,
+        READ_REQUESTED,
         WRITE,
-        OK
+        DONE
     }
 
 
@@ -28,23 +28,27 @@ public class PaletteEntry
 
     private static final int MESSAGE_LENGTH         = 17;
 
-    private int              red                    = -1;
-    private int              green                  = -1;
-    private int              blue                   = -1;
-    private int              white                  = -1;
+    private final int        index;
+    private final int        red;
+    private final int        green;
+    private final int        blue;
+    private int              white;
 
-    private State            state                  = State.INIT;
+    private State            state                  = State.READ;
     private int              readRetries            = 0;
     private int              writeRetries           = 0;
+    private long             sendTimestamp;
 
 
     /**
      * Constructor.
-     *
+     * 
+     * @param index The index of the entry
      * @param color The default palette color consisting of three integers for red, green and blue
      */
-    public PaletteEntry (final int [] color)
+    public ColorPaletteEntry (final int index, final int [] color)
     {
+        this.index = index;
         this.red = color[0];
         this.green = color[1];
         this.blue = color[2];
@@ -77,21 +81,54 @@ public class PaletteEntry
 
 
     /**
-     * Increase the number of read attempts.
+     * Increases the read request for this palette entry.
+     * 
+     * @return True if another attempt is allowed, false if the maximum number of retries has been
+     *         reached
      */
-    public void incReadRetries ()
+    public boolean incReadRetries ()
     {
         this.readRetries++;
-        this.state = State.READ;
+        if (this.readRetries > MAX_NUMBER_OF_RETRIES)
+        {
+            this.state = State.DONE;
+            return false;
+        }
+
+        this.state = State.READ_REQUESTED;
+        this.sendTimestamp = System.currentTimeMillis ();
+        return true;
     }
 
 
     /**
-     * Increase the number of write attempts.
+     * Increases the write request for this palette entry.
+     * 
+     * @return True if another attempt is allowed, false if the maximum number of retries has been
+     *         reached
      */
-    public void incWriteRetries ()
+    public boolean incWriteRetries ()
     {
         this.writeRetries++;
+
+        if (this.writeRetries > MAX_NUMBER_OF_RETRIES)
+        {
+            this.state = State.DONE;
+            return false;
+        }
+
+        // Set to read for confirmation check
+        this.state = State.READ;
+        this.sendTimestamp = System.currentTimeMillis ();
+        return true;
+    }
+
+
+    /**
+     * Sets the state to WRITE.
+     */
+    public void setWrite ()
+    {
         this.state = State.WRITE;
     }
 
@@ -99,35 +136,33 @@ public class PaletteEntry
     /**
      * Set the entry to be OK, which means identical to the device.
      */
-    public void setOK ()
+    public void setDone ()
     {
-        this.state = State.OK;
+        this.state = State.DONE;
     }
 
 
     /**
-     * Check if the read request should be sent
+     * Get the state.
      *
-     * @return True if it needs to be send
+     * @return The state
      */
-    public boolean requiresRead ()
+    public State getState ()
     {
-        return this.state == State.INIT || this.state == State.READ;
+        return this.state;
     }
 
 
     /**
      * Creates a system exclusive message which contains the current color.
      *
-     * @param index The palette index where to store the color
      * @return The created message
      */
-    public int [] createUpdateMessage (final int index)
+    public int [] createUpdateMessage ()
     {
         final int [] data = new int [10];
-
         data[0] = PALETTE_MESSAGE_OUT_ID;
-        data[1] = index;
+        data[1] = this.index;
         data[2] = this.red % 128;
         data[3] = this.red / 128;
         data[4] = this.green % 128;
@@ -136,53 +171,17 @@ public class PaletteEntry
         data[7] = this.blue / 128;
         data[8] = this.white % 128;
         data[9] = this.white / 128;
-
         return data;
     }
 
 
     /**
-     * Test if the maximum number of read retries to send the color to the device has already been
-     * reached.
-     *
-     * @return True if number of retries has exceeded
+     * Get the time in milliseconds when the read/write request was sent.
+     * 
+     * @return the sendTimestamp The milliseconds
      */
-    public boolean hasMaxNumberOfReadRetriesReached ()
+    public long getSendTimestamp ()
     {
-        return this.readRetries > MAX_NUMBER_OF_RETRIES;
-    }
-
-
-    /**
-     * Test if the maximum number of write retries to send the color to the device has already been
-     * reached.
-     *
-     * @return True if number of retries has exceeded
-     */
-    public boolean hasMaxNumberOfWriteRetriesReached ()
-    {
-        return this.writeRetries > MAX_NUMBER_OF_RETRIES;
-    }
-
-
-    /**
-     * Get the current number of attempts to read the value on the device.
-     *
-     * @return The number of retries
-     */
-    public int getReadRetries ()
-    {
-        return this.readRetries;
-    }
-
-
-    /**
-     * Get the current number of attempts to update the value on the device.
-     *
-     * @return The number of retries
-     */
-    public int getWriteRetries ()
-    {
-        return this.writeRetries;
+        return this.sendTimestamp;
     }
 }

@@ -4,6 +4,8 @@
 
 package de.mossgrabers.framework.daw;
 
+import java.util.List;
+
 import de.mossgrabers.framework.controller.hardware.IHwSurfaceFactory;
 import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.data.IDeviceMetadata;
@@ -16,8 +18,6 @@ import de.mossgrabers.framework.osc.IOpenSoundControlServer;
 import de.mossgrabers.framework.parameter.NoteAttribute;
 import de.mossgrabers.framework.usb.IUsbDevice;
 import de.mossgrabers.framework.usb.UsbException;
-
-import java.util.List;
 
 
 /**
@@ -158,7 +158,7 @@ public interface IHost
 
 
     /**
-     * Creates an offscreen bitmap that the extension can use to render into. The memory used by
+     * Creates an off-screen bitmap that the extension can use to render into. The memory used by
      * this bitmap is guaranteed to be freed once this extension exits.
      *
      * @param width The width of the bitmap

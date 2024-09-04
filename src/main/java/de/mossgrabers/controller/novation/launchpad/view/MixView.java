@@ -250,21 +250,22 @@ public class MixView extends AbstractView<LaunchpadControlSurface, LaunchpadConf
     @Override
     public int getValue ()
     {
-        final Optional<ITrack> track = this.model.getCurrentTrackBank ().getSelectedItem ();
-        if (track.isEmpty ())
+        final Optional<ITrack> trackOpt = this.model.getCurrentTrackBank ().getSelectedItem ();
+        if (trackOpt.isEmpty ())
             return 0;
+        final ITrack track = trackOpt.get ();
         switch (this.faderMode)
         {
             default:
             case VOLUME:
-                return track.get ().getVolume ();
+                return track.getVolume ();
             case PAN:
-                return track.get ().getPan ();
+                return track.getPan ();
             case SEND1:
-                final ISend send1 = track.get ().getSendBank ().getItem (0);
+                final ISend send1 = track.getSendBank ().getItem (0);
                 return send1.doesExist () ? send1.getValue () : 0;
             case SEND2:
-                final ISend send2 = track.get ().getSendBank ().getItem (1);
+                final ISend send2 = track.getSendBank ().getItem (1);
                 return send2.doesExist () ? send2.getValue () : 0;
         }
     }

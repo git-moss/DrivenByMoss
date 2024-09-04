@@ -58,11 +58,20 @@ public class FireSelectButtonCommand extends AbstractTriggerCommand<FireControlS
 
         final FireConfiguration configuration = this.surface.getConfiguration ();
         final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-        if (modeManager.isActive (Modes.DEVICE_PARAMS) && configuration.isDeleteModeActive ())
+        if (modeManager.isActive (Modes.DEVICE_PARAMS))
         {
-            cursorDevice.remove ();
-            configuration.toggleDeleteModeActive ();
-            return;
+            if (configuration.isDeleteModeActive ())
+            {
+                cursorDevice.remove ();
+                configuration.toggleDeleteModeActive ();
+                return;
+            }
+
+            if (this.surface.isPressed (ButtonID.ALT))
+            {
+                cursorDevice.toggleEnabledState ();
+                return;
+            }
         }
 
         cursorDevice.toggleWindowOpen ();

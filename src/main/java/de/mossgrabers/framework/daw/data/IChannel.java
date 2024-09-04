@@ -291,11 +291,19 @@ public interface IChannel extends IItem
 
 
     /**
-     * Get the Mono VU value.
+     * Get the mono VU value.
      *
      * @return The VU value
      */
     int getVu ();
+
+
+    /**
+     * Get the clip state of the mono VU meter.
+     * 
+     * @return True if clipped
+     */
+    boolean getVuClipState ();
 
 
     /**
@@ -307,11 +315,27 @@ public interface IChannel extends IItem
 
 
     /**
+     * Get the clip state of the left VU meter.
+     * 
+     * @return True if clipped
+     */
+    boolean getVuLeftClipState ();
+
+
+    /**
      * Get the right VU value.
      *
      * @return The right VU value
      */
     int getVuRight ();
+
+
+    /**
+     * Get the clip state of the right VU meter.
+     * 
+     * @return True if clipped
+     */
+    boolean getVuRightClipState ();
 
 
     /**

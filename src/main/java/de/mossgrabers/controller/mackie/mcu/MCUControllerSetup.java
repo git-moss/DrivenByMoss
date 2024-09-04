@@ -862,14 +862,14 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                     if (this.vuValues[channel] != scaledVuLeft || alwaysSendVuMeters)
                     {
                         this.vuValues[channel] = scaledVuLeft;
-                        this.sendVUValue (output, i, vuLeft, scaledVuLeft, false);
+                        this.sendVUValue (output, i, scaledVuLeft, track.getVuLeftClipState (), false);
                     }
                     final int vuRight = track.getVuRight ();
                     final int scaledVuRight = this.scaleVU (vuRight);
                     if (this.vuValuesRight[channel] != scaledVuRight || alwaysSendVuMeters)
                     {
                         this.vuValuesRight[channel] = scaledVuRight;
-                        this.sendVUValue (output, i, vuRight, scaledVuRight, true);
+                        this.sendVUValue (output, i, scaledVuRight, track.getVuRightClipState (), true);
                     }
                 }
                 else
@@ -879,12 +879,12 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                     if (this.vuValues[channel] != scaledVu || alwaysSendVuMeters)
                     {
                         this.vuValues[channel] = scaledVu;
-                        this.sendVUValue (output, i, vu, scaledVu, false);
+                        this.sendVUValue (output, i, scaledVu, track.getVuClipState (), false);
                     }
                 }
             }
 
-            // Stereo VUs of master channel
+            // Stereo VUs of master channel, only available on iCON devices
             if (vuMeterStyle == VUMeterStyle.ICON && this.configuration.getDeviceType (index) == MCUDeviceType.MAIN)
             {
                 final IMasterTrack masterTrack = this.model.getMasterTrack ();
@@ -894,7 +894,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 if (this.masterVuValues[0] != scaledVu)
                 {
                     this.masterVuValues[0] = scaledVu;
-                    this.sendVUValue (output, 0, vu, scaledVu, true);
+                    this.sendVUValue (output, 0, scaledVu, false, true);
                 }
 
                 vu = masterTrack.getVuRight ();
@@ -902,7 +902,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 if (this.masterVuValues[1] != scaledVu)
                 {
                     this.masterVuValues[1] = scaledVu;
-                    this.sendVUValue (output, 1, vu, scaledVu, true);
+                    this.sendVUValue (output, 1, scaledVu, false, true);
                 }
             }
         }
@@ -915,16 +915,13 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
     }
 
 
-    private void sendVUValue (final IMidiOutput output, final int track, final int vu, final int scaledVu, final boolean isMasterOrRightChannel)
+    private void sendVUValue (final IMidiOutput output, final int track, final int scaledVu, final boolean vuClipState, final boolean isMasterOrRightChannel)
     {
         output.sendChannelAftertouch (isMasterOrRightChannel ? 1 : 0, 0x10 * track + scaledVu, 0);
 
-        // iCON devices do not support the clip state and Asparion ignores it!
-        if (this.configuration.getVuMeterStyle () == VUMeterStyle.MACKIE)
-        {
-            final boolean doesClip = vu > 16240;
-            output.sendChannelAftertouch (isMasterOrRightChannel ? 1 : 0, 0x10 * track + (doesClip ? 0x0E : 0x0F), 0);
-        }
+        // iCON devices do not support the clip state
+        if (this.configuration.getVuMeterStyle () != VUMeterStyle.ICON)
+            output.sendChannelAftertouch (isMasterOrRightChannel ? 1 : 0, 0x10 * track + (vuClipState ? 0x0E : 0x0F), 0);
     }
 
 

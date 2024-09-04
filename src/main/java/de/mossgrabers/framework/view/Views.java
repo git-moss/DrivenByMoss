@@ -127,10 +127,12 @@ public enum Views
     public static final String              NAME_SEQUENCER      = "Sequencer";
     /** The name of the raindrops view. */
     public static final String              NAME_RAINDROPS      = "Raindrop";
-    /** The name of the poly sequencer view. */
+    /** The name of the poly-sequencer view. */
     public static final String              NAME_POLY_SEQUENCER = "Poly Seq.";
     /** The name of the browser view. */
     public static final String              NAME_BROWSER        = "Browser";
+    /** The name of the mix view. */
+    public static final String              NAME_MIX            = "Mix";
     /** The name of the clip length view. */
     public static final String              NAME_CLIP_LENGTH    = "Clip Length";
 
@@ -169,6 +171,7 @@ public enum Views
         VIEW_NAMES.put (NAME_PIANO, PIANO);
         VIEW_NAMES.put (NAME_DRUM64, DRUM64);
 
+        VIEW_NAMES.put (NAME_MIX, MIX);
         VIEW_NAMES.put (NAME_CLIP_LENGTH, CLIP_LENGTH);
 
         NOTE_VIEWS.add (DRUM);

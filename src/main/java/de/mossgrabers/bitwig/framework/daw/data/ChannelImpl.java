@@ -34,6 +34,7 @@ import de.mossgrabers.framework.parameter.IParameter;
 public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements IChannel
 {
     private static final int                    MAX_RESOLUTION = 16384;
+    private static final int                    CLIP_BORDER    = 16241;
 
     protected final IValueChanger               valueChanger;
 
@@ -420,7 +421,15 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
     @Override
     public int getVu ()
     {
-        return (this.vuLeft + this.vuRight) * this.valueChanger.getUpperBound () / MAX_RESOLUTION / 2;
+        return (int) Math.round ((this.vuLeft + this.vuRight) * this.valueChanger.getUpperBound () / (double) MAX_RESOLUTION / 2.0);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean getVuClipState ()
+    {
+        return this.getVuLeftClipState () || this.getVuRightClipState ();
     }
 
 
@@ -434,9 +443,25 @@ public class ChannelImpl extends AbstractDeviceChainImpl<Channel> implements ICh
 
     /** {@inheritDoc} */
     @Override
+    public boolean getVuLeftClipState ()
+    {
+        return this.vuLeft >= CLIP_BORDER;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public int getVuRight ()
     {
         return this.vuRight * this.valueChanger.getUpperBound () / MAX_RESOLUTION;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean getVuRightClipState ()
+    {
+        return this.vuRight >= CLIP_BORDER;
     }
 
 

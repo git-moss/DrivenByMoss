@@ -138,6 +138,8 @@ public abstract class AbstractConfiguration implements Configuration
     public static final Integer      ENABLED_MPE_ZONES               = Integer.valueOf (47);
     /** The MPE pitch bend sensitivity setting has changed. */
     public static final Integer      MPE_PITCHBEND_RANGE             = Integer.valueOf (48);
+    /** Should all track states be colored in mix view? */
+    public static final Integer      COLOR_TRACK_STATES              = Integer.valueOf (49);
 
     // Implementation IDs start at 50
 
@@ -446,6 +448,7 @@ public abstract class AbstractConfiguration implements Configuration
     private boolean                                   isMPEEnabled                        = false;
     private int                                       mpePitchBendRange                   = 48;
     private boolean                                   showPlayedChords                    = true;
+    private boolean                                   colorTrackStates                    = true;
 
 
     /**
@@ -1683,6 +1686,23 @@ public abstract class AbstractConfiguration implements Configuration
     }
 
 
+    /**
+     * Should all track states be colored in mix view?
+     *
+     * @param settingsUI The settings
+     */
+    protected void activateColorTrackStates (final ISettingsUI settingsUI)
+    {
+        // Color all track states in mixer view
+        final IEnumSetting excludeDeactivatedItemsSetting = settingsUI.getEnumSetting ("Color all track states (mute, solo, rec arm)", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        excludeDeactivatedItemsSetting.addValueObserver (value -> {
+            this.colorTrackStates = ON_OFF_OPTIONS[1].equals (value);
+            this.notifyObservers (COLOR_TRACK_STATES);
+        });
+        this.isSettingActive.add (COLOR_TRACK_STATES);
+    }
+
+
     /** {@inheritDoc} */
     @Override
     public void notifyAllObservers ()
@@ -2069,6 +2089,17 @@ public abstract class AbstractConfiguration implements Configuration
         final String sel = this.deviceSettings.get (index).get ();
         final int lookupIndex = lookupIndex (this.deviceNames, sel);
         return Optional.ofNullable (lookupIndex >= this.deviceMetadata.size () ? null : this.deviceMetadata.get (lookupIndex));
+    }
+
+
+    /**
+     * Should all track states be colored?
+     *
+     * @return True if all color track states should be colored
+     */
+    public boolean isColorTrackStates ()
+    {
+        return this.colorTrackStates;
     }
 
 

@@ -188,6 +188,14 @@ public class EmptyChannel extends EmptyItem implements IChannel
 
     /** {@inheritDoc} */
     @Override
+    public boolean getVuClipState ()
+    {
+        return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public int getVuLeft ()
     {
         return 0;
@@ -196,9 +204,25 @@ public class EmptyChannel extends EmptyItem implements IChannel
 
     /** {@inheritDoc} */
     @Override
+    public boolean getVuLeftClipState ()
+    {
+        return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public int getVuRight ()
     {
         return 0;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean getVuRightClipState ()
+    {
+        return false;
     }
 
 

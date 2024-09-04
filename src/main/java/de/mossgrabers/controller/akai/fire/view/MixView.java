@@ -42,6 +42,7 @@ public class MixView extends AbstractView<FireControlSurface, FireConfiguration>
     public void drawGrid ()
     {
         final IPadGrid padGrid = this.surface.getPadGrid ();
+        final boolean colorTrackStates = this.surface.getConfiguration ().isColorTrackStates ();
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         for (int i = 0; i < tb.getPageSize (); i++)
         {
@@ -56,11 +57,11 @@ public class MixView extends AbstractView<FireControlSurface, FireConfiguration>
                     padGrid.lightEx (i, 0, colorIndex);
 
                 // Mute
-                padGrid.lightEx (i, 1, track.isMute () ? FireColorManager.FIRE_COLOR_ORANGE : FireColorManager.FIRE_COLOR_DARKER_ORANGE);
+                padGrid.lightEx (i, 1, getTrackStateColor (track.isMute (), colorTrackStates, FireColorManager.FIRE_COLOR_ORANGE, FireColorManager.FIRE_COLOR_DARKER_ORANGE));
                 // Solo
-                padGrid.lightEx (i, 2, track.isSolo () ? FireColorManager.FIRE_COLOR_YELLOW : FireColorManager.FIRE_COLOR_DARKER_YELLOW);
+                padGrid.lightEx (i, 2, getTrackStateColor (track.isSolo (), colorTrackStates, FireColorManager.FIRE_COLOR_YELLOW, FireColorManager.FIRE_COLOR_DARKER_YELLOW));
                 // Record Arm
-                padGrid.lightEx (i, 3, track.isRecArm () ? FireColorManager.FIRE_COLOR_RED : FireColorManager.FIRE_COLOR_DARKER_RED);
+                padGrid.lightEx (i, 3, getTrackStateColor (track.isRecArm (), colorTrackStates, FireColorManager.FIRE_COLOR_RED, FireColorManager.FIRE_COLOR_DARKER_RED));
             }
             else
             {
@@ -208,5 +209,13 @@ public class MixView extends AbstractView<FireControlSurface, FireConfiguration>
         final ITransport transport = this.model.getTransport ();
         transport.changePosition (this.model.getValueChanger ().isIncrease (value), this.surface.isPressed (ButtonID.SHIFT));
         this.mvHelper.notifyPlayPosition ();
+    }
+
+
+    private static int getTrackStateColor (final boolean state, final boolean colorTrackStates, final int activeColor, final int inActiveColor)
+    {
+        if (state)
+            return activeColor;
+        return colorTrackStates ? inActiveColor : FireColorManager.FIRE_COLOR_BLACK;
     }
 }
