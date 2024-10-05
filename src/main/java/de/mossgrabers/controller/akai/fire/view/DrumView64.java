@@ -8,6 +8,7 @@ import de.mossgrabers.controller.akai.fire.FireConfiguration;
 import de.mossgrabers.controller.akai.fire.controller.FireControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractDrum64View;
 
 
@@ -85,10 +86,8 @@ public class DrumView64 extends AbstractDrum64View<FireControlSurface, FireConfi
     public void onSelectKnobValue (final int value)
     {
         if (this.model.getValueChanger ().isIncrease (value))
-            this.scales.incDrumOctave ();
+            this.onOctaveUp (ButtonEvent.DOWN);
         else
-            this.scales.decDrumOctave ();
-        this.model.getDrumDevice ().getDrumPadBank ().scrollTo (this.scales.getDrumOffset (), false);
-        this.updateNoteMapping ();
+            this.onOctaveDown (ButtonEvent.DOWN);
     }
 }

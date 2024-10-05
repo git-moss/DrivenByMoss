@@ -4,32 +4,35 @@
 
 package de.mossgrabers.bitwig.controller.akai.apcmini;
 
+import com.bitwig.extension.controller.api.ControllerHost;
+
 import de.mossgrabers.bitwig.framework.BitwigSetupFactory;
 import de.mossgrabers.bitwig.framework.configuration.SettingsUIImpl;
 import de.mossgrabers.bitwig.framework.daw.HostImpl;
 import de.mossgrabers.bitwig.framework.extension.AbstractControllerExtensionDefinition;
 import de.mossgrabers.controller.akai.apcmini.APCminiConfiguration;
-import de.mossgrabers.controller.akai.apcmini.APCminiControllerDefinition;
 import de.mossgrabers.controller.akai.apcmini.APCminiControllerSetup;
 import de.mossgrabers.controller.akai.apcmini.controller.APCminiControlSurface;
+import de.mossgrabers.controller.akai.apcmini.definition.APCminiMk1ControllerDefinition;
 import de.mossgrabers.framework.controller.IControllerSetup;
-
-import com.bitwig.extension.controller.api.ControllerHost;
 
 
 /**
- * Definition class for the Akai APCmini controller.
+ * Definition class for the Akai APCmini Mk1 controller.
  *
  * @author Jürgen Moßgraber
  */
-public class APCminiControllerExtensionDefinition extends AbstractControllerExtensionDefinition<APCminiControlSurface, APCminiConfiguration>
+public class APCminiMk1ControllerExtensionDefinition extends AbstractControllerExtensionDefinition<APCminiControlSurface, APCminiConfiguration>
 {
+    private static final APCminiMk1ControllerDefinition DEFINITION = new APCminiMk1ControllerDefinition ();
+
+
     /**
      * Constructor.
      */
-    public APCminiControllerExtensionDefinition ()
+    public APCminiMk1ControllerExtensionDefinition ()
     {
-        super (new APCminiControllerDefinition ());
+        super (DEFINITION);
     }
 
 
@@ -37,6 +40,6 @@ public class APCminiControllerExtensionDefinition extends AbstractControllerExte
     @Override
     protected IControllerSetup<APCminiControlSurface, APCminiConfiguration> getControllerSetup (final ControllerHost host)
     {
-        return new APCminiControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUIImpl (host, host.getPreferences ()), new SettingsUIImpl (host, host.getDocumentState ()));
+        return new APCminiControllerSetup (new HostImpl (host), new BitwigSetupFactory (host), new SettingsUIImpl (host, host.getPreferences ()), new SettingsUIImpl (host, host.getDocumentState ()), DEFINITION);
     }
 }

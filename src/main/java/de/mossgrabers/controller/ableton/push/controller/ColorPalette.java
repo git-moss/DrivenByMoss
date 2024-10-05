@@ -13,13 +13,13 @@ public class ColorPalette
 {
     private final PushControlSurface   surface;
     private final ColorPaletteEntry [] entries          = new ColorPaletteEntry [128];
-    private Object                     updateLock       = new Object ();
+    private final Object                     updateLock       = new Object ();
     private boolean                    entriesHasUpdate = false;
 
 
     /**
      * Constructor.
-     * 
+     *
      * @param surface The surface
      */
     public ColorPalette (final PushControlSurface surface)
@@ -106,7 +106,7 @@ public class ColorPalette
 
     /**
      * Get the next palette entry which needs to be updated.
-     * 
+     *
      * @return The index of the entry or -1 if no further updates are required
      */
     private int findNextEntry ()

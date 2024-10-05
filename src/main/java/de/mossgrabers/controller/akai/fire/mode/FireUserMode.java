@@ -63,7 +63,7 @@ public class FireUserMode extends ProjectParamsMode<FireControlSurface, FireConf
         touchedKnob = this.surface.isPressed (ButtonID.ALT) && touchedKnob > -1 ? 4 + touchedKnob : touchedKnob;
         if (touchedKnob > -1)
         {
-            final IParameter p = ((IParameterBank) this.bank).getItem (touchedKnob);
+            final IParameter p = this.bank.getItem (touchedKnob);
             paramLine = p.getName (5);
             if (paramLine.isEmpty ())
                 paramLine = "Not mapped";

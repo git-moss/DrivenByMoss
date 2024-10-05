@@ -183,6 +183,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         Views.DRUM,
         Views.DRUM4,
         Views.DRUM8,
+        Views.DRUM_XOX,
         Views.SEQUENCER,
         Views.RAINDROPS,
         Views.POLY_SEQUENCER

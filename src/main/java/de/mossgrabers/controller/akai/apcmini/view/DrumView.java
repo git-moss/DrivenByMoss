@@ -6,6 +6,7 @@ package de.mossgrabers.controller.akai.apcmini.view;
 
 import de.mossgrabers.controller.akai.apcmini.APCminiConfiguration;
 import de.mossgrabers.controller.akai.apcmini.controller.APCminiControlSurface;
+import de.mossgrabers.controller.akai.apcmini.definition.IAPCminiControllerDefinition;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
@@ -22,15 +23,22 @@ import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
  */
 public class DrumView extends AbstractDrumView<APCminiControlSurface, APCminiConfiguration> implements APCminiView
 {
+    private final IAPCminiControllerDefinition definition;
+
+
     /**
      * Constructor.
      *
      * @param surface The controller
      * @param model The model
+     * @param useTrackColor True to use the color of the current track for coloring the octaves
+     * @param definition The APCmini definition
      */
-    public DrumView (final APCminiControlSurface surface, final IModel model)
+    public DrumView (final APCminiControlSurface surface, final IModel model, final boolean useTrackColor, final IAPCminiControllerDefinition definition)
     {
-        super ("Drum", surface, model, 4, 4, false);
+        super ("Drum", surface, model, 4, 4, useTrackColor);
+
+        this.definition = definition;
     }
 
 
@@ -49,7 +57,7 @@ public class DrumView extends AbstractDrumView<APCminiControlSurface, APCminiCon
         if (event != ButtonEvent.DOWN || !this.isActive ())
             return;
 
-        switch (index)
+        switch (this.definition.swapShiftedTrackIndices (index))
         {
             case 0:
                 this.onOctaveUp (event);
@@ -76,7 +84,7 @@ public class DrumView extends AbstractDrumView<APCminiControlSurface, APCminiCon
     {
         final INoteClip clip = this.getClip ();
 
-        switch (index)
+        switch (this.definition.swapShiftedTrackIndices (index))
         {
             case 0:
                 return this.scales.canScrollDrumOctaveUp () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF;

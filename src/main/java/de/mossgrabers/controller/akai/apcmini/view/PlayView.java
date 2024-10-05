@@ -29,10 +29,11 @@ public class PlayView extends AbstractPlayView<APCminiControlSurface, APCminiCon
      * @param surface The controller
      * @param model The model
      * @param trackButtons The track button control
+     * @param useTrackColor True to use the color of the current track for coloring the octaves
      */
-    public PlayView (final APCminiControlSurface surface, final IModel model, final TrackButtons trackButtons)
+    public PlayView (final APCminiControlSurface surface, final IModel model, final TrackButtons trackButtons, final boolean useTrackColor)
     {
-        super (surface, model, false);
+        super (surface, model, useTrackColor);
 
         this.trackButtons = trackButtons;
     }

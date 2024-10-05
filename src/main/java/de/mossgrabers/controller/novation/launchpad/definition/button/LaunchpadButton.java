@@ -55,7 +55,7 @@ public enum LaunchpadButton
     ARROW_DOWN,
     /** The Arrow Left button. */
     ARROW_LEFT,
-    /** The Arrow Rght button. */
+    /** The Arrow Right button. */
     ARROW_RIGHT,
 
     /** The Session button. */

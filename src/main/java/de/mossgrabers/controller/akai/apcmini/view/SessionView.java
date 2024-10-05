@@ -5,16 +5,14 @@
 package de.mossgrabers.controller.akai.apcmini.view;
 
 import de.mossgrabers.controller.akai.apcmini.APCminiConfiguration;
-import de.mossgrabers.controller.akai.apcmini.controller.APCminiColorManager;
 import de.mossgrabers.controller.akai.apcmini.controller.APCminiControlSurface;
+import de.mossgrabers.controller.akai.apcmini.controller.APCminiMk1ColorManager;
+import de.mossgrabers.controller.akai.apcmini.controller.APCminiMk2ColorManager;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.grid.LightInfo;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IScene;
-import de.mossgrabers.framework.daw.data.ISlot;
-import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
-import de.mossgrabers.framework.daw.data.bank.ISlotBank;
-import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.AbstractSessionView;
@@ -36,11 +34,38 @@ public class SessionView extends AbstractSessionView<APCminiControlSurface, APCm
      * @param surface The surface
      * @param model The model
      * @param trackButtons The track button control
+     * @param useTrackColor True to use the color of the current track for coloring the octaves
      */
-    public SessionView (final APCminiControlSurface surface, final IModel model, final TrackButtons trackButtons)
+    public SessionView (final APCminiControlSurface surface, final IModel model, final TrackButtons trackButtons, final boolean useTrackColor)
     {
-        super ("Session", surface, model, 8, 8, false);
+        super ("Session", surface, model, 8, 8, useTrackColor);
+
         this.extensions = trackButtons;
+
+        if (useTrackColor)
+        {
+            this.ignoreClipColorForPlayAndRecord = true;
+
+            final LightInfo isRecording = new LightInfo (APCminiMk2ColorManager.RED, APCminiMk2ColorManager.RED, false);
+            final LightInfo isRecordingQueued = new LightInfo (APCminiMk2ColorManager.RED, APCminiMk2ColorManager.RED, true);
+            final LightInfo isPlaying = new LightInfo (APCminiMk2ColorManager.GREEN, APCminiMk2ColorManager.GREEN, false);
+            final LightInfo isPlayingQueued = new LightInfo (APCminiMk2ColorManager.GREEN, APCminiMk2ColorManager.GREEN, true);
+            final LightInfo hasContent = new LightInfo (APCminiMk2ColorManager.ORANGE, APCminiMk2ColorManager.WHITE, false);
+            final LightInfo noContent = new LightInfo (APCminiMk2ColorManager.BLACK, -1, false);
+            final LightInfo recArmed = new LightInfo (APCminiMk2ColorManager.DARK_RED, -1, false);
+            this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed);
+        }
+        else
+        {
+            final LightInfo isRecording = new LightInfo (APCminiMk1ColorManager.APC_COLOR_RED, -1, false);
+            final LightInfo isRecordingQueued = new LightInfo (APCminiMk1ColorManager.APC_COLOR_RED, APCminiMk1ColorManager.APC_COLOR_RED_BLINK, false);
+            final LightInfo isPlaying = new LightInfo (APCminiMk1ColorManager.APC_COLOR_GREEN, -1, false);
+            final LightInfo isPlayingQueued = new LightInfo (APCminiMk1ColorManager.APC_COLOR_GREEN, APCminiMk1ColorManager.APC_COLOR_GREEN_BLINK, false);
+            final LightInfo hasContent = new LightInfo (APCminiMk1ColorManager.APC_COLOR_YELLOW, APCminiMk1ColorManager.APC_COLOR_YELLOW_BLINK, false);
+            final LightInfo noContent = new LightInfo (APCminiMk1ColorManager.APC_COLOR_BLACK, -1, false);
+            final LightInfo recArmed = new LightInfo (APCminiMk1ColorManager.APC_COLOR_BLACK, -1, false);
+            this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed);
+        }
     }
 
 
@@ -49,42 +74,6 @@ public class SessionView extends AbstractSessionView<APCminiControlSurface, APCm
     public boolean doSelectClipOnLaunch ()
     {
         return this.surface.getConfiguration ().isSelectClipOnLaunch ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void drawGrid ()
-    {
-        final ITrackBank tb = this.model.getCurrentTrackBank ();
-        for (int x = 0; x < 8; x++)
-        {
-            final ITrack t = tb.getItem (x);
-            final ISlotBank slotBank = t.getSlotBank ();
-            for (int y = 0; y < 8; y++)
-                this.drawPad (slotBank.getItem (y), x, y, t.isRecArm ());
-        }
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void drawPad (final ISlot slot, final int x, final int y, final boolean isArmed)
-    {
-        int color = APCminiColorManager.APC_COLOR_BLACK;
-
-        if (slot.isRecording ())
-            color = APCminiColorManager.APC_COLOR_RED;
-        else if (slot.isRecordingQueued ())
-            color = APCminiColorManager.APC_COLOR_RED_BLINK;
-        else if (slot.isPlaying ())
-            color = APCminiColorManager.APC_COLOR_GREEN;
-        else if (slot.isPlayingQueued ())
-            color = APCminiColorManager.APC_COLOR_GREEN_BLINK;
-        else if (slot.hasContent ())
-            color = APCminiColorManager.APC_COLOR_YELLOW;
-
-        this.surface.getPadGrid ().light (36 + (7 - y) * 8 + x, color);
     }
 
 

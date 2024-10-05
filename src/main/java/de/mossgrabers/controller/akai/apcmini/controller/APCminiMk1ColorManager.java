@@ -20,28 +20,28 @@ import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
  *
  * @author Jürgen Moßgraber
  */
-public class APCminiColorManager extends ColorManager
+public class APCminiMk1ColorManager extends ColorManager
 {
-    /** off. */
+    /** Off. */
     public static final int APC_COLOR_BLACK        = 0;
-    /** green, 7-127 also green. */
+    /** Green, 7-127 also green. */
     public static final int APC_COLOR_GREEN        = 1;
-    /** green blink. */
+    /** Green blink. */
     public static final int APC_COLOR_GREEN_BLINK  = 2;
-    /** red. */
+    /** Red. */
     public static final int APC_COLOR_RED          = 3;
-    /** red blink. */
+    /** Red blink. */
     public static final int APC_COLOR_RED_BLINK    = 4;
-    /** yellow. */
+    /** Yellow. */
     public static final int APC_COLOR_YELLOW       = 5;
-    /** yellow blink. */
+    /** Yellow blink. */
     public static final int APC_COLOR_YELLOW_BLINK = 6;
 
 
     /**
      * Constructor.
      */
-    public APCminiColorManager ()
+    public APCminiMk1ColorManager ()
     {
         this.registerColorIndex (Scales.SCALE_COLOR_OFF, APC_COLOR_BLACK);
         this.registerColorIndex (Scales.SCALE_COLOR_OCTAVE, APC_COLOR_YELLOW);
@@ -95,6 +95,9 @@ public class APCminiColorManager extends ColorManager
         this.registerColorIndex (BrowserView.COLUMN8, APC_COLOR_YELLOW);
 
         this.registerColorIndex (IPadGrid.GRID_OFF, APC_COLOR_BLACK);
+
+        for (int i = 0; i < 128; i++)
+            this.registerColor (i, ColorEx.BLACK);
 
         this.registerColor (APC_COLOR_BLACK, ColorEx.BLACK);
         this.registerColor (APC_COLOR_GREEN, ColorEx.GREEN);

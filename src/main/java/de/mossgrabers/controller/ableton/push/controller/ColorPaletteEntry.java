@@ -42,7 +42,7 @@ public class ColorPaletteEntry
 
     /**
      * Constructor.
-     * 
+     *
      * @param index The index of the entry
      * @param color The default palette color consisting of three integers for red, green and blue
      */
@@ -82,7 +82,7 @@ public class ColorPaletteEntry
 
     /**
      * Increases the read request for this palette entry.
-     * 
+     *
      * @return True if another attempt is allowed, false if the maximum number of retries has been
      *         reached
      */
@@ -103,7 +103,7 @@ public class ColorPaletteEntry
 
     /**
      * Increases the write request for this palette entry.
-     * 
+     *
      * @return True if another attempt is allowed, false if the maximum number of retries has been
      *         reached
      */
@@ -177,7 +177,7 @@ public class ColorPaletteEntry
 
     /**
      * Get the time in milliseconds when the read/write request was sent.
-     * 
+     *
      * @return the sendTimestamp The milliseconds
      */
     public long getSendTimestamp ()

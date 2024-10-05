@@ -4,10 +4,16 @@
 
 package de.mossgrabers.controller.akai.apcmini;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import de.mossgrabers.controller.akai.apcmini.command.trigger.TrackSelectCommand;
-import de.mossgrabers.controller.akai.apcmini.controller.APCminiColorManager;
+import de.mossgrabers.controller.akai.apcmini.controller.APCminiButton;
 import de.mossgrabers.controller.akai.apcmini.controller.APCminiControlSurface;
+import de.mossgrabers.controller.akai.apcmini.controller.APCminiMk1ColorManager;
 import de.mossgrabers.controller.akai.apcmini.controller.APCminiScales;
+import de.mossgrabers.controller.akai.apcmini.definition.IAPCminiControllerDefinition;
 import de.mossgrabers.controller.akai.apcmini.view.APCMiniBrowserView;
 import de.mossgrabers.controller.akai.apcmini.view.APCminiView;
 import de.mossgrabers.controller.akai.apcmini.view.DrumView;
@@ -43,13 +49,9 @@ import de.mossgrabers.framework.mode.track.TrackSendMode;
 import de.mossgrabers.framework.mode.track.TrackVolumeMode;
 import de.mossgrabers.framework.view.Views;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 
 /**
- * Support for the Akai APCmini controller.
+ * Support for the Akai APCmini Mk1/Mk2 controller.
  *
  * @author Jürgen Moßgraber
  */
@@ -97,6 +99,8 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
         FADER_CTRL_MODES.put ("Device", Modes.DEVICE_PARAMS);
     }
 
+    private final IAPCminiControllerDefinition definition;
+
 
     /**
      * Constructor.
@@ -105,14 +109,16 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
      * @param factory The factory
      * @param globalSettings The global settings
      * @param documentSettings The document (project) specific settings
+     * @param definition The specific model definition
      */
-    public APCminiControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI globalSettings, final ISettingsUI documentSettings)
+    public APCminiControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI globalSettings, final ISettingsUI documentSettings, final IAPCminiControllerDefinition definition)
     {
         super (factory, host, globalSettings, documentSettings);
 
-        this.colorManager = new APCminiColorManager ();
+        this.definition = definition;
+        this.colorManager = definition.getColorManager ();
         this.valueChanger = new TwosComplementValueChanger (128, 1);
-        this.configuration = new APCminiConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
+        this.configuration = new APCminiConfiguration (host, this.valueChanger, factory.getArpeggiatorModes (), definition);
     }
 
 
@@ -143,7 +149,7 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
         final IMidiAccess midiAccess = this.factory.createMidiAccess ();
         final IMidiOutput output = midiAccess.createOutput ();
         final IMidiInput input = midiAccess.createInput ("Akai APCmini");
-        this.surfaces.add (new APCminiControlSurface (this.host, this.colorManager, this.configuration, output, input));
+        this.surfaces.add (new APCminiControlSurface (this.host, this.colorManager, this.configuration, output, input, this.definition));
     }
 
 
@@ -171,14 +177,16 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
         final ViewManager viewManager = surface.getViewManager ();
         final TrackButtons trackButtons = new TrackButtons (surface, this.model);
 
-        viewManager.register (Views.PLAY, new PlayView (surface, this.model, trackButtons));
-        viewManager.register (Views.SHIFT, new ShiftView (surface, this.model));
+        final boolean useDawColors = this.definition.hasRGBColors ();
+
+        viewManager.register (Views.PLAY, new PlayView (surface, this.model, trackButtons, useDawColors));
+        viewManager.register (Views.SHIFT, new ShiftView (surface, this.model, this.definition));
         viewManager.register (Views.BROWSER, new APCMiniBrowserView (surface, this.model));
 
-        viewManager.register (Views.SESSION, new SessionView (surface, this.model, trackButtons));
-        viewManager.register (Views.SEQUENCER, new SequencerView (surface, this.model));
-        viewManager.register (Views.DRUM, new DrumView (surface, this.model));
-        viewManager.register (Views.RAINDROPS, new RaindropsView (surface, this.model));
+        viewManager.register (Views.SESSION, new SessionView (surface, this.model, trackButtons, useDawColors));
+        viewManager.register (Views.SEQUENCER, new SequencerView (surface, this.model, useDawColors, this.definition));
+        viewManager.register (Views.DRUM, new DrumView (surface, this.model, useDawColors, this.definition));
+        viewManager.register (Views.RAINDROPS, new RaindropsView (surface, this.model, useDawColors, this.definition));
     }
 
 
@@ -203,6 +211,8 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
                 surface.setTrackState (index);
         });
 
+        this.configuration.addSettingObserver (APCminiConfiguration.PAD_BRIGHTNESS, surface::forceFlush);
+
         this.configuration.registerDeactivatedItemsHandler (this.model);
 
         this.activateBrowserObserver (Views.BROWSER);
@@ -217,24 +227,24 @@ public class APCminiControllerSetup extends AbstractControllerSetup<APCminiContr
         final APCminiControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
 
-        this.addButton (ButtonID.SHIFT, "Shift", new ToggleShiftViewCommand<> (this.model, surface), APCminiControlSurface.APC_BUTTON_SHIFT);
+        this.addButton (ButtonID.SHIFT, "Shift", new ToggleShiftViewCommand<> (this.model, surface), this.definition.getButtonID (APCminiButton.SHIFT));
 
         for (int i = 0; i < 8; i++)
         {
             final int index = i;
 
             final ButtonID buttonID = ButtonID.get (ButtonID.SCENE1, i);
-            this.addButton (buttonID, COL_NAMES[i], new ViewButtonCommand<> (buttonID, surface), APCminiControlSurface.APC_BUTTON_SCENE_BUTTON1 + i, () -> this.getButtonColorFromActiveView (buttonID));
+            this.addButton (buttonID, COL_NAMES[i], new ViewButtonCommand<> (buttonID, surface), this.definition.getButtonID (APCminiButton.SCENES.get (i)), () -> this.getButtonColorFromActiveView (buttonID));
 
-            this.addButton (ButtonID.get (ButtonID.ROW_SELECT_1, i), ROW_NAMES[i], new TrackSelectCommand (i, this.model, surface), APCminiControlSurface.APC_BUTTON_TRACK_BUTTON1 + i, () -> {
+            this.addButton (ButtonID.get (ButtonID.ROW_SELECT_1, i), ROW_NAMES[i], new TrackSelectCommand (i, this.model, surface), this.definition.getButtonID (APCminiButton.TRACKS.get (i)), () -> {
                 final IView view = viewManager.getActive ();
                 if (view instanceof final APCminiView miniView)
                 {
                     final int trackButtonColor = miniView.getTrackButtonColor (index);
                     // Track buttons are only red!
-                    return trackButtonColor > 0 ? APCminiColorManager.APC_COLOR_RED : 0;
+                    return trackButtonColor > 0 ? APCminiMk1ColorManager.APC_COLOR_RED : 0;
                 }
-                return APCminiColorManager.APC_COLOR_BLACK;
+                return APCminiMk1ColorManager.APC_COLOR_BLACK;
             });
         }
     }

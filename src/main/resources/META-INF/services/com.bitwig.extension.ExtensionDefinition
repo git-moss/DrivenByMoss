@@ -3,7 +3,8 @@ de.mossgrabers.bitwig.controller.ableton.push.Push2ControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.ableton.push.Push3ControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.akai.apc.APCmkIControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.akai.apc.APCmkIIControllerExtensionDefinition
-de.mossgrabers.bitwig.controller.akai.apcmini.APCminiControllerExtensionDefinition
+de.mossgrabers.bitwig.controller.akai.apcmini.APCminiMk1ControllerExtensionDefinition
+de.mossgrabers.bitwig.controller.akai.apcmini.APCminiMk2ControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.akai.fire.FireControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.akai.acvs.ACVSLiveControllerExtensionDefinition
 de.mossgrabers.bitwig.controller.arturia.beatstep.BeatstepControllerExtensionDefinition

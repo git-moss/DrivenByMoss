@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.akai.apcmini.controller;
 
+import de.mossgrabers.controller.akai.apcmini.APCminiConfiguration;
+import de.mossgrabers.controller.akai.apcmini.definition.IAPCminiControllerDefinition;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.grid.PadGridImpl;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
@@ -16,15 +18,24 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
  */
 public class APCminiPadGrid extends PadGridImpl
 {
+    private final IAPCminiControllerDefinition definition;
+    private final APCminiConfiguration         configuration;
+
+
     /**
      * Constructor.
      *
      * @param colorManager The color manager for accessing specific colors to use
      * @param output The MIDI output which can address the pad states
+     * @param configuration
+     * @param definition
      */
-    public APCminiPadGrid (final ColorManager colorManager, final IMidiOutput output)
+    public APCminiPadGrid (final ColorManager colorManager, final IMidiOutput output, final APCminiConfiguration configuration, IAPCminiControllerDefinition definition)
     {
         super (colorManager, output);
+
+        this.definition = definition;
+        this.configuration = configuration;
     }
 
 
@@ -32,7 +43,10 @@ public class APCminiPadGrid extends PadGridImpl
     @Override
     protected void sendNoteState (final int channel, final int note, final int color)
     {
-        this.output.sendNote (note, color);
+        int chn = channel;
+        if (this.definition.hasBrightness ())
+            chn += this.configuration.getPadBrightness ();
+        this.output.sendNoteEx (chn, note, color);
     }
 
 

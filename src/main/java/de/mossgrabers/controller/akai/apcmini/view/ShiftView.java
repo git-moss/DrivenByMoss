@@ -5,8 +5,10 @@
 package de.mossgrabers.controller.akai.apcmini.view;
 
 import de.mossgrabers.controller.akai.apcmini.APCminiConfiguration;
-import de.mossgrabers.controller.akai.apcmini.controller.APCminiColorManager;
 import de.mossgrabers.controller.akai.apcmini.controller.APCminiControlSurface;
+import de.mossgrabers.controller.akai.apcmini.controller.APCminiMk1ColorManager;
+import de.mossgrabers.controller.akai.apcmini.controller.APCminiMk2ColorManager;
+import de.mossgrabers.controller.akai.apcmini.definition.IAPCminiControllerDefinition;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -59,19 +61,50 @@ public class ShiftView extends AbstractShiftView<APCminiControlSurface, APCminiC
     final PlayCommand<APCminiControlSurface, APCminiConfiguration> playCommand;
     final NewCommand<APCminiControlSurface, APCminiConfiguration>  newCommand;
 
+    private final IAPCminiControllerDefinition                     definition;
+
+    private final int                                              green;
+    private final int                                              yellow;
+    private final int                                              red;
+    private final int                                              black;
+    private final int                                              redBlink;
+    private final int                                              greenBlink;
+
 
     /**
      * Constructor.
      *
      * @param surface The surface
      * @param model The model
+     * @param definition The APCmini definition
      */
-    public ShiftView (final APCminiControlSurface surface, final IModel model)
+    public ShiftView (final APCminiControlSurface surface, final IModel model, final IAPCminiControllerDefinition definition)
     {
         super ("Shift", surface, model);
 
+        this.definition = definition;
+
         this.playCommand = new PlayCommand<> (this.model, this.surface);
         this.newCommand = new NewCommand<> (this.model, this.surface);
+
+        if (this.definition.hasRGBColors ())
+        {
+            this.green = APCminiMk2ColorManager.GREEN;
+            this.yellow = APCminiMk2ColorManager.ORANGE;
+            this.red = APCminiMk2ColorManager.RED;
+            this.black = APCminiMk2ColorManager.BLACK;
+            this.greenBlink = APCminiMk2ColorManager.BRIGHT_GREEN;
+            this.redBlink = APCminiMk2ColorManager.BRIGHT_RED;
+        }
+        else
+        {
+            this.green = APCminiMk1ColorManager.APC_COLOR_GREEN;
+            this.yellow = APCminiMk1ColorManager.APC_COLOR_YELLOW;
+            this.red = APCminiMk1ColorManager.APC_COLOR_RED;
+            this.black = APCminiMk1ColorManager.APC_COLOR_BLACK;
+            this.greenBlink = APCminiMk1ColorManager.APC_COLOR_GREEN_BLINK;
+            this.redBlink = APCminiMk1ColorManager.APC_COLOR_RED_BLINK;
+        }
     }
 
 
@@ -84,51 +117,51 @@ public class ShiftView extends AbstractShiftView<APCminiControlSurface, APCminiC
         // 0'C', 1'G', 2'D', 3'A', 4'E', 5'B', 6'F', 7'Bb', 8'Eb', 9'Ab', 10'Db', 11'Gb'
         final IPadGrid padGrid = this.surface.getPadGrid ();
         for (int i = 7; i < 64; i++)
-            padGrid.light (36 + i, APCminiColorManager.APC_COLOR_BLACK);
-        padGrid.light (36 + 0, scaleOffset == 0 ? APCminiColorManager.APC_COLOR_GREEN : APCminiColorManager.APC_COLOR_YELLOW);
-        padGrid.light (36 + 1, scaleOffset == 2 ? APCminiColorManager.APC_COLOR_GREEN : APCminiColorManager.APC_COLOR_YELLOW);
-        padGrid.light (36 + 2, scaleOffset == 4 ? APCminiColorManager.APC_COLOR_GREEN : APCminiColorManager.APC_COLOR_YELLOW);
-        padGrid.light (36 + 3, scaleOffset == 6 ? APCminiColorManager.APC_COLOR_GREEN : APCminiColorManager.APC_COLOR_YELLOW);
-        padGrid.light (36 + 4, scaleOffset == 1 ? APCminiColorManager.APC_COLOR_GREEN : APCminiColorManager.APC_COLOR_YELLOW);
-        padGrid.light (36 + 5, scaleOffset == 3 ? APCminiColorManager.APC_COLOR_GREEN : APCminiColorManager.APC_COLOR_YELLOW);
-        padGrid.light (36 + 6, scaleOffset == 5 ? APCminiColorManager.APC_COLOR_GREEN : APCminiColorManager.APC_COLOR_YELLOW);
-        padGrid.light (36 + 9, scaleOffset == 10 ? APCminiColorManager.APC_COLOR_GREEN : APCminiColorManager.APC_COLOR_RED);
-        padGrid.light (36 + 10, scaleOffset == 8 ? APCminiColorManager.APC_COLOR_GREEN : APCminiColorManager.APC_COLOR_RED);
-        padGrid.light (36 + 12, scaleOffset == 11 ? APCminiColorManager.APC_COLOR_GREEN : APCminiColorManager.APC_COLOR_RED);
-        padGrid.light (36 + 13, scaleOffset == 9 ? APCminiColorManager.APC_COLOR_GREEN : APCminiColorManager.APC_COLOR_RED);
-        padGrid.light (36 + 14, scaleOffset == 7 ? APCminiColorManager.APC_COLOR_GREEN : APCminiColorManager.APC_COLOR_RED);
+            padGrid.light (36 + i, this.black);
+        padGrid.light (36 + 0, scaleOffset == 0 ? this.green : this.yellow);
+        padGrid.light (36 + 1, scaleOffset == 2 ? this.green : this.yellow);
+        padGrid.light (36 + 2, scaleOffset == 4 ? this.green : this.yellow);
+        padGrid.light (36 + 3, scaleOffset == 6 ? this.green : this.yellow);
+        padGrid.light (36 + 4, scaleOffset == 1 ? this.green : this.yellow);
+        padGrid.light (36 + 5, scaleOffset == 3 ? this.green : this.yellow);
+        padGrid.light (36 + 6, scaleOffset == 5 ? this.green : this.yellow);
+        padGrid.light (36 + 9, scaleOffset == 10 ? this.green : this.red);
+        padGrid.light (36 + 10, scaleOffset == 8 ? this.green : this.red);
+        padGrid.light (36 + 12, scaleOffset == 11 ? this.green : this.red);
+        padGrid.light (36 + 13, scaleOffset == 9 ? this.green : this.red);
+        padGrid.light (36 + 14, scaleOffset == 7 ? this.green : this.red);
 
         // Device Parameters up/down
-        padGrid.light (36 + 24, APCminiColorManager.APC_COLOR_YELLOW);
-        padGrid.light (36 + 25, APCminiColorManager.APC_COLOR_YELLOW);
+        padGrid.light (36 + 24, this.yellow);
+        padGrid.light (36 + 25, this.yellow);
         // Device up/down
-        padGrid.light (36 + 32, APCminiColorManager.APC_COLOR_GREEN);
-        padGrid.light (36 + 33, APCminiColorManager.APC_COLOR_GREEN);
+        padGrid.light (36 + 32, this.green);
+        padGrid.light (36 + 33, this.green);
 
         // Change the scale
-        padGrid.light (36 + 35, APCminiColorManager.APC_COLOR_RED);
-        padGrid.light (36 + 36, APCminiColorManager.APC_COLOR_RED);
-        padGrid.light (36 + 27, APCminiColorManager.APC_COLOR_GREEN);
+        padGrid.light (36 + 35, this.red);
+        padGrid.light (36 + 36, this.red);
+        padGrid.light (36 + 27, this.green);
 
         // Draw the view selection: Session, Note, Drum, Sequencer
         final Views previousViewId = this.surface.getViewManager ().getActiveIDIgnoreTemporary ();
-        padGrid.light (36 + 56, Views.SESSION == previousViewId ? APCminiColorManager.APC_COLOR_GREEN : APCminiColorManager.APC_COLOR_YELLOW);
-        padGrid.light (36 + 57, Views.PLAY == previousViewId ? APCminiColorManager.APC_COLOR_GREEN : APCminiColorManager.APC_COLOR_YELLOW);
-        padGrid.light (36 + 58, Views.DRUM == previousViewId ? APCminiColorManager.APC_COLOR_GREEN : APCminiColorManager.APC_COLOR_YELLOW);
-        padGrid.light (36 + 59, Views.SEQUENCER == previousViewId ? APCminiColorManager.APC_COLOR_GREEN : APCminiColorManager.APC_COLOR_YELLOW);
-        padGrid.light (36 + 60, Views.RAINDROPS == previousViewId ? APCminiColorManager.APC_COLOR_GREEN : APCminiColorManager.APC_COLOR_YELLOW);
+        padGrid.light (36 + 56, Views.SESSION == previousViewId ? this.green : this.yellow);
+        padGrid.light (36 + 57, Views.PLAY == previousViewId ? this.green : this.yellow);
+        padGrid.light (36 + 58, Views.DRUM == previousViewId ? this.green : this.yellow);
+        padGrid.light (36 + 59, Views.SEQUENCER == previousViewId ? this.green : this.yellow);
+        padGrid.light (36 + 60, Views.RAINDROPS == previousViewId ? this.green : this.yellow);
 
         // Draw transport
         final ITransport transport = this.model.getTransport ();
-        padGrid.light (36 + 63, transport.isPlaying () ? APCminiColorManager.APC_COLOR_GREEN_BLINK : APCminiColorManager.APC_COLOR_GREEN);
-        padGrid.light (36 + 55, transport.isRecording () ? APCminiColorManager.APC_COLOR_RED_BLINK : APCminiColorManager.APC_COLOR_RED);
-        padGrid.light (36 + 47, APCminiColorManager.APC_COLOR_YELLOW);
-        padGrid.light (36 + 39, APCminiColorManager.APC_COLOR_YELLOW);
+        padGrid.light (36 + 63, transport.isPlaying () ? this.greenBlink : this.green);
+        padGrid.light (36 + 55, transport.isRecording () ? this.redBlink : this.red);
+        padGrid.light (36 + 47, this.yellow);
+        padGrid.light (36 + 39, this.yellow);
 
-        padGrid.light (36 + 62, APCminiColorManager.APC_COLOR_YELLOW);
-        padGrid.light (36 + 54, transport.isLauncherOverdub () ? APCminiColorManager.APC_COLOR_RED_BLINK : APCminiColorManager.APC_COLOR_RED);
-        padGrid.light (36 + 46, APCminiColorManager.APC_COLOR_YELLOW);
-        padGrid.light (36 + 38, APCminiColorManager.APC_COLOR_YELLOW);
+        padGrid.light (36 + 62, this.yellow);
+        padGrid.light (36 + 54, transport.isLauncherOverdub () ? this.redBlink : this.red);
+        padGrid.light (36 + 46, this.yellow);
+        padGrid.light (36 + 38, this.yellow);
     }
 
 
@@ -273,7 +306,7 @@ public class ShiftView extends AbstractShiftView<APCminiControlSurface, APCminiC
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final ModeManager modeManager = this.surface.getModeManager ();
 
-        switch (index)
+        switch (this.definition.swapShiftedTrackIndices (index))
         {
             case 0:
                 tb.getSceneBank ().selectPreviousPage ();
@@ -302,8 +335,6 @@ public class ShiftView extends AbstractShiftView<APCminiControlSurface, APCminiC
 
             case 6:
                 Modes mode = Modes.get (modeManager.getActiveID (), 1);
-                // Wrap
-                // Check if Send channel exists
                 if (Modes.isSendMode (mode))
                 {
                     if (!tb.canEditSend (mode.ordinal () - Modes.SEND1.ordinal ()))
@@ -355,7 +386,7 @@ public class ShiftView extends AbstractShiftView<APCminiControlSurface, APCminiC
                 this.model.getCurrentTrackBank ().stop (false);
                 break;
             default:
-                final int index = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
+                final int index = this.definition.swapShiftedSceneIndices (buttonID.ordinal () - ButtonID.SCENE1.ordinal ());
                 this.surface.setTrackState (index);
                 final String softKeys = APCminiConfiguration.SOFT_KEYS_OPTIONS.get (index);
                 this.surface.getConfiguration ().setSoftKeys (softKeys);
@@ -373,7 +404,7 @@ public class ShiftView extends AbstractShiftView<APCminiControlSurface, APCminiC
         final ISceneBank sceneBank = tb.getSceneBank ();
         final Modes mode = this.surface.getModeManager ().getActiveID ();
 
-        switch (index)
+        switch (this.definition.swapShiftedTrackIndices (index))
         {
             case 0:
                 return sceneBank.canScrollPageBackwards () ? APCminiControlSurface.APC_BUTTON_STATE_ON : APCminiControlSurface.APC_BUTTON_STATE_OFF;
@@ -396,7 +427,7 @@ public class ShiftView extends AbstractShiftView<APCminiControlSurface, APCminiC
                 break;
         }
 
-        return APCminiColorManager.APC_COLOR_BLACK;
+        return APCminiMk1ColorManager.APC_COLOR_BLACK;
     }
 
 
@@ -407,19 +438,19 @@ public class ShiftView extends AbstractShiftView<APCminiControlSurface, APCminiC
         final int trackState = this.surface.getTrackState ();
 
         // Draw the track states on the scene buttons
-        switch (buttonID)
+        switch (this.definition.swapShiftedSceneIndices (buttonID.ordinal () - ButtonID.SCENE1.ordinal ()))
         {
-            case SCENE1:
+            case 0:
                 return trackState == APCminiControlSurface.TRACK_STATE_CLIP_STOP ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF;
-            case SCENE2:
+            case 1:
                 return trackState == APCminiControlSurface.TRACK_STATE_SOLO ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF;
-            case SCENE3:
+            case 2:
                 return trackState == APCminiControlSurface.TRACK_STATE_REC_ARM ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF;
-            case SCENE4:
+            case 3:
                 return trackState == APCminiControlSurface.TRACK_STATE_MUTE ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF;
-            case SCENE5:
+            case 4:
                 return trackState == APCminiControlSurface.TRACK_STATE_SELECT ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF;
-            case SCENE6:
+            case 5:
                 return this.model.isEffectTrackBankActive () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF;
             default:
                 return ColorManager.BUTTON_STATE_OFF;

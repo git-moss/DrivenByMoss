@@ -97,6 +97,9 @@ public abstract class AbstractDrum64View<S extends IControlSurface<C>, C extends
         super.onActivate ();
 
         this.getDrumPadBank ().setIndication (true);
+
+        // Bring everything in sync...
+        this.resetOctave ();
     }
 
 
@@ -252,17 +255,11 @@ public abstract class AbstractDrum64View<S extends IControlSurface<C>, C extends
     private void setOctave (final int octave)
     {
         this.clearPressedKeys ();
-        final int oldDrumOctave = this.drumOctave;
         this.drumOctave = Math.max (-2, Math.min (1, octave));
         this.offsetY = this.drumStartKey + this.drumOctave * BLOCK_SIZE;
         this.updateNoteMapping ();
         this.surface.getDisplay ().notify (this.getDrumRangeText ());
-        if (oldDrumOctave != this.drumOctave)
-        {
-            final IDrumPadBank drumPadBank = this.getDrumPadBank ();
-            for (int i = 0; i < BLOCK_SIZE; i++)
-                drumPadBank.scrollForwards ();
-        }
+        this.getDrumPadBank ().scrollTo (this.offsetY);
     }
 
 

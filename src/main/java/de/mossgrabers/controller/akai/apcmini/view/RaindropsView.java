@@ -6,6 +6,7 @@ package de.mossgrabers.controller.akai.apcmini.view;
 
 import de.mossgrabers.controller.akai.apcmini.APCminiConfiguration;
 import de.mossgrabers.controller.akai.apcmini.controller.APCminiControlSurface;
+import de.mossgrabers.controller.akai.apcmini.definition.IAPCminiControllerDefinition;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IModel;
@@ -20,15 +21,22 @@ import de.mossgrabers.framework.view.sequencer.AbstractRaindropsView;
  */
 public class RaindropsView extends AbstractRaindropsView<APCminiControlSurface, APCminiConfiguration> implements APCminiView
 {
+    private final IAPCminiControllerDefinition definition;
+
+
     /**
      * Constructor.
      *
      * @param surface The surface
      * @param model The model
+     * @param useTrackColor True to use the color of the current track for coloring the octaves
+     * @param definition The APCmini definition
      */
-    public RaindropsView (final APCminiControlSurface surface, final IModel model)
+    public RaindropsView (final APCminiControlSurface surface, final IModel model, final boolean useTrackColor, final IAPCminiControllerDefinition definition)
     {
-        super ("Raindrops", surface, model, false);
+        super ("Raindrops", surface, model, useTrackColor);
+
+        this.definition = definition;
     }
 
 
@@ -39,7 +47,7 @@ public class RaindropsView extends AbstractRaindropsView<APCminiControlSurface, 
         if (event != ButtonEvent.DOWN || !this.isActive ())
             return;
 
-        switch (index)
+        switch (this.definition.swapShiftedTrackIndices (index))
         {
             case 0:
                 this.onOctaveUp (event);
@@ -60,20 +68,9 @@ public class RaindropsView extends AbstractRaindropsView<APCminiControlSurface, 
 
     /** {@inheritDoc} */
     @Override
-    public String getButtonColorID (final ButtonID buttonID)
-    {
-        final int index = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
-        final int res = 7 - index;
-        final boolean isKeyboardEnabled = this.model.canSelectedTrackHoldNotes ();
-        return isKeyboardEnabled && res == this.getResolutionIndex () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public int getTrackButtonColor (final int index)
     {
-        switch (index)
+        switch (this.definition.swapShiftedTrackIndices (index))
         {
             case 0:
                 final boolean canScrollUp = this.offsetY + AbstractRaindropsView.NUM_OCTAVE <= this.getClip ().getNumRows () - AbstractRaindropsView.NUM_OCTAVE;
@@ -84,5 +81,16 @@ public class RaindropsView extends AbstractRaindropsView<APCminiControlSurface, 
             default:
                 return APCminiControlSurface.APC_BUTTON_STATE_OFF;
         }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getButtonColorID (final ButtonID buttonID)
+    {
+        final int index = buttonID.ordinal () - ButtonID.SCENE1.ordinal ();
+        final int res = 7 - index;
+        final boolean isKeyboardEnabled = this.model.canSelectedTrackHoldNotes ();
+        return isKeyboardEnabled && res == this.getResolutionIndex () ? ColorManager.BUTTON_STATE_ON : ColorManager.BUTTON_STATE_OFF;
     }
 }

@@ -5,7 +5,7 @@
 package de.mossgrabers.controller.akai.apcmini.view;
 
 import de.mossgrabers.controller.akai.apcmini.APCminiConfiguration;
-import de.mossgrabers.controller.akai.apcmini.controller.APCminiColorManager;
+import de.mossgrabers.controller.akai.apcmini.controller.APCminiMk1ColorManager;
 import de.mossgrabers.controller.akai.apcmini.controller.APCminiControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -43,6 +43,6 @@ public class APCMiniBrowserView extends BrowserView<APCminiControlSurface, APCmi
     @Override
     public int getTrackButtonColor (final int index)
     {
-        return APCminiColorManager.APC_COLOR_BLACK;
+        return APCminiMk1ColorManager.APC_COLOR_BLACK;
     }
 }

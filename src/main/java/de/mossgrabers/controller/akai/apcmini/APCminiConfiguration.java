@@ -4,6 +4,9 @@
 
 package de.mossgrabers.controller.akai.apcmini;
 
+import java.util.List;
+
+import de.mossgrabers.controller.akai.apcmini.definition.IAPCminiControllerDefinition;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
@@ -11,8 +14,6 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 import de.mossgrabers.framework.view.Views;
-
-import java.util.List;
 
 
 /**
@@ -23,16 +24,20 @@ import java.util.List;
 public class APCminiConfiguration extends AbstractConfiguration
 {
     /** Default function of the faders. */
-    public static final Integer       FADER_CTRL           = Integer.valueOf (50);
+    public static final Integer                FADER_CTRL           = Integer.valueOf (50);
     /** Default function of the track buttons. */
-    public static final Integer       SOFT_KEYS            = Integer.valueOf (51);
+    public static final Integer                SOFT_KEYS            = Integer.valueOf (51);
+    /** The pad brightness. */
+    public static final Integer                PAD_BRIGHTNESS       = Integer.valueOf (52);
 
-    private static final List<String> FADER_CTRL_OPTIONS   = List.of ("Volume", "Pan", "Send 1", "Send 2", "Send 3", "Send 4", "Send 5", "Send 6", "Send 7", "Send 8", "Device");
+    private static final List<String>          FADER_CTRL_OPTIONS   = List.of ("Volume", "Pan", "Send 1", "Send 2", "Send 3", "Send 4", "Send 5", "Send 6", "Send 7", "Send 8", "Device");
+
+    private static final List<String>          BRIGHTNESS_OPTIONS   = List.of ("10%", "25%", "50%", "65%", "75%", "90%", "100%");
 
     /** The names of the track button functions. */
-    public static final List<String>  SOFT_KEYS_OPTIONS    = List.of ("Clip Stop", "Solo", "Rec Arm", "Mute", "Select");
+    public static final List<String>           SOFT_KEYS_OPTIONS    = List.of ("Clip Stop", "Solo", "Rec Arm", "Mute", "Select");
 
-    private static final Views []     PREFERRED_NOTE_VIEWS =
+    private static final Views []              PREFERRED_NOTE_VIEWS =
     {
         Views.PLAY,
         Views.DRUM,
@@ -40,11 +45,14 @@ public class APCminiConfiguration extends AbstractConfiguration
         Views.RAINDROPS
     };
 
-    private String                    faderCtrl            = FADER_CTRL_OPTIONS.get (0);
-    private String                    softKeys             = SOFT_KEYS_OPTIONS.get (0);
+    private final IAPCminiControllerDefinition definition;
 
-    private IEnumSetting              faderCtrlSetting;
-    private IEnumSetting              softKeysSetting;
+    private String                             faderCtrl            = FADER_CTRL_OPTIONS.get (0);
+    private String                             softKeys             = SOFT_KEYS_OPTIONS.get (0);
+
+    private IEnumSetting                       faderCtrlSetting;
+    private IEnumSetting                       softKeysSetting;
+    private int                                padBrightness        = 4;
 
 
     /**
@@ -53,10 +61,13 @@ public class APCminiConfiguration extends AbstractConfiguration
      * @param host The DAW host
      * @param valueChanger The value changer
      * @param arpeggiatorModes The available arpeggiator modes
+     * @param definition The specific APCmini
      */
-    public APCminiConfiguration (final IHost host, final IValueChanger valueChanger, final List<ArpeggiatorMode> arpeggiatorModes)
+    public APCminiConfiguration (final IHost host, final IValueChanger valueChanger, final List<ArpeggiatorMode> arpeggiatorModes, final IAPCminiControllerDefinition definition)
     {
         super (host, valueChanger, arpeggiatorModes);
+
+        this.definition = definition;
     }
 
 
@@ -64,6 +75,18 @@ public class APCminiConfiguration extends AbstractConfiguration
     @Override
     public void init (final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
+        ///////////////////////////
+        // Hardware
+
+        if (this.definition.hasBrightness ())
+        {
+            final IEnumSetting padBrightnessSetting = globalSettings.getEnumSetting ("Pad Brightness", CATEGORY_HARDWARE_SETUP, BRIGHTNESS_OPTIONS, BRIGHTNESS_OPTIONS.get (this.padBrightness));
+            padBrightnessSetting.addValueObserver (value -> {
+                this.padBrightness = lookupIndex (BRIGHTNESS_OPTIONS, value);
+                this.notifyObservers (PAD_BRIGHTNESS);
+            });
+        }
+
         ///////////////////////////
         // Scale
 
@@ -78,6 +101,7 @@ public class APCminiConfiguration extends AbstractConfiguration
         this.activateQuantizeAmountSetting (globalSettings);
         this.activateStartupViewSetting (globalSettings, PREFERRED_NOTE_VIEWS);
         this.activateStartWithSessionViewSetting (globalSettings);
+        this.activateShowPlayedChordsSetting (globalSettings);
 
         ///////////////////////////
         // Workflow
@@ -147,5 +171,16 @@ public class APCminiConfiguration extends AbstractConfiguration
     public String getSoftKeys ()
     {
         return this.softKeys;
+    }
+
+
+    /**
+     * Get the pad brightness.
+     * 
+     * @return The pad brightness in the range of [0..6]
+     */
+    public int getPadBrightness ()
+    {
+        return this.padBrightness;
     }
 }
