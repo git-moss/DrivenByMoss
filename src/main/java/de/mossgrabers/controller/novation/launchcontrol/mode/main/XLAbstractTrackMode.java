@@ -1,5 +1,7 @@
 package de.mossgrabers.controller.novation.launchcontrol.mode.main;
 
+import java.util.List;
+
 import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControlXLColorManager;
 import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControlXLControlSurface;
 import de.mossgrabers.controller.novation.launchcontrol.mode.buttons.XLTemporaryButtonMode;
@@ -11,8 +13,6 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
-
-import java.util.List;
 
 
 /**
@@ -142,6 +142,15 @@ public abstract class XLAbstractTrackMode extends XLAbstractMainMode<ITrack>
     @Override
     public void selectPreviousItem ()
     {
+        if (this.surface.isPressed (ButtonID.DEVICE))
+        {
+            if (this.surface.getTrackButtonModeManager ().getActive () instanceof final XLTemporaryButtonMode tempMode)
+                tempMode.setHasBeenUsed ();
+            if (this.surface.getModeManager ().get (Modes.SEND) instanceof XLTrackMixMode mixMode)
+                mixMode.selectParameterMode (false);
+            return;
+        }
+
         final ITrackBank trackBank = this.model.getTrackBank ();
         for (int i = 0; i < 8; i++)
             trackBank.getItem (i).getSendBank ().selectPreviousPage ();
@@ -153,6 +162,15 @@ public abstract class XLAbstractTrackMode extends XLAbstractMainMode<ITrack>
     @Override
     public void selectNextItem ()
     {
+        if (this.surface.isPressed (ButtonID.DEVICE))
+        {
+            if (this.surface.getTrackButtonModeManager ().getActive () instanceof final XLTemporaryButtonMode tempMode)
+                tempMode.setHasBeenUsed ();
+            if (this.surface.getModeManager ().get (Modes.SEND) instanceof XLTrackMixMode mixMode)
+                mixMode.selectParameterMode (true);
+            return;
+        }
+
         final ITrackBank trackBank = this.model.getTrackBank ();
         for (int i = 0; i < 8; i++)
             trackBank.getItem (i).getSendBank ().selectNextPage ();
@@ -164,6 +182,9 @@ public abstract class XLAbstractTrackMode extends XLAbstractMainMode<ITrack>
     @Override
     public boolean hasPreviousItem ()
     {
+        if (this.surface.isPressed (ButtonID.DEVICE))
+            return true;
+
         final ITrackBank trackBank = this.model.getTrackBank ();
         boolean canScroll = false;
         for (int i = 0; i < 8; i++)
@@ -176,6 +197,9 @@ public abstract class XLAbstractTrackMode extends XLAbstractMainMode<ITrack>
     @Override
     public boolean hasNextItem ()
     {
+        if (this.surface.isPressed (ButtonID.DEVICE))
+            return true;
+
         final ITrackBank trackBank = this.model.getTrackBank ();
         boolean canScroll = false;
         for (int i = 0; i < 8; i++)

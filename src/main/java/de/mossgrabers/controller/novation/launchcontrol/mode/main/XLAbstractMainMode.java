@@ -78,7 +78,7 @@ public abstract class XLAbstractMainMode<B extends IItem> extends AbstractParame
     {
         this.parameterProvider = parameterProvider;
         this.parameterProviderWithDeviceParams = parameterProviderWithDeviceParams;
-        this.setParameterProvider (parameterProvider);
+        this.setParameterProvider (this.configuration.isDeviceActive () ? this.parameterProviderWithDeviceParams : this.parameterProvider);
     }
 
 

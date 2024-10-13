@@ -49,6 +49,7 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
     protected LightInfo        clipColorHasContent             = new LightInfo (4, -1, false);
     protected LightInfo        clipColorHasNoContent           = new LightInfo (5, -1, false);
     protected LightInfo        clipColorIsRecArmed             = new LightInfo (6, -1, false);
+    protected LightInfo        clipColorIsMuted                = new LightInfo (7, -1, false);
 
     protected LightInfo        birdColorHasContent             = new LightInfo (4, -1, false);
     protected LightInfo        birdColorSelected               = new LightInfo (2, -1, false);
@@ -378,7 +379,7 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
     }
 
 
-    protected void setColors (final LightInfo isRecording, final LightInfo isRecordingQueued, final LightInfo isPlaying, final LightInfo isPlayingQueued, final LightInfo hasContent, final LightInfo noContent, final LightInfo recArmed)
+    protected void setColors (final LightInfo isRecording, final LightInfo isRecordingQueued, final LightInfo isPlaying, final LightInfo isPlayingQueued, final LightInfo hasContent, final LightInfo noContent, final LightInfo recArmed, final LightInfo isMuted)
     {
         this.clipColorIsRecording = isRecording;
         this.clipColorIsRecordingQueued = isRecordingQueued;
@@ -387,6 +388,7 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
         this.clipColorHasContent = hasContent;
         this.clipColorHasNoContent = noContent;
         this.clipColorIsRecArmed = recArmed;
+        this.clipColorIsMuted = isMuted;
     }
 
 
@@ -453,6 +455,8 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
 
         if (slot.hasContent ())
         {
+            if (slot.isMuted ())
+                return new LightInfo (this.clipColorIsMuted.getColor (), -1, false);
             final int blinkColor = this.clipColorHasContent.getBlinkColor ();
             final int color = this.useClipColor && colorID != null ? cm.getColorIndex (colorID) : this.clipColorHasContent.getColor ();
             return new LightInfo (color, slot.isSelected () ? blinkColor : -1, this.clipColorHasContent.isFast ());

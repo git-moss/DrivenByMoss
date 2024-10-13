@@ -153,7 +153,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 this.triggerChangeZoom1 (false);
                 break;
 
-            case CLIP_LENGTH, NOTE_EDIT_VIEW:
+            case CLIP_LENGTH, NOTE_EDIT_VIEW, SCENE_PLAY:
                 // Not used
                 break;
 
@@ -246,7 +246,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 this.triggerChangeZoom1 (true);
                 break;
 
-            case CLIP_LENGTH, NOTE_EDIT_VIEW:
+            case CLIP_LENGTH, NOTE_EDIT_VIEW, SCENE_PLAY:
                 // Not used
                 break;
 
@@ -318,7 +318,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 this.model.getApplication ().incTrackHeight ();
                 break;
 
-            case CLIP_LENGTH, NOTE_EDIT_VIEW:
+            case CLIP_LENGTH, NOTE_EDIT_VIEW, SCENE_PLAY:
                 // Not used
                 break;
 
@@ -390,7 +390,7 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
                 this.model.getApplication ().decTrackHeight ();
                 break;
 
-            case CLIP_LENGTH, NOTE_EDIT_VIEW:
+            case CLIP_LENGTH, NOTE_EDIT_VIEW, SCENE_PLAY:
                 // Not used
                 break;
 

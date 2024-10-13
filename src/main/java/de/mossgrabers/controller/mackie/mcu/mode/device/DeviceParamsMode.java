@@ -10,6 +10,7 @@ import java.util.Optional;
 import de.mossgrabers.controller.mackie.mcu.MCUConfiguration.MainDisplay;
 import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
 import de.mossgrabers.controller.mackie.mcu.mode.BaseMode;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
@@ -122,14 +123,14 @@ public class DeviceParamsMode extends BaseMode<IParameter>
     @Override
     public void updateDisplay ()
     {
-        final boolean isShiftPressed = this.surface.isShiftPressed ();
-        if (isShiftPressed || this.surface.isSelectPressed ())
+        final boolean isControlPressed = this.surface.isPressed (ButtonID.CONTROL);
+        if (isControlPressed || this.surface.isSelectPressed ())
         {
             final ColorEx [] colors = new ColorEx [8];
             final ITextDisplay d = this.surface.getTextDisplay ().clear ();
             final int textLength = this.getTextLength ();
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-            if (isShiftPressed)
+            if (isControlPressed)
             {
                 final IDeviceBank deviceBank = cursorDevice.getDeviceBank ();
                 final int extenderOffset = this.getExtenderOffset ();
@@ -235,7 +236,7 @@ public class DeviceParamsMode extends BaseMode<IParameter>
     {
         if (row == 0)
         {
-            if (this.surface.isShiftPressed ())
+            if (this.surface.isPressed (ButtonID.CONTROL))
             {
                 if (event == ButtonEvent.DOWN)
                 {
@@ -275,14 +276,14 @@ public class DeviceParamsMode extends BaseMode<IParameter>
     @Override
     public void updateKnobLEDs ()
     {
-        final boolean isShiftPressed = this.surface.isShiftPressed ();
-        if (isShiftPressed || this.surface.isSelectPressed ())
+        final boolean isControlPressed = this.surface.isPressed (ButtonID.CONTROL);
+        if (isControlPressed || this.surface.isSelectPressed ())
         {
             final int upperBound = this.model.getValueChanger ().getUpperBound ();
             final ICursorDevice cursorDevice = this.model.getCursorDevice ();
             final int extenderOffset = this.getExtenderOffset ();
 
-            if (isShiftPressed)
+            if (isControlPressed)
             {
                 final IDeviceBank deviceBank = cursorDevice.getDeviceBank ();
                 final int selectedPosition = cursorDevice.getPosition ();

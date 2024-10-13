@@ -53,7 +53,8 @@ public class SessionView extends AbstractSessionView<APCminiControlSurface, APCm
             final LightInfo hasContent = new LightInfo (APCminiMk2ColorManager.ORANGE, APCminiMk2ColorManager.WHITE, false);
             final LightInfo noContent = new LightInfo (APCminiMk2ColorManager.BLACK, -1, false);
             final LightInfo recArmed = new LightInfo (APCminiMk2ColorManager.DARK_RED, -1, false);
-            this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed);
+            final LightInfo isMuted = new LightInfo (APCminiMk2ColorManager.DARK_GRAY, -1, false);
+            this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed, isMuted);
         }
         else
         {
@@ -64,7 +65,8 @@ public class SessionView extends AbstractSessionView<APCminiControlSurface, APCm
             final LightInfo hasContent = new LightInfo (APCminiMk1ColorManager.APC_COLOR_YELLOW, APCminiMk1ColorManager.APC_COLOR_YELLOW_BLINK, false);
             final LightInfo noContent = new LightInfo (APCminiMk1ColorManager.APC_COLOR_BLACK, -1, false);
             final LightInfo recArmed = new LightInfo (APCminiMk1ColorManager.APC_COLOR_BLACK, -1, false);
-            this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed);
+            final LightInfo isMuted = new LightInfo (APCminiMk1ColorManager.APC_COLOR_BLACK, -1, false);
+            this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed, isMuted);
         }
     }
 

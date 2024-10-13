@@ -100,6 +100,7 @@ import de.mossgrabers.framework.mode.track.TrackSoloMode;
 import de.mossgrabers.framework.mode.track.TrackStopClipMode;
 import de.mossgrabers.framework.mode.track.TrackVolumeMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
+import de.mossgrabers.framework.view.ScenePlayView;
 import de.mossgrabers.framework.view.TempoView;
 import de.mossgrabers.framework.view.Views;
 import de.mossgrabers.framework.view.sequencer.ClipLengthView;
@@ -233,6 +234,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         final ViewManager viewManager = surface.getViewManager ();
         viewManager.register (Views.SHIFT, new ShiftView (surface, this.model));
         viewManager.register (Views.SESSION, new SessionView ("Session", surface, this.model));
+        viewManager.register (Views.SCENE_PLAY, new ScenePlayView<> (surface, this.model));
         viewManager.register (Views.PLAY, new PlayView (surface, this.model));
         viewManager.register (Views.CHORDS, new ChordsView (surface, this.model));
         viewManager.register (Views.PIANO, new PianoView (surface, this.model));

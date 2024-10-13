@@ -45,6 +45,7 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
         final int white = isPush2 ? PushColorManager.PUSH2_COLOR2_WHITE : PushColorManager.PUSH1_COLOR2_WHITE;
         final int green = isPush2 ? PushColorManager.PUSH2_COLOR2_GREEN : PushColorManager.PUSH1_COLOR2_GREEN;
         final int amber = isPush2 ? PushColorManager.PUSH2_COLOR2_AMBER : PushColorManager.PUSH1_COLOR2_AMBER;
+        final int grey = isPush2 ? PushColorManager.PUSH2_COLOR2_GREY_LO : PushColorManager.PUSH1_COLOR2_GREY_LO;
         final LightInfo isRecording = new LightInfo (redHi, redHi, false);
         final LightInfo isRecordingQueued = new LightInfo (redHi, black, true);
         final LightInfo isPlaying = new LightInfo (green, green, false);
@@ -52,7 +53,8 @@ public class SessionView extends AbstractSessionView<PushControlSurface, PushCon
         final LightInfo hasContent = new LightInfo (amber, white, false);
         final LightInfo noContent = new LightInfo (black, -1, false);
         final LightInfo recArmed = new LightInfo (redLo, -1, false);
-        this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed);
+        final LightInfo isMuted = new LightInfo (grey, -1, false);
+        this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed, isMuted);
 
         this.birdColorHasContent = new LightInfo (amber, -1, false);
         this.birdColorSelected = isPlaying;

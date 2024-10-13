@@ -4,11 +4,11 @@
 
 package de.mossgrabers.framework.controller;
 
+import java.util.List;
+
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.TestCallback;
-
-import java.util.List;
 
 
 /**
@@ -43,6 +43,14 @@ public interface IControllerSetup<S extends IControlSurface<C>, C extends Config
      * Update cycle. Use e.g. for display updates.
      */
     void flush ();
+
+
+    /**
+     * Checks if there is a surface registered.
+     * 
+     * @return True if there is at least 1 surface registered
+     */
+    boolean hasSurface ();
 
 
     /**

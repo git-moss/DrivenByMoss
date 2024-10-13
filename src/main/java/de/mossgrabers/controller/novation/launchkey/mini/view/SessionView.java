@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.novation.launchkey.mini.view;
 
+import java.util.List;
+
 import de.mossgrabers.controller.novation.launchkey.mini.LaunchkeyMiniMk3Configuration;
 import de.mossgrabers.controller.novation.launchkey.mini.controller.LaunchkeyMiniMk3ColorManager;
 import de.mossgrabers.controller.novation.launchkey.mini.controller.LaunchkeyMiniMk3ControlSurface;
@@ -21,8 +23,6 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.Pair;
 import de.mossgrabers.framework.view.AbstractSessionView;
 import de.mossgrabers.framework.view.Views;
-
-import java.util.List;
 
 
 /**
@@ -55,7 +55,8 @@ public class SessionView extends AbstractSessionView<LaunchkeyMiniMk3ControlSurf
         final LightInfo hasContent = new LightInfo (LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_AMBER, -1, false);
         final LightInfo noContent = new LightInfo (LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_BLACK, -1, false);
         final LightInfo recArmed = new LightInfo (LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_RED_LO, -1, false);
-        this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed);
+        final LightInfo isMuted = new LightInfo (LaunchkeyMiniMk3ColorManager.LAUNCHKEY_COLOR_GREY_LO, -1, false);
+        this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed, isMuted);
     }
 
 

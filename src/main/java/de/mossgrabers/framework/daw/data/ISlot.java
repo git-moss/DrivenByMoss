@@ -23,6 +23,14 @@ public interface ISlot extends IItem
 
 
     /**
+     * Is the clip in the slot muted?
+     *
+     * @return True if muted
+     */
+    boolean isMuted ();
+
+
+    /**
      * Is the slot recording?
      *
      * @return True if it is recording

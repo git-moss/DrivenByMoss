@@ -64,7 +64,8 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
         final LightInfo hasContent = new LightInfo (LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER, -1, false);
         final LightInfo noContent = new LightInfo (LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK, -1, false);
         final LightInfo recArmed = new LightInfo (LaunchpadColorManager.LAUNCHPAD_COLOR_RED_LO, -1, false);
-        this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed);
+        final LightInfo isMuted = new LightInfo (LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO, -1, false);
+        this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed, isMuted);
 
         this.birdColorHasContent = hasContent;
         this.birdColorSelected = new LightInfo (LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN, -1, false);

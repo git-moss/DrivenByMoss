@@ -25,6 +25,7 @@ import de.mossgrabers.framework.view.Views;
 public class SelectSessionViewCommand extends AbstractTriggerCommand<LaunchpadControlSurface, LaunchpadConfiguration>
 {
     private TemporaryMode temporaryMode = TemporaryMode.OFF;
+    private Views         lastView      = Views.MIX;
 
 
     private enum TemporaryMode
@@ -69,12 +70,14 @@ public class SelectSessionViewCommand extends AbstractTriggerCommand<LaunchpadCo
             case DOWN:
                 this.temporaryMode = TemporaryMode.OFF;
 
-                // Display Mix view with Shift
+                // Display Mix or Scene Play view with Shift
                 if (this.surface.isShiftPressed ())
                 {
                     this.surface.setTriggerConsumed (ButtonID.SESSION);
-                    viewManager.setActive (Views.MIX);
-                    this.notifyViewName (Views.MIX, false, false);
+                    if (viewManager.isActive (Views.MIX, Views.SCENE_PLAY))
+                        this.lastView = viewManager.isActive (Views.MIX) ? Views.SCENE_PLAY : Views.MIX;
+                    viewManager.setActive (this.lastView);
+                    this.notifyViewName (this.lastView, false, false);
                 }
                 break;
 

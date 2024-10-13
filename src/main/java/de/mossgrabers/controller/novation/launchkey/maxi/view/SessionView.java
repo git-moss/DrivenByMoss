@@ -56,7 +56,8 @@ public class SessionView extends AbstractSessionView<LaunchkeyMk3ControlSurface,
         final LightInfo hasContent = new LightInfo (LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_AMBER, -1, false);
         final LightInfo noContent = new LightInfo (LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_BLACK, -1, false);
         final LightInfo recArmed = new LightInfo (LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_RED_LO, -1, false);
-        this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed);
+        final LightInfo isMuted = new LightInfo (LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_GREY_LO, -1, false);
+        this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed, isMuted);
     }
 
 

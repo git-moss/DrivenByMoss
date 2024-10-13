@@ -6,6 +6,7 @@ package de.mossgrabers.controller.ni.kontrol.mkii;
 
 import java.util.List;
 
+import de.mossgrabers.controller.ni.kontrol.mkii.controller.KontrolProtocol;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
@@ -90,12 +91,15 @@ public class KontrolProtocolConfiguration extends AbstractConfiguration
     @Override
     public void init (final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
-        final IEnumSetting modeSwitchButtonSetting = globalSettings.getEnumSetting ("Switch modes with", CATEGORY_HARDWARE_SETUP, MODE_SWITCH_BUTTONS, MODE_SWITCH_BUTTONS[this.version >= 3 ? 7 : 0]);
-        modeSwitchButtonSetting.addValueObserver (value -> {
-            this.modeSwitchButton = SwitchButton.values ()[lookupIndex (MODE_SWITCH_BUTTONS, value)];
-            this.notifyObservers (MODE_SWITCH_BUTTON);
-        });
-        this.isSettingActive.add (MODE_SWITCH_BUTTON);
+        if (this.version == KontrolProtocol.VERSION_3)
+        {
+            final IEnumSetting modeSwitchButtonSetting = globalSettings.getEnumSetting ("Switch modes with", CATEGORY_HARDWARE_SETUP, MODE_SWITCH_BUTTONS, MODE_SWITCH_BUTTONS[this.version >= 3 ? 7 : 0]);
+            modeSwitchButtonSetting.addValueObserver (value -> {
+                this.modeSwitchButton = SwitchButton.values ()[lookupIndex (MODE_SWITCH_BUTTONS, value)];
+                this.notifyObservers (MODE_SWITCH_BUTTON);
+            });
+            this.isSettingActive.add (MODE_SWITCH_BUTTON);
+        }
 
         ///////////////////////////
         // Transport

@@ -25,10 +25,13 @@ public class KompleteDevice extends SpecificDeviceImpl
     public static final String VST3_KOMPLETE_ID  = "5653544E694B4B6B6F6D706C65746520";
     /** The ID of the Konktakt 7 VST3 plugin. */
     public static final String VST3_KONTAKT_7_ID = "5653544E694B376B6F6E74616B742037";
+    /** The ID of the Konktakt 8 VST3 plugin. */
+    public static final String VST3_KONTAKT_8_ID = "5653544E694B386B6F6E74616B742038";
 
     private final Parameter    nikbVst2;
     private final Parameter    nikbVst3;
     private final Parameter    nikbVst3Kontakt7;
+    private final Parameter    nikbVst3Kontakt8;
 
 
     /**
@@ -56,6 +59,11 @@ public class KompleteDevice extends SpecificDeviceImpl
         this.nikbVst3Kontakt7 = specificDevice.createParameter (2048);
         this.nikbVst3Kontakt7.exists ().markInterested ();
         this.nikbVst3Kontakt7.name ().markInterested ();
+
+        specificDevice = device.createSpecificVst3Device (VST3_KONTAKT_8_ID);
+        this.nikbVst3Kontakt8 = specificDevice.createParameter (2048);
+        this.nikbVst3Kontakt8.exists ().markInterested ();
+        this.nikbVst3Kontakt8.name ().markInterested ();
     }
 
 
@@ -69,6 +77,8 @@ public class KompleteDevice extends SpecificDeviceImpl
             return this.nikbVst3.name ().get ();
         if (this.nikbVst3Kontakt7.exists ().get ())
             return this.nikbVst3Kontakt7.name ().get ();
+        if (this.nikbVst3Kontakt8.exists ().get ())
+            return this.nikbVst3Kontakt8.name ().get ();
         return "";
     }
 }

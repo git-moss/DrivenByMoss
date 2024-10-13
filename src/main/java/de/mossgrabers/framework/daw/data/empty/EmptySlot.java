@@ -38,6 +38,14 @@ public class EmptySlot extends EmptyItem implements ISlot
 
     /** {@inheritDoc} */
     @Override
+    public boolean isMuted ()
+    {
+        return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public boolean isRecording ()
     {
         return false;

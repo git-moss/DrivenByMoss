@@ -14,6 +14,7 @@ import de.mossgrabers.framework.featuregroup.AbstractFeatureGroup;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.view.AbstractPlayView;
 import de.mossgrabers.framework.view.BrowserView;
+import de.mossgrabers.framework.view.ScenePlayView;
 import de.mossgrabers.framework.view.sequencer.AbstractDrumExView;
 import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
 import de.mossgrabers.framework.view.sequencer.AbstractSequencerView;
@@ -168,6 +169,8 @@ public class LaunchpadColorManager extends ColorManager
 
         this.registerColorIndex (ClipLengthView.COLOR_OUTSIDE, LAUNCHPAD_COLOR_BLACK);
         this.registerColorIndex (ClipLengthView.COLOR_PART, LAUNCHPAD_COLOR_OCEAN);
+
+        this.registerColorIndex (ScenePlayView.COLOR_SELECTED_PLAY_SCENE, LAUNCHPAD_COLOR_WHITE);
 
         this.registerColorIndex (BrowserView.OFF, LAUNCHPAD_COLOR_BLACK);
         this.registerColorIndex (BrowserView.DISCARD, LAUNCHPAD_COLOR_RED);

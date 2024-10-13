@@ -44,7 +44,8 @@ public class SessionView extends AbstractSessionView<FireControlSurface, FireCon
         final LightInfo hasContent = new LightInfo (FireColorManager.FIRE_COLOR_ORANGE, FireColorManager.FIRE_COLOR_WHITE, false);
         final LightInfo noContent = new LightInfo (FireColorManager.FIRE_COLOR_BLACK, -1, false);
         final LightInfo recArmed = new LightInfo (FireColorManager.FIRE_COLOR_DARK_RED, -1, false);
-        this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed);
+        final LightInfo isMuted = new LightInfo (FireColorManager.FIRE_COLOR_GRAY, -1, false);
+        this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed, isMuted);
 
         this.birdColorHasContent = hasContent;
         this.birdColorSelected = isPlaying;

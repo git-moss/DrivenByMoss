@@ -4,14 +4,14 @@
 
 package de.mossgrabers.bitwig.framework.daw.data;
 
+import com.bitwig.extension.controller.api.ClipLauncherSlot;
+import com.bitwig.extension.controller.api.ColorValue;
+
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.data.AbstractItemImpl;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.observer.IValueObserver;
-
-import com.bitwig.extension.controller.api.ClipLauncherSlot;
-import com.bitwig.extension.controller.api.ColorValue;
 
 
 /**
@@ -126,6 +126,15 @@ public class SlotImpl extends AbstractItemImpl implements ISlot
     public boolean hasContent ()
     {
         return this.slot.hasContent ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isMuted ()
+    {
+        // Info not available via the API
+        return false;
     }
 
 

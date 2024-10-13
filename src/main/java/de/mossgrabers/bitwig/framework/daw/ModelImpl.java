@@ -187,7 +187,8 @@ public class ModelImpl extends AbstractModel
                     final DeviceMatcher vst2DeviceMatcher = controllerHost.createVST2DeviceMatcher (KompleteDevice.VST2_KOMPLETE_ID);
                     final DeviceMatcher vst3DeviceMatcher = controllerHost.createVST3DeviceMatcher (KompleteDevice.VST3_KOMPLETE_ID);
                     final DeviceMatcher vst3Kontakt7DeviceMatcher = controllerHost.createVST3DeviceMatcher (KompleteDevice.VST3_KONTAKT_7_ID);
-                    final Device kompleteDevice = this.createDevice (controllerHost.createOrDeviceMatcher (vst2DeviceMatcher, vst3DeviceMatcher, vst3Kontakt7DeviceMatcher));
+                    final DeviceMatcher vst3Kontakt8DeviceMatcher = controllerHost.createVST3DeviceMatcher (KompleteDevice.VST3_KONTAKT_8_ID);
+                    final Device kompleteDevice = this.createDevice (controllerHost.createOrDeviceMatcher (vst2DeviceMatcher, vst3DeviceMatcher, vst3Kontakt7DeviceMatcher, vst3Kontakt8DeviceMatcher));
                     specificDevice = new KompleteDevice (this.host, this.valueChanger, kompleteDevice);
                     break;
 

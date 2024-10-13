@@ -91,6 +91,14 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
 
     /** {@inheritDoc} */
     @Override
+    public boolean hasSurface ()
+    {
+        return !this.surfaces.isEmpty ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public S getSurface ()
     {
         return this.surfaces.get (0);
@@ -158,7 +166,8 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
         for (final S surface: this.surfaces)
             surface.shutdown ();
         this.host.releaseUsbDevices ();
-        this.model.cleanup ();
+        if (this.model != null)
+            this.model.cleanup ();
         this.host.println ("Exited.");
     }
 

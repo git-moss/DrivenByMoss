@@ -38,6 +38,7 @@ public class SessionView extends AbstractSessionView<YaeltexTurnControlSurface, 
         final int green = YaeltexTurnColorManager.getIndexFor (ColorEx.GREEN);
         final int orange = YaeltexTurnColorManager.getIndexFor (ColorEx.ORANGE);
         final int black = YaeltexTurnColorManager.getIndexFor (ColorEx.BLACK);
+        final int darkGray = YaeltexTurnColorManager.getIndexFor (ColorEx.DARK_GRAY);
 
         final LightInfo isRecording = new LightInfo (red, red, false);
         final LightInfo isRecordingQueued = new LightInfo (red, redLow, true);
@@ -46,7 +47,8 @@ public class SessionView extends AbstractSessionView<YaeltexTurnControlSurface, 
         final LightInfo hasContent = new LightInfo (orange, -1, false);
         final LightInfo noContent = new LightInfo (black, -1, false);
         final LightInfo recArmed = new LightInfo (redLow, -1, false);
-        this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed);
+        final LightInfo isMuted = new LightInfo (darkGray, -1, false);
+        this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed, isMuted);
     }
 
 

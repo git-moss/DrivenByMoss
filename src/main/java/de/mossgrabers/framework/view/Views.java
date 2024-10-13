@@ -177,9 +177,11 @@ public enum Views
         NOTE_VIEWS.add (DRUM);
         NOTE_VIEWS.add (DRUM4);
         NOTE_VIEWS.add (DRUM8);
+        NOTE_VIEWS.add (DRUM_XOX);
         VIEW_NAMES.put (NAME_DRUM, DRUM);
         VIEW_NAMES.put (NAME_DRUM4, DRUM4);
         VIEW_NAMES.put (NAME_DRUM8, DRUM8);
+        VIEW_NAMES.put (NAME_DRUM_XOX, DRUM_XOX);
 
         SEQUENCER_VIEWS.add (DRUM);
         SEQUENCER_VIEWS.add (DRUM4);
