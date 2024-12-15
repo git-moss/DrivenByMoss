@@ -65,6 +65,15 @@ public class GroupButtonCommand<S extends IControlSurface<C>, C extends Configur
             return;
         }
 
+        // Set sequencer resolution
+        if (this.surface.isPressed (ButtonID.GROOVE))
+        {
+            final IView active = this.surface.getViewManager ().getActive ();
+            if (active instanceof final AbstractSequencerView<?, ?> sequencerView)
+                sequencerView.setResolutionIndex (this.index);
+            return;
+        }
+
         final ITrackBank trackBank = this.model.getCurrentTrackBank ();
         final ITrack track = trackBank.getItem (this.index);
         if (!track.doesExist ())
@@ -110,15 +119,6 @@ public class GroupButtonCommand<S extends IControlSurface<C>, C extends Configur
             return;
         }
 
-        // Set sequencer resolution
-        if (this.surface.isPressed (ButtonID.GROOVE))
-        {
-            final IView active = this.surface.getViewManager ().getActive ();
-            if (active instanceof final AbstractSequencerView<?, ?> sequencerView)
-                sequencerView.setResolutionIndex (this.index);
-            return;
-        }
-
         // Track selection or group expansion
         track.selectOrExpandGroup ();
     }
@@ -152,6 +152,14 @@ public class GroupButtonCommand<S extends IControlSurface<C>, C extends Configur
             return MaschineColorManager.COLOR_BLACK;
         }
 
+        if (this.surface.isPressed (ButtonID.GROOVE))
+        {
+            final IView active = this.surface.getViewManager ().getActive ();
+            if (active instanceof final AbstractSequencerView<?, ?> sequencerView)
+                return sequencerView.getResolutionIndex () == this.index ? MaschineColorManager.COLOR_GREEN : MaschineColorManager.COLOR_DARK_GREY;
+            return MaschineColorManager.COLOR_BLACK;
+        }
+		
         final ITrack track = trackBank.getItem (this.index);
 
         if (!track.doesExist ())
@@ -166,13 +174,6 @@ public class GroupButtonCommand<S extends IControlSurface<C>, C extends Configur
         if (this.surface.isPressed (ButtonID.RECORD))
             return track.isRecArm () ? MaschineColorManager.COLOR_RED : MaschineColorManager.COLOR_DARK_GREY;
 
-        if (this.surface.isPressed (ButtonID.GROOVE))
-        {
-            final IView active = this.surface.getViewManager ().getActive ();
-            if (active instanceof final AbstractSequencerView<?, ?> sequencerView)
-                return sequencerView.getResolutionIndex () == this.index ? MaschineColorManager.COLOR_GREEN : MaschineColorManager.COLOR_DARK_GREY;
-            return MaschineColorManager.COLOR_BLACK;
-        }
 
         // Track selection
         return ((MaschineColorManager) this.model.getColorManager ()).dimOrHighlightColor (track.getColor (), track.isSelected ());
