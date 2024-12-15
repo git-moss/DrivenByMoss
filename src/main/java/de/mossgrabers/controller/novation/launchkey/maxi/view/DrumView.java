@@ -58,7 +58,7 @@ public class DrumView extends AbstractDrumView<LaunchkeyMk3ControlSurface, Launc
         if (!this.model.canSelectedTrackHoldNotes ())
             return;
 
-        final int index = note - DRUM_START_KEY;
+        final int index = note - this.surface.getPadGrid ().getStartNote ();
         final int offsetY = this.scales.getDrumOffset ();
 
         if (this.isPlayMode)

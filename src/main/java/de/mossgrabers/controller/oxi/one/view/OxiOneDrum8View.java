@@ -45,7 +45,7 @@ public class OxiOneDrum8View extends AbstractDrum8View<OxiOneControlSurface, Oxi
     @Override
     public void drawGrid ()
     {
-        if (this.surface.isPressed (ButtonID.MUTE))
+        if (this.surface.isMutePressed ())
         {
             final IPadGrid padGrid = this.surface.getPadGrid ();
             if (!this.isActive ())

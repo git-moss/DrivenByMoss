@@ -40,7 +40,7 @@ public class DrumXoXView extends AbstractDrumXoXView<PushControlSurface, PushCon
         if (!this.isActive ())
             return;
 
-        final int index = note - DRUM_START_KEY;
+        final int index = note - this.surface.getPadGrid ().getStartNote ();
         final int x = index % this.numColumns;
         final int y = index / this.numColumns;
 

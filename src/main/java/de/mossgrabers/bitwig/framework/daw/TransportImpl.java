@@ -22,6 +22,7 @@ import de.mossgrabers.framework.daw.constants.AutomationMode;
 import de.mossgrabers.framework.daw.constants.LaunchQuantization;
 import de.mossgrabers.framework.daw.constants.PostRecordingAction;
 import de.mossgrabers.framework.daw.constants.TransportConstants;
+import de.mossgrabers.framework.parameter.AutomationModeParameter;
 import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.utils.StringUtils;
 
@@ -62,6 +63,7 @@ public class TransportImpl implements ITransport
 
     private final IParameter               crossfadeParameter;
     private final IParameter               metronomeVolumeParameter;
+    private final IParameter               automationModeParameter;
 
 
     /**
@@ -103,6 +105,7 @@ public class TransportImpl implements ITransport
 
         this.crossfadeParameter = new ParameterImpl (valueChanger, this.transport.crossfade ());
         this.metronomeVolumeParameter = new MetronomeVolumeParameterImpl (valueChanger, this.transport.metronomeVolume ());
+        this.automationModeParameter = new AutomationModeParameter (valueChanger, this);
         this.transport.tempo ().markInterested ();
 
         final TimeSignatureValue ts = this.transport.timeSignature ();
@@ -387,6 +390,14 @@ public class TransportImpl implements ITransport
     public boolean isWritingArrangerAutomation ()
     {
         return this.transport.isArrangerAutomationWriteEnabled ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public IParameter getAutomationModeParameter ()
+    {
+        return this.automationModeParameter;
     }
 
 

@@ -40,7 +40,7 @@ public class Drum8View extends AbstractDrum8View<PushControlSurface, PushConfigu
         if (!this.isActive ())
             return;
 
-        final int index = note - DRUM_START_KEY;
+        final int index = note - this.surface.getPadGrid ().getStartNote ();
         this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).setConsumed ();
 
         final int stepX = index % this.numColumns;

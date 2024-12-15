@@ -24,12 +24,14 @@ public class OxiOneConfiguration extends AbstractConfiguration
 {
     private static final Views [] PREFERRED_NOTE_VIEWS =
     {
-        Views.MIX,
+        Views.SESSION,
+        Views.DRUM_XOX,
         Views.PLAY,
         Views.DRUM64,
         Views.DRUM8,
         Views.SEQUENCER,
-        Views.POLY_SEQUENCER
+        Views.POLY_SEQUENCER,
+        Views.RAINDROPS
     };
 
 
@@ -43,6 +45,8 @@ public class OxiOneConfiguration extends AbstractConfiguration
     public OxiOneConfiguration (final IHost host, final IValueChanger valueChanger, final List<ArpeggiatorMode> arpeggiatorModes)
     {
         super (host, valueChanger, arpeggiatorModes);
+
+        Views.setViewName (Views.DRUM64, "Drum 128");
 
         // Force note on velocity to 127 since the pads only send 1
         this.accentActive = true;

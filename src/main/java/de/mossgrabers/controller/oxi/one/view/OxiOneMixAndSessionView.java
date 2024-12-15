@@ -19,11 +19,12 @@ import de.mossgrabers.framework.view.AbstractSessionView;
 
 
 /**
- * A view for mixing with track select, mute, solo, record arm, stop clip, volume and panorama.
+ * A view for mixing with track select, mute, solo, record arm, stop clip, volume and panorama as
+ * well as 4 rows of clips.
  *
  * @author Jürgen Moßgraber
  */
-public class OxiOneMixView extends AbstractSessionView<OxiOneControlSurface, OxiOneConfiguration>
+public class OxiOneMixAndSessionView extends AbstractSessionView<OxiOneControlSurface, OxiOneConfiguration>
 {
     /**
      * Constructor.
@@ -31,7 +32,7 @@ public class OxiOneMixView extends AbstractSessionView<OxiOneControlSurface, Oxi
      * @param surface The surface
      * @param model The model
      */
-    public OxiOneMixView (final OxiOneControlSurface surface, final IModel model)
+    public OxiOneMixAndSessionView (final OxiOneControlSurface surface, final IModel model)
     {
         super ("Track Mixer", surface, model, 4, 16, true);
 
@@ -131,6 +132,8 @@ public class OxiOneMixView extends AbstractSessionView<OxiOneControlSurface, Oxi
                             configuration.toggleDuplicateModeActive ();
                             track.duplicate ();
                         }
+                        else if (this.surface.isShiftPressed ())
+                            track.stop (false);
                         else
                             track.selectOrExpandGroup ();
                         break;

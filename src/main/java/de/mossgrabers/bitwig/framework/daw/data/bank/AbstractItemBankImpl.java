@@ -179,7 +179,12 @@ public abstract class AbstractItemBankImpl<B extends Bank<?>, T extends IItem> e
         final Optional<T> sel = this.getSelectedItem ();
         final int index = sel.isEmpty () ? 0 : sel.get ().getIndex () - 1;
         if (index == -1)
-            this.selectPreviousPage ();
+        {
+            if (!this.canScrollPageBackwards ())
+                return;
+            this.scrollPageBackwards ();
+            this.host.scheduleTask ( () -> this.getItem (this.getPageSize () - 1).select (), 75);
+        }
         else
             this.getItem (index).select ();
     }

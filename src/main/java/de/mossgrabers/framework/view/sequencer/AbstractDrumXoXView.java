@@ -86,6 +86,7 @@ public abstract class AbstractDrumXoXView<S extends IControlSurface<C>, C extend
     protected ISlot                 sourceSlot                  = null;
     protected final List<IStepInfo> sourceNotes                 = new ArrayList<> ();
     protected boolean               blockSelectKnob             = false;
+    protected int []                drumMatrix                  = DRUM_MATRIX;
 
     protected int                   numStepRows;
     protected int                   numDrumPadRows;
@@ -108,7 +109,22 @@ public abstract class AbstractDrumXoXView<S extends IControlSurface<C>, C extend
      */
     public AbstractDrumXoXView (final String name, final S surface, final IModel model, final int numColumns)
     {
-        super (name, surface, model, 32 / numColumns, 1, numColumns, 128, 32, true, true);
+        this (name, surface, model, numColumns, 32);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param name The name of the view
+     * @param surface The surface
+     * @param model The model
+     * @param numColumns The number of available columns
+     * @param clipCols The columns of the clip
+     */
+    public AbstractDrumXoXView (final String name, final S surface, final IModel model, final int numColumns, final int clipCols)
+    {
+        super (name, surface, model, 32 / numColumns, 1, numColumns, 128, clipCols, true, true);
 
         this.playColumns = 16;
         this.allRows = this.sequencerLines;
@@ -188,7 +204,7 @@ public abstract class AbstractDrumXoXView<S extends IControlSurface<C>, C extend
         if (!this.model.canSelectedTrackHoldNotes ())
             return;
 
-        final int index = note - DRUM_START_KEY;
+        final int index = note - this.surface.getPadGrid ().getStartNote ();
         final int x = index % this.numColumns;
         final int y = index / this.numColumns;
         final int offsetY = this.scales.getDrumOffset ();
@@ -451,7 +467,7 @@ public abstract class AbstractDrumXoXView<S extends IControlSurface<C>, C extend
 
         for (int note = Scales.DRUM_NOTE_START; note < Scales.DRUM_NOTE_END; note++)
         {
-            final int ns = DRUM_MATRIX[note - Scales.DRUM_NOTE_START];
+            final int ns = this.drumMatrix[note - Scales.DRUM_NOTE_START];
             final int n = ns == -1 ? -1 : ns + drumOffset;
             noteMap[note] = n < 0 || n > 127 ? -1 : n;
         }

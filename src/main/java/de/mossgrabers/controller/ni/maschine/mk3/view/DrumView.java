@@ -162,7 +162,7 @@ public class DrumView extends AbstractDrumView<MaschineControlSurface, MaschineC
     @Override
     public void onGridNote (final int key, final int velocity)
     {
-        final int index = key - DRUM_START_KEY;
+        final int index = key - this.surface.getPadGrid ().getStartNote ();
 
         if (!this.model.canSelectedTrackHoldNotes ())
             return;

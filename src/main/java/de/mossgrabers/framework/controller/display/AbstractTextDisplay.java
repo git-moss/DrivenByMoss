@@ -333,15 +333,6 @@ public abstract class AbstractTextDisplay implements ITextDisplay
     @Override
     public void flush ()
     {
-        synchronized (this.notificationLock)
-        {
-            if (this.notificationTimeout > 0)
-            {
-                this.updateNotification ();
-                return;
-            }
-        }
-
         for (int row = 0; row < this.noOfLines; row++)
         {
             // Has anything changed?
@@ -351,6 +342,15 @@ public abstract class AbstractTextDisplay implements ITextDisplay
             this.currentMessage[row] = this.message[row];
             if (this.currentMessage[row] != null)
                 this.updateLine (row, this.currentMessage[row], previousMessage);
+        }
+
+        synchronized (this.notificationLock)
+        {
+            if (this.notificationTimeout > 0)
+            {
+                this.updateNotification ();
+                return;
+            }
         }
     }
 

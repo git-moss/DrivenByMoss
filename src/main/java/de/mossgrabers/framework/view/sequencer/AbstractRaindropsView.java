@@ -36,6 +36,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
     // 32 = biggest number of measures in Fixed Length
     protected static final int MAX_STEPS        = (int) Math.floor (32 * 4 / Resolution.RES_1_32T.getValue ());
 
+    protected final int        numDisplayCols;
     protected int              numDisplayRows   = 8;
     protected boolean          ongoingResolutionChange;
     protected int              offsetY;
@@ -51,10 +52,25 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
      */
     protected AbstractRaindropsView (final String name, final S surface, final IModel model, final boolean useDawColors)
     {
+        this (name, surface, model, useDawColors, NUM_DISPLAY_COLS);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param name The name of the view
+     * @param surface The surface
+     * @param model The model
+     * @param useDawColors True to use the color of the current track for coloring the octaves
+     * @param numDisplayCols The number of columns
+     */
+    protected AbstractRaindropsView (final String name, final S surface, final IModel model, final boolean useDawColors, final int numDisplayCols)
+    {
         super (name, surface, model, 128, MAX_STEPS, useDawColors);
 
+        this.numDisplayCols = numDisplayCols;
         this.offsetY = AbstractRaindropsView.START_KEY;
-
         this.ongoingResolutionChange = false;
     }
 
@@ -84,9 +100,11 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
         if (!this.isActive () || velocity == 0)
             return;
 
-        final int index = note - 36;
-        final int x = index % 8;
-        final int y = index / 8;
+        final IPadGrid padGrid = this.surface.getPadGrid ();
+        final int index = note - padGrid.getStartNote ();
+        final int numColumns = padGrid.getCols ();
+        final int x = index % numColumns;
+        final int y = index / numColumns;
         final int stepSize = y == 0 ? 1 : 2 * y;
 
         final INoteClip clip = this.getClip ();
@@ -136,7 +154,7 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
         final INoteClip clip = this.getClip ();
         final int length = (int) Math.floor (clip.getLoopLength () / Resolution.getValueAt (this.getResolutionIndex ()));
         final int step = clip.getCurrentStep ();
-        for (int x = 0; x < AbstractRaindropsView.NUM_DISPLAY_COLS; x++)
+        for (int x = 0; x < this.numDisplayCols; x++)
         {
             final int mappedKey = this.keyManager.map (x);
             if (mappedKey == -1)
@@ -325,6 +343,6 @@ public abstract class AbstractRaindropsView<S extends IControlSurface<C>, C exte
 
     protected void updateScale ()
     {
-        this.delayedUpdateNoteMapping (this.model.canSelectedTrackHoldNotes () ? this.scales.getSequencerMatrix (AbstractRaindropsView.NUM_DISPLAY_COLS, this.offsetY) : EMPTY_TABLE);
+        this.delayedUpdateNoteMapping (this.model.canSelectedTrackHoldNotes () ? this.scales.getSequencerMatrix (this.numDisplayCols, this.offsetY) : EMPTY_TABLE);
     }
 }

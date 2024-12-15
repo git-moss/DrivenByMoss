@@ -48,7 +48,7 @@ public class DrumView extends AbstractDrumView<PushControlSurface, PushConfigura
         if (!this.isActive ())
             return;
 
-        final int index = note - DRUM_START_KEY;
+        final int index = note - this.surface.getPadGrid ().getStartNote ();
         this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).setConsumed ();
 
         final int y = index / GRID_COLUMNS;

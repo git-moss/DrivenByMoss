@@ -911,7 +911,8 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
     private int scaleVU (final int vu)
     {
-        return (int) Math.round (this.valueChanger.toNormalizedValue (vu) * 13);
+        final int range = this.configuration.getVuMeterStyle () == VUMeterStyle.MACKIE ? 12 : 13;
+        return (int) Math.round (this.valueChanger.toNormalizedValue (vu) * range);
     }
 
 

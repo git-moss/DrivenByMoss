@@ -11,6 +11,7 @@ import de.mossgrabers.controller.oxi.one.controller.OxiOneColorManager;
 import de.mossgrabers.controller.oxi.one.controller.OxiOneControlSurface;
 import de.mossgrabers.controller.oxi.one.controller.OxiOneDisplay;
 import de.mossgrabers.controller.oxi.one.mode.IOxiModeReset;
+import de.mossgrabers.controller.oxi.one.mode.OxiOneAutomationMode;
 import de.mossgrabers.controller.oxi.one.mode.OxiOneLayerMode;
 import de.mossgrabers.controller.oxi.one.mode.OxiOneNoteEditMode;
 import de.mossgrabers.controller.oxi.one.mode.OxiOneParameterMode;
@@ -21,9 +22,11 @@ import de.mossgrabers.controller.oxi.one.mode.OxiOneTrackMode;
 import de.mossgrabers.controller.oxi.one.mode.OxiOneTransportMode;
 import de.mossgrabers.controller.oxi.one.view.OxiOneDrum8View;
 import de.mossgrabers.controller.oxi.one.view.OxiOneDrumView128;
-import de.mossgrabers.controller.oxi.one.view.OxiOneMixView;
+import de.mossgrabers.controller.oxi.one.view.OxiOneDrumXoXView;
+import de.mossgrabers.controller.oxi.one.view.OxiOneMixAndSessionView;
 import de.mossgrabers.controller.oxi.one.view.OxiOnePlayView;
 import de.mossgrabers.controller.oxi.one.view.OxiOnePolySequencerView;
+import de.mossgrabers.controller.oxi.one.view.OxiOneRaindropsView;
 import de.mossgrabers.controller.oxi.one.view.OxiOneSequencerView;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.core.NopCommand;
@@ -110,6 +113,7 @@ public class OxiOneControllerSetup extends AbstractControllerSetup<OxiOneControl
         ms.setAdditionalDrumDevices (new int []
         {
             128,
+            96,
             16
         });
 
@@ -157,6 +161,7 @@ public class OxiOneControllerSetup extends AbstractControllerSetup<OxiOneControl
         modeManager.register (Modes.DEVICE_PARAMS, new OxiOneParameterMode (surface, this.model));
 
         modeManager.register (Modes.TRANSPORT, new OxiOneTransportMode (surface, this.model));
+        modeManager.register (Modes.AUTOMATION, new OxiOneAutomationMode (surface, this.model));
 
         // Note mode needs the SHIFT button to exist
         this.addButton (ButtonID.SHIFT, "SHIFT", (event, velocity) -> {
@@ -184,12 +189,14 @@ public class OxiOneControllerSetup extends AbstractControllerSetup<OxiOneControl
         final OxiOneControlSurface surface = this.getSurface ();
         final ViewManager viewManager = surface.getViewManager ();
 
-        viewManager.register (Views.MIX, new OxiOneMixView (surface, this.model));
+        viewManager.register (Views.SESSION, new OxiOneMixAndSessionView (surface, this.model));
         viewManager.register (Views.PLAY, new OxiOnePlayView (surface, this.model));
+        viewManager.register (Views.DRUM_XOX, new OxiOneDrumXoXView (surface, this.model));
         viewManager.register (Views.DRUM64, new OxiOneDrumView128 (surface, this.model));
         viewManager.register (Views.DRUM8, new OxiOneDrum8View (surface, this.model));
         viewManager.register (Views.SEQUENCER, new OxiOneSequencerView (surface, this.model));
         viewManager.register (Views.POLY_SEQUENCER, new OxiOnePolySequencerView (surface, this.model, true));
+        viewManager.register (Views.RAINDROPS, new OxiOneRaindropsView (surface, this.model));
     }
 
 
@@ -235,7 +242,7 @@ public class OxiOneControllerSetup extends AbstractControllerSetup<OxiOneControl
         this.addButton (ButtonID.DUPLICATE, "Duplicate", new DuplicateCommand<> (this.model, surface), 1, OxiOneControlSurface.BUTTON_COPY);
         this.addButton (ButtonID.DELETE, "Delete", new DeleteCommand<> (this.model, surface), 1, OxiOneControlSurface.BUTTON_PASTE);
 
-        this.addButton (ButtonID.SESSION, "MIXER", new ViewMultiSelectCommand<> (this.model, surface, Views.MIX), 1, OxiOneControlSurface.BUTTON_ARRANGER, () -> viewManager.isActive (Views.MIX) ? 1 : 0);
+        this.addButton (ButtonID.SESSION, "MIXER", new ViewMultiSelectCommand<> (this.model, surface, Views.SESSION, Views.DRUM_XOX), 1, OxiOneControlSurface.BUTTON_ARRANGER, () -> viewManager.isActive (Views.SESSION, Views.DRUM_XOX) ? 1 : 0);
 
         this.addButton (ButtonID.KEYBOARD, "KEYBOARD", new ViewMultiSelectCommand<> (this.model, surface, true, Views.PLAY, Views.DRUM64)
         {
@@ -256,7 +263,7 @@ public class OxiOneControllerSetup extends AbstractControllerSetup<OxiOneControl
 
         });
 
-        this.addButton (ButtonID.SEQUENCER, "SEQUENCE", new ViewMultiSelectCommand<> (this.model, surface, true, Views.DRUM8, Views.SEQUENCER, Views.POLY_SEQUENCER)
+        this.addButton (ButtonID.SEQUENCER, "SEQUENCE", new ViewMultiSelectCommand<> (this.model, surface, true, Views.DRUM8, Views.SEQUENCER, Views.POLY_SEQUENCER, Views.RAINDROPS)
         {
 
             /** {@inheritDoc} */

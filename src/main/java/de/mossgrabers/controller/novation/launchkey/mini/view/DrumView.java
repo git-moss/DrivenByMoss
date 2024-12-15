@@ -4,6 +4,9 @@
 
 package de.mossgrabers.controller.novation.launchkey.mini.view;
 
+import java.util.List;
+import java.util.Optional;
+
 import de.mossgrabers.controller.novation.launchkey.mini.LaunchkeyMiniMk3Configuration;
 import de.mossgrabers.controller.novation.launchkey.mini.controller.LaunchkeyMiniMk3ColorManager;
 import de.mossgrabers.controller.novation.launchkey.mini.controller.LaunchkeyMiniMk3ControlSurface;
@@ -19,9 +22,6 @@ import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
 import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
-
-import java.util.List;
-import java.util.Optional;
 
 
 /**
@@ -58,7 +58,7 @@ public class DrumView extends AbstractDrumView<LaunchkeyMiniMk3ControlSurface, L
         if (!this.model.canSelectedTrackHoldNotes ())
             return;
 
-        final int index = note - DRUM_START_KEY;
+        final int index = note - this.surface.getPadGrid ().getStartNote ();
         final int offsetY = this.scales.getDrumOffset ();
 
         if (this.isPlayMode)

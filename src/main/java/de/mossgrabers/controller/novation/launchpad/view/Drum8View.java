@@ -46,7 +46,7 @@ public class Drum8View extends AbstractDrum8View<LaunchpadControlSurface, Launch
         if (!this.isActive ())
             return;
 
-        final int index = note - DRUM_START_KEY;
+        final int index = note - this.surface.getPadGrid ().getStartNote ();
         final int x = index % this.numColumns;
         final int y = index / this.numColumns;
         final int sound = y % this.lanes + this.scales.getDrumOffset ();

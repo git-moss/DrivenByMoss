@@ -4,6 +4,9 @@
 
 package de.mossgrabers.controller.novation.slmkiii.view;
 
+import java.util.List;
+import java.util.Optional;
+
 import de.mossgrabers.controller.novation.slmkiii.SLMkIIIConfiguration;
 import de.mossgrabers.controller.novation.slmkiii.controller.SLMkIIIColorManager;
 import de.mossgrabers.controller.novation.slmkiii.controller.SLMkIIIControlSurface;
@@ -20,9 +23,6 @@ import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.sequencer.AbstractDrumView;
-
-import java.util.List;
-import java.util.Optional;
 
 
 /**
@@ -58,7 +58,7 @@ public class DrumView extends AbstractDrumView<SLMkIIIControlSurface, SLMkIIICon
         if (!this.model.canSelectedTrackHoldNotes ())
             return;
 
-        final int index = note - DRUM_START_KEY;
+        final int index = note - this.surface.getPadGrid ().getStartNote ();
         final int offsetY = this.scales.getDrumOffset ();
 
         if (this.isPlayMode)
@@ -87,7 +87,7 @@ public class DrumView extends AbstractDrumView<SLMkIIIControlSurface, SLMkIIICon
         if (!this.isActive () || this.isPlayMode)
             return;
 
-        final int index = note - DRUM_START_KEY;
+        final int index = note - this.surface.getPadGrid ().getStartNote ();
         this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).setConsumed ();
 
         final int x = index % this.numColumns;

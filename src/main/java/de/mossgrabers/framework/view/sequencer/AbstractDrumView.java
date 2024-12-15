@@ -60,7 +60,6 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
     /** The color ID for the off state. */
     public static final String COLOR_PAD_OFF         = "COLOR_PAD_OFF";
 
-    protected static final int DRUM_START_KEY        = 36;
     protected static final int GRID_COLUMNS          = 8;
 
     protected int              loopPadPressed        = -1;
@@ -208,7 +207,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         if (!this.model.canSelectedTrackHoldNotes ())
             return;
 
-        final int index = note - DRUM_START_KEY;
+        final int index = note - this.surface.getPadGrid ().getStartNote ();
         final int x = index % this.numColumns;
         final int y = index / this.numColumns;
         final int offsetY = this.scales.getDrumOffset ();

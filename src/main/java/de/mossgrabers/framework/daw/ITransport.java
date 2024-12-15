@@ -4,13 +4,13 @@
 
 package de.mossgrabers.framework.daw;
 
+import java.util.Arrays;
+
 import de.mossgrabers.framework.daw.constants.AutomationMode;
 import de.mossgrabers.framework.daw.constants.LaunchQuantization;
 import de.mossgrabers.framework.daw.constants.PostRecordingAction;
 import de.mossgrabers.framework.observer.IObserverManagement;
 import de.mossgrabers.framework.parameter.IParameter;
-
-import java.util.Arrays;
 
 
 /**
@@ -227,6 +227,14 @@ public interface ITransport extends IObserverManagement
 
 
     /**
+     * Get the automation mode parameter.
+     *
+     * @return The automation mode parameter
+     */
+    IParameter getAutomationModeParameter ();
+
+
+    /**
      * Get the supported automation modes.
      *
      * @return The supported automation modes
@@ -251,16 +259,43 @@ public interface ITransport extends IObserverManagement
 
 
     /**
+     * Select the previous automation write mode.
+     */
+    default void previousAutomationWriteMode ()
+    {
+        final AutomationMode [] automationWriteModes = this.getAutomationWriteModes ();
+        final AutomationMode automationWriteMode = this.getAutomationWriteMode ();
+
+        int pos = Arrays.asList (automationWriteModes).indexOf (automationWriteMode) - 1;
+        if (pos < 0)
+            pos = 0;
+
+        this.setAutomationWriteMode (automationWriteModes[pos]);
+    }
+
+
+    /**
      * Select the next automation write mode.
      */
     default void nextAutomationWriteMode ()
+    {
+        nextAutomationWriteMode (true);
+    }
+
+
+    /**
+     * Select the next automation write mode.
+     * 
+     * @param wrap If true wrap to first when at the end
+     */
+    default void nextAutomationWriteMode (boolean wrap)
     {
         final AutomationMode [] automationWriteModes = this.getAutomationWriteModes ();
         final AutomationMode automationWriteMode = this.getAutomationWriteMode ();
 
         int pos = Arrays.asList (automationWriteModes).indexOf (automationWriteMode) + 1;
         if (pos >= automationWriteModes.length)
-            pos = 0;
+            pos = wrap ? 0 : automationWriteModes.length - 1;
 
         this.setAutomationWriteMode (automationWriteModes[pos]);
     }
