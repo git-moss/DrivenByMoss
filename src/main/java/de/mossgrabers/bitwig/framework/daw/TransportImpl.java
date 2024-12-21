@@ -522,6 +522,14 @@ public class TransportImpl implements ITransport
 
     /** {@inheritDoc} */
     @Override
+    public double getPlayPosition ()
+    {
+        return this.transport.playPosition ().get ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void changePosition (final boolean increase, final boolean slow)
     {
         final double frac = getTimeFraction (slow);
