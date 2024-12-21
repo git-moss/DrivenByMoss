@@ -311,6 +311,7 @@ public class TransportModule extends AbstractModule
         this.writer.sendOSC ("/time/str", this.transport.getPositionText (), dump);
         this.writer.sendOSC ("/time/signature", this.transport.getNumerator () + " / " + this.transport.getDenominator (), dump);
         this.writer.sendOSC ("/beat/str", this.transport.getBeatText (), dump);
+        this.writer.sendOSC ("/beat/current", this.transport.getPlayPosition (), dump);
         this.writer.sendOSC ("/launcher/postRecordingAction", this.transport.getClipLauncherPostRecordingAction ().getIdentifier (), dump);
         this.writer.sendOSC ("/launcher/postRecordingTimeOffset", this.transport.getClipLauncherPostRecordingTimeOffset (), dump);
         this.writer.sendOSC ("/launcher/defaultQuantization", this.transport.getDefaultLaunchQuantization ().getValue (), dump);

@@ -95,6 +95,7 @@ public class TransportImpl implements ITransport
         this.transport.isMetronomeAudibleDuringPreRoll ().markInterested ();
         this.transport.preRoll ().markInterested ();
         this.transport.getPosition ().markInterested ();
+        this.transport.playPosition ().markInterested ();
         this.transport.playStartPosition ().markInterested ();
         this.transport.arrangerLoopStart ().markInterested ();
         this.transport.arrangerLoopDuration ().markInterested ();
@@ -133,6 +134,7 @@ public class TransportImpl implements ITransport
         Util.setIsSubscribed (this.transport.isMetronomeAudibleDuringPreRoll (), enable);
         Util.setIsSubscribed (this.transport.preRoll (), enable);
         Util.setIsSubscribed (this.transport.getPosition (), enable);
+        Util.setIsSubscribed (this.transport.playPosition (), enable);
         Util.setIsSubscribed (this.transport.playStartPosition (), enable);
         Util.setIsSubscribed (this.transport.arrangerLoopStart (), enable);
         Util.setIsSubscribed (this.transport.arrangerLoopDuration (), enable);

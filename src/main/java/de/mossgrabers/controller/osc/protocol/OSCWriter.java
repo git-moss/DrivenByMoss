@@ -24,13 +24,14 @@ import java.util.Set;
  */
 public class OSCWriter extends AbstractOpenSoundControlWriter
 {
-    private static final Set<String> HEARTBEAT_MESSAGES = new HashSet<> (3);
+    private static final Set<String> HEARTBEAT_MESSAGES = new HashSet<> (4);
 
     static
     {
         HEARTBEAT_MESSAGES.add ("/update");
         HEARTBEAT_MESSAGES.add ("/time/str");
         HEARTBEAT_MESSAGES.add ("/beat/str");
+        HEARTBEAT_MESSAGES.add ("/beat/current");
     }
 
     private final List<IModule> modules = new ArrayList<> ();
