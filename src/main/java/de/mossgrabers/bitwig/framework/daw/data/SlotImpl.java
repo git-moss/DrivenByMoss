@@ -251,6 +251,13 @@ public class SlotImpl extends AbstractItemImpl implements ISlot
         this.slot.duplicateClip ();
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void insertFile (String path)
+    {
+        this.slot.replaceInsertionPoint ().insertFile (path);
+    }
+
 
     /** {@inheritDoc} */
     @Override

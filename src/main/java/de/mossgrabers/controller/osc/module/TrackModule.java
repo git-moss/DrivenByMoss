@@ -524,6 +524,9 @@ public class TrackModule extends AbstractModule
                 case "create":
                     this.model.createNoteClip (track, slot, toInteger (value), true);
                     break;
+                case TAG_INSERT_FILE:
+                    slot.insertFile (toString (value));
+                    break;
                 case TAG_DUPLICATE:
                     slot.duplicate ();
                     break;

@@ -134,6 +134,14 @@ public class EmptySlot extends EmptyItem implements ISlot
 
     /** {@inheritDoc} */
     @Override
+    public void insertFile (String path)
+    {
+        // Intentionally empty
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void paste (final ISlot slot)
     {
         // Intentionally empty

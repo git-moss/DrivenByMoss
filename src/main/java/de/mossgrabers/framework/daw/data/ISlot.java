@@ -112,6 +112,11 @@ public interface ISlot extends IItem
      */
     void duplicate ();
 
+    /**
+     * Insert a file in a clip.
+     * @param path the file path
+     */
+    void insertFile (String path);
 
     /**
      * Past the content of the given slot into this slot.
