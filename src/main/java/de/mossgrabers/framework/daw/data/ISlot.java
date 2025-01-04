@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2024
+// (c) 2017-2025
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.daw.data;
@@ -112,11 +112,14 @@ public interface ISlot extends IItem
      */
     void duplicate ();
 
+
     /**
      * Insert a file in a clip.
-     * @param path the file path
+     *
+     * @param path The file path
      */
     void insertFile (String path);
+
 
     /**
      * Past the content of the given slot into this slot.

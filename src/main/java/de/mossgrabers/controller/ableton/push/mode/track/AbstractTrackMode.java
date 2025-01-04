@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2024
+// (c) 2017-2025
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.ableton.push.mode.track;
@@ -40,6 +40,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 public abstract class AbstractTrackMode extends BaseMode<ITrack>
 {
     protected final List<Pair<String, Boolean>> menu = new ArrayList<> ();
+    protected final PushConfiguration           configuration;
 
 
     /**
@@ -52,6 +53,8 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
     protected AbstractTrackMode (final String name, final PushControlSurface surface, final IModel model)
     {
         super (name, surface, model, model.getCurrentTrackBank ());
+
+        this.configuration = this.surface.getConfiguration ();
 
         model.addTrackBankObserver (this::switchBanks);
 
@@ -135,7 +138,7 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
             // mode
             if (track.isGroup ())
             {
-                if (this.surface.isShiftPressed () || this.surface.getConfiguration ().isTrackNavigationFlat ())
+                if (this.surface.isShiftPressed () || this.configuration.isTrackNavigationFlat ())
                     track.toggleGroupExpanded ();
                 else
                 {
@@ -164,20 +167,19 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final ITrack track = tb.getItem (index);
 
-        final PushConfiguration config = this.surface.getConfiguration ();
-        if (config.isMuteState (this.surface.isLongPressed (ButtonID.MUTE)))
+        if (this.configuration.isMuteState (this.surface.isLongPressed (ButtonID.MUTE)))
         {
             this.surface.setTriggerConsumed (ButtonID.MUTE);
             track.toggleMute ();
             return;
         }
-        if (config.isSoloState (this.surface.isLongPressed (ButtonID.SOLO)))
+        if (this.configuration.isSoloState (this.surface.isLongPressed (ButtonID.SOLO)))
         {
             this.surface.setTriggerConsumed (ButtonID.SOLO);
             track.toggleSolo ();
             return;
         }
-        if (config.isClipStopState (this.surface.isLongPressed (ButtonID.STOP_CLIP)))
+        if (this.configuration.isClipStopState (this.surface.isLongPressed (ButtonID.STOP_CLIP)))
         {
             this.surface.setTriggerConsumed (ButtonID.STOP_CLIP);
             track.stop (this.surface.isShiftPressed ());
@@ -243,7 +245,7 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
                 break;
         }
 
-        config.setMixerMode (modeManager.getActiveID ());
+        this.configuration.setMixerMode (modeManager.getActiveID ());
     }
 
 
@@ -251,11 +253,18 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
     @Override
     public void selectPreviousItemPage ()
     {
-        final ICursorTrack cursorTrack = this.model.getCursorTrack ();
-        if (this.surface.isShiftPressed ())
-            cursorTrack.swapWithPrevious ();
-        else
-            super.selectPreviousItemPage ();
+        switch (this.surface.isShiftPressed () ? this.configuration.getCursorKeysTrackShiftedOption () : this.configuration.getCursorKeysTrackOption ())
+        {
+            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_PAGE:
+                super.selectPreviousItemPage ();
+                break;
+            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_1:
+                this.model.getCurrentTrackBank ().scrollBackwards ();
+                break;
+            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_SWAP:
+                this.model.getCursorTrack ().swapWithPrevious ();
+                break;
+        }
     }
 
 
@@ -263,11 +272,82 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
     @Override
     public void selectNextItemPage ()
     {
-        final ICursorTrack cursorTrack = this.model.getCursorTrack ();
-        if (this.surface.isShiftPressed ())
-            cursorTrack.swapWithNext ();
-        else
-            super.selectNextItemPage ();
+        switch (this.surface.isShiftPressed () ? this.configuration.getCursorKeysTrackShiftedOption () : this.configuration.getCursorKeysTrackOption ())
+        {
+            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_PAGE:
+                super.selectNextItemPage ();
+                break;
+            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_1:
+                this.model.getCurrentTrackBank ().scrollForwards ();
+                break;
+            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_SWAP:
+                this.model.getCursorTrack ().swapWithNext ();
+                break;
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasPreviousItem ()
+    {
+        switch (this.configuration.getCursorKeysTrackShiftedOption ())
+        {
+            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_PAGE:
+                return super.hasPreviousItemPage ();
+            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_1:
+            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_SWAP:
+            default:
+                return super.hasPreviousItem ();
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasNextItem ()
+    {
+        switch (this.configuration.getCursorKeysTrackShiftedOption ())
+        {
+            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_PAGE:
+                return super.hasNextItemPage ();
+            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_1:
+            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_SWAP:
+            default:
+                return super.hasNextItem ();
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasPreviousItemPage ()
+    {
+        switch (this.configuration.getCursorKeysTrackOption ())
+        {
+            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_PAGE:
+                return super.hasPreviousItemPage ();
+            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_1:
+            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_SWAP:
+            default:
+                return super.hasPreviousItem ();
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasNextItemPage ()
+    {
+        switch (this.configuration.getCursorKeysTrackOption ())
+        {
+            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_PAGE:
+                return super.hasNextItemPage ();
+            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_1:
+            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_SWAP:
+            default:
+                return super.hasNextItem ();
+        }
     }
 
 

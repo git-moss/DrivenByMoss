@@ -1,9 +1,10 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2024
+// (c) 2017-2025
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.view.sequencer;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -164,6 +165,45 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
 
     /** {@inheritDoc} */
     @Override
+    public void onGridNoteLongPress (final int note)
+    {
+        if (!this.isActive ())
+            return;
+
+        final int index = note - this.surface.getPadGrid ().getStartNote ();
+        this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).setConsumed ();
+
+        final int x = index % this.numColumns;
+        final int y = index / this.numColumns;
+        if (y < this.numRows - this.numSequencerRows)
+            return;
+
+        this.clearEditNotes ();
+        this.editNotesOfStep (this.configuration.getMidiEditChannel (), this.numColumns * (this.numRows - 1 - y) + x);
+    }
+
+
+    /**
+     * Edit all notes of the step.
+     *
+     * @param channel The MIDI channel
+     * @param step The step
+     */
+    protected void editNotesOfStep (final int channel, final int step)
+    {
+        final NotePosition notePosition = new NotePosition (channel, step, 0);
+        final INoteClip clip = this.getClip ();
+        for (int row = 0; row < 128; row++)
+        {
+            notePosition.setNote (row);
+            if (clip.getStep (notePosition).getState () == StepState.START)
+                this.editNote (clip, notePosition, true);
+        }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void onGridNote (final int note, final int velocity)
     {
         final boolean isKeyboardEnabled = this.model.canSelectedTrackHoldNotes ();
@@ -230,18 +270,14 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
         final int step = this.numColumns * (this.numRows - 1 - y) + x;
         final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), step, 0);
 
-        if (this.handleSequencerAreaButtonCombinations (clip, notePosition.getChannel (), step))
+        final int channel = notePosition.getChannel ();
+        if (this.handleSequencerAreaButtonCombinations (clip, channel, step) || this.handleNoteEditor (clip, notePosition, 127))
             return;
 
         // Clear all notes on the step, if there is at least one
-        if (this.getStep (clip, step).getState () != StepState.OFF)
+        if (clip.hasColumnData (channel, step))
         {
-            for (int row = 0; row < 128; row++)
-            {
-                notePosition.setNote (row);
-                if (clip.getStep (notePosition).getState () != StepState.OFF)
-                    clip.clearStep (notePosition);
-            }
+            clip.clearColumn (channel, step);
             return;
         }
 
@@ -312,6 +348,34 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
         }
 
         return this.changeLengthOfNotes (clip, notePosition);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected StepState getStepState (final INoteClip clip, final NotePosition notePosition)
+    {
+        final NotePosition rowNotePosition = new NotePosition (notePosition);
+        for (int row = 0; row < 128; row++)
+        {
+            rowNotePosition.setNote (row);
+            final StepState state = clip.getStep (rowNotePosition).getState ();
+            if (state != StepState.OFF)
+                return state;
+        }
+        return StepState.OFF;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void updateEditMode (final INoteClip clip, final NotePosition notePosition)
+    {
+        final StepState state = this.getStepState (clip, notePosition);
+        if (state == StepState.OFF)
+            this.exitEditMode ();
+        else
+            this.editNotesOfStep (notePosition.getChannel (), notePosition.getStep ());
     }
 
 
@@ -453,6 +517,20 @@ public abstract class AbstractPolySequencerView<S extends IControlSurface<C>, C 
         }
         result.setMuted (isMuted);
         return result;
+    }
+
+
+    protected List<NotePosition> getStepNotePositions (final INoteClip clip)
+    {
+        final List<NotePosition> positions = new ArrayList<> ();
+        final NotePosition notePosition = new NotePosition ();
+        for (int row = 0; row < 128; row++)
+        {
+            notePosition.setNote (row);
+            if (clip.getStep (notePosition).getState () == StepState.START)
+                positions.add (new NotePosition (notePosition));
+        }
+        return positions;
     }
 
 

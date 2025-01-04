@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2024
+// (c) 2017-2025
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.view.sequencer;
@@ -349,6 +349,61 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
 
 
     /**
+     * If there is a note editor available this method handles adding and removing notes from it.
+     *
+     * @param clip The clip which contains the notes
+     * @param notePosition The note position
+     * @param velocity The velocity of the pad press
+     * @return True if handled
+     */
+    protected boolean handleNoteEditor (final INoteClip clip, final NotePosition notePosition, final int velocity)
+    {
+        final ModeManager modeManager = this.surface.getModeManager ();
+        if (!modeManager.isActive (Modes.NOTE))
+            return false;
+
+        if (velocity > 0)
+        {
+            this.updateEditMode (clip, notePosition);
+            return true;
+        }
+
+        if (this.isNoteEdited)
+            this.isNoteEdited = false;
+        return true;
+    }
+
+
+    /**
+     * Store existing note for editing, remove it from the list or close the edit mode.
+     *
+     * @param clip The note clip
+     * @param notePosition The note position to check
+     */
+    protected void updateEditMode (final INoteClip clip, final NotePosition notePosition)
+    {
+        final StepState state = this.getStepState (clip, notePosition);
+        if (state == StepState.OFF)
+            this.exitEditMode ();
+        else
+            this.editNote (clip, notePosition, true);
+    }
+
+
+    /**
+     * Get the state of a note at a position.
+     *
+     * @param clip The clip which contains the notes
+     * @param notePosition The position of a note
+     * @return The state
+     */
+    protected StepState getStepState (final INoteClip clip, final NotePosition notePosition)
+    {
+        return clip.getStep (notePosition).getState ();
+    }
+
+
+    /**
      * Set or add a note to the active/related note edit mode. Removes the node if already edited.
      * Activates the editor mode.
      *
@@ -373,24 +428,26 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
      */
     protected void editNote (final INoteClip clip, final NotePosition notePosition, final boolean addNote)
     {
-        final StepState state = clip.getStep (notePosition).getState ();
-        if (state != StepState.START)
-            return;
-
         final Optional<INoteEditor> noteEditorOpt = this.getNoteEditor ();
         if (noteEditorOpt.isEmpty ())
             return;
 
         final INoteEditor noteEditor = noteEditorOpt.get ();
+
+        final StepState state = this.getStepState (clip, notePosition);
+        if (state == StepState.OFF)
+        {
+            this.exitEditMode ();
+            return;
+        }
+        if (state == StepState.CONTINUE)
+            return;
+
         if (noteEditor.isNoteEdited (clip, notePosition))
         {
             noteEditor.removeNote (clip, notePosition);
             if (noteEditor.getNotes ().isEmpty ())
-            {
-                this.surface.getModeManager ().restore ();
-                // Prevent note deletion on button-up!
-                this.surface.consumePads ();
-            }
+                this.exitEditMode ();
             return;
         }
 
@@ -398,6 +455,29 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
             noteEditor.addNote (clip, notePosition);
         else
             noteEditor.setNote (clip, notePosition);
+    }
+
+
+    /**
+     * Exits the note edit mode.
+     */
+    protected void exitEditMode ()
+    {
+        this.isNoteEdited = false;
+        this.surface.getDisplay ().notify ("Edit Notes: Off");
+
+        // Clear all edit notes
+        final Optional<INoteEditor> noteEditorOpt = this.getNoteEditor ();
+        if (noteEditorOpt.isPresent ())
+            noteEditorOpt.get ().clearNotes ();
+
+        // CLose edit mode
+        final ModeManager modeManager = this.surface.getModeManager ();
+        if (modeManager.getActive () instanceof INoteEditorMode)
+            modeManager.restore ();
+
+        // Prevent note deletion on button-up!
+        this.surface.consumePads ();
     }
 
 
@@ -566,47 +646,5 @@ public abstract class AbstractSequencerView<S extends IControlSurface<C>, C exte
                     return COLOR_STEP_HILITE_NO_CONTENT;
                 return step / 4 % 2 == 1 ? COLOR_NO_CONTENT_4 : COLOR_NO_CONTENT;
         }
-    }
-
-
-    /**
-     * If there is a note editor available this method handles adding and removing notes from it.
-     *
-     * @param clip The clip which contains the notes
-     * @param notePosition The note position
-     * @param velocity The velocity of the pad press
-     * @return True if handled
-     */
-    protected boolean handleNoteEditor (final INoteClip clip, final NotePosition notePosition, final int velocity)
-    {
-        final ModeManager modeManager = this.surface.getModeManager ();
-        if (velocity > 0)
-        {
-            final IMode activeMode = modeManager.getActive ();
-            if (activeMode instanceof final INoteEditorMode noteMode)
-            {
-                // Store existing note for editing
-                final StepState state = clip.getStep (notePosition).getState ();
-                if (state == StepState.START)
-                {
-                    this.editNote (clip, notePosition, true);
-                    if (noteMode.getNoteEditor ().getNotes ().isEmpty ())
-                    {
-                        this.surface.getDisplay ().notify ("Edit Notes: Off");
-                        this.isNoteEdited = false;
-                    }
-                }
-                return true;
-            }
-        }
-        else
-        {
-            if (this.isNoteEdited)
-                this.isNoteEdited = false;
-            if (modeManager.isActive (Modes.NOTE))
-                return true;
-        }
-
-        return false;
     }
 }

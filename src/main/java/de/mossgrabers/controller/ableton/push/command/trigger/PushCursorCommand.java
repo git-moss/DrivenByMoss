@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2024
+// (c) 2017-2025
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.ableton.push.command.trigger;
@@ -21,7 +21,8 @@ import de.mossgrabers.framework.view.Views;
  */
 public class PushCursorCommand extends CursorCommand<PushControlSurface, PushConfiguration>
 {
-    private final ISceneBank sceneBank64;
+    private final ISceneBank        sceneBank64;
+    private final PushConfiguration configuration;
 
 
     /**
@@ -35,6 +36,7 @@ public class PushCursorCommand extends CursorCommand<PushControlSurface, PushCon
     {
         super (direction, model, surface, false);
 
+        this.configuration = this.surface.getConfiguration ();
         this.sceneBank64 = model.getSceneBank (64);
     }
 
@@ -46,10 +48,15 @@ public class PushCursorCommand extends CursorCommand<PushControlSurface, PushCon
     protected void scrollUp ()
     {
         final ISceneBank sceneBank = this.getSceneBank ();
-        if (this.surface.isShiftPressed () || this.isScenePlay ())
-            sceneBank.selectPreviousPage ();
-        else
-            sceneBank.scrollBackwards ();
+        switch (this.surface.isShiftPressed () || this.isScenePlay () ? this.configuration.getCursorKeysSceneShiftedOption () : this.configuration.getCursorKeysSceneOption ())
+        {
+            case PushConfiguration.CURSOR_KEYS_SCENE_OPTION_MOVE_BANK_BY_PAGE:
+                sceneBank.selectPreviousPage ();
+                break;
+            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_1:
+                sceneBank.scrollBackwards ();
+                break;
+        }
     }
 
 
@@ -60,10 +67,15 @@ public class PushCursorCommand extends CursorCommand<PushControlSurface, PushCon
     protected void scrollDown ()
     {
         final ISceneBank sceneBank = this.getSceneBank ();
-        if (this.surface.isShiftPressed () || this.isScenePlay ())
-            sceneBank.selectNextPage ();
-        else
-            sceneBank.scrollForwards ();
+        switch (this.surface.isShiftPressed () || this.isScenePlay () ? this.configuration.getCursorKeysSceneShiftedOption () : this.configuration.getCursorKeysSceneOption ())
+        {
+            case PushConfiguration.CURSOR_KEYS_SCENE_OPTION_MOVE_BANK_BY_PAGE:
+                sceneBank.selectNextPage ();
+                break;
+            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_1:
+                sceneBank.scrollForwards ();
+                break;
+        }
     }
 
 
@@ -104,8 +116,19 @@ public class PushCursorCommand extends CursorCommand<PushControlSurface, PushCon
         final ISceneBank sceneBank = this.getSceneBank ();
         final IMode mode = this.surface.getModeManager ().getActive ();
         final boolean shiftPressed = this.surface.isShiftPressed ();
-        this.scrollStates.setCanScrollUp (sceneBank.canScrollBackwards ());
-        this.scrollStates.setCanScrollDown (sceneBank.canScrollForwards ());
+
+        switch (shiftPressed || this.isScenePlay () ? this.configuration.getCursorKeysSceneShiftedOption () : this.configuration.getCursorKeysSceneOption ())
+        {
+            case PushConfiguration.CURSOR_KEYS_SCENE_OPTION_MOVE_BANK_BY_PAGE:
+                this.scrollStates.setCanScrollUp (sceneBank.canScrollPageBackwards ());
+                this.scrollStates.setCanScrollDown (sceneBank.canScrollPageForwards ());
+                break;
+            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_1:
+                this.scrollStates.setCanScrollUp (sceneBank.canScrollBackwards ());
+                this.scrollStates.setCanScrollDown (sceneBank.canScrollForwards ());
+                break;
+        }
+
         this.scrollStates.setCanScrollLeft (mode != null && (shiftPressed ? mode.hasPreviousItem () : mode.hasPreviousItemPage ()));
         this.scrollStates.setCanScrollRight (mode != null && (shiftPressed ? mode.hasNextItem () : mode.hasNextItemPage ()));
     }

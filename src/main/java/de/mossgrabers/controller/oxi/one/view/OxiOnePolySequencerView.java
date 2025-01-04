@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2024
+// (c) 2017-2025
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.oxi.one.view;
@@ -9,8 +9,6 @@ import de.mossgrabers.controller.oxi.one.controller.OxiOneControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.clip.INoteClip;
-import de.mossgrabers.framework.daw.clip.NotePosition;
-import de.mossgrabers.framework.daw.clip.StepState;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.sequencer.AbstractPolySequencerView;
@@ -67,30 +65,6 @@ public class OxiOnePolySequencerView extends AbstractPolySequencerView<OxiOneCon
         }
 
         super.onGridNote (note, velocity);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void onGridNoteLongPress (final int note)
-    {
-        if (!this.isActive ())
-            return;
-
-        final int index = note - this.surface.getPadGrid ().getStartNote ();
-        final int x = index % this.numColumns;
-        final int y = index / this.numColumns;
-        final int step = this.numColumns * (this.numRows - 1 - y) + x;
-        final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), step, 0);
-        final INoteClip clip = this.getClip ();
-        for (int row = 0; row < 128; row++)
-        {
-            notePosition.setNote (row);
-            if (clip.getStep (notePosition).getState () == StepState.START)
-                this.editNote (clip, notePosition, true);
-        }
-        // Prevent note deletion on button-up!
-        this.surface.consumePads ();
     }
 
 

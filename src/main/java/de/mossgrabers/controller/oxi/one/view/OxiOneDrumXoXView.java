@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2024
+// (c) 2017-2025
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.oxi.one.view;
@@ -167,7 +167,7 @@ public class OxiOneDrumXoXView extends AbstractDrumXoXView<OxiOneControlSurface,
 
             final int index = note - this.padGrid.getStartNote ();
             final int x = index % this.numColumns;
-            final int y = this.padGrid.getRows () - 1 - (index / this.numColumns);
+            final int y = this.padGrid.getRows () - 1 - index / this.numColumns;
             final int sound = x;
 
             final IDrumPadBank drumPadBank = primary.getDrumPadBank ();
@@ -217,8 +217,8 @@ public class OxiOneDrumXoXView extends AbstractDrumXoXView<OxiOneControlSurface,
                 final int lengthOfOnePage = this.getLengthOfOnePage (this.sequencerSteps);
                 final int offset = clip.getEditPage () * lengthOfOnePage;
                 final int index = note - this.padGrid.getStartNote ();
-                final int y = this.padGrid.getRows () - (index / this.numColumns) - 3;
-                final int x = y * this.numColumns + (index % this.numColumns);
+                final int y = this.padGrid.getRows () - index / this.numColumns - 3;
+                final int x = y * this.numColumns + index % this.numColumns;
                 final double lengthOfOnePad = Resolution.getValueAt (this.getResolutionIndex ());
                 final double pos = offset + x * lengthOfOnePad;
                 final double newStart = init ? pos : clip.getLoopStart ();

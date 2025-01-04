@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2024
+// (c) 2017-2025
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.view.sequencer;
@@ -279,7 +279,7 @@ public abstract class AbstractDrumView<S extends IControlSurface<C>, C extends C
         final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), this.numColumns * (this.allRows - 1 - y) + x, offsetY + this.selectedPad);
         final int vel = this.getVelocity (index);
 
-        if (this.handleSequencerAreaButtonCombinations (clip, notePosition, vel))
+        if (this.handleSequencerAreaButtonCombinations (clip, notePosition, vel) || this.handleNoteEditor (clip, notePosition, vel))
             return;
 
         clip.toggleStep (notePosition, vel);

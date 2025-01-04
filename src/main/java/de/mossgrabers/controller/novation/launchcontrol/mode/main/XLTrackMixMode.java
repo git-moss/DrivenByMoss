@@ -32,7 +32,7 @@ public class XLTrackMixMode extends XLAbstractTrackMode
     private final IParameterProvider [] deviceParamProviders             = new IParameterProvider [3];
     private final IParameterProvider    sendParameterProvider1;
     private final IParameterProvider    sendParameterProvider2;
-    private CombinedParameterProvider   firstParameterProvider;
+    private final CombinedParameterProvider   firstParameterProvider;
 
 
     /**
@@ -138,7 +138,7 @@ public class XLTrackMixMode extends XLAbstractTrackMode
 
     /**
      * Select the next/previous parameter mode.
-     * 
+     *
      * @param increase Selects the next mode if true otherwise the previous
      */
     public void selectParameterMode (final boolean increase)

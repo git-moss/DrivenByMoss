@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2024
+// (c) 2017-2025
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.bitwig.framework.daw.data;
@@ -251,9 +251,10 @@ public class SlotImpl extends AbstractItemImpl implements ISlot
         this.slot.duplicateClip ();
     }
 
+
     /** {@inheritDoc} */
     @Override
-    public void insertFile (String path)
+    public void insertFile (final String path)
     {
         this.slot.replaceInsertionPoint ().insertFile (path);
     }

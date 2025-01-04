@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2024
+// (c) 2017-2025
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.akai.apcmini.definition;
@@ -45,7 +45,7 @@ public interface IAPCminiControllerDefinition
 
     /**
      * Get the color manger.
-     * 
+     *
      * @return The color manager
      */
     ColorManager getColorManager ();
@@ -53,7 +53,7 @@ public interface IAPCminiControllerDefinition
 
     /**
      * Returns true if it supports pad brightness.
-     * 
+     *
      * @return True if it supports pad brightness
      */
     boolean hasBrightness ();
@@ -61,7 +61,7 @@ public interface IAPCminiControllerDefinition
 
     /**
      * Returns true if it supports RGB pads.
-     * 
+     *
      * @return True if it supports RGB pads
      */
     boolean hasRGBColors ();

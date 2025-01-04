@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2024
+// (c) 2017-2025
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.ni.maschine.core.command.trigger;
@@ -159,7 +159,7 @@ public class GroupButtonCommand<S extends IControlSurface<C>, C extends Configur
                 return sequencerView.getResolutionIndex () == this.index ? MaschineColorManager.COLOR_GREEN : MaschineColorManager.COLOR_DARK_GREY;
             return MaschineColorManager.COLOR_BLACK;
         }
-		
+
         final ITrack track = trackBank.getItem (this.index);
 
         if (!track.doesExist ())
@@ -173,7 +173,6 @@ public class GroupButtonCommand<S extends IControlSurface<C>, C extends Configur
 
         if (this.surface.isPressed (ButtonID.RECORD))
             return track.isRecArm () ? MaschineColorManager.COLOR_RED : MaschineColorManager.COLOR_DARK_GREY;
-
 
         // Track selection
         return ((MaschineColorManager) this.model.getColorManager ()).dimOrHighlightColor (track.getColor (), track.isSelected ());

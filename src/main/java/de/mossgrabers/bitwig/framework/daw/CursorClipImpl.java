@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2024
+// (c) 2017-2025
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.bitwig.framework.daw;
@@ -949,12 +949,34 @@ public class CursorClipImpl implements INoteClip
 
     /** {@inheritDoc} */
     @Override
+    public void clearColumn (final int channel, final int column)
+    {
+        this.getClip ().clearStepsAtX (channel, column);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public boolean hasRowData (final int channel, final int row)
     {
         final IStepInfo [] [] [] data = this.getStepInfos ();
         for (int step = 0; step < this.numSteps; step++)
         {
             if (data[channel] != null && data[channel][step] != null && data[channel][step][row] != null && data[channel][step][row].getState () != StepState.OFF)
+                return true;
+        }
+        return false;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasColumnData (final int channel, final int column)
+    {
+        final IStepInfo [] [] [] data = this.getStepInfos ();
+        for (int row = 0; row < 128; row++)
+        {
+            if (data[channel] != null && data[channel][column] != null && data[channel][column][row] != null && data[channel][column][row].getState () != StepState.OFF)
                 return true;
         }
         return false;

@@ -146,7 +146,7 @@ public abstract class XLAbstractTrackMode extends XLAbstractMainMode<ITrack>
         {
             if (this.surface.getTrackButtonModeManager ().getActive () instanceof final XLTemporaryButtonMode tempMode)
                 tempMode.setHasBeenUsed ();
-            if (this.surface.getModeManager ().get (Modes.SEND) instanceof XLTrackMixMode mixMode)
+            if (this.surface.getModeManager ().get (Modes.SEND) instanceof final XLTrackMixMode mixMode)
                 mixMode.selectParameterMode (false);
             return;
         }
@@ -166,7 +166,7 @@ public abstract class XLAbstractTrackMode extends XLAbstractMainMode<ITrack>
         {
             if (this.surface.getTrackButtonModeManager ().getActive () instanceof final XLTemporaryButtonMode tempMode)
                 tempMode.setHasBeenUsed ();
-            if (this.surface.getModeManager ().get (Modes.SEND) instanceof XLTrackMixMode mixMode)
+            if (this.surface.getModeManager ().get (Modes.SEND) instanceof final XLTrackMixMode mixMode)
                 mixMode.selectParameterMode (true);
             return;
         }

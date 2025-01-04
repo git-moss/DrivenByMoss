@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2024
+// (c) 2017-2025
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.daw;
@@ -279,16 +279,16 @@ public interface ITransport extends IObserverManagement
      */
     default void nextAutomationWriteMode ()
     {
-        nextAutomationWriteMode (true);
+        this.nextAutomationWriteMode (true);
     }
 
 
     /**
      * Select the next automation write mode.
-     * 
+     *
      * @param wrap If true wrap to first when at the end
      */
-    default void nextAutomationWriteMode (boolean wrap)
+    default void nextAutomationWriteMode (final boolean wrap)
     {
         final AutomationMode [] automationWriteModes = this.getAutomationWriteModes ();
         final AutomationMode automationWriteMode = this.getAutomationWriteMode ();

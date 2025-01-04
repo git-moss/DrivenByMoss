@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2024
+// (c) 2017-2025
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.controller;
@@ -47,7 +47,7 @@ public interface IControllerSetup<S extends IControlSurface<C>, C extends Config
 
     /**
      * Checks if there is a surface registered.
-     * 
+     *
      * @return True if there is at least 1 surface registered
      */
     boolean hasSurface ();

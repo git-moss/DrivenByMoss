@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2024
+// (c) 2017-2025
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.view.sequencer;
@@ -150,7 +150,7 @@ public abstract class AbstractNoteSequencerView<S extends IControlSurface<C>, C 
         final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), x, mappedY);
         final int vel = this.configuration.isAccentActive () ? this.configuration.getFixedAccentValue () : this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).getPressedVelocity ();
 
-        if (this.handleSequencerAreaButtonCombinations (clip, notePosition, y, vel))
+        if (this.handleSequencerAreaButtonCombinations (clip, notePosition, y, vel) || this.handleNoteEditor (clip, notePosition, vel))
             return;
 
         if (mappedY >= 0)

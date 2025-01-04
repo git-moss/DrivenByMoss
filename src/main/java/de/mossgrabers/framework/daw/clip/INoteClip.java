@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2024
+// (c) 2017-2025
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.framework.daw.clip;
@@ -518,6 +518,15 @@ public interface INoteClip extends IClip, IPinnable
 
 
     /**
+     * Clear a column (all notes at a step).
+     *
+     * @param channel The MIDI channel
+     * @param column The column to clear
+     */
+    void clearColumn (int channel, int column);
+
+
+    /**
      * Does the row contain any notes?
      *
      * @param channel The MIDI channel
@@ -525,6 +534,16 @@ public interface INoteClip extends IClip, IPinnable
      * @return True if it contains at least one note
      */
     boolean hasRowData (int channel, int row);
+
+
+    /**
+     * Does the step contain any notes?
+     *
+     * @param channel The MIDI channel
+     * @param column The column
+     * @return True if it contains at least one note
+     */
+    boolean hasColumnData (int channel, int column);
 
 
     /**

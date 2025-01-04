@@ -1,5 +1,5 @@
 // Written by Jürgen Moßgraber - mossgrabers.de
-// (c) 2017-2024
+// (c) 2017-2025
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
 package de.mossgrabers.controller.akai.apcmini.controller;
@@ -30,7 +30,7 @@ public class APCminiPadGrid extends PadGridImpl
      * @param configuration
      * @param definition
      */
-    public APCminiPadGrid (final ColorManager colorManager, final IMidiOutput output, final APCminiConfiguration configuration, IAPCminiControllerDefinition definition)
+    public APCminiPadGrid (final ColorManager colorManager, final IMidiOutput output, final APCminiConfiguration configuration, final IAPCminiControllerDefinition definition)
     {
         super (colorManager, output);
 
