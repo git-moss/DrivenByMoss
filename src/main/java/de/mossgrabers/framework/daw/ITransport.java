@@ -358,6 +358,14 @@ public interface ITransport extends IObserverManagement
 
 
     /**
+     * Get the transport current position.
+     *
+     * @return The playback position in beats
+     */
+    double getPlayPosition ();
+
+
+    /**
      * Set the transport playback position to the end of the project.
      */
     void setPositionToEnd ();
