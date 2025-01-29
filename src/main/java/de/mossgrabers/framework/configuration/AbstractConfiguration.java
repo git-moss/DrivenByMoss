@@ -542,7 +542,8 @@ public abstract class AbstractConfiguration implements Configuration
     @Override
     public void setScaleInKey (final boolean inScale)
     {
-        this.scaleInKeySetting.set (inScale ? SCALE_IN_KEY : SCALE_CHROMATIC);
+        if (this.scaleInKeySetting != null)
+            this.scaleInKeySetting.set (inScale ? SCALE_IN_KEY : SCALE_CHROMATIC);
     }
 
 
