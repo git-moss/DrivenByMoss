@@ -16,7 +16,7 @@ import de.mossgrabers.framework.parameterprovider.track.PanParameterProvider;
 
 
 /**
- * Mode for editing the panorama of all tracks.
+ * Mode for editing the panning of all tracks.
  *
  * @author Jürgen Moßgraber
  */
@@ -30,7 +30,7 @@ public class PanMode extends AbstractTrackMode
      */
     public PanMode (final PushControlSurface surface, final IModel model)
     {
-        super ("Panorama", surface, model);
+        super ("Panning", surface, model);
 
         this.setParameterProvider (new PanParameterProvider (model));
     }

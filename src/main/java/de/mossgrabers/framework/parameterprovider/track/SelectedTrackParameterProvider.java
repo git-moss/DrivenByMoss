@@ -4,6 +4,8 @@
 
 package de.mossgrabers.framework.parameterprovider.track;
 
+import java.util.Optional;
+
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IChannel;
@@ -17,12 +19,10 @@ import de.mossgrabers.framework.observer.IItemSelectionObserver;
 import de.mossgrabers.framework.observer.IParametersAdjustObserver;
 import de.mossgrabers.framework.parameter.IParameter;
 
-import java.util.Optional;
-
 
 /**
- * Get a number of parameters. This implementation provides the selected tracks' volume, panorama
- * and send parameters.
+ * Get a number of parameters. This implementation provides the selected tracks' volume, panning and
+ * send parameters.
  *
  * @author Jürgen Moßgraber
  */

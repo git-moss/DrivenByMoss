@@ -4,10 +4,10 @@
 
 package de.mossgrabers.bitwig.framework.daw.data;
 
+import com.bitwig.extension.controller.api.Parameter;
+
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.observer.IValueObserver;
-
-import com.bitwig.extension.controller.api.Parameter;
 
 
 /**
@@ -148,6 +148,14 @@ public class ParameterImpl extends RangedValueImpl
     {
         final double value = this.targetModulatedValue == null ? this.parameter.modulatedValue ().get () : this.targetModulatedValue.get ();
         return this.valueChanger.fromNormalizedValue (value);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addValueObserver (final IValueObserver<Void> observer)
+    {
+        this.parameter.value ().addValueObserver (value -> observer.update (null));
     }
 
 

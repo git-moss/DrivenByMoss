@@ -26,7 +26,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * The 12 mode. The knobs control either the volume, panorama or a send of 12 tracks.
+ * The 12 mode. The knobs control either the volume, panning or a send of 12 tracks.
  *
  * @author Jürgen Moßgraber
  */

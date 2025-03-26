@@ -30,7 +30,7 @@ public class TitleValueMenuComponent extends TitleValueComponent
      * @param label2 The second row text
      * @param menu The 4 menu entries
      * @param value The value, hides the value fader if set to -1
-     * @param isPan True if display as panorama bar
+     * @param isPan True if display as panning bar
      */
     public TitleValueMenuComponent (final String label1, final String label2, final String [] menu, final int value, final boolean isPan)
     {
@@ -47,7 +47,7 @@ public class TitleValueMenuComponent extends TitleValueComponent
      * @param value The value, hides the value fader if set to -1
      * @param vuLeft The left VU value, not drawn if -1
      * @param vuRight The right VU value, not drawn if -1
-     * @param isPan True if display as panorama bar
+     * @param isPan True if display as panning bar
      */
     public TitleValueMenuComponent (final String label1, final String label2, final String [] menu, final int value, final int vuLeft, final int vuRight, final boolean isPan)
     {

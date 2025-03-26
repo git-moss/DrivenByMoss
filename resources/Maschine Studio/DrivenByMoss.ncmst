@@ -734,7 +734,7 @@
           <reaction>ondown</reaction>
         </button>
         <button version="1" id="Button2">
-          <name>Panorama</name>
+          <name>Panning</name>
           <controller>23</controller>
           <channel>0</channel>
           <off>0</off>

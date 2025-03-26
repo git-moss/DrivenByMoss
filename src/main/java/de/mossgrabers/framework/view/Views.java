@@ -58,7 +58,7 @@ public enum Views
     TRACK,
     /** View for changing track volumes. */
     TRACK_VOLUME,
-    /** View for changing track panoramas. */
+    /** View for changing track panning. */
     TRACK_PAN,
     /** View for changing track sends. */
     TRACK_SENDS,

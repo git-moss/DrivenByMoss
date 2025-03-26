@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.ableton.push.mode.device;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.controller.ableton.push.parameterprovider.PushPanLayerOrDrumPadParameterProvider;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -16,11 +18,9 @@ import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.mode.Modes;
 
-import java.util.Optional;
-
 
 /**
- * Mode for editing the panorama of all device layers.
+ * Mode for editing the panning of all device layers.
  *
  * @author Jürgen Moßgraber
  */
@@ -34,7 +34,7 @@ public class DeviceLayerPanMode extends DeviceLayerMode
      */
     public DeviceLayerPanMode (final PushControlSurface surface, final IModel model)
     {
-        super (Modes.NAME_LAYER_PANORAMA, surface, model);
+        super (Modes.NAME_LAYER_PANNING, surface, model);
 
         this.setParameterProvider (new PushPanLayerOrDrumPadParameterProvider (this.cursorDevice));
     }

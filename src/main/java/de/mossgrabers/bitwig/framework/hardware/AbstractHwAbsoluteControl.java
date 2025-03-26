@@ -4,6 +4,12 @@
 
 package de.mossgrabers.bitwig.framework.hardware;
 
+import com.bitwig.extension.controller.api.AbsoluteHardwarControlBindable;
+import com.bitwig.extension.controller.api.AbsoluteHardwareControl;
+import com.bitwig.extension.controller.api.AbsoluteHardwareControlBinding;
+import com.bitwig.extension.controller.api.ControllerHost;
+import com.bitwig.extension.controller.api.HardwareBindable;
+
 import de.mossgrabers.bitwig.framework.daw.HostImpl;
 import de.mossgrabers.bitwig.framework.daw.data.ParameterImpl;
 import de.mossgrabers.framework.command.core.ContinuousCommand;
@@ -13,12 +19,6 @@ import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwAbsoluteControl;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.parameter.IParameter;
-
-import com.bitwig.extension.controller.api.AbsoluteHardwarControlBindable;
-import com.bitwig.extension.controller.api.AbsoluteHardwareControl;
-import com.bitwig.extension.controller.api.AbsoluteHardwareControlBinding;
-import com.bitwig.extension.controller.api.ControllerHost;
-import com.bitwig.extension.controller.api.HardwareBindable;
 
 
 /**
@@ -38,6 +38,7 @@ public abstract class AbstractHwAbsoluteControl<T extends AbsoluteHardwareContro
     private AbsoluteHardwareControlBinding       binding;
     private IParameter                           parameter;
     private int                                  control;
+    private boolean                              isHiRes = false;
 
 
     /**
@@ -136,10 +137,25 @@ public abstract class AbstractHwAbsoluteControl<T extends AbsoluteHardwareContro
     @Override
     public void bind (final IMidiInput input, final BindType type, final int channel, final int control)
     {
+        this.bind (input, type, channel, control, false);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void bindHiRes (final IMidiInput input, final int channel, final int control)
+    {
+        this.bind (input, BindType.CC, channel, control, true);
+    }
+
+
+    private void bind (final IMidiInput input, final BindType type, final int channel, final int control, final boolean isHiRes)
+    {
         this.input = input;
         this.type = type;
         this.channel = channel;
         this.control = control;
+        this.isHiRes = isHiRes;
 
         this.rebind ();
     }
@@ -158,7 +174,12 @@ public abstract class AbstractHwAbsoluteControl<T extends AbsoluteHardwareContro
     @Override
     public void rebind ()
     {
-        if (this.input != null)
+        if (this.input == null)
+            return;
+
+        if (this.isHiRes)
+            this.input.bindHiRes (this, this.channel, this.control);
+        else
             this.input.bind (this, this.type, this.channel, this.control);
     }
 

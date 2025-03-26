@@ -21,7 +21,7 @@ public enum Modes
     TRACK_DETAILS,
     /** Edit volume of all tracks. */
     VOLUME,
-    /** Edit panorama of all tracks. */
+    /** Edit panning of all tracks. */
     PAN,
     /** Edit cross-fader settings of all tracks. */
     CROSSFADER,
@@ -77,7 +77,7 @@ public enum Modes
     DEVICE_LAYER,
     /** Edit volume of all layers. */
     DEVICE_LAYER_VOLUME,
-    /** Edit panorama of all layers. */
+    /** Edit panning of all layers. */
     DEVICE_LAYER_PAN,
     /** Edit Send 1 of all layers. */
     DEVICE_LAYER_SEND1,
@@ -173,36 +173,36 @@ public enum Modes
 
 
     /** The name of the Track mode. */
-    public static final String      NAME_TRACK          = "Track";
+    public static final String      NAME_TRACK         = "Track";
     /** The name of the Volume mode. */
-    public static final String      NAME_VOLUME         = "Volume";
-    /** The name of the Panorama mode. */
-    public static final String      NAME_PANORAMA       = "Panorama";
+    public static final String      NAME_VOLUME        = "Volume";
+    /** The name of the Panning mode. */
+    public static final String      NAME_PANNING       = "Panning";
     /** The name of the Sends mode. */
-    public static final String      NAME_SENDS          = "Sends";
-    /** The name of the Crossfade mode. */
-    public static final String      NAME_CROSSFADE      = "Crossfade";
+    public static final String      NAME_SENDS         = "Sends";
+    /** The name of the Cross-fade mode. */
+    public static final String      NAME_CROSSFADE     = "Crossfade";
     /** The name of the Parameters mode. */
-    public static final String      NAME_PARAMETERS     = "Parameters";
+    public static final String      NAME_PARAMETERS    = "Parameters";
     /** The name of the Layer mode. */
-    public static final String      NAME_LAYER          = "Layer";
+    public static final String      NAME_LAYER         = "Layer";
     /** The name of the Layer Volume mode. */
-    public static final String      NAME_LAYER_VOLUME   = "Layer Volume";
-    /** The name of the Layer Panorama mode. */
-    public static final String      NAME_LAYER_PANORAMA = "Layer Panorama";
+    public static final String      NAME_LAYER_VOLUME  = "Layer Volume";
+    /** The name of the Layer Panning mode. */
+    public static final String      NAME_LAYER_PANNING = "Layer Panning";
     /** The name of the Layer Sends mode. */
-    public static final String      NAME_LAYER_SENDS    = "Layer Sends";
+    public static final String      NAME_LAYER_SENDS   = "Layer Sends";
     /** The name of the Equalizer mode. */
-    public static final String      NAME_EQUALIZER      = "Equalizer";
+    public static final String      NAME_EQUALIZER     = "Equalizer";
     /** The name of the Automation mode. */
-    public static final String      NAME_AUTOMATION     = "Automation";
+    public static final String      NAME_AUTOMATION    = "Automation";
 
-    private static final Set<Modes> TRACK_MODES         = EnumSet.range (Modes.TRACK, Modes.STOP_CLIP);
-    private static final Set<Modes> LAYER_MODES         = EnumSet.range (Modes.DEVICE_LAYER, Modes.DEVICE_LAYER_DETAILS);
-    private static final Set<Modes> SEND_MODES          = EnumSet.range (Modes.SEND1, Modes.SEND8);
-    private static final Set<Modes> LAYER_SEND_MODES    = EnumSet.range (Modes.DEVICE_LAYER_SEND1, Modes.DEVICE_LAYER_SEND8);
-    private static final Set<Modes> MIX_MODES           = EnumSet.range (Modes.TRACK, Modes.SEND);
-    private static final Set<Modes> MASTER_MODES        = EnumSet.of (Modes.MASTER, Modes.MASTER_TEMP, Modes.FRAME);
+    private static final Set<Modes> TRACK_MODES        = EnumSet.range (Modes.TRACK, Modes.STOP_CLIP);
+    private static final Set<Modes> LAYER_MODES        = EnumSet.range (Modes.DEVICE_LAYER, Modes.DEVICE_LAYER_DETAILS);
+    private static final Set<Modes> SEND_MODES         = EnumSet.range (Modes.SEND1, Modes.SEND8);
+    private static final Set<Modes> LAYER_SEND_MODES   = EnumSet.range (Modes.DEVICE_LAYER_SEND1, Modes.DEVICE_LAYER_SEND8);
+    private static final Set<Modes> MIX_MODES          = EnumSet.range (Modes.TRACK, Modes.SEND);
+    private static final Set<Modes> MASTER_MODES       = EnumSet.of (Modes.MASTER, Modes.MASTER_TEMP, Modes.FRAME);
 
     static
     {

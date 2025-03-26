@@ -31,7 +31,7 @@ public class ACVSDisplay extends AbstractTextDisplay
     public static final int                ITEM_ID_TRACK_FADER_LEVEL_FIRST      = 0x100;
     /** Track peak level (8). */
     public static final int                ITEM_ID_TRACK_PEAK_LEVEL_FIRST       = 0x108;
-    /** Track panorama (8). */
+    /** Track panning (8). */
     public static final int                ITEM_ID_TRACK_PAN_FIRST              = 0x110;
     /** Track send 1 (8). */
     public static final int                ITEM_ID_TRACK_SEND1_FIRST            = 0x118;

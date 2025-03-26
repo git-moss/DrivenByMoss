@@ -4,13 +4,13 @@
 
 package de.mossgrabers.bitwig.framework.hardware;
 
+import com.bitwig.extension.controller.api.AbsoluteHardwareKnob;
+
 import de.mossgrabers.bitwig.framework.daw.HostImpl;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwAbsoluteKnob;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
-
-import com.bitwig.extension.controller.api.AbsoluteHardwareKnob;
 
 
 /**

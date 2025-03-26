@@ -110,15 +110,15 @@ public class TrackHandler extends AbstractHandler
             FlexiCommand.TRACK_7_SET_VOLUME,
             FlexiCommand.TRACK_8_SET_VOLUME,
             FlexiCommand.TRACK_SELECTED_SET_VOLUME_TRACK,
-            FlexiCommand.TRACK_1_SET_PANORAMA,
-            FlexiCommand.TRACK_2_SET_PANORAMA,
-            FlexiCommand.TRACK_3_SET_PANORAMA,
-            FlexiCommand.TRACK_4_SET_PANORAMA,
-            FlexiCommand.TRACK_5_SET_PANORAMA,
-            FlexiCommand.TRACK_6_SET_PANORAMA,
-            FlexiCommand.TRACK_7_SET_PANORAMA,
-            FlexiCommand.TRACK_8_SET_PANORAMA,
-            FlexiCommand.TRACK_SELECTED_SET_PANORAMA,
+            FlexiCommand.TRACK_1_SET_PANNING,
+            FlexiCommand.TRACK_2_SET_PANNING,
+            FlexiCommand.TRACK_3_SET_PANNING,
+            FlexiCommand.TRACK_4_SET_PANNING,
+            FlexiCommand.TRACK_5_SET_PANNING,
+            FlexiCommand.TRACK_6_SET_PANNING,
+            FlexiCommand.TRACK_7_SET_PANNING,
+            FlexiCommand.TRACK_8_SET_PANNING,
+            FlexiCommand.TRACK_SELECTED_SET_PANNING,
             FlexiCommand.TRACK_1_TOGGLE_MUTE,
             FlexiCommand.TRACK_2_TOGGLE_MUTE,
             FlexiCommand.TRACK_3_TOGGLE_MUTE,
@@ -327,10 +327,10 @@ public class TrackHandler extends AbstractHandler
             case TRACK_SELECTED_SET_VOLUME_TRACK:
                 return cursorTrack.doesExist () ? cursorTrack.getVolume () : 0;
 
-            case TRACK_1_SET_PANORAMA, TRACK_2_SET_PANORAMA, TRACK_3_SET_PANORAMA, TRACK_4_SET_PANORAMA, TRACK_5_SET_PANORAMA, TRACK_6_SET_PANORAMA, TRACK_7_SET_PANORAMA, TRACK_8_SET_PANORAMA:
-                return trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_PANORAMA.ordinal ()).getPan ();
+            case TRACK_1_SET_PANNING, TRACK_2_SET_PANNING, TRACK_3_SET_PANNING, TRACK_4_SET_PANNING, TRACK_5_SET_PANNING, TRACK_6_SET_PANNING, TRACK_7_SET_PANNING, TRACK_8_SET_PANNING:
+                return trackBank.getItem (command.ordinal () - FlexiCommand.TRACK_1_SET_PANNING.ordinal ()).getPan ();
 
-            case TRACK_SELECTED_SET_PANORAMA:
+            case TRACK_SELECTED_SET_PANNING:
                 return cursorTrack.doesExist () ? cursorTrack.getPan () : 0;
 
             case TRACK_1_TOGGLE_MUTE, TRACK_2_TOGGLE_MUTE, TRACK_3_TOGGLE_MUTE, TRACK_4_TOGGLE_MUTE, TRACK_5_TOGGLE_MUTE, TRACK_6_TOGGLE_MUTE, TRACK_7_TOGGLE_MUTE, TRACK_8_TOGGLE_MUTE:
@@ -501,13 +501,13 @@ public class TrackHandler extends AbstractHandler
                 this.changeTrackVolume (knobMode, -1, value);
                 break;
 
-            // Track 1-8: Set Panorama
-            case TRACK_1_SET_PANORAMA, TRACK_2_SET_PANORAMA, TRACK_3_SET_PANORAMA, TRACK_4_SET_PANORAMA, TRACK_5_SET_PANORAMA, TRACK_6_SET_PANORAMA, TRACK_7_SET_PANORAMA, TRACK_8_SET_PANORAMA:
-                this.changeTrackPanorama (knobMode, command.ordinal () - FlexiCommand.TRACK_1_SET_PANORAMA.ordinal (), value);
+            // Track 1-8: Set Panning
+            case TRACK_1_SET_PANNING, TRACK_2_SET_PANNING, TRACK_3_SET_PANNING, TRACK_4_SET_PANNING, TRACK_5_SET_PANNING, TRACK_6_SET_PANNING, TRACK_7_SET_PANNING, TRACK_8_SET_PANNING:
+                this.changeTrackPanning (knobMode, command.ordinal () - FlexiCommand.TRACK_1_SET_PANNING.ordinal (), value);
                 break;
-            // Track Selected: Set Panorama
-            case TRACK_SELECTED_SET_PANORAMA:
-                this.changeTrackPanorama (knobMode, -1, value);
+            // Track Selected: Set Panning
+            case TRACK_SELECTED_SET_PANNING:
+                this.changeTrackPanning (knobMode, -1, value);
                 break;
 
             // Track 1-8: Toggle Mute
@@ -713,7 +713,7 @@ public class TrackHandler extends AbstractHandler
     }
 
 
-    private void changeTrackPanorama (final KnobMode knobMode, final int trackIndex, final MidiValue value)
+    private void changeTrackPanning (final KnobMode knobMode, final int trackIndex, final MidiValue value)
     {
         final Optional<ITrack> track = this.getTrack (trackIndex);
         if (track.isEmpty ())

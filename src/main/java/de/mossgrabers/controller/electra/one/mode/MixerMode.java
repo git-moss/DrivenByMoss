@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.electra.one.mode;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.electra.one.controller.ElectraOneColorManager;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneControlSurface;
 import de.mossgrabers.framework.controller.color.ColorEx;
@@ -22,11 +24,9 @@ import de.mossgrabers.framework.parameterprovider.track.VolumeParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 
-import java.util.Optional;
-
 
 /**
- * The mixer mode. The knobs control the volumes and panorama of the tracks on the current track
+ * The mixer mode. The knobs control the volumes and panning of the tracks on the current track
  * page.
  *
  * @author Jürgen Moßgraber

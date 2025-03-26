@@ -175,7 +175,7 @@ public class LaunchpadControlSurface extends AbstractControlSurface<LaunchpadCon
      *
      * @param index The number of the fader (0-7)
      * @param color The color to set
-     * @param isPan True for panorama layout
+     * @param isPan True for panning layout
      */
     public void setupFader (final int index, final int color, final boolean isPan)
     {

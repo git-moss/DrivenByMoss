@@ -4,15 +4,16 @@
 
 package de.mossgrabers.bitwig.framework.daw.data;
 
-import de.mossgrabers.bitwig.framework.daw.data.bank.DeviceBankImpl;
-import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
-import de.mossgrabers.framework.daw.IHost;
-import de.mossgrabers.framework.daw.data.ICursorDevice;
-import de.mossgrabers.framework.daw.data.bank.IDeviceBank;
-
 import com.bitwig.extension.controller.api.Device;
 import com.bitwig.extension.controller.api.DeviceBank;
 import com.bitwig.extension.controller.api.PinnableCursorDevice;
+
+import de.mossgrabers.bitwig.framework.daw.data.bank.DeviceBankImpl;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
+import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.ModelSetup;
+import de.mossgrabers.framework.daw.data.ICursorDevice;
+import de.mossgrabers.framework.daw.data.bank.IDeviceBank;
 
 
 /**
@@ -35,20 +36,16 @@ public class CursorDeviceImpl extends SpecificDeviceImpl implements ICursorDevic
      * @param host The host
      * @param valueChanger The value changer
      * @param cursorDevice The cursor device
-     * @param numSends The number of sends
-     * @param numParamPages The number of parameter pages
-     * @param numParams The number of parameters
-     * @param numDevicesInBank The number of devices
-     * @param numDeviceLayers The number of layers
-     * @param numDrumPadLayers The number of drum pad layers
+     * @param modelSetup The model setup
      */
-    public CursorDeviceImpl (final IHost host, final IValueChanger valueChanger, final PinnableCursorDevice cursorDevice, final int numSends, final int numParamPages, final int numParams, final int numDevicesInBank, final int numDeviceLayers, final int numDrumPadLayers)
+    public CursorDeviceImpl (final IHost host, final IValueChanger valueChanger, final PinnableCursorDevice cursorDevice, final ModelSetup modelSetup)
     {
-        super (host, valueChanger, cursorDevice, numSends, numParamPages, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
+        super (host, valueChanger, cursorDevice, modelSetup);
 
         this.cursorDevice = cursorDevice;
         this.largeDeviceBank = cursorDevice.channel ().createDeviceBank (NUM_DEVICES_LARGE_BANK);
 
+        final int numDevicesInBank = modelSetup.getNumDevicesInBank ();
         final int checkedNumDevices = numDevicesInBank >= 0 ? numDevicesInBank : 8;
 
         this.cursorDevice.hasPrevious ().markInterested ();

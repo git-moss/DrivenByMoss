@@ -15,6 +15,6 @@ public enum Format
     FORMAT_RAW,
     /** Format it as a value. */
     FORMAT_VALUE,
-    /** Format it as a panorama value. */
+    /** Format it as a panning value. */
     FORMAT_PAN
 }

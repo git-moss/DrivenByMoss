@@ -4,6 +4,10 @@
 
 package de.mossgrabers.controller.ni.kontrol.mkii.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import de.mossgrabers.controller.ni.kontrol.mkii.KontrolProtocolConfiguration;
 import de.mossgrabers.controller.ni.kontrol.mkii.TrackType;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
@@ -13,10 +17,6 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.StringUtils;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 
 /**
@@ -85,18 +85,18 @@ public class KontrolProtocolControlSurface extends AbstractControlSurface<Kontro
     public static final int  KONTROL_TRACK_RECARM                 = 0x45;
     /** Volume of a track. */
     public static final int  KONTROL_TRACK_VOLUME_TEXT            = 0x46;
-    /** Panorama of a track. */
+    /** Panning of a track. */
     public static final int  KONTROL_TRACK_PAN_TEXT               = 0x47;
     /** Name of a track. */
     public static final int  KONTROL_TRACK_NAME                   = 0x48;
     /** VU of a track. */
     public static final int  KONTROL_TRACK_VU                     = 0x49;
-    /** Tracl muted by solo. */
+    /** Track muted by solo. */
     public static final int  KONTROL_TRACK_MUTED_BY_SOLO          = 0x4A;
 
     /** Change the volume of a track 0x50 - 0x57. */
     public static final int  KONTROL_TRACK_VOLUME                 = 0x50;
-    /** Change the panorama of a track 0x58 - 0x5F. */
+    /** Change the panning of a track 0x58 - 0x5F. */
     public static final int  KONTROL_TRACK_PAN                    = 0x58;
 
     /** Play the currently selected clip. */

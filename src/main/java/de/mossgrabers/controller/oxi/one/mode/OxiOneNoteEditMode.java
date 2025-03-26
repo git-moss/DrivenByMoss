@@ -68,8 +68,8 @@ public class OxiOneNoteEditMode extends AbstractNoteParameterMode<OxiOneControlS
         this.setParameterProvider (new FourKnobProvider<> (surface, new FixedParameterProvider (
                 // Gain
                 new NoteParameter (NoteAttribute.GAIN, null, model, this.noteEditor, valueChanger),
-                // Panorama
-                new NoteParameter (NoteAttribute.PANORAMA, null, model, this.noteEditor, valueChanger),
+                // Panning
+                new NoteParameter (NoteAttribute.PANNING, null, model, this.noteEditor, valueChanger),
                 // Duration
                 new NoteParameter (NoteAttribute.DURATION, null, model, this.noteEditor, valueChanger),
                 // Velocity

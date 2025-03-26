@@ -269,7 +269,7 @@ public class YaeltexTurnColorManager extends ColorManager
         this.noteParamColors.put (NoteAttribute.VELOCITY_SPREAD, Integer.valueOf (GREEN));
         this.noteParamColors.put (NoteAttribute.TRANSPOSE, Integer.valueOf (WHITE));
         this.noteParamColors.put (NoteAttribute.GAIN, Integer.valueOf (OLIVE));
-        this.noteParamColors.put (NoteAttribute.PANORAMA, Integer.valueOf (GRAY));
+        this.noteParamColors.put (NoteAttribute.PANNING, Integer.valueOf (GRAY));
         this.noteParamColors.put (NoteAttribute.CHANCE, Integer.valueOf (BLUE));
         this.noteParamColors.put (NoteAttribute.PRESSURE, Integer.valueOf (YELLOW));
         this.noteParamColors.put (NoteAttribute.TIMBRE, Integer.valueOf (RED_WINE));

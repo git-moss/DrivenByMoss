@@ -4,11 +4,11 @@
 
 package de.mossgrabers.bitwig.framework.daw.data;
 
+import com.bitwig.extension.controller.api.Device;
+
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.data.IDrumDevice;
-
-import com.bitwig.extension.controller.api.Device;
 
 
 /**
@@ -33,6 +33,6 @@ public class DrumDeviceImpl extends SpecificDeviceImpl implements IDrumDevice
      */
     public DrumDeviceImpl (final IHost host, final IValueChanger valueChanger, final Device device, final int numSends, final int numParamPages, final int numParams, final int numDevicesInBank, final int numDeviceLayers, final int numDrumPadLayers)
     {
-        super (host, valueChanger, device, numSends, numParamPages, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
+        super (host, valueChanger, device, numSends, numParamPages, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers, 0);
     }
 }

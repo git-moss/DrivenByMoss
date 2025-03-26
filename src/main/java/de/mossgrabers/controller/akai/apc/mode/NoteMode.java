@@ -56,8 +56,8 @@ public class NoteMode extends BaseMode<IItem> implements INoteEditorMode
                 new NoteParameter (NoteAttribute.VELOCITY_SPREAD, display, model, this.noteEditor, valueChanger),
                 // Gain
                 new NoteParameter (NoteAttribute.GAIN, display, model, this.noteEditor, valueChanger),
-                // Panorama
-                new NoteParameter (NoteAttribute.PANORAMA, display, model, this.noteEditor, valueChanger),
+                // Panning
+                new NoteParameter (NoteAttribute.PANNING, display, model, this.noteEditor, valueChanger),
                 // Chance
                 new NoteParameter (NoteAttribute.CHANCE, display, model, this.noteEditor, valueChanger),
                 // Timbre

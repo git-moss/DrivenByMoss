@@ -17,7 +17,7 @@ import de.mossgrabers.framework.view.Views;
 
 
 /**
- * Command to edit the play position. Switch between Panorama and Duration in note edit mode.
+ * Command to edit the play position. Switch between Panning and Duration in note edit mode.
  *
  * @author Jürgen Moßgraber
  */
@@ -47,9 +47,9 @@ public class SwingCommand extends ModeMultiSelectCommand<MaschineControlSurface,
             if (event == ButtonEvent.DOWN)
             {
                 final EditNoteMode mode = (EditNoteMode) modeManager.get (Modes.NOTE);
-                final boolean isPanorama = mode.getActiveParameter () == NoteAttribute.PANORAMA;
-                mode.selectActiveParameter (isPanorama ? NoteAttribute.DURATION : NoteAttribute.PANORAMA);
-                this.surface.getDisplay ().notify (isPanorama ? "Duration" : "Panorama");
+                final boolean isPanning = mode.getActiveParameter () == NoteAttribute.PANNING;
+                mode.selectActiveParameter (isPanning ? NoteAttribute.DURATION : NoteAttribute.PANNING);
+                this.surface.getDisplay ().notify (isPanning ? "Duration" : "Panning");
             }
             return;
         }

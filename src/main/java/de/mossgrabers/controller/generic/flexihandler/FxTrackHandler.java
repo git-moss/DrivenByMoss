@@ -90,14 +90,14 @@ public class FxTrackHandler extends AbstractHandler
             FlexiCommand.FX_TRACK_6_SET_VOLUME,
             FlexiCommand.FX_TRACK_7_SET_VOLUME,
             FlexiCommand.FX_TRACK_8_SET_VOLUME,
-            FlexiCommand.FX_TRACK_1_SET_PANORAMA,
-            FlexiCommand.FX_TRACK_2_SET_PANORAMA,
-            FlexiCommand.FX_TRACK_3_SET_PANORAMA,
-            FlexiCommand.FX_TRACK_4_SET_PANORAMA,
-            FlexiCommand.FX_TRACK_5_SET_PANORAMA,
-            FlexiCommand.FX_TRACK_6_SET_PANORAMA,
-            FlexiCommand.FX_TRACK_7_SET_PANORAMA,
-            FlexiCommand.FX_TRACK_8_SET_PANORAMA,
+            FlexiCommand.FX_TRACK_1_SET_PANNING,
+            FlexiCommand.FX_TRACK_2_SET_PANNING,
+            FlexiCommand.FX_TRACK_3_SET_PANNING,
+            FlexiCommand.FX_TRACK_4_SET_PANNING,
+            FlexiCommand.FX_TRACK_5_SET_PANNING,
+            FlexiCommand.FX_TRACK_6_SET_PANNING,
+            FlexiCommand.FX_TRACK_7_SET_PANNING,
+            FlexiCommand.FX_TRACK_8_SET_PANNING,
             FlexiCommand.FX_TRACK_1_TOGGLE_MUTE,
             FlexiCommand.FX_TRACK_2_TOGGLE_MUTE,
             FlexiCommand.FX_TRACK_3_TOGGLE_MUTE,
@@ -284,8 +284,8 @@ public class FxTrackHandler extends AbstractHandler
 
             case FX_TRACK_1_SET_VOLUME, FX_TRACK_2_SET_VOLUME, FX_TRACK_3_SET_VOLUME, FX_TRACK_4_SET_VOLUME, FX_TRACK_5_SET_VOLUME, FX_TRACK_6_SET_VOLUME, FX_TRACK_7_SET_VOLUME, FX_TRACK_8_SET_VOLUME:
                 return effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_SET_VOLUME.ordinal ()).getVolume ();
-            case FX_TRACK_1_SET_PANORAMA, FX_TRACK_2_SET_PANORAMA, FX_TRACK_3_SET_PANORAMA, FX_TRACK_4_SET_PANORAMA, FX_TRACK_5_SET_PANORAMA, FX_TRACK_6_SET_PANORAMA, FX_TRACK_7_SET_PANORAMA, FX_TRACK_8_SET_PANORAMA:
-                return effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_SET_PANORAMA.ordinal ()).getPan ();
+            case FX_TRACK_1_SET_PANNING, FX_TRACK_2_SET_PANNING, FX_TRACK_3_SET_PANNING, FX_TRACK_4_SET_PANNING, FX_TRACK_5_SET_PANNING, FX_TRACK_6_SET_PANNING, FX_TRACK_7_SET_PANNING, FX_TRACK_8_SET_PANNING:
+                return effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_SET_PANNING.ordinal ()).getPan ();
 
             case FX_TRACK_1_TOGGLE_MUTE, FX_TRACK_2_TOGGLE_MUTE, FX_TRACK_3_TOGGLE_MUTE, FX_TRACK_4_TOGGLE_MUTE, FX_TRACK_5_TOGGLE_MUTE, FX_TRACK_6_TOGGLE_MUTE, FX_TRACK_7_TOGGLE_MUTE, FX_TRACK_8_TOGGLE_MUTE:
                 return toMidiValue (effectTrackBank.getItem (command.ordinal () - FlexiCommand.FX_TRACK_1_TOGGLE_MUTE.ordinal ()).isMute ());
@@ -410,9 +410,9 @@ public class FxTrackHandler extends AbstractHandler
                 this.changeTrackVolume (knobMode, command.ordinal () - FlexiCommand.FX_TRACK_1_SET_VOLUME.ordinal (), value);
                 break;
 
-            // Track 1-8: Set Panorama
-            case FX_TRACK_1_SET_PANORAMA, FX_TRACK_2_SET_PANORAMA, FX_TRACK_3_SET_PANORAMA, FX_TRACK_4_SET_PANORAMA, FX_TRACK_5_SET_PANORAMA, FX_TRACK_6_SET_PANORAMA, FX_TRACK_7_SET_PANORAMA, FX_TRACK_8_SET_PANORAMA:
-                this.changeTrackPanorama (knobMode, command.ordinal () - FlexiCommand.FX_TRACK_1_SET_PANORAMA.ordinal (), value);
+            // Track 1-8: Set Panning
+            case FX_TRACK_1_SET_PANNING, FX_TRACK_2_SET_PANNING, FX_TRACK_3_SET_PANNING, FX_TRACK_4_SET_PANNING, FX_TRACK_5_SET_PANNING, FX_TRACK_6_SET_PANNING, FX_TRACK_7_SET_PANNING, FX_TRACK_8_SET_PANNING:
+                this.changeTrackPanning (knobMode, command.ordinal () - FlexiCommand.FX_TRACK_1_SET_PANNING.ordinal (), value);
                 break;
 
             // Track 1-8: Toggle Mute
@@ -556,7 +556,7 @@ public class FxTrackHandler extends AbstractHandler
     }
 
 
-    private void changeTrackPanorama (final KnobMode knobMode, final int trackIndex, final MidiValue value)
+    private void changeTrackPanning (final KnobMode knobMode, final int trackIndex, final MidiValue value)
     {
         final Optional<ITrack> track = this.getTrack (trackIndex);
         if (track.isEmpty ())

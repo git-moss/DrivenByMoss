@@ -4,17 +4,17 @@
 
 package de.mossgrabers.framework.parameterprovider.device;
 
+import java.util.Set;
+
 import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.bank.IChannelBank;
 import de.mossgrabers.framework.observer.IParametersAdjustObserver;
 import de.mossgrabers.framework.observer.IValueObserver;
 
-import java.util.Set;
-
 
 /**
- * Get a number of parameters. This implementation provides the selected layers volume, panorama and
+ * Get a number of parameters. This implementation provides the selected layers volume, panning and
  * send parameters.
  *
  * @author Jürgen Moßgraber

@@ -11,7 +11,7 @@ import de.mossgrabers.framework.graphics.IGraphicsInfo;
 
 
 /**
- * A graphics component with two labels, a volume/panorama bar and a stereo VU.
+ * A graphics component with two labels, a volume/panning bar and a stereo VU.
  *
  * @author Jürgen Moßgraber
  */
@@ -32,7 +32,7 @@ public class TitleValueComponent extends AbstractBaseComponent
      * @param label1 The first row text
      * @param label2 The second row text
      * @param value The value, hides the value fader if set to -1
-     * @param isPan True if display as panorama bar
+     * @param isPan True if display as panning bar
      */
     public TitleValueComponent (final String label1, final String label2, final int value, final boolean isPan)
     {
@@ -48,7 +48,7 @@ public class TitleValueComponent extends AbstractBaseComponent
      * @param value The value, hides the value fader if set to -1
      * @param vuLeft The left VU value, not drawn if -1
      * @param vuRight The right VU value, not drawn if -1
-     * @param isPan True if display as panorama bar
+     * @param isPan True if display as panning bar
      */
     public TitleValueComponent (final String label1, final String label2, final int value, final int vuLeft, final int vuRight, final boolean isPan)
     {

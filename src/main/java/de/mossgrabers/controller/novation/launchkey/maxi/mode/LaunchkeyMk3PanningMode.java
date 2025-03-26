@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.novation.launchkey.maxi.mode;
 
+import java.util.List;
+
 import de.mossgrabers.controller.novation.launchkey.maxi.LaunchkeyMk3Configuration;
 import de.mossgrabers.controller.novation.launchkey.maxi.controller.LaunchkeyMk3ControlSurface;
 import de.mossgrabers.controller.novation.launchkey.maxi.controller.LaunchkeyMk3Display;
@@ -15,15 +17,13 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.mode.track.TrackPanMode;
 
-import java.util.List;
-
 
 /**
- * The panorama mode. The knobs control the panorama of the tracks on the current track page.
+ * The panning mode. The knobs control the panning of the tracks on the current track page.
  *
  * @author Jürgen Moßgraber
  */
-public class LaunchkeyMk3PanoramaMode extends TrackPanMode<LaunchkeyMk3ControlSurface, LaunchkeyMk3Configuration>
+public class LaunchkeyMk3PanningMode extends TrackPanMode<LaunchkeyMk3ControlSurface, LaunchkeyMk3Configuration>
 {
     /**
      * Constructor.
@@ -32,7 +32,7 @@ public class LaunchkeyMk3PanoramaMode extends TrackPanMode<LaunchkeyMk3ControlSu
      * @param model The model
      * @param controls The IDs of the knobs or faders to control this mode
      */
-    public LaunchkeyMk3PanoramaMode (final LaunchkeyMk3ControlSurface surface, final IModel model, final List<ContinuousID> controls)
+    public LaunchkeyMk3PanningMode (final LaunchkeyMk3ControlSurface surface, final IModel model, final List<ContinuousID> controls)
     {
         super (surface, model, true, controls);
     }

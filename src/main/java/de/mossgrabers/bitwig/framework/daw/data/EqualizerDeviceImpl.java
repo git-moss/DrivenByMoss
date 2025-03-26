@@ -4,22 +4,22 @@
 
 package de.mossgrabers.bitwig.framework.daw.data;
 
-import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
-import de.mossgrabers.framework.daw.IHost;
-import de.mossgrabers.framework.daw.data.EqualizerBandType;
-import de.mossgrabers.framework.daw.data.IEqualizerDevice;
-import de.mossgrabers.framework.parameter.IParameter;
-
-import com.bitwig.extension.controller.api.Device;
-import com.bitwig.extension.controller.api.Parameter;
-import com.bitwig.extension.controller.api.SpecificBitwigDevice;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
+
+import com.bitwig.extension.controller.api.Device;
+import com.bitwig.extension.controller.api.Parameter;
+import com.bitwig.extension.controller.api.SpecificBitwigDevice;
+
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
+import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.data.EqualizerBandType;
+import de.mossgrabers.framework.daw.data.IEqualizerDevice;
+import de.mossgrabers.framework.parameter.IParameter;
 
 
 /**
@@ -63,7 +63,7 @@ public class EqualizerDeviceImpl extends SpecificDeviceImpl implements IEqualize
      */
     public EqualizerDeviceImpl (final IHost host, final IValueChanger valueChanger, final Device device, final int numParamPages, final int numParams)
     {
-        super (host, valueChanger, device, 0, numParamPages, numParams, 0, 0, 0);
+        super (host, valueChanger, device, 0, numParamPages, numParams, 0, 0, 0, 0);
 
         final SpecificBitwigDevice eqDevice = device.createSpecificBitwigDevice (ID_BITWIG_EQ_PLUS);
 

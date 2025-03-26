@@ -9,7 +9,7 @@ import de.mossgrabers.framework.parameter.IParameter;
 
 
 /**
- * Get a number of parameters. This implementation provides all panorama parameters of the layers of
+ * Get a number of parameters. This implementation provides all panning parameters of the layers of
  * the current device.
  *
  * @author Jürgen Moßgraber

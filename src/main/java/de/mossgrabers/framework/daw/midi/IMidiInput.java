@@ -120,6 +120,17 @@ public interface IMidiInput
 
 
     /**
+     * Bind the given absolute control to a MIDI CC 14-bit command received on this MIDI input.
+     *
+     * @param absoluteControl The absolute control to bind
+     * @param channel The MIDI channel
+     * @param control The first MIDI CC command in the range of [0..31]. The second MIDI CC is the
+     *            first plus 32
+     */
+    void bindHiRes (IHwAbsoluteControl absoluteControl, int channel, int control);
+
+
+    /**
      * Unbind the given absolute control from a MIDI command.
      *
      * @param absoluteControl The absolute control to unbind

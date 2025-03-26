@@ -47,7 +47,7 @@ public class VirtualFaderImpl implements IVirtualFader
     private final int                   index;
 
     private int                         color;
-    private boolean                     isPanorama;
+    private boolean                     isPanning;
     private final int []                colorStates            = new int [8];
 
     private int                         moveDelay;
@@ -101,7 +101,7 @@ public class VirtualFaderImpl implements IVirtualFader
     public void setup (final int color, final boolean isPan)
     {
         this.color = color;
-        this.isPanorama = isPan;
+        this.isPanning = isPan;
     }
 
 
@@ -112,8 +112,8 @@ public class VirtualFaderImpl implements IVirtualFader
         for (int i = 0; i < this.colorStates.length; i++)
             this.colorStates[i] = 0;
 
-        if (this.isPanorama)
-            this.drawPanorama (value);
+        if (this.isPanning)
+            this.drawPanning (value);
         else
             this.drawFader (value);
 
@@ -221,7 +221,7 @@ public class VirtualFaderImpl implements IVirtualFader
      */
     private int smoothFaderValue (final int row, final int value)
     {
-        if (this.isPanorama && (row == 3 || row == 4))
+        if (this.isPanning && (row == 3 || row == 4))
             return 64;
 
         final int oldValue = this.callback.getValue ();
@@ -260,7 +260,7 @@ public class VirtualFaderImpl implements IVirtualFader
      *
      * @param value The value of the fader (0-127, 64 is centered)
      */
-    private void drawPanorama (final int value)
+    private void drawPanning (final int value)
     {
         // Centered
         if (value == 64)

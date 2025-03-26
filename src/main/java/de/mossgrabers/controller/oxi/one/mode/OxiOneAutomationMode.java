@@ -45,7 +45,7 @@ public class OxiOneAutomationMode extends AbstractParameterMode<OxiOneControlSur
         ""
     };
 
-    private final int                    selectedParameter = 0;
+    private final int              selectedParameter = 0;
     private final IParameter []    parameters        = new IParameter [4];
     private final ITransport       transport;
 

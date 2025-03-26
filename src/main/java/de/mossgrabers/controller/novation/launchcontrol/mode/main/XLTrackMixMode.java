@@ -15,24 +15,24 @@ import de.mossgrabers.framework.parameterprovider.track.SendParameterProvider;
 
 
 /**
- * Mix mode for the LauchControl XL to control 2 sends and panorama.
+ * Mix mode for the LauchControl XL to control 2 sends and panning.
  *
  * @author Jürgen Moßgraber
  */
 public class XLTrackMixMode extends XLAbstractTrackMode
 {
-    private static final String []      MODE_NAMES                       = new String []
+    private static final String []          MODE_NAMES                       = new String []
     {
         "Cursor Device Parameters",
         "Track Parameters",
         "Project Parameters"
     };
 
-    private int                         selectedDeviceParamProviderIndex = 0;
-    private final IParameterProvider [] deviceParamProviders             = new IParameterProvider [3];
-    private final IParameterProvider    sendParameterProvider1;
-    private final IParameterProvider    sendParameterProvider2;
-    private final CombinedParameterProvider   firstParameterProvider;
+    private int                             selectedDeviceParamProviderIndex = 0;
+    private final IParameterProvider []     deviceParamProviders             = new IParameterProvider [3];
+    private final IParameterProvider        sendParameterProvider1;
+    private final IParameterProvider        sendParameterProvider2;
+    private final CombinedParameterProvider firstParameterProvider;
 
 
     /**
@@ -44,7 +44,7 @@ public class XLTrackMixMode extends XLAbstractTrackMode
      */
     public XLTrackMixMode (final LaunchControlXLControlSurface surface, final IModel model, final List<ContinuousID> controls)
     {
-        super ("Send A, B & Panorama", surface, model, controls);
+        super ("Send A, B & Panning", surface, model, controls);
 
         this.sendParameterProvider1 = new SendParameterProvider (model, 0, 0);
         this.sendParameterProvider2 = new SendParameterProvider (model, 1, 0);
@@ -102,7 +102,7 @@ public class XLTrackMixMode extends XLAbstractTrackMode
                 red = value == 0 ? 0 : value / 42 + 1;
                 break;
 
-            // Panorama in amber or Device parameters yellowish intensity in red
+            // Panning in amber or Device parameters yellowish intensity in red
             case 2:
                 green = value == 0 ? 0 : value / 42 + 1;
                 if (this.configuration.isDeviceActive ())

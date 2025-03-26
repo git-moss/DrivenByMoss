@@ -14,7 +14,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * Command to switch to the panorama modes.
+ * Command to switch to the panning modes.
  *
  * @author Jürgen Moßgraber
  */

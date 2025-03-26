@@ -4,6 +4,10 @@
 
 package de.mossgrabers.controller.ni.kontrol.mki.controller;
 
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
 import de.mossgrabers.controller.ni.kontrol.mki.Kontrol1Configuration;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -16,10 +20,6 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
-
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
 
 
 /**
@@ -335,10 +335,10 @@ public class Kontrol1ControlSurface extends AbstractControlSurface<Kontrol1Confi
 
     /** {@inheritDoc} */
     @Override
-    protected void handleCC (final int data1, final int data2)
+    protected void handleCC (final int channel, final int data1, final int data2)
     {
         if (data1 != 1)
-            super.handleCC (data1, data2);
+            super.handleCC (channel, data1, data2);
     }
 
 

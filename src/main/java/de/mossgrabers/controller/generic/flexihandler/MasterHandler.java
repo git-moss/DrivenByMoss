@@ -49,7 +49,7 @@ public class MasterHandler extends AbstractHandler
         return new FlexiCommand []
         {
             FlexiCommand.MASTER_SET_VOLUME,
-            FlexiCommand.MASTER_SET_PANORAMA,
+            FlexiCommand.MASTER_SET_PANNING,
             FlexiCommand.MASTER_TOGGLE_MUTE,
             FlexiCommand.MASTER_SET_MUTE,
             FlexiCommand.MASTER_TOGGLE_SOLO,
@@ -73,7 +73,7 @@ public class MasterHandler extends AbstractHandler
             case MASTER_SET_VOLUME:
                 return masterTrack.getVolume ();
 
-            case MASTER_SET_PANORAMA:
+            case MASTER_SET_PANNING:
                 return masterTrack.getPan ();
 
             case MASTER_TOGGLE_MUTE, MASTER_SET_MUTE:
@@ -110,9 +110,9 @@ public class MasterHandler extends AbstractHandler
                 this.changeMasterVolume (knobMode, value);
                 break;
 
-            // Master: Set Panorama
-            case MASTER_SET_PANORAMA:
-                this.changeMasterPanorama (knobMode, value);
+            // Master: Set Panning
+            case MASTER_SET_PANNING:
+                this.changeMasterPanning (knobMode, value);
                 break;
 
             // Master: Toggle Mute
@@ -182,7 +182,7 @@ public class MasterHandler extends AbstractHandler
     }
 
 
-    private void changeMasterPanorama (final KnobMode knobMode, final MidiValue value)
+    private void changeMasterPanning (final KnobMode knobMode, final MidiValue value)
     {
         final ITrack track = this.model.getMasterTrack ();
         final int val = value.getValue ();

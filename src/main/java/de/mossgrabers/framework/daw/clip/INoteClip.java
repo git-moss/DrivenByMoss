@@ -229,16 +229,16 @@ public interface INoteClip extends IClip, IPinnable
 
 
     /**
-     * If there is a note started at this position, it will update the panorama of the note.
+     * If there is a note started at this position, it will update the panning of the note.
      *
      * @param position The position of the note
-     * @param panorama The panorama of the note, -1 for left, +1 for right
+     * @param panning The panning of the note, -1 for left, +1 for right
      */
-    void updateStepPan (NotePosition position, double panorama);
+    void updateStepPan (NotePosition position, double panning);
 
 
     /**
-     * If there is a note started at this position, it will change the panorama of the note.
+     * If there is a note started at this position, it will change the panning of the note.
      *
      * @param position The position of the note
      * @param control The change value
@@ -250,7 +250,7 @@ public interface INoteClip extends IClip, IPinnable
      * If there is a note started at this position, it will update the transposition of the note.
      *
      * @param position The position of the note
-     * @param semitones The transposition of the note in semitones, from -24 to +24
+     * @param semitones The transposition of the note in semi-tones, from -24 to +24
      */
     void updateStepTranspose (NotePosition position, double semitones);
 

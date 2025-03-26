@@ -4,6 +4,10 @@
 
 package de.mossgrabers.controller.ableton.push.mode;
 
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+
 import de.mossgrabers.controller.ableton.push.controller.PushColorManager;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -30,10 +34,6 @@ import de.mossgrabers.framework.parameterprovider.special.FixedParameterProvider
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
-
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -130,8 +130,8 @@ public class NoteMode extends BaseMode<IItem> implements INoteEditorMode
                 EmptyParameter.INSTANCE,
                 // Gain
                 new NoteParameter (NoteAttribute.GAIN, null, model, this.noteEditor, valueChanger),
-                // Panorama
-                new NoteParameter (NoteAttribute.PANORAMA, null, model, this.noteEditor, valueChanger),
+                // Panning
+                new NoteParameter (NoteAttribute.PANNING, null, model, this.noteEditor, valueChanger),
                 // Transpose
                 new NoteParameter (NoteAttribute.TRANSPOSE, null, model, this.noteEditor, valueChanger),
                 // Timbre

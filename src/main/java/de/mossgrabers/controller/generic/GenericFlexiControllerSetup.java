@@ -435,7 +435,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
         }
         final IMasterTrack masterTrack = this.model.getMasterTrack ();
         masterTrack.setVolumeIndication (commands.contains (FlexiCommand.MASTER_SET_VOLUME));
-        masterTrack.setPanIndication (commands.contains (FlexiCommand.MASTER_SET_PANORAMA));
+        masterTrack.setPanIndication (commands.contains (FlexiCommand.MASTER_SET_PANNING));
 
         final IParameterBank parameterBank = this.model.getCursorDevice ().getParameterBank ();
         for (int i = 0; i < parameterBank.getPageSize (); i++)
@@ -453,7 +453,7 @@ public class GenericFlexiControllerSetup extends AbstractControllerSetup<Generic
 
     private boolean testPanIndication (final Set<FlexiCommand> commands, final FlexiCommand [] allCommands, final int trackIndex, final boolean hasTrackSel)
     {
-        if (hasTrackSel && commands.contains (FlexiCommand.TRACK_SELECTED_SET_PANORAMA) || commands.contains (allCommands[FlexiCommand.TRACK_1_SET_PANORAMA.ordinal () + trackIndex]))
+        if (hasTrackSel && commands.contains (FlexiCommand.TRACK_SELECTED_SET_PANNING) || commands.contains (allCommands[FlexiCommand.TRACK_1_SET_PANNING.ordinal () + trackIndex]))
             return true;
         return commands.contains (allCommands[FlexiCommand.MODES_KNOB1.ordinal () + trackIndex]) && this.getSurface ().getModeManager ().isActive (Modes.PAN);
     }

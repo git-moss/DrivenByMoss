@@ -4,6 +4,10 @@
 
 package de.mossgrabers.controller.ni.maschine.mk3.mode;
 
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+
 import de.mossgrabers.controller.ni.maschine.mk3.controller.MaschineControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.IDisplay;
@@ -25,10 +29,6 @@ import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.FixedParameterProvider;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.StringUtils;
-
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -78,14 +78,14 @@ public class EditNoteMode extends BaseMode implements INoteEditorMode
         final NoteParameter durationParameter = new NoteParameter (NoteAttribute.DURATION, display, model, this.noteEditor, valueChanger);
         final NoteParameter velocityParameter = new NoteParameter (NoteAttribute.VELOCITY, display, model, this.noteEditor, valueChanger);
         final NoteParameter gainParameter = new NoteParameter (NoteAttribute.GAIN, display, model, this.noteEditor, valueChanger);
-        final NoteParameter panParameter = new NoteParameter (NoteAttribute.PANORAMA, display, model, this.noteEditor, valueChanger);
+        final NoteParameter panParameter = new NoteParameter (NoteAttribute.PANNING, display, model, this.noteEditor, valueChanger);
         final NoteParameter transposeParameter = new NoteParameter (NoteAttribute.TRANSPOSE, display, model, this.noteEditor, valueChanger);
         final NoteParameter pressureParameter = new NoteParameter (NoteAttribute.PRESSURE, display, model, this.noteEditor, valueChanger);
 
         this.notePartameters.put (NoteAttribute.DURATION, durationParameter);
         this.notePartameters.put (NoteAttribute.VELOCITY, velocityParameter);
         this.notePartameters.put (NoteAttribute.GAIN, gainParameter);
-        this.notePartameters.put (NoteAttribute.PANORAMA, panParameter);
+        this.notePartameters.put (NoteAttribute.PANNING, panParameter);
         this.notePartameters.put (NoteAttribute.TRANSPOSE, transposeParameter);
         this.notePartameters.put (NoteAttribute.PRESSURE, pressureParameter);
 
@@ -116,7 +116,7 @@ public class EditNoteMode extends BaseMode implements INoteEditorMode
                 durationParameter,
                 // Gain
                 gainParameter,
-                // Panorama
+                // Panning
                 panParameter,
                 // Transpose
                 transposeParameter,

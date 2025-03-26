@@ -4,6 +4,11 @@
 
 package de.mossgrabers.controller.akai.acvs.mode;
 
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import de.mossgrabers.controller.akai.acvs.ACVSConfiguration;
 import de.mossgrabers.controller.akai.acvs.ACVSDevice;
 import de.mossgrabers.controller.akai.acvs.controller.ACVSColorManager;
@@ -18,7 +23,6 @@ import de.mossgrabers.framework.daw.IArranger;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.constants.LaunchQuantization;
-import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IScene;
 import de.mossgrabers.framework.daw.data.ISend;
@@ -36,11 +40,6 @@ import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.CombinedParameterProvider;
 import de.mossgrabers.framework.parameterprovider.track.VolumeParameterProvider;
 
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 
 /**
  * There are no real modes in the ACVS protocol which can be controlled. Therefore, everything is in
@@ -48,7 +47,7 @@ import java.util.Optional;
  *
  * @author Jürgen Moßgraber
  */
-public class ControlMode extends AbstractParameterMode<ACVSControlSurface, ACVSConfiguration, IChannel>
+public class ControlMode extends AbstractParameterMode<ACVSControlSurface, ACVSConfiguration, ITrack>
 {
     private static final Map<Modes, Integer> MODE_COLORS = new EnumMap<> (Modes.class);
     static
@@ -72,7 +71,7 @@ public class ControlMode extends AbstractParameterMode<ACVSControlSurface, ACVSC
      */
     public ControlMode (final ACVSControlSurface surface, final IModel model)
     {
-        super ("Control", surface, model);
+        super ("Control", surface, model, true, model.getTrackBank ());
 
         final ACVSConfiguration configuration = this.surface.getConfiguration ();
         if (configuration.isActiveACVSDevice (ACVSDevice.FORCE) || configuration.isActiveACVSDevice (ACVSDevice.MPC_X))
@@ -602,59 +601,5 @@ public class ControlMode extends AbstractParameterMode<ACVSControlSurface, ACVSC
                 maxScene = i + 1;
         }
         return maxScene;
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void selectPreviousItem ()
-    {
-        if (this.surface.isShiftPressed ())
-            this.model.getTrackBank ().selectPreviousPage ();
-        else
-            this.model.getTrackBank ().scrollBackwards ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void selectNextItem ()
-    {
-        if (this.surface.isShiftPressed ())
-            this.model.getTrackBank ().selectNextPage ();
-        else
-            this.model.getTrackBank ().scrollForwards ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean hasPreviousItem ()
-    {
-        return this.model.getTrackBank ().canScrollBackwards ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean hasNextItem ()
-    {
-        return this.model.getTrackBank ().canScrollForwards ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean hasPreviousItemPage ()
-    {
-        return this.model.getTrackBank ().canScrollPageBackwards ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean hasNextItemPage ()
-    {
-        return this.model.getTrackBank ().canScrollPageForwards ();
     }
 }

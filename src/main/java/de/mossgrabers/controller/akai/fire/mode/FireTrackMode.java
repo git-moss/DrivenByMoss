@@ -23,7 +23,7 @@ import de.mossgrabers.framework.parameterprovider.track.SelectedTrackParameterPr
 
 
 /**
- * The track mode. The knobs control the volume, the panorama and the sends of the selected track.
+ * The track mode. The knobs control the volume, the panning and the sends of the selected track.
  *
  * @author Jürgen Moßgraber
  */

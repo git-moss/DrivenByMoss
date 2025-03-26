@@ -46,7 +46,7 @@ public class YaeltexTurnDrumSeqMode extends YaeltexTurnDrumMixMode implements IN
         NoteAttribute.RELEASE_VELOCITY,
         NoteAttribute.VELOCITY_SPREAD,
         NoteAttribute.GAIN,
-        NoteAttribute.PANORAMA,
+        NoteAttribute.PANNING,
         NoteAttribute.PRESSURE,
         NoteAttribute.TIMBRE,
         NoteAttribute.CHANCE,

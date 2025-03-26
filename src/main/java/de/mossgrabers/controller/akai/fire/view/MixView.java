@@ -19,7 +19,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * A view for mixing with track select, mute, solo, record arm, stop clip, volume and panorama.
+ * A view for mixing with track select, mute, solo, record arm, stop clip, volume and panning.
  *
  * @author Jürgen Moßgraber
  */

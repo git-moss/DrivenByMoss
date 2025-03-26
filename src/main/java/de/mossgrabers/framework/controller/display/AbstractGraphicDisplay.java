@@ -56,9 +56,9 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
     public static final int                GRID_ELEMENT_CHANNEL_SELECTION  = 0;
     /** Display a channel, edit volume. */
     public static final int                GRID_ELEMENT_CHANNEL_VOLUME     = 1;
-    /** Display a channel, edit panorama. */
+    /** Display a channel, edit panning. */
     public static final int                GRID_ELEMENT_CHANNEL_PAN        = 2;
-    /** Display a channel, edit crossfader. */
+    /** Display a channel, edit cross-fader. */
     public static final int                GRID_ELEMENT_CHANNEL_CROSSFADER = 3;
     /** Display a channel sends. */
     public static final int                GRID_ELEMENT_CHANNEL_SENDS      = 4;

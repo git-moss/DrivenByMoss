@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.ableton.push.parameterprovider;
 
+import java.util.Optional;
+
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
@@ -12,11 +14,9 @@ import de.mossgrabers.framework.observer.IParametersAdjustObserver;
 import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.parameterprovider.device.PanLayerOrDrumPadParameterProvider;
 
-import java.util.Optional;
-
 
 /**
- * Extends panorama layer or drum pad parameter provider with the specific layout of Push 2.
+ * Extends panning layer or drum pad parameter provider with the specific layout of Push 2.
  *
  * @author Jürgen Moßgraber
  */

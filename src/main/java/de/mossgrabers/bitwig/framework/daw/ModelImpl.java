@@ -148,7 +148,7 @@ public class ModelImpl extends AbstractModel
 
         // Cursor device
         final PinnableCursorDevice mainCursorDevice = this.bwCursorTrack.createCursorDevice ("CURSOR_DEVICE", "Cursor device", numSends, CursorDeviceFollowMode.FOLLOW_SELECTION);
-        this.cursorDevice = new CursorDeviceImpl (this.host, this.valueChanger, mainCursorDevice, numSends, numParamPages, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
+        this.cursorDevice = new CursorDeviceImpl (this.host, this.valueChanger, mainCursorDevice, modelSetup);
 
         // Drum Machine
         if (modelSetup.wantsMainDrumDevice ())
@@ -175,7 +175,7 @@ public class ModelImpl extends AbstractModel
             {
                 case FIRST_INSTRUMENT:
                     final Device instrumentDevice = this.createDevice (controllerHost.createInstrumentMatcher ());
-                    specificDevice = new SpecificDeviceImpl (this.host, this.valueChanger, instrumentDevice, numSends, numParamPages, numParams, numDevicesInBank, numDeviceLayers, numDrumPadLayers);
+                    specificDevice = new SpecificDeviceImpl (this.host, this.valueChanger, instrumentDevice, modelSetup);
                     break;
 
                 case EQ:

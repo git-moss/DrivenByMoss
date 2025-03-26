@@ -84,9 +84,9 @@ public interface IStepInfo
 
 
     /**
-     * Get the panorama of the note.
+     * Get the panning of the note.
      *
-     * @return The panorama of the note, -1 for left, +1 for right
+     * @return The panning of the note, -1 for left, +1 for right
      */
     double getPan ();
 
@@ -94,7 +94,7 @@ public interface IStepInfo
     /**
      * Get the transposition of the note.
      *
-     * @return The transposition of the note in semitones, from -24 to +24
+     * @return The transposition of the note in semi-tones, from -24 to +24
      */
     double getTranspose ();
 

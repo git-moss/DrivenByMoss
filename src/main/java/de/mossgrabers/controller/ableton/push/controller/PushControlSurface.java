@@ -255,11 +255,11 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     /** The MIDI note which is sent when touching the ribbon. */
     public static final int          PUSH_RIBBON_TOUCH                    = 12;
 
-    /** Configure Ribbon as pitchbend. */
+    /** Configure Ribbon as pitch-bend. */
     public static final int          PUSH_RIBBON_PITCHBEND                = 0;
     /** Configure Ribbon as volume slider. */
     public static final int          PUSH_RIBBON_VOLUME                   = 1;
-    /** Configure Ribbon as panorama. */
+    /** Configure Ribbon as panning. */
     public static final int          PUSH_RIBBON_PAN                      = 2;
     /** Configure Ribbon discrete values. */
     public static final int          PUSH_RIBBON_DISCRETE                 = 3;

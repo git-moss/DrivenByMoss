@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.novation.launchcontrol.controller;
 
+import java.util.Arrays;
+
 import de.mossgrabers.controller.novation.launchcontrol.LaunchControlXLConfiguration;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
@@ -13,8 +15,6 @@ import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.utils.StringUtils;
-
-import java.util.Arrays;
 
 
 /**
@@ -162,7 +162,7 @@ public class LaunchControlXLControlSurface extends AbstractControlSurface<Launch
 
     /** {@inheritDoc} */
     @Override
-    protected void handleCC (final int data1, final int data2)
+    protected void handleCC (final int channel, final int data1, final int data2)
     {
         // Ignore 'not bound' warnings for user modes
     }

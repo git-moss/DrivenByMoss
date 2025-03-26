@@ -10,7 +10,7 @@ import de.mossgrabers.framework.parameter.IParameter;
 
 
 /**
- * Get a number of parameters. This implementation provides all panorama parameters of the tracks of
+ * Get a number of parameters. This implementation provides all panning parameters of the tracks of
  * the current channel bank.
  *
  * @author Jürgen Moßgraber

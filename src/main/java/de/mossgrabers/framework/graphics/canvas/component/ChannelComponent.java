@@ -24,7 +24,7 @@ public class ChannelComponent extends ChannelSelectComponent
 {
     /** Edit volume. */
     public static final int   EDIT_TYPE_VOLUME     = 0;
-    /** Edit panorama. */
+    /** Edit panning. */
     public static final int   EDIT_TYPE_PAN        = 1;
     /** Edit cross-fader setting. */
     public static final int   EDIT_TYPE_CROSSFADER = 2;
@@ -52,7 +52,7 @@ public class ChannelComponent extends ChannelSelectComponent
     /**
      * Constructor.
      *
-     * @param editType What to edit, 0 = Volume, 1 = Pan, 2 = Crossfade Mode
+     * @param editType What to edit, 0 = Volume, 1 = Pan, 2 = Cross-fade Mode
      * @param menuName The text for the menu
      * @param isMenuSelected True if the menu is selected
      * @param name The of the grid element (track name, parameter name, etc.)
@@ -62,9 +62,9 @@ public class ChannelComponent extends ChannelSelectComponent
      * @param volumeValue The value of the volume
      * @param modulatedVolumeValue The modulated value of the volume, -1 if not modulated
      * @param volumeText The textual form of the volumes value
-     * @param panValue The value of the panorama
-     * @param modulatedPanValue The modulated value of the panorama, -1 if not modulated
-     * @param panText The textual form of the panorama
+     * @param panValue The value of the panning
+     * @param modulatedPanValue The modulated value of the panning, -1 if not modulated
+     * @param panText The textual form of the panning
      * @param vuValueLeft The value of the VU of the left channel
      * @param vuValueRight The value of the VU of the right channel
      * @param isMute True if muted
@@ -175,7 +175,7 @@ public class ChannelComponent extends ChannelSelectComponent
             this.drawButton (gc, leftColumn + 2 * crossOptWidth, controlsTop, crossOptWidth, panHeight + 2, backgroundColor, this.modifyIfOff (selColor), textColor, this.crossfadeMode == 2, "track/crossfade_b.svg", configuration, 0);
         }
 
-        // Panorama
+        // Panning
         gc.fillRectangle (panStart, panTop, panWidth, panHeight, backgroundDarker);
 
         final double panRange = panWidth / 2;
@@ -276,7 +276,7 @@ public class ChannelComponent extends ChannelSelectComponent
             this.drawButton (gc, leftColumn, buttonTop, controlWidth, buttonHeight - 1, backgroundColor, this.modifyIfOff (configuration.getColorMute ()), textColor, this.isMute, "channel/mute.svg", configuration);
         }
 
-        // Draw panorama text on top if set
+        // Draw panning text on top if set
         if (isPanTouched)
         {
             gc.fillRectangle (controlStart, panTextTop, controlWidth, unit, backgroundDarker);

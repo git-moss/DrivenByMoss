@@ -4,6 +4,10 @@
 
 package de.mossgrabers.controller.ni.maschine.core.controller;
 
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.Optional;
+
 import de.mossgrabers.controller.ni.maschine.core.command.trigger.EncoderMode;
 import de.mossgrabers.controller.ni.maschine.core.view.IMaschineView;
 import de.mossgrabers.framework.MVHelper;
@@ -26,10 +30,6 @@ import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.parameter.LoopStartParameter;
 import de.mossgrabers.framework.parameter.PlayPositionParameter;
 
-import java.util.EnumMap;
-import java.util.Map;
-import java.util.Optional;
-
 
 /**
  * Manages the active encoder mode.
@@ -47,9 +47,9 @@ public class EncoderModeManager<S extends IControlSurface<C>, C extends Configur
     {
         MODE_LABELS.put (EncoderMode.OFF, "Off");
         MODE_LABELS.put (EncoderMode.MASTER_VOLUME, "Master: Volume");
-        MODE_LABELS.put (EncoderMode.MASTER_PANORAMA, "Master: Panorama");
+        MODE_LABELS.put (EncoderMode.MASTER_PANNING, "Master: Panning");
         MODE_LABELS.put (EncoderMode.SELECTED_TRACK_VOLUME, "Selected track: Volume");
-        MODE_LABELS.put (EncoderMode.SELECTED_TRACK_PANORAMA, "Selected track: Panorama");
+        MODE_LABELS.put (EncoderMode.SELECTED_TRACK_PANNING, "Selected track: Panning");
         MODE_LABELS.put (EncoderMode.METRONOME_VOLUME, "Metronome: Volume");
         MODE_LABELS.put (EncoderMode.CUE_VOLUME, "Cue: Volume");
         MODE_LABELS.put (EncoderMode.CUE_MIX, "Cue: Mix");
@@ -58,10 +58,10 @@ public class EncoderModeManager<S extends IControlSurface<C>, C extends Configur
         MODE_LABELS.put (EncoderMode.PLAY_POSITION, "Play Position");
 
         TOGGLED_MODE_LABELS.put (EncoderMode.OFF, "Off");
-        TOGGLED_MODE_LABELS.put (EncoderMode.MASTER_VOLUME, "Master: Panorama");
-        TOGGLED_MODE_LABELS.put (EncoderMode.MASTER_PANORAMA, "Master: Panorama");
-        TOGGLED_MODE_LABELS.put (EncoderMode.SELECTED_TRACK_VOLUME, "Selected track: Panorama");
-        TOGGLED_MODE_LABELS.put (EncoderMode.SELECTED_TRACK_PANORAMA, "Selected track: Panorama");
+        TOGGLED_MODE_LABELS.put (EncoderMode.MASTER_VOLUME, "Master: Panning");
+        TOGGLED_MODE_LABELS.put (EncoderMode.MASTER_PANNING, "Master: Panning");
+        TOGGLED_MODE_LABELS.put (EncoderMode.SELECTED_TRACK_VOLUME, "Selected track: Panning");
+        TOGGLED_MODE_LABELS.put (EncoderMode.SELECTED_TRACK_PANNING, "Selected track: Panning");
         TOGGLED_MODE_LABELS.put (EncoderMode.METRONOME_VOLUME, "Metronome: Volume");
         TOGGLED_MODE_LABELS.put (EncoderMode.CUE_VOLUME, "Cue: Mix");
         TOGGLED_MODE_LABELS.put (EncoderMode.CUE_MIX, "Cue: Mix");
@@ -199,12 +199,12 @@ public class EncoderModeManager<S extends IControlSurface<C>, C extends Configur
                 parameter = this.isFunctionToggled ? this.loopStartParameter : this.playPositionParameter;
                 break;
 
-            case SELECTED_TRACK_VOLUME, SELECTED_TRACK_PANORAMA:
+            case SELECTED_TRACK_VOLUME, SELECTED_TRACK_PANNING:
                 final Optional<ITrack> selectedTrack = this.model.getTrackBank ().getSelectedItem ();
                 if (selectedTrack.isEmpty ())
                     return;
                 final ITrack t = selectedTrack.get ();
-                parameter = this.isFunctionToggled || this.activeEncoderMode == EncoderMode.SELECTED_TRACK_PANORAMA ? t.getPanParameter () : t.getVolumeParameter ();
+                parameter = this.isFunctionToggled || this.activeEncoderMode == EncoderMode.SELECTED_TRACK_PANNING ? t.getPanParameter () : t.getVolumeParameter ();
                 break;
 
             case METRONOME_VOLUME:
@@ -217,9 +217,9 @@ public class EncoderModeManager<S extends IControlSurface<C>, C extends Configur
                 break;
 
             default:
-            case MASTER_VOLUME, MASTER_PANORAMA:
+            case MASTER_VOLUME, MASTER_PANNING:
                 final IMasterTrack masterTrack = this.model.getMasterTrack ();
-                parameter = this.isFunctionToggled || this.activeEncoderMode == EncoderMode.MASTER_PANORAMA ? masterTrack.getPanParameter () : masterTrack.getVolumeParameter ();
+                parameter = this.isFunctionToggled || this.activeEncoderMode == EncoderMode.MASTER_PANNING ? masterTrack.getPanParameter () : masterTrack.getVolumeParameter ();
                 break;
         }
 
@@ -241,7 +241,7 @@ public class EncoderModeManager<S extends IControlSurface<C>, C extends Configur
      */
     private void handleTrackChange (final boolean isSelected)
     {
-        if (!isSelected || this.activeEncoderMode != EncoderMode.SELECTED_TRACK_VOLUME && this.activeEncoderMode != EncoderMode.SELECTED_TRACK_PANORAMA)
+        if (!isSelected || this.activeEncoderMode != EncoderMode.SELECTED_TRACK_VOLUME && this.activeEncoderMode != EncoderMode.SELECTED_TRACK_PANNING)
             return;
         final Optional<ITrack> selectedTrack = this.model.getTrackBank ().getSelectedItem ();
         if (selectedTrack.isPresent ())

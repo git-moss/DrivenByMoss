@@ -107,16 +107,16 @@ public interface IGraphicDisplay extends IDisplay
      * @param volume The volume value
      * @param modulatedVolume The modulated volume value
      * @param volumeStr The volume as string
-     * @param pan The panorama
-     * @param modulatedPan The modulated panorama
-     * @param panStr The panorama as string
+     * @param pan The panning
+     * @param modulatedPan The modulated panning
+     * @param panStr The panning as string
      * @param vuLeft The VU meter value of the left channel
      * @param vuRight The VU meter value of the right channel
      * @param mute The mute state
      * @param solo The solo state
      * @param recarm The recording armed state
      * @param isActive True if channel is activated
-     * @param crossfadeMode Crossfade mode (0-2)
+     * @param crossfadeMode Cross-fade mode (0-2)
      * @param isPinned True if the track is pinned
      */
     void addChannelElement (String topMenu, boolean isTopMenuOn, String bottomMenu, ChannelType type, ColorEx bottomMenuColor, boolean isBottomMenuOn, int volume, int modulatedVolume, String volumeStr, int pan, int modulatedPan, String panStr, int vuLeft, int vuRight, boolean mute, boolean solo, boolean recarm, boolean isActive, int crossfadeMode, boolean isPinned);
@@ -135,16 +135,16 @@ public interface IGraphicDisplay extends IDisplay
      * @param volume The volume value
      * @param modulatedVolume The modulated volume value
      * @param volumeStr The volume as string
-     * @param pan The panorama
-     * @param modulatedPan The modulated panorama
-     * @param panStr The panorama as string
+     * @param pan The panning
+     * @param modulatedPan The modulated panning
+     * @param panStr The panning as string
      * @param vuLeft The VU meter value of the left channel
      * @param vuRight The VU meter value of the right channel
      * @param mute The mute state
      * @param solo The solo state
      * @param recarm The recording armed state
      * @param isActive True if channel is activated
-     * @param crossfadeMode Crossfade mode (0-2)
+     * @param crossfadeMode Cross-fade mode (0-2)
      * @param isPinned True if the track is pinned
      */
     void addChannelElement (int channelType, String topMenu, boolean isTopMenuOn, String bottomMenu, ChannelType type, ColorEx bottomMenuColor, boolean isBottomMenuOn, int volume, int modulatedVolume, String volumeStr, int pan, int modulatedPan, String panStr, int vuLeft, int vuRight, boolean mute, boolean solo, boolean recarm, boolean isActive, int crossfadeMode, boolean isPinned);

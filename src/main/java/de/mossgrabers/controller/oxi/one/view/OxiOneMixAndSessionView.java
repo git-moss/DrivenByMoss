@@ -19,7 +19,7 @@ import de.mossgrabers.framework.view.AbstractSessionView;
 
 
 /**
- * A view for mixing with track select, mute, solo, record arm, stop clip, volume and panorama as
+ * A view for mixing with track select, mute, solo, record arm, stop clip, volume and panning as
  * well as 4 rows of clips.
  *
  * @author Jürgen Moßgraber

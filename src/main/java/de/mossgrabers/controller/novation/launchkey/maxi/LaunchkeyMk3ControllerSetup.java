@@ -11,7 +11,7 @@ import de.mossgrabers.controller.novation.launchkey.maxi.controller.LaunchkeyMk3
 import de.mossgrabers.controller.novation.launchkey.maxi.controller.LaunchkeyMk3ControlSurface;
 import de.mossgrabers.controller.novation.launchkey.maxi.controller.LaunchkeyMk3Display;
 import de.mossgrabers.controller.novation.launchkey.maxi.mode.CustomMode;
-import de.mossgrabers.controller.novation.launchkey.maxi.mode.LaunchkeyMk3PanoramaMode;
+import de.mossgrabers.controller.novation.launchkey.maxi.mode.LaunchkeyMk3PanningMode;
 import de.mossgrabers.controller.novation.launchkey.maxi.mode.LaunchkeyMk3ParameterMode;
 import de.mossgrabers.controller.novation.launchkey.maxi.mode.LaunchkeyMk3SendMode;
 import de.mossgrabers.controller.novation.launchkey.maxi.mode.LaunchkeyMk3VolumeMode;
@@ -192,7 +192,7 @@ public class LaunchkeyMk3ControllerSetup extends AbstractControllerSetup<Launchk
         final ModeManager modeManager = surface.getModeManager ();
 
         modeManager.register (Modes.VOLUME, new LaunchkeyMk3VolumeMode (surface, this.model, AbstractParameterMode.DEFAULT_KNOB_IDS));
-        modeManager.register (Modes.PAN, new LaunchkeyMk3PanoramaMode (surface, this.model, AbstractParameterMode.DEFAULT_KNOB_IDS));
+        modeManager.register (Modes.PAN, new LaunchkeyMk3PanningMode (surface, this.model, AbstractParameterMode.DEFAULT_KNOB_IDS));
         modeManager.register (Modes.SEND1, new LaunchkeyMk3SendMode (0, surface, this.model, AbstractParameterMode.DEFAULT_KNOB_IDS));
         modeManager.register (Modes.SEND2, new LaunchkeyMk3SendMode (1, surface, this.model, AbstractParameterMode.DEFAULT_KNOB_IDS));
         modeManager.register (Modes.DEVICE_PARAMS, new LaunchkeyMk3ParameterMode (surface, this.model, AbstractParameterMode.DEFAULT_KNOB_IDS));

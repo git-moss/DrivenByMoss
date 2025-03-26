@@ -15,14 +15,14 @@ public enum EncoderMode
     OFF,
     /** The encoder controls the volume of the master channel. */
     MASTER_VOLUME,
-    /** The encoder controls the panorama of the master channel. */
-    MASTER_PANORAMA,
+    /** The encoder controls the panning of the master channel. */
+    MASTER_PANNING,
     /** The encoder controls the volume of the metronome. */
     METRONOME_VOLUME,
     /** The encoder controls the volume of the selected track. */
     SELECTED_TRACK_VOLUME,
-    /** The encoder controls the panorama of the selected track. */
-    SELECTED_TRACK_PANORAMA,
+    /** The encoder controls the panning of the selected track. */
+    SELECTED_TRACK_PANNING,
     /** The encoder controls the volume of the cue output. */
     CUE_VOLUME,
     /** The encoder controls the mix of the cue output. */

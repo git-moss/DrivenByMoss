@@ -4,6 +4,8 @@
 
 package de.mossgrabers.framework.parameterprovider.device;
 
+import java.util.Optional;
+
 import de.mossgrabers.framework.daw.data.IChannel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.bank.IChannelBank;
@@ -13,11 +15,9 @@ import de.mossgrabers.framework.observer.IItemSelectionObserver;
 import de.mossgrabers.framework.observer.IParametersAdjustObserver;
 import de.mossgrabers.framework.parameter.IParameter;
 
-import java.util.Optional;
-
 
 /**
- * Get a number of parameters. This implementation provides the selected channels volume, panorama
+ * Get a number of parameters. This implementation provides the selected channels volume, panning
  * and send parameters.
  *
  * @param <B> The type of the bank

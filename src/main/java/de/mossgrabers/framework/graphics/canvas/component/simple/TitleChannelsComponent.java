@@ -13,7 +13,7 @@ import de.mossgrabers.framework.graphics.IGraphicsInfo;
 
 
 /**
- * A graphics component with a label, value and fader (volume/vu/panorama).
+ * A graphics component with a label, value and fader (volume/VU/panning).
  *
  * @author Jürgen Moßgraber
  */
@@ -32,7 +32,7 @@ public class TitleChannelsComponent extends AbstractBaseComponent
      * @param label The first row text
      * @param selected The selected states of the channel
      * @param values The values to display for the channel
-     * @param isPan Draw values as panorama if true
+     * @param isPan Draw values as panning if true
      */
     public TitleChannelsComponent (final String label, final boolean [] selected, final int [] values, final boolean isPan)
     {

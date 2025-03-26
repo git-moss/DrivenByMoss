@@ -42,7 +42,7 @@ public enum LaunchpadButton
     SOLO,
     /** The Volume mode button. */
     VOLUME,
-    /** The Panorama mode button. */
+    /** The Panning mode button. */
     PAN,
     /** The Sends mode button. */
     SENDS,

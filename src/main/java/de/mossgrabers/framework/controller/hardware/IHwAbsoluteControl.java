@@ -4,6 +4,9 @@
 
 package de.mossgrabers.framework.controller.hardware;
 
+import de.mossgrabers.framework.daw.midi.IMidiInput;
+
+
 /**
  * Interface for a proxy to an absolute controller (e.g. a fader or absolute knob) on a hardware
  * controller.
@@ -12,6 +15,17 @@ package de.mossgrabers.framework.controller.hardware;
  */
 public interface IHwAbsoluteControl extends IHwContinuousControl
 {
+    /**
+     * Bind this absolute control to a MIDI CC 14-bit command.
+     *
+     * @param input The MIDI input
+     * @param channel The MIDI channel
+     * @param control The first MIDI CC command in the range of [0..31]. The second MIDI CC is the
+     *            first plus 32
+     */
+    void bindHiRes (IMidiInput input, int channel, int control);
+
+
     /**
      * Determines if this hardware control should immediately take over the parameter it is bound to
      * rather than respecting the user's current take over mode.

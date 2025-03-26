@@ -318,7 +318,7 @@ public class HUIControllerSetup extends AbstractControllerSetup<HUIControlSurfac
 
             // Assignment (mode selection)
             this.addButtonHUI (surface, ButtonID.TRACK, "Track", new ModeSelectCommand<> (this.model, surface, Modes.TRACK), HUIControlSurface.HUI_ASSIGN1_INPUT, () -> modeManager.isActive (Modes.TRACK));
-            this.addButtonHUI (surface, ButtonID.PAN_SEND, "Panorama", new ModeSelectCommand<> (this.model, surface, Modes.PAN), HUIControlSurface.HUI_ASSIGN1_PAN, () -> modeManager.isActive (Modes.PAN));
+            this.addButtonHUI (surface, ButtonID.PAN_SEND, "Panning", new ModeSelectCommand<> (this.model, surface, Modes.PAN), HUIControlSurface.HUI_ASSIGN1_PAN, () -> modeManager.isActive (Modes.PAN));
             this.addButtonHUI (surface, ButtonID.SEND1, "Send 1", new ModeSelectCommand<> (this.model, surface, Modes.SEND1), HUIControlSurface.HUI_ASSIGN1_SEND_A, () -> modeManager.isActive (Modes.SEND1));
             this.addButtonHUI (surface, ButtonID.SEND2, "Send 2", new ModeSelectCommand<> (this.model, surface, Modes.SEND2), HUIControlSurface.HUI_ASSIGN1_SEND_B, () -> modeManager.isActive (Modes.SEND2));
             this.addButtonHUI (surface, ButtonID.SEND3, "Send 3", new ModeSelectCommand<> (this.model, surface, Modes.SEND3), HUIControlSurface.HUI_ASSIGN1_SEND_C, () -> modeManager.isActive (Modes.SEND3));

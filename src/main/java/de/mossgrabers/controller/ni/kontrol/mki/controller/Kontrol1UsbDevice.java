@@ -4,17 +4,17 @@
 
 package de.mossgrabers.controller.ni.kontrol.mki.controller;
 
-import de.mossgrabers.framework.daw.IHost;
-import de.mossgrabers.framework.daw.IMemoryBlock;
-import de.mossgrabers.framework.usb.IHidDevice;
-import de.mossgrabers.framework.usb.IUsbDevice;
-import de.mossgrabers.framework.usb.UsbException;
-
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
+import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.IMemoryBlock;
+import de.mossgrabers.framework.usb.IHidDevice;
+import de.mossgrabers.framework.usb.IUsbDevice;
+import de.mossgrabers.framework.usb.UsbException;
 
 
 /**
@@ -613,7 +613,7 @@ public class Kontrol1UsbDevice
 
 
     /**
-     * Set a value bar drawn as panorama.
+     * Set a value bar drawn as panning.
      *
      * @param column The column (0-8)
      * @param hasBorder True to draw a border around the value bar

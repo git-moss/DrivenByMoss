@@ -4,6 +4,10 @@
 
 package de.mossgrabers.controller.novation.slmkiii.mode;
 
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+
 import de.mossgrabers.controller.novation.slmkiii.controller.SLMkIIIColorManager;
 import de.mossgrabers.controller.novation.slmkiii.controller.SLMkIIIControlSurface;
 import de.mossgrabers.controller.novation.slmkiii.controller.SLMkIIIDisplay;
@@ -27,10 +31,6 @@ import de.mossgrabers.framework.parameterprovider.special.ResetParameterProvider
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
-
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -106,8 +106,8 @@ public class NoteMode extends BaseMode<IItem> implements INoteEditorMode
                 EmptyParameter.INSTANCE,
                 // Gain
                 new NoteParameter (NoteAttribute.GAIN, null, model, this.noteEditor, valueChanger),
-                // Panorama
-                new NoteParameter (NoteAttribute.PANORAMA, null, model, this.noteEditor, valueChanger),
+                // Panning
+                new NoteParameter (NoteAttribute.PANNING, null, model, this.noteEditor, valueChanger),
                 // Transpose
                 new NoteParameter (NoteAttribute.TRANSPOSE, null, model, this.noteEditor, valueChanger),
                 // Timbre

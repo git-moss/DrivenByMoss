@@ -4,6 +4,11 @@
 
 package de.mossgrabers.framework.parameter;
 
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
+
 import de.mossgrabers.framework.controller.display.IDisplay;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
@@ -17,11 +22,6 @@ import de.mossgrabers.framework.daw.clip.StepState;
 import de.mossgrabers.framework.mode.INoteEditor;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.StringUtils;
-
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
 
 
 /**
@@ -44,7 +44,7 @@ public class NoteParameter extends AbstractParameterImpl
     {
         ATTRIBUTE_NAMES.put (NoteAttribute.PITCH, "Pitch");
         ATTRIBUTE_NAMES.put (NoteAttribute.GAIN, "Gain");
-        ATTRIBUTE_NAMES.put (NoteAttribute.PANORAMA, "Panorama");
+        ATTRIBUTE_NAMES.put (NoteAttribute.PANNING, "Panning");
         ATTRIBUTE_NAMES.put (NoteAttribute.DURATION, "Duration");
         ATTRIBUTE_NAMES.put (NoteAttribute.VELOCITY, "Velocity");
         ATTRIBUTE_NAMES.put (NoteAttribute.RELEASE_VELOCITY, "Release Velocity");
@@ -129,7 +129,7 @@ public class NoteParameter extends AbstractParameterImpl
                 normalizedValue = stepInfo.getGain ();
                 break;
 
-            case PANORAMA:
+            case PANNING:
                 normalizedValue = (stepInfo.getPan () + 1.0) / 2.0;
                 break;
 
@@ -242,10 +242,10 @@ public class NoteParameter extends AbstractParameterImpl
                     this.notify ("Gain: %s", StringUtils.formatPercentage (normalizedValue));
                     break;
 
-                case PANORAMA:
+                case PANNING:
                     final double pan = normalizedValue * 2.0 - 1.0;
                     clip.updateStepPan (notePosition, pan);
-                    this.notify ("Panorama: %s", StringUtils.formatPercentage (pan));
+                    this.notify ("Panning: %s", StringUtils.formatPercentage (pan));
                     break;
 
                 case DURATION:
@@ -364,7 +364,7 @@ public class NoteParameter extends AbstractParameterImpl
                     this.delayedNotify ("Gain: %s", () -> StringUtils.formatPercentage (stepInfo.getGain ()));
                     break;
 
-                case PANORAMA:
+                case PANNING:
                     clip.changeStepPan (notePosition, value);
                     this.delayedNotify ("Pan: %s", () -> StringUtils.formatPercentage (stepInfo.getPan ()));
                     break;
@@ -492,7 +492,7 @@ public class NoteParameter extends AbstractParameterImpl
                     clip.updateStepGain (notePosition, 0.5);
                     break;
 
-                case PANORAMA:
+                case PANNING:
                     clip.updateStepPan (notePosition, 0);
                     break;
 
@@ -586,7 +586,7 @@ public class NoteParameter extends AbstractParameterImpl
             case GAIN:
                 return StringUtils.formatPercentage (stepInfo.getGain ());
 
-            case PANORAMA:
+            case PANNING:
                 return StringUtils.formatPercentage (stepInfo.getPan ());
 
             case DURATION:

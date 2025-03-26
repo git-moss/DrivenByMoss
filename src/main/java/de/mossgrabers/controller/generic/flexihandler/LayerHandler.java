@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.generic.flexihandler;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.generic.GenericFlexiConfiguration;
 import de.mossgrabers.controller.generic.controller.FlexiCommand;
 import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
@@ -18,8 +20,6 @@ import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.bank.ILayerBank;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.parameter.IParameter;
-
-import java.util.Optional;
 
 
 /**
@@ -92,15 +92,15 @@ public class LayerHandler extends AbstractHandler
             FlexiCommand.LAYER_7_SET_VOLUME,
             FlexiCommand.LAYER_8_SET_VOLUME,
             FlexiCommand.LAYER_SELECTED_SET_VOLUME_LAYER,
-            FlexiCommand.LAYER_1_SET_PANORAMA,
-            FlexiCommand.LAYER_2_SET_PANORAMA,
-            FlexiCommand.LAYER_3_SET_PANORAMA,
-            FlexiCommand.LAYER_4_SET_PANORAMA,
-            FlexiCommand.LAYER_5_SET_PANORAMA,
-            FlexiCommand.LAYER_6_SET_PANORAMA,
-            FlexiCommand.LAYER_7_SET_PANORAMA,
-            FlexiCommand.LAYER_8_SET_PANORAMA,
-            FlexiCommand.LAYER_SELECTED_SET_PANORAMA,
+            FlexiCommand.LAYER_1_SET_PANNING,
+            FlexiCommand.LAYER_2_SET_PANNING,
+            FlexiCommand.LAYER_3_SET_PANNING,
+            FlexiCommand.LAYER_4_SET_PANNING,
+            FlexiCommand.LAYER_5_SET_PANNING,
+            FlexiCommand.LAYER_6_SET_PANNING,
+            FlexiCommand.LAYER_7_SET_PANNING,
+            FlexiCommand.LAYER_8_SET_PANNING,
+            FlexiCommand.LAYER_SELECTED_SET_PANNING,
             FlexiCommand.LAYER_1_TOGGLE_MUTE,
             FlexiCommand.LAYER_2_TOGGLE_MUTE,
             FlexiCommand.LAYER_3_TOGGLE_MUTE,
@@ -239,9 +239,9 @@ public class LayerHandler extends AbstractHandler
             case LAYER_SELECTED_SET_VOLUME_LAYER:
                 return selectedLayer.isPresent () ? selectedLayer.get ().getVolume () : 0;
 
-            case LAYER_1_SET_PANORAMA, LAYER_2_SET_PANORAMA, LAYER_3_SET_PANORAMA, LAYER_4_SET_PANORAMA, LAYER_5_SET_PANORAMA, LAYER_6_SET_PANORAMA, LAYER_7_SET_PANORAMA, LAYER_8_SET_PANORAMA:
-                return layerBank.getItem (command.ordinal () - FlexiCommand.LAYER_1_SET_PANORAMA.ordinal ()).getPan ();
-            case LAYER_SELECTED_SET_PANORAMA:
+            case LAYER_1_SET_PANNING, LAYER_2_SET_PANNING, LAYER_3_SET_PANNING, LAYER_4_SET_PANNING, LAYER_5_SET_PANNING, LAYER_6_SET_PANNING, LAYER_7_SET_PANNING, LAYER_8_SET_PANNING:
+                return layerBank.getItem (command.ordinal () - FlexiCommand.LAYER_1_SET_PANNING.ordinal ()).getPan ();
+            case LAYER_SELECTED_SET_PANNING:
                 return selectedLayer.isPresent () ? selectedLayer.get ().getPan () : 0;
 
             case LAYER_1_TOGGLE_MUTE, LAYER_2_TOGGLE_MUTE, LAYER_3_TOGGLE_MUTE, LAYER_4_TOGGLE_MUTE, LAYER_5_TOGGLE_MUTE, LAYER_6_TOGGLE_MUTE, LAYER_7_TOGGLE_MUTE, LAYER_8_TOGGLE_MUTE:
@@ -358,13 +358,13 @@ public class LayerHandler extends AbstractHandler
                 this.changeLayerVolume (knobMode, -1, value);
                 break;
 
-            // Layer 1-8: Set Panorama
-            case LAYER_1_SET_PANORAMA, LAYER_2_SET_PANORAMA, LAYER_3_SET_PANORAMA, LAYER_4_SET_PANORAMA, LAYER_5_SET_PANORAMA, LAYER_6_SET_PANORAMA, LAYER_7_SET_PANORAMA, LAYER_8_SET_PANORAMA:
-                this.changeLayerPanorama (knobMode, command.ordinal () - FlexiCommand.LAYER_1_SET_PANORAMA.ordinal (), value);
+            // Layer 1-8: Set Panning
+            case LAYER_1_SET_PANNING, LAYER_2_SET_PANNING, LAYER_3_SET_PANNING, LAYER_4_SET_PANNING, LAYER_5_SET_PANNING, LAYER_6_SET_PANNING, LAYER_7_SET_PANNING, LAYER_8_SET_PANNING:
+                this.changeLayerPanning (knobMode, command.ordinal () - FlexiCommand.LAYER_1_SET_PANNING.ordinal (), value);
                 break;
-            // Layer Selected: Set Panorama
-            case LAYER_SELECTED_SET_PANORAMA:
-                this.changeLayerPanorama (knobMode, -1, value);
+            // Layer Selected: Set Panning
+            case LAYER_SELECTED_SET_PANNING:
+                this.changeLayerPanning (knobMode, -1, value);
                 break;
 
             // Layer 1-8: Toggle Mute
@@ -496,7 +496,7 @@ public class LayerHandler extends AbstractHandler
     }
 
 
-    private void changeLayerPanorama (final KnobMode knobMode, final int layerIndex, final MidiValue value)
+    private void changeLayerPanning (final KnobMode knobMode, final int layerIndex, final MidiValue value)
     {
         final Optional<ILayer> layer = this.getLayer (layerIndex);
         if (layer.isEmpty ())

@@ -124,11 +124,19 @@ public interface ISpecificDevice extends IDevice
 
 
     /**
-     * Get the parameter bank.
+     * Get the parameter bank. Parameters are automatically paged.
      *
      * @return The bank
      */
     IParameterBank getParameterBank ();
+
+
+    /**
+     * Get the parameter list. Get access to a list of parameters.
+     * 
+     * @return The list
+     */
+    IParameterList getParameterList ();
 
 
     /**

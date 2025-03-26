@@ -16,7 +16,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * Mix mode for the LauchControl XL to control 2 sends and panorama.
+ * Mix mode for the LauchControl XL to control 2 sends and panning.
  *
  * @author Jürgen Moßgraber
  */

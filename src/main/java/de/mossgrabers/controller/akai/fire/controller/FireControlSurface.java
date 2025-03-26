@@ -28,7 +28,7 @@ public class FireControlSurface extends AbstractControlSurface<FireConfiguration
 {
     /** The volume knob. */
     public static final int CC_VOLUME       = 0x10;
-    /** The panorama knob. */
+    /** The panning knob. */
     public static final int CC_PAN          = 0x11;
     /** The filter knob touch. */
     public static final int CC_FILTER       = 0x12;
@@ -39,7 +39,7 @@ public class FireControlSurface extends AbstractControlSurface<FireConfiguration
 
     /** The volume knob touch. */
     public static final int TOUCH_VOLUME    = 0x10;
-    /** The panorama knob touch. */
+    /** The panning knob touch. */
     public static final int TOUCH_PAN       = 0x11;
     /** The filter knob touch. */
     public static final int TOUCH_FILTER    = 0x12;

@@ -4,6 +4,9 @@
 
 package de.mossgrabers.framework.mode.track;
 
+import java.util.List;
+import java.util.Optional;
+
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.IControlSurface;
@@ -13,12 +16,9 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.parameterprovider.track.SelectedTrackParameterProvider;
 
-import java.util.List;
-import java.util.Optional;
-
 
 /**
- * The track mode. The knobs control the volume, the panorama and the sends of the selected track.
+ * The track mode. The knobs control the volume, the panning and the sends of the selected track.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration

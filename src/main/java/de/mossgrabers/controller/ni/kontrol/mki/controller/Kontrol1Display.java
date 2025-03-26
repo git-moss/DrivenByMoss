@@ -137,7 +137,7 @@ public class Kontrol1Display extends AbstractTextDisplay
 
 
     /**
-     * Set a value bar drawn as panorama.
+     * Set a value bar drawn as panning.
      *
      * @param column The column (0, ..., 8)
      * @param hasBorder True to draw a border around the value bar

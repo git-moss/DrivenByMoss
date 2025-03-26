@@ -632,10 +632,10 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
      *
      * @param buttonID The ID of the button (for later access)
      * @param label The label of the button
-     * @param supplier Callback for retrieving the state of the light
      * @param midiChannel The MIDI channel
      * @param midiControl The MIDI CC or note
      * @param command The command to bind
+     * @param supplier Callback for retrieving the state of the light
      */
     protected void addButton (final ButtonID buttonID, final String label, final TriggerCommand command, final int midiChannel, final int midiControl, final IntSupplier supplier)
     {
@@ -1117,6 +1117,29 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
 
 
     /**
+     * Create a hardware knob proxy on a controller, which sends absolute values, bind a continuous
+     * command to it and bind it to a MIDI 14-bit CC.
+     *
+     * @param surface The control surface
+     * @param continuousID The ID of the control (for later access)
+     * @param label The label of the fader
+     * @param command The command to bind
+     * @param midiChannel The MIDI channel
+     * @param midiControl The first MIDI CC command in the range of [0..31]. The second MIDI CC is
+     *            the first plus 32
+     * @return The created knob
+     */
+    protected IHwAbsoluteKnob addHiResAbsoluteKnob (final S surface, final ContinuousID continuousID, final String label, final ContinuousCommand command, final int midiChannel, final int midiControl)
+    {
+        final IHwAbsoluteKnob knob = surface.createAbsoluteKnob (continuousID, label);
+        if (command != null)
+            knob.bind (command);
+        knob.bindHiRes (surface.getMidiInput (), midiChannel, midiControl);
+        return knob;
+    }
+
+
+    /**
      * Create a hardware knob proxy on a controller, which sends relative values, bind a continuous
      * command to it and bind it to a MIDI CC on MIDI channel 1.
      *
@@ -1341,7 +1364,20 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
      */
     protected int getModeColor (final ButtonID buttonID)
     {
-        final IMode mode = this.getSurface ().getModeManager ().getActive ();
+        return this.getModeColor (this.getSurface ().getModeManager (), buttonID);
+    }
+
+
+    /**
+     * Get the color for a button, which is controlled by the active mode.
+     *
+     * @param modeManager The mode manager which manages the modes
+     * @param buttonID The ID of the button
+     * @return A color index
+     */
+    protected int getModeColor (final ModeManager modeManager, final ButtonID buttonID)
+    {
+        final IMode mode = modeManager.getActive ();
         return mode == null ? 0 : mode.getButtonColor (buttonID);
     }
 
@@ -1425,7 +1461,7 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
 
         if (viewManager.isActive (Views.DRUM, Views.PLAY))
             activeView.updateNoteMapping ();
-        else if (activeView instanceof final AbstractDrum64View drum64View)
+        else if (activeView instanceof final AbstractDrum64View<?, ?> drum64View)
             drum64View.resetOctave ();
     }
 

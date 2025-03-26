@@ -361,7 +361,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         this.addButton (ButtonID.MUTE, "Mute", new MuteCommand (this.model, surface), buttonSetup.get (LaunchpadButton.MUTE).getControl (), () -> this.getModeColorIndex (ButtonID.MUTE));
         this.addButton (ButtonID.SOLO, "Solo", new SoloCommand (this.model, surface), buttonSetup.get (LaunchpadButton.SOLO).getControl (), () -> this.getModeColorIndex (ButtonID.SOLO));
         this.addButton (ButtonID.VOLUME, "Volume", new VolumeCommand (this.model, surface), buttonSetup.get (LaunchpadButton.VOLUME).getControl (), () -> this.getModeColorIndex (ButtonID.VOLUME));
-        this.addButton (ButtonID.PAN_SEND, "Panorama", new PanCommand (this.model, surface), buttonSetup.get (LaunchpadButton.PAN).getControl (), () -> this.getModeColorIndex (ButtonID.PAN_SEND));
+        this.addButton (ButtonID.PAN_SEND, "Panning", new PanCommand (this.model, surface), buttonSetup.get (LaunchpadButton.PAN).getControl (), () -> this.getModeColorIndex (ButtonID.PAN_SEND));
         this.addButton (ButtonID.SENDS, "Sends", new SendsCommand (this.model, surface), buttonSetup.get (LaunchpadButton.SENDS).getControl (), () -> this.getModeColorIndex (ButtonID.SENDS));
         this.addButton (ButtonID.STOP_CLIP, "Stop Clip", new StopClipCommand (this.model, surface), buttonSetup.get (LaunchpadButton.STOP_CLIP).getControl (), () -> this.getModeColorIndex (ButtonID.STOP_CLIP));
 

@@ -28,7 +28,7 @@ public enum APCminiButton
 
     /** The Volume button. */
     VOLUME,
-    /** The Panorama button. */
+    /** The Panning button. */
     PAN,
     /** The Send button. */
     SEND,

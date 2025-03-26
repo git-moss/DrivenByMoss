@@ -17,7 +17,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 
 
 /**
- * Mode for editing a panorama parameter of all tracks.
+ * Mode for editing a panning parameter of all tracks.
  *
  * @author Jürgen Moßgraber
  */
@@ -31,7 +31,7 @@ public class SLMkIIIPanMode extends AbstractTrackMode
      */
     public SLMkIIIPanMode (final SLMkIIIControlSurface surface, final IModel model)
     {
-        super ("Panorama", surface, model);
+        super ("Panning", surface, model);
 
         final PanParameterProvider parameterProvider = new PanParameterProvider (model);
         this.setParameterProvider (parameterProvider);

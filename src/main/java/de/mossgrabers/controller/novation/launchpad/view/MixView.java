@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.novation.launchpad.view;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.novation.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadColorManager;
 import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadControlSurface;
@@ -24,11 +26,9 @@ import de.mossgrabers.framework.featuregroup.IScrollableView;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.ScrollStates;
 
-import java.util.Optional;
-
 
 /**
- * A view for mixing with track select, mute, solo, rec arm, stop clip, volume and panorama.
+ * A view for mixing with track select, mute, solo, rec arm, stop clip, volume and panning.
  *
  * @author Jürgen Moßgraber
  */
@@ -79,7 +79,7 @@ public class MixView extends AbstractView<LaunchpadControlSurface, LaunchpadConf
 
                 // Volume
                 padGrid.light (92 + i, this.colorManager.getColorIndex (DAWColor.getColorID (track.getColor ())));
-                // Panorama
+                // Panning
                 padGrid.light (84 + i, isSelected ? LaunchpadColorManager.LAUNCHPAD_COLOR_SKY_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO);
                 // Send 1
                 final int send1ColorID;
@@ -143,7 +143,7 @@ public class MixView extends AbstractView<LaunchpadControlSurface, LaunchpadConf
 
             case 6:
                 this.faderMode = FaderMode.PAN;
-                display.notify ("Panorama");
+                display.notify ("Panning");
                 this.selectTrack (track);
                 break;
 

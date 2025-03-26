@@ -11,7 +11,7 @@ import de.mossgrabers.framework.parameterprovider.track.SendParameterProvider;
 
 
 /**
- * Panorama knob mode.
+ * Panning knob mode.
  *
  * @author Jürgen Moßgraber
  */

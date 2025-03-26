@@ -21,7 +21,7 @@ import de.mossgrabers.framework.featuregroup.IMode;
  */
 public class KnobRowModeCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractContinuousCommand<S, C>
 {
-    private final int index;
+    protected final int index;
 
 
     /**

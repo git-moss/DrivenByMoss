@@ -1,5 +1,9 @@
 package de.mossgrabers.controller.novation.launchcontrol.mode.main;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControlXLColorManager;
 import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControlXLControlSurface;
 import de.mossgrabers.controller.novation.launchcontrol.mode.buttons.XLTemporaryButtonMode;
@@ -29,10 +33,6 @@ import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.KeyManager;
 import de.mossgrabers.framework.utils.StringUtils;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 
 /**
@@ -93,7 +93,7 @@ public abstract class XLBaseNoteEditMode extends XLAbstractMainMode<IItem> imple
             chanceParameters.add (new NoteParameter (i, NoteAttribute.CHANCE, display, model, this, valueChanger));
             repeatParameters.add (new NoteParameter (i, NoteAttribute.REPEAT, display, model, this, valueChanger));
             velocitySpreadParameters.add (new NoteParameter (i, NoteAttribute.VELOCITY_SPREAD, display, model, this, valueChanger));
-            panParameters.add (new NoteParameter (i, NoteAttribute.PANORAMA, display, model, this, valueChanger));
+            panParameters.add (new NoteParameter (i, NoteAttribute.PANNING, display, model, this, valueChanger));
         }
         this.chanceParameterProvider = new FixedParameterProvider (chanceParameters);
         this.repeatParameterProvider = new FixedParameterProvider (repeatParameters);
@@ -150,7 +150,7 @@ public abstract class XLBaseNoteEditMode extends XLAbstractMainMode<IItem> imple
                 red = value == 0 ? 0 : value / 42 + 1;
                 break;
 
-            // Panorama in amber or Device parameters yellowish intensity in red
+            // Panning in amber or Device parameters yellowish intensity in red
             case 2:
                 green = value == 0 ? 0 : value / 42 + 1;
                 if (this.configuration.isDeviceActive ())

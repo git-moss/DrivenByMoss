@@ -4,10 +4,10 @@
 
 package de.mossgrabers.framework.parameterprovider;
 
-import de.mossgrabers.framework.observer.IParametersAdjustObserver;
-
 import java.util.HashSet;
 import java.util.Set;
+
+import de.mossgrabers.framework.observer.IParametersAdjustObserver;
 
 
 /**
@@ -48,7 +48,7 @@ public abstract class AbstractParameterProvider implements IParameterProvider
     {
         synchronized (this.observers)
         {
-            final HashSet<IParametersAdjustObserver> copy = new HashSet<> (this.observers);
+            final Set<IParametersAdjustObserver> copy = new HashSet<> (this.observers);
             copy.forEach (this::removeParametersObserver);
             return copy;
         }

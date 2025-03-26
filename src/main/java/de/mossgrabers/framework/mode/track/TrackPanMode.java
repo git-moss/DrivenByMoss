@@ -4,6 +4,10 @@
 
 package de.mossgrabers.framework.mode.track;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.function.BooleanSupplier;
+
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
@@ -12,13 +16,9 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.parameterprovider.track.PanParameterProvider;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.function.BooleanSupplier;
-
 
 /**
- * The pan mode. The knobs control the panorama of the tracks on the current track page.
+ * The pan mode. The knobs control the panning of the tracks on the current track page.
  *
  * @param <S> The type of the control surface
  * @param <C> The type of the configuration
@@ -69,7 +69,7 @@ public class TrackPanMode<S extends IControlSurface<C>, C extends Configuration>
      */
     public TrackPanMode (final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> controls, final BooleanSupplier isAlternativeFunction)
     {
-        super ("Panorama", surface, model, isAbsolute, controls, isAlternativeFunction);
+        super ("Panning", surface, model, isAbsolute, controls, isAlternativeFunction);
 
         if (controls != null)
             this.setParameterProvider (new PanParameterProvider (model));

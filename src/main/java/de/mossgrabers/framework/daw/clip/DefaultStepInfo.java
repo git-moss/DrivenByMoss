@@ -397,9 +397,9 @@ public class DefaultStepInfo implements IStepInfo
 
 
     /**
-     * Set the panorama.
+     * Set the panning.
      *
-     * @param pan The panorama
+     * @param pan The panning
      */
     public void setPan (final double pan)
     {

@@ -880,7 +880,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
                 break;
 
             case MidiConstants.CMD_CC:
-                this.handleCC (data1, data2);
+                this.handleCC (channel, data1, data2);
                 break;
 
             case MidiConstants.CMD_PROGRAM_CHANGE:
@@ -904,14 +904,15 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
     /**
      * Handle CC command.
-     *
+     * 
+     * @param channel The MIDI channel
      * @param data1 First data byte
      * @param data2 Second data byte
      */
-    protected void handleCC (final int data1, final int data2)
+    protected void handleCC (final int channel, final int data1, final int data2)
     {
         // Handled by bind framework
-        this.host.error ("CC " + data1 + SHOULD_BE_HANDLED_IN_FRAMEWORK);
+        this.host.error ("CC " + data1 + " on MIDI channel " + channel + SHOULD_BE_HANDLED_IN_FRAMEWORK);
     }
 
 

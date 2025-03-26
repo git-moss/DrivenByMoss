@@ -14,7 +14,7 @@ import de.mossgrabers.framework.parameterprovider.track.VolumeParameterProvider;
 
 
 /**
- * Mode for editing the panorama of all layers.
+ * Mode for editing the panning of all layers.
  *
  * @author Jürgen Moßgraber
  */
@@ -28,7 +28,7 @@ public class LayerPanMode extends AbstractLayerMode
      */
     public LayerPanMode (final MCUControlSurface surface, final IModel model)
     {
-        super (Modes.NAME_LAYER_PANORAMA, surface, model);
+        super (Modes.NAME_LAYER_PANNING, surface, model);
 
         final IParameterProvider parameterProvider;
         if (this.pinFXtoLastDevice)

@@ -4,6 +4,18 @@
 
 package de.mossgrabers.bitwig.framework.midi;
 
+import com.bitwig.extension.controller.api.AbsoluteHardwareControl;
+import com.bitwig.extension.controller.api.AbsoluteHardwareValueMatcher;
+import com.bitwig.extension.controller.api.ContinuousHardwareControl;
+import com.bitwig.extension.controller.api.ControllerHost;
+import com.bitwig.extension.controller.api.HardwareAction;
+import com.bitwig.extension.controller.api.HardwareActionMatcher;
+import com.bitwig.extension.controller.api.HardwareButton;
+import com.bitwig.extension.controller.api.HardwareSlider;
+import com.bitwig.extension.controller.api.MidiIn;
+import com.bitwig.extension.controller.api.RelativeHardwareKnob;
+import com.bitwig.extension.controller.api.RelativeHardwareValueMatcher;
+
 import de.mossgrabers.bitwig.framework.hardware.AbstractHwAbsoluteControl;
 import de.mossgrabers.bitwig.framework.hardware.HwButtonImpl;
 import de.mossgrabers.bitwig.framework.hardware.HwFaderImpl;
@@ -19,18 +31,6 @@ import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.INoteInput;
 import de.mossgrabers.framework.daw.midi.MidiShortCallback;
 import de.mossgrabers.framework.daw.midi.MidiSysExCallback;
-
-import com.bitwig.extension.controller.api.AbsoluteHardwareControl;
-import com.bitwig.extension.controller.api.AbsoluteHardwareValueMatcher;
-import com.bitwig.extension.controller.api.ContinuousHardwareControl;
-import com.bitwig.extension.controller.api.ControllerHost;
-import com.bitwig.extension.controller.api.HardwareAction;
-import com.bitwig.extension.controller.api.HardwareActionMatcher;
-import com.bitwig.extension.controller.api.HardwareButton;
-import com.bitwig.extension.controller.api.HardwareSlider;
-import com.bitwig.extension.controller.api.MidiIn;
-import com.bitwig.extension.controller.api.RelativeHardwareKnob;
-import com.bitwig.extension.controller.api.RelativeHardwareValueMatcher;
 
 
 /**
@@ -230,6 +230,17 @@ public class MidiInputImpl implements IMidiInput
     public void bind (final IHwAbsoluteControl absoluteControl, final BindType type, final int channel, final int control)
     {
         this.bind (type, channel, control, ((AbstractHwAbsoluteControl<?>) absoluteControl).getHardwareControl ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void bindHiRes (final IHwAbsoluteControl absoluteControl, final int channel, final int control)
+    {
+        final AbsoluteHardwareValueMatcher matcher1 = this.port.createAbsoluteCCValueMatcher (channel, control);
+        final AbsoluteHardwareValueMatcher matcher2 = this.port.createAbsoluteCCValueMatcher (channel, control + 32);
+        final AbsoluteHardwareValueMatcher matcher = this.port.createSequencedValueMatcher (matcher1, matcher2, false);
+        ((AbstractHwAbsoluteControl<?>) absoluteControl).getHardwareControl ().setAdjustValueMatcher (matcher);
     }
 
 

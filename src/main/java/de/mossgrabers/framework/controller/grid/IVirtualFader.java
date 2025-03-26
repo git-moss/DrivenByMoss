@@ -15,7 +15,7 @@ public interface IVirtualFader
      * Set the color of a fader (8 vertical pads).
      *
      * @param color The color to set
-     * @param isPan True for panorama layout
+     * @param isPan True for panning layout
      */
     void setup (int color, boolean isPan);
 

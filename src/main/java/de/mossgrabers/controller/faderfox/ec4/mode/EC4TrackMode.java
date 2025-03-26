@@ -27,7 +27,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 
 
 /**
- * The track mode. The knobs control the volume, panorama and 8 sends of the selected track.
+ * The track mode. The knobs control the volume, panning and 8 sends of the selected track.
  *
  * @author Jürgen Moßgraber
  */

@@ -94,21 +94,21 @@ public enum ContinuousID
     /** Volume Knob 8. */
     VOLUME_KNOB8,
 
-    /** Panorama Knob 1. */
+    /** Panning Knob 1. */
     PAN_KNOB1,
-    /** Panorama Knob 2. */
+    /** Panning Knob 2. */
     PAN_KNOB2,
-    /** Panorama Knob 3. */
+    /** Panning Knob 3. */
     PAN_KNOB3,
-    /** Panorama Knob 4. */
+    /** Panning Knob 4. */
     PAN_KNOB4,
-    /** Panorama Knob 5. */
+    /** Panning Knob 5. */
     PAN_KNOB5,
-    /** Panorama Knob 6. */
+    /** Panning Knob 6. */
     PAN_KNOB6,
-    /** Panorama Knob 7. */
+    /** Panning Knob 7. */
     PAN_KNOB7,
-    /** Panorama Knob 8. */
+    /** Panning Knob 8. */
     PAN_KNOB8,
 
     /** Parameter Knob 1. */

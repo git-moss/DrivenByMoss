@@ -208,7 +208,7 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     private static final List<String>                MODES                     = List.of (
         "Track",
         "Volume",
-        "Panorama",
+        "Panning",
         "Send 1",
         "Send 2",
         "Send 3",

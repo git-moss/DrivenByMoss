@@ -248,13 +248,8 @@ public class GenericFlexiControlSurface extends AbstractControlSurface<GenericFl
     }
 
 
-    /**
-     * Handle the reception of a CC message.
-     *
-     * @param channel The channel of the message
-     * @param data1 The first data byte
-     * @param data2 The second data byte
-     */
+    /** {@inheritDoc} */
+    @Override
     protected void handleCC (final int channel, final int data1, final int data2)
     {
         final long now = System.currentTimeMillis ();

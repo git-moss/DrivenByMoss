@@ -73,7 +73,7 @@ public class NoteEditView extends AbstractFaderView implements INoteEditorMode
             new NoteParameter (NoteAttribute.VELOCITY_SPREAD, null, model, this.noteEditor, valueChanger),
             new NoteParameter (NoteAttribute.CHANCE, null, model, this.noteEditor, valueChanger),
             new NoteParameter (NoteAttribute.GAIN, null, model, this.noteEditor, valueChanger),
-            new NoteParameter (NoteAttribute.PANORAMA, null, model, this.noteEditor, valueChanger),
+            new NoteParameter (NoteAttribute.PANNING, null, model, this.noteEditor, valueChanger),
             new NoteParameter (NoteAttribute.TRANSPOSE, null, model, this.noteEditor, valueChanger),
             new NoteParameter (NoteAttribute.TIMBRE, null, model, this.noteEditor, valueChanger),
             new NoteParameter (NoteAttribute.PRESSURE, null, model, this.noteEditor, valueChanger)
@@ -87,7 +87,7 @@ public class NoteEditView extends AbstractFaderView implements INoteEditorMode
             false,
             false,
             host.supports (NoteAttribute.GAIN),
-            host.supports (NoteAttribute.PANORAMA),
+            host.supports (NoteAttribute.PANNING),
             host.supports (NoteAttribute.TRANSPOSE),
             host.supports (NoteAttribute.TIMBRE),
             false

@@ -11,7 +11,7 @@ import de.mossgrabers.framework.parameterprovider.track.PanParameterProvider;
 
 
 /**
- * Panorama knob mode.
+ * Panning knob mode.
  *
  * @author Jürgen Moßgraber
  */
@@ -25,7 +25,7 @@ public class PanMode extends BaseMode<ITrack>
      */
     public PanMode (final APCControlSurface surface, final IModel model)
     {
-        super ("Panorama", surface, model, APCControlSurface.LED_MODE_PAN, model.getCurrentTrackBank ());
+        super ("Panning", surface, model, APCControlSurface.LED_MODE_PAN, model.getCurrentTrackBank ());
 
         this.setParameterProvider (new PanParameterProvider (model));
     }

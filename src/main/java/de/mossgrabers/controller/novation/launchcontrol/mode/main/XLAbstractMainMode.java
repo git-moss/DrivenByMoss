@@ -83,7 +83,7 @@ public abstract class XLAbstractMainMode<B extends IItem> extends AbstractParame
 
 
     /**
-     * Toggle between panorama and device parameters control on 3rd row.
+     * Toggle between panning and device parameters control on 3rd row.
      */
     public void toggleDeviceActive ()
     {

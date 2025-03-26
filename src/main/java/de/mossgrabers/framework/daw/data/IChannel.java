@@ -114,40 +114,40 @@ public interface IChannel extends IItem
 
 
     /**
-     * Get the panorama parameter.
+     * Get the panning parameter.
      *
-     * @return The panorama parameter
+     * @return The panning parameter
      */
     IParameter getPanParameter ();
 
 
     /**
-     * Get the panorama as a formatted text
+     * Get the panning as a formatted text
      *
-     * @return The panorama text
+     * @return The ppanning text
      */
     String getPanStr ();
 
 
     /**
-     * Get the panorama as a formatted text
+     * Get the panning as a formatted text
      *
      * @param limit Limit the text to this length
-     * @return The panorama text
+     * @return The panning text
      */
     String getPanStr (int limit);
 
 
     /**
-     * Get the panorama.
+     * Get the panning.
      *
-     * @return The panorama
+     * @return The panning
      */
     int getPan ();
 
 
     /**
-     * Change the panorama.
+     * Change the panning.
      *
      * @param control The control value
      */
@@ -155,7 +155,7 @@ public interface IChannel extends IItem
 
 
     /**
-     * Set the panorama.
+     * Set the panning.
      *
      * @param value The new value
      */
@@ -163,13 +163,13 @@ public interface IChannel extends IItem
 
 
     /**
-     * Reset the panorama to its default value.
+     * Reset the panning to its default value.
      */
     void resetPan ();
 
 
     /**
-     * Signal that the panorama fader/knob is touched for automation recording.
+     * Signal that the panning fader/knob is touched for automation recording.
      *
      * @param isBeingTouched True if touched
      */
@@ -177,7 +177,7 @@ public interface IChannel extends IItem
 
 
     /**
-     * Signal that the panorama is edited.
+     * Signal that the panning is edited.
      *
      * @param indicate True if edited
      */
@@ -185,9 +185,9 @@ public interface IChannel extends IItem
 
 
     /**
-     * Get the modulated panorama.
+     * Get the modulated panning.
      *
-     * @return The modulated panorama
+     * @return The modulated panning
      */
     int getModulatedPan ();
 

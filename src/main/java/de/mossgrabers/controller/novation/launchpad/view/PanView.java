@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.novation.launchpad.view;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadControlSurface;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.grid.IVirtualFader;
@@ -18,11 +20,9 @@ import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.ScrollStates;
 
-import java.util.Optional;
-
 
 /**
- * 8 panorama faders.
+ * 8 panning faders.
  *
  * @author Jürgen Moßgraber
  */
@@ -39,7 +39,7 @@ public class PanView extends AbstractFaderView implements IVirtualFaderCallback
      */
     public PanView (final LaunchpadControlSurface surface, final IModel model)
     {
-        super ("Panorama", surface, model);
+        super ("Panning", surface, model);
 
         this.masterFader = new VirtualFaderImpl (model.getHost (), this);
     }

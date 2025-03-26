@@ -1,5 +1,7 @@
 package de.mossgrabers.controller.novation.launchcontrol.mode.main;
 
+import java.util.List;
+
 import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControlXLColorManager;
 import de.mossgrabers.controller.novation.launchcontrol.controller.LaunchControlXLControlSurface;
 import de.mossgrabers.controller.novation.launchcontrol.mode.buttons.XLTemporaryButtonMode;
@@ -18,11 +20,9 @@ import de.mossgrabers.framework.parameterprovider.device.SendLayerOrDrumPadParam
 import de.mossgrabers.framework.parameterprovider.special.CombinedParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
-import java.util.List;
-
 
 /**
- * Mix mode for the LauchControl XL to control 2 sends and panorama of layers.
+ * Mix mode for the LauchControl XL to control 2 sends and panning of layers.
  *
  * @author Jürgen Moßgraber
  */
@@ -298,7 +298,7 @@ public class XLLayerMixMode extends XLAbstractMainMode<ILayer>
                 red = value == 0 ? 0 : value / 42 + 1;
                 break;
 
-            // Panorama in amber or Device parameters yellowish intensity in red
+            // Panning in amber or Device parameters yellowish intensity in red
             case 2:
                 green = value == 0 ? 0 : value / 42 + 1;
                 if (this.configuration.isDeviceActive ())

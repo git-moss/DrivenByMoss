@@ -15,8 +15,8 @@ public enum NoteAttribute
     PITCH,
     /** Edit note gain. */
     GAIN,
-    /** Edit note panorama. */
-    PANORAMA,
+    /** Edit note panning. */
+    PANNING,
     /** Edit note duration. */
     DURATION,
     /** Edit note velocity. */

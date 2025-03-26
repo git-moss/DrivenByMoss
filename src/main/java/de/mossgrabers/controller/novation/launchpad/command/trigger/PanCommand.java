@@ -11,7 +11,7 @@ import de.mossgrabers.framework.view.Views;
 
 
 /**
- * Track panorama command.
+ * Track panning command.
  *
  * @author Jürgen Moßgraber
  */

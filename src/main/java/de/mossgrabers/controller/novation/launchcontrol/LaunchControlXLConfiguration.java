@@ -4,13 +4,13 @@
 
 package de.mossgrabers.controller.novation.launchcontrol;
 
+import java.util.List;
+
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
-
-import java.util.List;
 
 
 /**
@@ -96,7 +96,7 @@ public class LaunchControlXLConfiguration extends AbstractConfiguration
     /**
      * Are device parameters active?
      *
-     * @return True if active otherwise panorama is active
+     * @return True if active otherwise panning is active
      */
     public boolean isDeviceActive ()
     {
@@ -105,7 +105,7 @@ public class LaunchControlXLConfiguration extends AbstractConfiguration
 
 
     /**
-     * Toggle between panorama and device parameters control on 3rd row.
+     * Toggle between panning and device parameters control on 3rd row.
      */
     public void toggleDeviceActive ()
     {

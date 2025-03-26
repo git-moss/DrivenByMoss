@@ -48,7 +48,7 @@ public class YaeltexTurnNoteSeqMode extends YaeltexTurnTrackMixMode implements I
         NoteAttribute.RELEASE_VELOCITY,
         NoteAttribute.VELOCITY_SPREAD,
         NoteAttribute.GAIN,
-        NoteAttribute.PANORAMA,
+        NoteAttribute.PANNING,
         NoteAttribute.PRESSURE,
         NoteAttribute.TIMBRE,
         NoteAttribute.CHANCE,

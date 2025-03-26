@@ -4,13 +4,13 @@
 
 package de.mossgrabers.controller.akai.acvs.controller;
 
-import de.mossgrabers.controller.akai.acvs.ACVSDevice;
-import de.mossgrabers.framework.controller.color.ColorEx;
-import de.mossgrabers.framework.daw.midi.IMidiOutput;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
+import de.mossgrabers.controller.akai.acvs.ACVSDevice;
+import de.mossgrabers.framework.controller.color.ColorEx;
+import de.mossgrabers.framework.daw.midi.IMidiOutput;
 
 
 /**

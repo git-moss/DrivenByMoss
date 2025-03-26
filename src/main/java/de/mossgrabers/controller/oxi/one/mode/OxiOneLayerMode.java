@@ -30,7 +30,7 @@ import de.mossgrabers.framework.parameterprovider.special.FourKnobProvider;
 
 
 /**
- * The layer mode. The knobs control the volume, the panorama and the sends of the selected layer
+ * The layer mode. The knobs control the volume, the panning and the sends of the selected layer
  * channel.
  *
  * @author Jürgen Moßgraber
