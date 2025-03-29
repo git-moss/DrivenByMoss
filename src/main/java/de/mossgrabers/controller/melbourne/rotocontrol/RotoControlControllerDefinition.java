@@ -4,12 +4,12 @@
 
 package de.mossgrabers.controller.melbourne.rotocontrol;
 
-import java.util.List;
-import java.util.UUID;
-
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
+
+import java.util.List;
+import java.util.UUID;
 
 
 /**
@@ -20,7 +20,6 @@ import de.mossgrabers.framework.utils.Pair;
 public class RotoControlControllerDefinition extends DefaultControllerDefinition
 {
     private static final UUID EXTENSION_ID = UUID.fromString ("CFEB4D14-B6D8-47A4-A251-E11C023CAF6F");
-
 
     /**
      * Constructor.
@@ -36,9 +35,20 @@ public class RotoControlControllerDefinition extends DefaultControllerDefinition
     public List<Pair<String [], String []>> getMidiDiscoveryPairs (final OperatingSystem os)
     {
         final List<Pair<String [], String []>> midiDiscoveryPairs = super.getMidiDiscoveryPairs (os);
-        midiDiscoveryPairs.add (this.addDeviceDiscoveryPair ("Roto-Control"));
-        midiDiscoveryPairs.add (this.addDeviceDiscoveryPair ("ROTO CONTROL"));
-        midiDiscoveryPairs.add (this.addDeviceDiscoveryPair ("Melbourne Instruments ROTO CONTROL"));
+        switch (os)
+        {
+            default:
+            case WINDOWS:
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair ("Roto-Control"));
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair ("ROTO CONTROL"));
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair ("Melbourne Instruments ROTO CONTROL"));
+                break;
+
+            case LINUX:
+                midiDiscoveryPairs.addAll (this.createLinuxDeviceDiscoveryPairs ("Roto-Control", "Roto-Control"));
+                break;
+        }
+
         return midiDiscoveryPairs;
     }
 }
