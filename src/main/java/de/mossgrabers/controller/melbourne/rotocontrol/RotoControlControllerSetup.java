@@ -17,11 +17,6 @@ import de.mossgrabers.controller.melbourne.rotocontrol.controller.RotoControlCon
 import de.mossgrabers.controller.melbourne.rotocontrol.controller.RotoControlMessage;
 import de.mossgrabers.controller.melbourne.rotocontrol.mode.RotoControlDeviceParameterMode;
 import de.mossgrabers.controller.melbourne.rotocontrol.mode.RotoControlDisplay;
-import de.mossgrabers.controller.melbourne.rotocontrol.mode.RotoControlMode;
-import de.mossgrabers.controller.melbourne.rotocontrol.mode.RotoControlSelectedTrackMode;
-import de.mossgrabers.controller.melbourne.rotocontrol.mode.RotoControlTrackPanMode;
-import de.mossgrabers.controller.melbourne.rotocontrol.mode.RotoControlTrackSendMode;
-import de.mossgrabers.controller.melbourne.rotocontrol.mode.RotoControlTrackVolumeMode;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
 import de.mossgrabers.framework.command.trigger.mode.ButtonRowModeCommand;
@@ -51,9 +46,13 @@ import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.mode.track.TrackMode;
 import de.mossgrabers.framework.mode.track.TrackMuteMode;
+import de.mossgrabers.framework.mode.track.TrackPanMode;
 import de.mossgrabers.framework.mode.track.TrackRecArmMode;
+import de.mossgrabers.framework.mode.track.TrackSendMode;
 import de.mossgrabers.framework.mode.track.TrackSoloMode;
+import de.mossgrabers.framework.mode.track.TrackVolumeMode;
 import de.mossgrabers.framework.view.DummyView;
 import de.mossgrabers.framework.view.Views;
 
@@ -111,8 +110,10 @@ public class RotoControlControllerSetup extends AbstractControllerSetup<RotoCont
         // These are used to be able to bind any parameter from any of the pages
         this.modelSetup.setNumListParams (8 * NUM_PARAM_PAGES);
 
+        // Only for creating new clips
+        this.modelSetup.setNumScenes (16);
+
         // Not used
-        this.modelSetup.setNumScenes (0);
         this.modelSetup.setNumDeviceLayers (0);
         this.modelSetup.setNumDrumPadLayers (0);
         this.modelSetup.enableMainDrumDevice (false);
@@ -128,8 +129,7 @@ public class RotoControlControllerSetup extends AbstractControllerSetup<RotoCont
         final IMidiAccess midiAccess = this.factory.createMidiAccess ();
         final IMidiOutput output = midiAccess.createOutput ();
         final IMidiInput input = midiAccess.createInput (null);
-        final RotoControlControlSurface surface = new RotoControlControlSurface (this.host, this.colorManager, this.configuration, output, input, this);
-        this.surfaces.add (surface);
+        this.surfaces.add (new RotoControlControlSurface (this.host, this.colorManager, this.configuration, output, input, this, this.model));
     }
 
 
@@ -139,11 +139,11 @@ public class RotoControlControllerSetup extends AbstractControllerSetup<RotoCont
     {
         final RotoControlControlSurface surface = this.getSurface ();
         final ModeManager modeManager = surface.getModeManager ();
-        modeManager.register (Modes.TRACK, new RotoControlSelectedTrackMode (surface, this.model));
-        modeManager.register (Modes.VOLUME, new RotoControlTrackVolumeMode (surface, this.model));
-        modeManager.register (Modes.PAN, new RotoControlTrackPanMode (surface, this.model));
+        modeManager.register (Modes.TRACK, new TrackMode<RotoControlControlSurface, RotoControlConfiguration> (surface, this.model, true));
+        modeManager.register (Modes.VOLUME, new TrackVolumeMode<RotoControlControlSurface, RotoControlConfiguration> (surface, this.model, true));
+        modeManager.register (Modes.PAN, new TrackPanMode<RotoControlControlSurface, RotoControlConfiguration> (surface, this.model, true));
         for (int i = 0; i < this.modelSetup.getNumSends (); i++)
-            modeManager.register (Modes.get (Modes.SEND1, i), new RotoControlTrackSendMode (i, surface, this.model));
+            modeManager.register (Modes.get (Modes.SEND1, i), new TrackSendMode<RotoControlControlSurface, RotoControlConfiguration> (i, surface, this.model, true));
         final RotoControlDeviceParameterMode deviceParamsMode = new RotoControlDeviceParameterMode (surface, this.model);
         modeManager.register (Modes.DEVICE_PARAMS, deviceParamsMode);
 
@@ -339,7 +339,7 @@ public class RotoControlControllerSetup extends AbstractControllerSetup<RotoCont
                 bank.scrollTo (content[0] / pageSize * pageSize);
                 surface.scheduleTask ( () -> {
                     bank.getItem (content[0] % pageSize).select ();
-                    switchTracks (surface);
+                    this.switchTracks (surface);
                 }, 100);
                 break;
 
@@ -471,8 +471,7 @@ public class RotoControlControllerSetup extends AbstractControllerSetup<RotoCont
                         surface.errorln ("Unsupported knob mode: " + data[1]);
                         break;
                 }
-                if (modeManager.getActive () instanceof final RotoControlMode rotoMode)
-                    rotoMode.flushDisplay ();
+                surface.flushRotoDisplay ();
 
                 // Set the button mode
                 switch (data[2])
@@ -490,7 +489,7 @@ public class RotoControlControllerSetup extends AbstractControllerSetup<RotoCont
                         surface.errorln ("Unsupported button mode: " + data[2]);
                         break;
                 }
-                switchTracks (surface);
+                this.switchTracks (surface);
                 break;
 
             case RotoControlMessage.RCV_SET_MIX_TRACK_MODE:
@@ -516,7 +515,7 @@ public class RotoControlControllerSetup extends AbstractControllerSetup<RotoCont
                 final ITrackBank currentTrackBank = this.model.getCurrentTrackBank ();
                 if (currentTrackBank.getSelectedItem ().isEmpty ())
                     currentTrackBank.getItem (0).select ();
-                switchTracks (surface);
+                this.switchTracks (surface);
                 break;
 
             default:
@@ -605,8 +604,7 @@ public class RotoControlControllerSetup extends AbstractControllerSetup<RotoCont
             surface.sendSysex (RotoControlMessage.MIX, RotoControlMessage.TR_DAW_SELECT_TRACK, out.toByteArray ());
 
             // Trigger sending device updates
-            if (surface.getModeManager ().get (Modes.DEVICE_PARAMS) instanceof RotoControlDeviceParameterMode rotoParamMode)
-                rotoParamMode.flushDisplay ();
+            surface.flushRotoDisplay ();
         }
         catch (final IOException ex)
         {

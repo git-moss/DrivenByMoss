@@ -21,6 +21,7 @@ public class RotoControlControllerDefinition extends DefaultControllerDefinition
 {
     private static final UUID EXTENSION_ID = UUID.fromString ("CFEB4D14-B6D8-47A4-A251-E11C023CAF6F");
 
+
     /**
      * Constructor.
      */

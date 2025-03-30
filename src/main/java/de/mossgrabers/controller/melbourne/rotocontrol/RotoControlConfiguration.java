@@ -44,11 +44,6 @@ public class RotoControlConfiguration extends AbstractConfiguration
         this.activateBehaviourOnPauseSetting (globalSettings);
 
         ///////////////////////////
-        // Play and Sequence
-
-        this.activateQuantizeAmountSetting (globalSettings);
-
-        ///////////////////////////
         // Workflow
 
         this.activateExcludeDeactivatedItemsSetting (globalSettings);

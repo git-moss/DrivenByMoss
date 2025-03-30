@@ -4,14 +4,14 @@
 
 package de.mossgrabers.controller.ni.kontrol.mki;
 
+import java.util.List;
+
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
-
-import java.util.List;
 
 
 /**
@@ -57,6 +57,11 @@ public class Kontrol1Configuration extends AbstractConfiguration
 
         this.activateScaleSetting (documentSettings);
         this.activateScaleBaseSetting (documentSettings);
+
+        ///////////////////////////
+        // Play and Sequence
+
+        this.activateShowPlayedChordsSetting (globalSettings);
 
         ///////////////////////////
         // Transport

@@ -26,9 +26,8 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author Jürgen Moßgraber
  */
-public class RotoControlDeviceParameterMode extends AbstractParameterMode<RotoControlControlSurface, RotoControlConfiguration, IParameter> implements RotoControlMode
+public class RotoControlDeviceParameterMode extends AbstractParameterMode<RotoControlControlSurface, RotoControlConfiguration, IParameter>
 {
-    private final RotoControlDisplay           rotoDisplay;
     private boolean                            learnMode;
     private int                                lastMappedParameterIndex = -1;
     private final ReplaceableParameterProvider parameterProvider;
@@ -49,39 +48,13 @@ public class RotoControlDeviceParameterMode extends AbstractParameterMode<RotoCo
 
         // Monitor the 'normal' selected parameter page for changes which will be used to trigger
         // the learn mode
-        final IParameterBank parameterBank = this.cursorDevice.getParameterBank ();
-        for (int i = 0; i < 8; i++)
-        {
-            final int index = i;
-            parameterBank.getItem (i).addValueObserver (Void -> this.handleMapping (index));
-        }
+        this.cursorDevice.getParameterBank ().addValueObserver (index -> this.handleMapping (index.intValue ()));
 
         // Add 8 knob and 8 button parameters
         this.parameterProvider = new ReplaceableParameterProvider (16);
         // TODO 5.3.3: use this when switched to Bitwig binding
         // if (this.controls != null)
         // this.setParameterProvider (this.parameterProvider);
-
-        this.rotoDisplay = new RotoControlDisplay (surface, model);
-
-        this.flushDisplay ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void flushDisplay ()
-    {
-        this.rotoDisplay.flushDeviceDisplay ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void updateDisplay ()
-    {
-        // Sends only information about devices! Parameter names are stored in the ROTO-CONTROL!
-        this.rotoDisplay.updateDeviceDisplay ();
     }
 
 
@@ -141,7 +114,7 @@ public class RotoControlDeviceParameterMode extends AbstractParameterMode<RotoCo
 
     /**
      * Bind a parameter.
-     * 
+     *
      * @param paramIndex The index of the parameter across all pages
      * @param posInPage The position of the knob/switch
      * @param isSwitch True if it is a switch, false if it is a knob

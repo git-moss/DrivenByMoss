@@ -26,7 +26,7 @@ public class ReplaceableParameterProvider extends AbstractParameterProvider
 
     /**
      * Constructor.
-     * 
+     *
      * @param numberOfParameters The number of parameters
      */
     public ReplaceableParameterProvider (final int numberOfParameters)
@@ -48,7 +48,7 @@ public class ReplaceableParameterProvider extends AbstractParameterProvider
 
     /**
      * Set a parameter.
-     * 
+     *
      * @param index The index of the parameter
      * @param parameter The parameter
      */

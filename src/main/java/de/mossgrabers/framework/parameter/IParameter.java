@@ -6,7 +6,6 @@ package de.mossgrabers.framework.parameter;
 
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.data.IItem;
-import de.mossgrabers.framework.observer.IValueObserver;
 
 
 /**
@@ -111,14 +110,6 @@ public interface IParameter extends IItem
      * @param isBeingTouched True if touched
      */
     void touchValue (boolean isBeingTouched);
-
-
-    /**
-     * Add an observer for value changes. Must only be called on startup!
-     *
-     * @param observer The observer to notify on a value change
-     */
-    void addValueObserver (final IValueObserver<Void> observer);
 
 
     /**

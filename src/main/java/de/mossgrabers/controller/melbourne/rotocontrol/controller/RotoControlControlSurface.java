@@ -11,11 +11,13 @@ import java.util.Optional;
 import java.util.Set;
 
 import de.mossgrabers.controller.melbourne.rotocontrol.RotoControlConfiguration;
+import de.mossgrabers.controller.melbourne.rotocontrol.mode.RotoControlDisplay;
 import de.mossgrabers.framework.command.core.ContinuousCommand;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.utils.StringUtils;
@@ -71,6 +73,7 @@ public class RotoControlControlSurface extends AbstractControlSurface<RotoContro
     private final IMessageCallback                callback;
     private final int []                          lastCCValues = new int [32];
     private final Map<Integer, ContinuousCommand> commands     = new HashMap<> ();
+    private final RotoControlDisplay              rotoDisplay;
 
 
     /**
@@ -82,12 +85,14 @@ public class RotoControlControlSurface extends AbstractControlSurface<RotoContro
      * @param output The MIDI output
      * @param input The MIDI input
      * @param callback The callback for commands received via system exclusive
+     * @param model The model
      */
-    public RotoControlControlSurface (final IHost host, final ColorManager colorManager, final RotoControlConfiguration configuration, final IMidiOutput output, final IMidiInput input, final IMessageCallback callback)
+    public RotoControlControlSurface (final IHost host, final ColorManager colorManager, final RotoControlConfiguration configuration, final IMidiOutput output, final IMidiInput input, final IMessageCallback callback, final IModel model)
     {
         super (host, configuration, colorManager, output, input, null, 100, 100);
 
         this.callback = callback;
+        this.rotoDisplay = new RotoControlDisplay (this, model);
 
         this.input.setSysexCallback (this::handleSysEx);
     }
@@ -111,6 +116,27 @@ public class RotoControlControlSurface extends AbstractControlSurface<RotoContro
     public void sendStartupCommand ()
     {
         this.sendSysex (RotoControlMessage.GENERAL, RotoControlMessage.TR_DAW_STARTED);
+    }
+
+
+    /**
+     * Fully update the roto-control display state.
+     */
+    public void flushRotoDisplay ()
+    {
+        this.rotoDisplay.flushTrackDisplay ();
+        this.rotoDisplay.flushDeviceDisplay ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void flushHardware ()
+    {
+        this.rotoDisplay.updateTrackDisplay ();
+        this.rotoDisplay.updateDeviceDisplay ();
+
+        super.flushHardware ();
     }
 
 

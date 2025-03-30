@@ -5,7 +5,6 @@
 package de.mossgrabers.framework.parameter;
 
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
-import de.mossgrabers.framework.observer.IValueObserver;
 import de.mossgrabers.framework.utils.StringUtils;
 
 
@@ -104,13 +103,5 @@ public class ResetParameter extends AbstractParameterWrapper
     public void inc (final double increment)
     {
         this.parameter.resetValue ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void addValueObserver (final IValueObserver<Void> observer)
-    {
-        throw new UnsupportedOperationException ();
     }
 }

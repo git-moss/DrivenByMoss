@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.Optional;
 
 import de.mossgrabers.controller.melbourne.rotocontrol.controller.RotoControlColorManager;
 import de.mossgrabers.controller.melbourne.rotocontrol.controller.RotoControlControlSurface;
@@ -20,6 +21,7 @@ import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IDeviceBank;
+import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.utils.StringUtils;
 
@@ -95,7 +97,7 @@ public class RotoControlDisplay
     public void updateTrackDisplay ()
     {
         final ITrackBank trackBank = this.model.getCurrentTrackBank ();
-        int trackCount = Math.min (127, trackBank.getItemCount ());
+        final int trackCount = Math.min (64, trackBank.getItemCount ());
         boolean updateAll = false;
         if (trackCount != this.trackCountCache)
         {
@@ -105,8 +107,13 @@ public class RotoControlDisplay
             this.surface.sendSysex (RotoControlMessage.GENERAL, RotoControlMessage.TR_NUM_TRACKS, trackCount);
         }
 
-        final ITrackBank effectTrackBank = this.model.getEffectTrackBank ();
-        final int sendsCount = Math.min (127, effectTrackBank == null || this.model.isEffectTrackBankActive () ? 0 : effectTrackBank.getItemCount ());
+        int sendsCount = 0;
+        final Optional<ITrack> selectedTrack = this.model.getTrackBank ().getSelectedItem ();
+        if (selectedTrack.isPresent ())
+        {
+            final ISendBank sendBank = selectedTrack.get ().getSendBank ();
+            sendsCount = Math.min (127, sendBank.getItemCount ());
+        }
         if (updateAll || sendsCount != this.sendsCountCache)
         {
             this.sendsCountCache = sendsCount;
@@ -124,10 +131,10 @@ public class RotoControlDisplay
         for (int i = 0; i < 8; i++)
         {
             final ITrack track = trackBank.getItem (i);
-            String name = create13ByteTextArray (track.getName ());
+            final String name = create13ByteTextArray (track.getName ());
             final int colorIndex = ColorEx.getClosestColorIndex (track.getColor (), RotoControlColorManager.DEFAULT_PALETTE);
 
-            if (updateAll || (!name.equals (this.trackNameCache[i]) || this.trackColorCache[i] != colorIndex))
+            if (updateAll || !name.equals (this.trackNameCache[i]) || this.trackColorCache[i] != colorIndex)
             {
                 this.trackNameCache[i] = name;
                 this.trackColorCache[i] = colorIndex;
@@ -215,7 +222,7 @@ public class RotoControlDisplay
 
     /**
      * Creates a hash from a string. Each byte contains only 7-bit.
-     * 
+     *
      * @param input The string to hash
      * @param hashSize The number of bytes of the hash
      * @return The hash value
@@ -232,7 +239,7 @@ public class RotoControlDisplay
 
     /**
      * Converts the given text to ASCII and pads it with zero bytes.
-     * 
+     *
      * @param text The text
      * @return The text bytes with at least 1 closing zero byte
      */
@@ -242,7 +249,7 @@ public class RotoControlDisplay
     }
 
 
-    private void sendTrackDetails (final int position, String name, final int colorIndex)
+    private void sendTrackDetails (final int position, final String name, final int colorIndex)
     {
         try
         {

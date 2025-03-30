@@ -133,7 +133,7 @@ public interface ISpecificDevice extends IDevice
 
     /**
      * Get the parameter list. Get access to a list of parameters.
-     * 
+     *
      * @return The list
      */
     IParameterList getParameterList ();

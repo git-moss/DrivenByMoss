@@ -4,12 +4,13 @@
 
 package de.mossgrabers.framework.daw.data.empty;
 
-import de.mossgrabers.framework.daw.data.bank.IParameterBank;
-import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
-import de.mossgrabers.framework.parameter.IParameter;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import de.mossgrabers.framework.daw.data.bank.IParameterBank;
+import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
+import de.mossgrabers.framework.observer.IValueObserver;
+import de.mossgrabers.framework.parameter.IParameter;
 
 
 /**
@@ -58,5 +59,13 @@ public class EmptyParameterBank extends EmptyBank<IParameter> implements IParame
     public IParameterPageBank getPageBank ()
     {
         return EmptyParameterPageBank.INSTANCE;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void addValueObserver (final IValueObserver<Integer> observer)
+    {
+        // Intentionally empty
     }
 }

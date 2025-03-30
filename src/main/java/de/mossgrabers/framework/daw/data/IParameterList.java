@@ -18,7 +18,7 @@ public interface IParameterList
 {
     /**
      * Get the maximum number of parameters which can be in the list.
-     * 
+     *
      * @return The maximum number of parameters, always a multiple of 8
      */
     int getMaxNumberOfParameters ();

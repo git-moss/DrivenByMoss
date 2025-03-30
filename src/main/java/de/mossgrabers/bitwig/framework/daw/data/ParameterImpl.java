@@ -153,14 +153,6 @@ public class ParameterImpl extends RangedValueImpl
 
     /** {@inheritDoc} */
     @Override
-    public void addValueObserver (final IValueObserver<Void> observer)
-    {
-        this.parameter.value ().addValueObserver (value -> observer.update (null));
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
     public void setIndication (final boolean enable)
     {
         this.parameter.setIndication (enable);

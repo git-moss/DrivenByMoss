@@ -236,12 +236,4 @@ public abstract class AbstractParameterWrapper implements IParameter
     {
         this.parameter.setIndication (enable);
     }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void addValueObserver (final IValueObserver<Void> observer)
-    {
-        this.parameter.addValueObserver (observer);
-    }
 }

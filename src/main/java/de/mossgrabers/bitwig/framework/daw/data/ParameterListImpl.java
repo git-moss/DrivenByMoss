@@ -30,7 +30,7 @@ public class ParameterListImpl implements IParameterList
 
     /**
      * Constructor.
-     * 
+     *
      * @param numMonitoredPages The number of pages t monitor
      * @param device A Bitwig device
      * @param host The controller host
@@ -48,8 +48,8 @@ public class ParameterListImpl implements IParameterList
         {
             final int page = i;
             final CursorRemoteControlsPage remoteControls = device.createCursorRemoteControlsPage ("Page " + page, numParams, "");
-            remoteControls.pageCount ().addValueObserver (newValue -> reAdjust (remoteControls, page), -1);
-            remoteControls.selectedPageIndex ().addValueObserver (newValue -> reAdjust (remoteControls, page), -1);
+            remoteControls.pageCount ().addValueObserver (newValue -> this.reAdjust (remoteControls, page), -1);
+            remoteControls.selectedPageIndex ().addValueObserver (newValue -> this.reAdjust (remoteControls, page), -1);
             for (int p = 0; p < numParams; p++)
                 this.parameters.add (new ParameterImpl (valueChanger, remoteControls.getParameter (p)));
         }

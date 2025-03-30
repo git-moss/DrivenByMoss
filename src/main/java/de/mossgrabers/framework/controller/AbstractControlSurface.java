@@ -904,7 +904,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
     /**
      * Handle CC command.
-     * 
+     *
      * @param channel The MIDI channel
      * @param data1 First data byte
      * @param data2 Second data byte

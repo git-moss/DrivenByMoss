@@ -6,7 +6,6 @@ package de.mossgrabers.framework.parameter;
 
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.data.AbstractItemImpl;
-import de.mossgrabers.framework.observer.IValueObserver;
 import de.mossgrabers.framework.utils.StringUtils;
 
 
@@ -143,14 +142,6 @@ public abstract class AbstractParameterImpl extends AbstractItemImpl implements 
     public String getDisplayedValue (final int limit)
     {
         return StringUtils.optimizeName (this.getDisplayedValue (), limit);
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void addValueObserver (final IValueObserver<Void> observer)
-    {
-        throw new UnsupportedOperationException ();
     }
 
 
