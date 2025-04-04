@@ -4,6 +4,13 @@
 
 package de.mossgrabers.bitwig.framework.daw.data.bank;
 
+import java.util.Collections;
+import java.util.List;
+
+import com.bitwig.extension.controller.api.CursorTrack;
+import com.bitwig.extension.controller.api.Track;
+import com.bitwig.extension.controller.api.TrackBank;
+
 import de.mossgrabers.bitwig.framework.daw.ApplicationImpl;
 import de.mossgrabers.bitwig.framework.daw.data.CursorTrackImpl;
 import de.mossgrabers.bitwig.framework.daw.data.TrackImpl;
@@ -12,19 +19,13 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.data.AbstractItemImpl;
 import de.mossgrabers.framework.daw.data.IDeviceMetadata;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.observer.IIndexedValueObserver;
-
-import com.bitwig.extension.controller.api.CursorTrack;
-import com.bitwig.extension.controller.api.Track;
-import com.bitwig.extension.controller.api.TrackBank;
-
-import java.util.Collections;
-import java.util.List;
 
 
 /**
@@ -146,7 +147,7 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBankImpl<Trac
         {
             final boolean isSelected = index == i;
             final ITrack item = this.getItem (i);
-            if (item.isSelected () != isSelected)
+            if (item instanceof AbstractItemImpl itemImpl && itemImpl.getRawSelectionState () != isSelected)
             {
                 item.setSelected (isSelected);
                 this.notifySelectionObservers (i, isSelected);

@@ -4,6 +4,20 @@
 
 package de.mossgrabers.bitwig.framework.daw.data;
 
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
+
+import com.bitwig.extension.controller.api.BooleanValue;
+import com.bitwig.extension.controller.api.CursorTrack;
+import com.bitwig.extension.controller.api.Device;
+import com.bitwig.extension.controller.api.DeviceBank;
+import com.bitwig.extension.controller.api.DeviceMatcher;
+import com.bitwig.extension.controller.api.PlayingNote;
+import com.bitwig.extension.controller.api.SceneBank;
+import com.bitwig.extension.controller.api.Track;
+
 import de.mossgrabers.bitwig.framework.daw.ApplicationImpl;
 import de.mossgrabers.bitwig.framework.daw.HostImpl;
 import de.mossgrabers.bitwig.framework.daw.ModelImpl;
@@ -16,20 +30,6 @@ import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.observer.INoteObserver;
 import de.mossgrabers.framework.parameter.IParameter;
-
-import com.bitwig.extension.controller.api.BooleanValue;
-import com.bitwig.extension.controller.api.CursorTrack;
-import com.bitwig.extension.controller.api.Device;
-import com.bitwig.extension.controller.api.DeviceBank;
-import com.bitwig.extension.controller.api.DeviceMatcher;
-import com.bitwig.extension.controller.api.PlayingNote;
-import com.bitwig.extension.controller.api.SceneBank;
-import com.bitwig.extension.controller.api.Track;
-
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 
 /**

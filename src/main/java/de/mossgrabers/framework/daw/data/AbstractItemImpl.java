@@ -103,6 +103,17 @@ public abstract class AbstractItemImpl implements IItem
     }
 
 
+    /**
+     * Get the raw selection without respecting if the item exists or not.
+     * 
+     * @return True if selected
+     */
+    public boolean getRawSelectionState ()
+    {
+        return this.selected;
+    }
+
+
     /** {@inheritDoc} */
     @Override
     public void select ()
