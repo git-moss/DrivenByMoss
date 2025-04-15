@@ -124,6 +124,9 @@ public class RotoControlDeviceParameterMode extends AbstractParameterMode<RotoCo
         final IParameterList parameterList = this.cursorDevice.getParameterList ();
         final int index = isSwitch ? 8 + posInPage : posInPage;
         this.parameterProvider.set (index, parameterList.getParameters ().get (paramIndex));
+
+        // Needs to be send again since Firmware 1.1.3
+        this.sendLearnParam (paramIndex);
     }
 
 
@@ -135,9 +138,13 @@ public class RotoControlDeviceParameterMode extends AbstractParameterMode<RotoCo
      */
     private void handleMapping (final int index)
     {
-        if (!this.learnMode)
-            return;
+        if (this.learnMode)
+            this.sendLearnParam (index);
+    }
 
+
+    private void sendLearnParam (final int index)
+    {
         final IParameterBank parameterBank = this.cursorDevice.getParameterBank ();
         final IParameter param = parameterBank.getItem (index);
         if (!param.doesExist ())
@@ -153,14 +160,23 @@ public class RotoControlDeviceParameterMode extends AbstractParameterMode<RotoCo
         if (this.lastMappedParameterIndex == paramIndex)
             return;
 
+        // Add parameter index & hash
         final ByteArrayOutputStream out = new ByteArrayOutputStream ();
         out.write ((byte) (paramIndex >> 7 & 0x7F));
         out.write ((byte) (paramIndex & 0x7F));
         for (final byte b: RotoControlDisplay.createHash (param.getName (), 6))
             out.write ((byte) (b & 0x7F));
 
-        // TODO API 20: set correct value for stepped parameters!
+        // Not a MACRO
         out.write ((byte) 0);
+
+        // TODO API 20: set correct value for stepped parameters! Max number is 0x18.
+        out.write ((byte) 0);
+
+        // The value is already in the range of [0..16383]
+        final int paramValue = param.getValue ();
+        out.write ((byte) (paramValue >> 7 & 0x7F));
+        out.write ((byte) (paramValue & 0x7F));
 
         try
         {
@@ -171,7 +187,8 @@ public class RotoControlDeviceParameterMode extends AbstractParameterMode<RotoCo
             // Ignore
         }
 
-        // TODO API 20: Add names for stepped values if any
+        // TODO API 20: Add names for stepped values if any - but only if they are not more than
+        // 0x10
 
         this.surface.sendSysex (RotoControlMessage.PLUGIN, RotoControlMessage.TR_LEARN_PARAM, out.toByteArray ());
 

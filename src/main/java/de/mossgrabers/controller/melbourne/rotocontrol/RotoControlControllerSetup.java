@@ -64,7 +64,7 @@ import de.mossgrabers.framework.view.Views;
  */
 public class RotoControlControllerSetup extends AbstractControllerSetup<RotoControlControlSurface, RotoControlConfiguration> implements IMessageCallback
 {
-    private static final int  NUM_PARAM_PAGES    = 10;
+    private static final int  NUM_PARAM_PAGES    = 16;
     private static final int  MIDI_CC_CHANNEL    = 15;
 
     private final boolean []  noteBlocker        = new boolean [64];
