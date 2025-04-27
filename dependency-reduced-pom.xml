@@ -4,7 +4,7 @@
   <groupId>de.mossgrabers</groupId>
   <artifactId>DrivenByMoss</artifactId>
   <name>DrivenByMoss</name>
-  <version>25.0.1</version>
+  <version>25.0.2</version>
   <licenses>
     <license>
       <name>LGPL-2.1-or-later</name>
@@ -228,7 +228,7 @@
     <dependency>
       <groupId>com.bitwig</groupId>
       <artifactId>extension-api</artifactId>
-      <version>19</version>
+      <version>21</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>

@@ -4,10 +4,10 @@
 
 package de.mossgrabers.bitwig.framework.daw.data;
 
+import com.bitwig.extension.controller.api.Track;
+
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.parameter.AbstractParameterImpl;
-
-import com.bitwig.extension.controller.api.Track;
 
 
 /**
@@ -32,8 +32,8 @@ public class CrossfadeParameter extends AbstractParameterImpl
      * Constructor.
      *
      * @param valueChanger The value changer
-     * @param track The track which crossfade setting to edit
-     * @param index The index of the crossfade parameter
+     * @param track The track which cross-fade setting to edit
+     * @param index The index of the cross-fade parameter
      */
     public CrossfadeParameter (final IValueChanger valueChanger, final Track track, final int index)
     {
@@ -149,5 +149,13 @@ public class CrossfadeParameter extends AbstractParameterImpl
     public void resetValue ()
     {
         this.setNormalizedValue (0.5);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getNumberOfSteps ()
+    {
+        return 3;
     }
 }

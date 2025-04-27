@@ -9,7 +9,7 @@ import java.util.Map;
 
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
-import de.mossgrabers.framework.observer.IValueObserver;
+import de.mossgrabers.framework.observer.IParameterValueObserver;
 import de.mossgrabers.framework.parameter.IParameter;
 
 
@@ -64,7 +64,7 @@ public class EmptyParameterBank extends EmptyBank<IParameter> implements IParame
 
     /** {@inheritDoc} */
     @Override
-    public void addValueObserver (final IValueObserver<Integer> observer)
+    public void addValueObserver (final IParameterValueObserver observer)
     {
         // Intentionally empty
     }

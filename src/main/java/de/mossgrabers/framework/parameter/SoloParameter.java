@@ -122,4 +122,12 @@ public class SoloParameter extends AbstractParameterImpl
     {
         return "Track Solo";
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getNumberOfSteps ()
+    {
+        return 2;
+    }
 }

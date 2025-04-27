@@ -4,11 +4,6 @@
 
 package de.mossgrabers.controller.melbourne.rotocontrol;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Optional;
-
 import de.mossgrabers.controller.melbourne.rotocontrol.command.trigger.transport.RotoControlPunchInCommand;
 import de.mossgrabers.controller.melbourne.rotocontrol.command.trigger.transport.RotoControlPunchOutCommand;
 import de.mossgrabers.controller.melbourne.rotocontrol.controller.IMessageCallback;
@@ -55,6 +50,11 @@ import de.mossgrabers.framework.mode.track.TrackSoloMode;
 import de.mossgrabers.framework.mode.track.TrackVolumeMode;
 import de.mossgrabers.framework.view.DummyView;
 import de.mossgrabers.framework.view.Views;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Optional;
 
 
 /**
@@ -139,11 +139,11 @@ public class RotoControlControllerSetup extends AbstractControllerSetup<RotoCont
     {
         final RotoControlControlSurface surface = this.getSurface ();
         final ModeManager modeManager = surface.getModeManager ();
-        modeManager.register (Modes.TRACK, new TrackMode<RotoControlControlSurface, RotoControlConfiguration> (surface, this.model, true));
-        modeManager.register (Modes.VOLUME, new TrackVolumeMode<RotoControlControlSurface, RotoControlConfiguration> (surface, this.model, true));
-        modeManager.register (Modes.PAN, new TrackPanMode<RotoControlControlSurface, RotoControlConfiguration> (surface, this.model, true));
+        modeManager.register (Modes.TRACK, new TrackMode<> (surface, this.model, true));
+        modeManager.register (Modes.VOLUME, new TrackVolumeMode<> (surface, this.model, true));
+        modeManager.register (Modes.PAN, new TrackPanMode<> (surface, this.model, true));
         for (int i = 0; i < this.modelSetup.getNumSends (); i++)
-            modeManager.register (Modes.get (Modes.SEND1, i), new TrackSendMode<RotoControlControlSurface, RotoControlConfiguration> (i, surface, this.model, true));
+            modeManager.register (Modes.get (Modes.SEND1, i), new TrackSendMode<> (i, surface, this.model, true));
         final RotoControlDeviceParameterMode deviceParamsMode = new RotoControlDeviceParameterMode (surface, this.model);
         modeManager.register (Modes.DEVICE_PARAMS, deviceParamsMode);
 
@@ -403,7 +403,7 @@ public class RotoControlControllerSetup extends AbstractControllerSetup<RotoCont
 
             case RotoControlMessage.RCV_PARAM_LEARNED:
                 final int paramIndex = data[0] * 128 + data[1];
-                // Byte 2-8 contains the hash which we do not need
+                // Bytes 3-8 contain the hash which we do not need
                 final boolean isSwitch = data[8] == 1;
                 final int posInPage = data[9];
                 if (modeManager.get (Modes.DEVICE_PARAMS) instanceof final RotoControlDeviceParameterMode rotoParamsMode)

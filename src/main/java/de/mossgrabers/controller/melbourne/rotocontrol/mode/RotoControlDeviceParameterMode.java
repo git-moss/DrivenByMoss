@@ -4,20 +4,21 @@
 
 package de.mossgrabers.controller.melbourne.rotocontrol.mode;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
 import de.mossgrabers.controller.melbourne.rotocontrol.RotoControlConfiguration;
 import de.mossgrabers.controller.melbourne.rotocontrol.controller.RotoControlControlSurface;
 import de.mossgrabers.controller.melbourne.rotocontrol.controller.RotoControlMessage;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IParameterList;
-import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
 import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.utils.ButtonEvent;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.List;
 
 
 /**
@@ -48,7 +49,7 @@ public class RotoControlDeviceParameterMode extends AbstractParameterMode<RotoCo
 
         // Monitor the 'normal' selected parameter page for changes which will be used to trigger
         // the learn mode
-        this.cursorDevice.getParameterBank ().addValueObserver (index -> this.handleMapping (index.intValue ()));
+        this.cursorDevice.getParameterBank ().addValueObserver ( (page, index) -> this.handleMapping (page, index));
 
         // Add 8 knob and 8 button parameters
         this.parameterProvider = new ReplaceableParameterProvider (16);
@@ -122,56 +123,92 @@ public class RotoControlDeviceParameterMode extends AbstractParameterMode<RotoCo
     public void bind (final int paramIndex, final int posInPage, final boolean isSwitch)
     {
         final IParameterList parameterList = this.cursorDevice.getParameterList ();
-        final int index = isSwitch ? 8 + posInPage : posInPage;
-        this.parameterProvider.set (index, parameterList.getParameters ().get (paramIndex));
 
-        // Needs to be send again since Firmware 1.1.3
-        this.sendLearnParam (paramIndex);
+        final IHost host = this.surface.getHost ();
+        final int maxNumberOfParameters = parameterList.getMaxNumberOfParameters ();
+        if (paramIndex >= maxNumberOfParameters)
+        {
+            host.error ("Parameter at index " + paramIndex + " is higher than the number of supported parameters (" + maxNumberOfParameters + ").");
+            return;
+        }
+
+        final int index = isSwitch ? 8 + posInPage : posInPage;
+        final List<IParameter> parameters = parameterList.getParameters ();
+        final int numParams = parameters.size ();
+        if (paramIndex < numParams)
+        {
+            final IParameter parameter = parameters.get (paramIndex);
+            this.parameterProvider.set (index, parameter);
+
+            host.scheduleTask ( () -> {
+                // Needs to be send again since Firmware 1.1.3
+                this.sendLearnParam (parameter, paramIndex);
+            }, 100);
+        }
+        else
+            host.error ("Parameter at index " + paramIndex + " is out of parameter range (" + numParams + ").");
     }
 
 
     /**
      * If a remote control knob has been moved in Bitwig send the related parameter data to the
      * ROTO-CONTROL if learn mode is active.
-     *
+     * 
+     * @param page The page of the parameter
      * @param index The index of the remote control (0-7)
      */
-    private void handleMapping (final int index)
+    private void handleMapping (final int page, final int index)
     {
-        if (this.learnMode)
-            this.sendLearnParam (index);
+        if (!this.learnMode)
+            return;
+
+        final IParameterList parameterList = this.cursorDevice.getParameterList ();
+        final int paramIndex = page * this.cursorDevice.getParameterBank ().getPageSize () + index;
+
+        final IHost host = this.surface.getHost ();
+
+        final int maxNumberOfParameters = parameterList.getMaxNumberOfParameters ();
+        if (paramIndex >= maxNumberOfParameters)
+        {
+            host.error ("Parameter at index " + paramIndex + " is higher than the number of supported parameters (" + maxNumberOfParameters + ").");
+            return;
+        }
+
+        final List<IParameter> parameters = parameterList.getParameters ();
+        final int numParams = parameters.size ();
+        if (paramIndex >= numParams)
+        {
+            host.error ("Parameter at index " + paramIndex + " is out of parameter range (" + numParams + ").");
+            return;
+        }
+
+        final IParameter param = parameters.get (paramIndex);
+        if (param.doesExist ())
+            this.sendLearnParam (param, paramIndex);
     }
 
 
-    private void sendLearnParam (final int index)
+    private void sendLearnParam (final IParameter param, final int paramIndex)
     {
-        final IParameterBank parameterBank = this.cursorDevice.getParameterBank ();
-        final IParameter param = parameterBank.getItem (index);
-        if (!param.doesExist ())
-            return;
-
-        final int position = parameterBank.getPageBank ().getSelectedItemIndex ();
-        if (position < 0)
-            return;
-
-        final int paramIndex = position * parameterBank.getPageSize () + index;
         // Already mapped? To prevent multiple learn messages when several value change messages
         // appear
-        if (this.lastMappedParameterIndex == paramIndex)
+        if (this.learnMode && this.lastMappedParameterIndex == paramIndex)
             return;
 
         // Add parameter index & hash
         final ByteArrayOutputStream out = new ByteArrayOutputStream ();
         out.write ((byte) (paramIndex >> 7 & 0x7F));
         out.write ((byte) (paramIndex & 0x7F));
-        for (final byte b: RotoControlDisplay.createHash (param.getName (), 6))
+        final byte [] hash = RotoControlDisplay.createHash (param.getName (), 6);
+        for (final byte b: hash)
             out.write ((byte) (b & 0x7F));
 
         // Not a MACRO
         out.write ((byte) 0);
 
-        // TODO API 20: set correct value for stepped parameters! Max number is 0x18.
-        out.write ((byte) 0);
+        // Set correct value for stepped parameters! Max number is 0x18.
+        final int numberOfSteps = param.getNumberOfSteps ();
+        out.write ((byte) (numberOfSteps >= 0x02 && numberOfSteps <= 0x18 ? numberOfSteps : 0));
 
         // The value is already in the range of [0..16383]
         final int paramValue = param.getValue ();
@@ -181,14 +218,18 @@ public class RotoControlDeviceParameterMode extends AbstractParameterMode<RotoCo
         try
         {
             out.write (RotoControlDisplay.create13ByteTextArray (param.getName ()).getBytes ());
+
+            // Add names for stepped values if any - but only if they are not more than 0x10
+            if (numberOfSteps >= 0x02 && numberOfSteps <= 0x10)
+            {
+                for (int i = 0; i < numberOfSteps; i++)
+                    out.write (RotoControlDisplay.create13ByteTextArray ("Option " + (i + 1)).getBytes ());
+            }
         }
         catch (final IOException ex)
         {
             // Ignore
         }
-
-        // TODO API 20: Add names for stepped values if any - but only if they are not more than
-        // 0x10
 
         this.surface.sendSysex (RotoControlMessage.PLUGIN, RotoControlMessage.TR_LEARN_PARAM, out.toByteArray ());
 

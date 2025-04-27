@@ -4,12 +4,12 @@
 
 package de.mossgrabers.bitwig.framework.daw.data;
 
-import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
-import de.mossgrabers.framework.parameter.AbstractParameterImpl;
-
 import com.bitwig.extension.controller.api.DoubleValue;
 import com.bitwig.extension.controller.api.SettableRangedValue;
 import com.bitwig.extension.controller.api.StringValue;
+
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
+import de.mossgrabers.framework.parameter.AbstractParameterImpl;
 
 
 /**
@@ -58,6 +58,7 @@ public class RangedValueImpl extends AbstractParameterImpl
         this.rangedValue = rangedValue;
         this.rangedValue.markInterested ();
         this.rangedValue.displayedValue ().markInterested ();
+        this.rangedValue.discreteValueCount ().markInterested ();
     }
 
 
@@ -67,6 +68,7 @@ public class RangedValueImpl extends AbstractParameterImpl
     {
         Util.setIsSubscribed (this.rangedValue, enable);
         Util.setIsSubscribed (this.rangedValue.displayedValue (), enable);
+        Util.setIsSubscribed (this.rangedValue.discreteValueCount (), enable);
     }
 
 
@@ -156,6 +158,14 @@ public class RangedValueImpl extends AbstractParameterImpl
     public void resetValue ()
     {
         this.setValue (0);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getNumberOfSteps ()
+    {
+        return this.rangedValue.discreteValueCount ().get ();
     }
 
 

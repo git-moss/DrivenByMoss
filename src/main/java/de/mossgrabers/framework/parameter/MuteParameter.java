@@ -122,4 +122,12 @@ public class MuteParameter extends AbstractParameterImpl
     {
         return "Track Mute";
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getNumberOfSteps ()
+    {
+        return 2;
+    }
 }

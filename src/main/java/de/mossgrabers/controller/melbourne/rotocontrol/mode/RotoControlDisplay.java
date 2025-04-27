@@ -4,18 +4,11 @@
 
 package de.mossgrabers.controller.melbourne.rotocontrol.mode;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.Optional;
-
 import de.mossgrabers.controller.melbourne.rotocontrol.controller.RotoControlColorManager;
 import de.mossgrabers.controller.melbourne.rotocontrol.controller.RotoControlControlSurface;
 import de.mossgrabers.controller.melbourne.rotocontrol.controller.RotoControlMessage;
 import de.mossgrabers.framework.controller.color.ColorEx;
+import de.mossgrabers.framework.controller.hardware.IHwButton;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IDevice;
@@ -24,6 +17,14 @@ import de.mossgrabers.framework.daw.data.bank.IDeviceBank;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.utils.StringUtils;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.Optional;
 
 
 /**
@@ -127,10 +128,12 @@ public class RotoControlDisplay
             this.surface.sendSysex (RotoControlMessage.GENERAL, RotoControlMessage.TR_FIRST_TRACK, firstTrackPosition);
         }
 
-        boolean hasBeenUpdated = false;
+        int hasBeenUpdated = 0;
         for (int i = 0; i < 8; i++)
         {
             final ITrack track = trackBank.getItem (i);
+            if (!track.doesExist ())
+                continue;
             final String name = create13ByteTextArray (track.getName ());
             final int colorIndex = ColorEx.getClosestColorIndex (track.getColor (), RotoControlColorManager.DEFAULT_PALETTE);
 
@@ -139,11 +142,19 @@ public class RotoControlDisplay
                 this.trackNameCache[i] = name;
                 this.trackColorCache[i] = colorIndex;
                 this.sendTrackDetails (track.getPosition (), name, colorIndex);
-                hasBeenUpdated = true;
+                hasBeenUpdated++;
             }
         }
+        if (updateAll && trackCount < 8 && trackCount != hasBeenUpdated)
+            this.trackCountCache = -1;
+        if (updateAll)
+        {
+            // If tracks have been added or removed, ensure that the button mode is updated as well
+            for (IHwButton button: this.surface.getButtons ().values ())
+                button.getLight ().forceFlush ();
+        }
 
-        if (hasBeenUpdated)
+        if (hasBeenUpdated > 0)
             this.surface.sendSysex (RotoControlMessage.GENERAL, RotoControlMessage.TR_TRACK_DETAILS_END);
     }
 

@@ -151,4 +151,12 @@ public abstract class AbstractParameterImpl extends AbstractItemImpl implements 
     {
         // Intentionally empty
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getNumberOfSteps ()
+    {
+        return -1;
+    }
 }

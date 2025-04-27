@@ -5,9 +5,13 @@
 package de.mossgrabers.bitwig.framework.daw;
 
 import java.text.DecimalFormat;
+import java.util.Map;
+import java.util.TreeMap;
 
+import com.bitwig.extension.controller.api.Arranger;
 import com.bitwig.extension.controller.api.BeatTimeFormatter;
 import com.bitwig.extension.controller.api.ControllerHost;
+import com.bitwig.extension.controller.api.SettableBeatTimeValue;
 import com.bitwig.extension.controller.api.SettableEnumValue;
 import com.bitwig.extension.controller.api.TimeSignatureValue;
 import com.bitwig.extension.controller.api.Transport;
@@ -35,17 +39,17 @@ import de.mossgrabers.framework.utils.StringUtils;
 public class TransportImpl implements ITransport
 {
     /** No pre-roll. */
-    private static final String            PREROLL_NONE            = "none";
+    private static final String              PREROLL_NONE            = "none";
     /** 1 bar pre-roll. */
-    private static final String            PREROLL_1_BAR           = "one_bar";
+    private static final String              PREROLL_1_BAR           = "one_bar";
     /** 2 bar pre-roll. */
-    private static final String            PREROLL_2_BARS          = "two_bars";
+    private static final String              PREROLL_2_BARS          = "two_bars";
     /** 4 bar pre-Wroll. */
-    private static final String            PREROLL_4_BARS          = "four_bars";
+    private static final String              PREROLL_4_BARS          = "four_bars";
 
-    private static final String            ACTION_JUMP_TO_END      = "jump_to_end_of_arrangement";
+    private static final String              ACTION_JUMP_TO_END      = "jump_to_end_of_arrangement";
 
-    private static final AutomationMode [] AUTOMATION_MODES        = new AutomationMode []
+    private static final AutomationMode []   AUTOMATION_MODES        = new AutomationMode []
     {
         AutomationMode.READ,
         AutomationMode.LATCH,
@@ -53,17 +57,38 @@ public class TransportImpl implements ITransport
         AutomationMode.WRITE
     };
 
-    private static final BeatTimeFormatter BEAT_POSITION_FORMATTER = formatAsBeats (1);
-    private static final BeatTimeFormatter BEAT_LENGTH_FORMATTER   = formatAsBeats (0);
+    private static final BeatTimeFormatter   BEAT_POSITION_FORMATTER = formatAsBeats (1);
+    private static final BeatTimeFormatter   BEAT_LENGTH_FORMATTER   = formatAsBeats (0);
 
-    private final ControllerHost           host;
-    private final IApplication             application;
-    private final IValueChanger            valueChanger;
-    private final Transport                transport;
+    private static final Map<Double, Double> ZOOM_RESOLUTIONS        = new TreeMap<> ();
+    static
+    {
+        ZOOM_RESOLUTIONS.put (Double.valueOf (8.8), Double.valueOf (1.0 / 1));
+        ZOOM_RESOLUTIONS.put (Double.valueOf (27.94), Double.valueOf (1.0 / 4));
+        ZOOM_RESOLUTIONS.put (Double.valueOf (279.11), Double.valueOf (1.0 / 16));
+        ZOOM_RESOLUTIONS.put (Double.valueOf (661.61), Double.valueOf (1.0 / 32));
+        ZOOM_RESOLUTIONS.put (Double.valueOf (1176.20), Double.valueOf (1.0 / 64));
+        ZOOM_RESOLUTIONS.put (Double.valueOf (2091.03), Double.valueOf (1.0 / 128));
+        ZOOM_RESOLUTIONS.put (Double.valueOf (4956.52), Double.valueOf (1.0 / 256));
+        ZOOM_RESOLUTIONS.put (Double.valueOf (8811.59), Double.valueOf (1.0 / 512));
+        ZOOM_RESOLUTIONS.put (Double.valueOf (20886.75), Double.valueOf (1.0 / 1024));
+        ZOOM_RESOLUTIONS.put (Double.valueOf (37132.00), Double.valueOf (1.0 / 2048));
+        ZOOM_RESOLUTIONS.put (Double.valueOf (66012.45), Double.valueOf (1.0 / 4096));
+        ZOOM_RESOLUTIONS.put (Double.valueOf (156473.96), Double.valueOf (1.0 / 8192));
+        ZOOM_RESOLUTIONS.put (Double.valueOf (278175.93), Double.valueOf (1.0 / 16384));
+        ZOOM_RESOLUTIONS.put (Double.valueOf (600000), Double.valueOf (1.0 / 32768));
+        ZOOM_RESOLUTIONS.put (Double.valueOf (800000), Double.valueOf (1.0 / 65536));
+    }
 
-    private final IParameter               crossfadeParameter;
-    private final IParameter               metronomeVolumeParameter;
-    private final IParameter               automationModeParameter;
+    private final ControllerHost host;
+    private final IApplication   application;
+    private final IValueChanger  valueChanger;
+    private final Transport      transport;
+
+    private final IParameter     crossfadeParameter;
+    private final IParameter     metronomeVolumeParameter;
+    private final IParameter     automationModeParameter;
+    private final Arranger       bwArranger;
 
 
     /**
@@ -71,14 +96,16 @@ public class TransportImpl implements ITransport
      *
      * @param host The host
      * @param application The application
+     * @param bwArranger The Bitwig arranger
      * @param valueChanger The value changer
      */
-    public TransportImpl (final ControllerHost host, final IApplication application, final IValueChanger valueChanger)
+    public TransportImpl (final ControllerHost host, final IApplication application, final Arranger bwArranger, final IValueChanger valueChanger)
     {
         this.host = host;
         this.application = application;
         this.valueChanger = valueChanger;
         this.transport = host.createTransport ();
+        this.bwArranger = bwArranger;
 
         this.transport.isPlaying ().markInterested ();
         this.transport.isArrangerRecordEnabled ().markInterested ();
@@ -102,6 +129,8 @@ public class TransportImpl implements ITransport
         this.transport.getClipLauncherPostRecordingTimeOffset ().markInterested ();
         this.transport.defaultLaunchQuantization ().markInterested ();
         this.transport.isFillModeActive ().markInterested ();
+
+        this.bwArranger.getHorizontalScrollbarModel ().getContentPerPixel ().markInterested ();
 
         this.crossfadeParameter = new ParameterImpl (valueChanger, this.transport.crossfade ());
         this.metronomeVolumeParameter = new MetronomeVolumeParameterImpl (valueChanger, this.transport.metronomeVolume ());
@@ -140,6 +169,7 @@ public class TransportImpl implements ITransport
         Util.setIsSubscribed (this.transport.getClipLauncherPostRecordingTimeOffset (), enable);
         Util.setIsSubscribed (this.transport.defaultLaunchQuantization (), enable);
         Util.setIsSubscribed (this.transport.isFillModeActive (), enable);
+        Util.setIsSubscribed (this.bwArranger.getHorizontalScrollbarModel ().getContentPerPixel (), enable);
 
         this.crossfadeParameter.enableObservers (enable);
         this.metronomeVolumeParameter.enableObservers (enable);
@@ -522,27 +552,16 @@ public class TransportImpl implements ITransport
     @Override
     public void changePosition (final boolean increase, final boolean slow)
     {
-        final double frac = getTimeFraction (slow);
-        final double position = this.transport.playStartPosition ().get ();
-        double newPos = Math.max (0, position + (increase ? frac : -frac));
-
-        // Adjust to resolution
-        final double intPosition = Math.floor (newPos / frac);
-        newPos = intPosition * frac;
-
-        this.setPosition (newPos);
+        final double resolution = this.getZoomResolution ();
+        final double fraction = this.calcScrollFraction (resolution, slow);
+        final double position = Math.round (this.transport.playStartPosition ().get () / fraction) * fraction;
+        this.setPosition (increase ? position + fraction : Math.max (position - fraction, 0.0));
     }
 
 
-    /**
-     * Get the fraction to use for time changes.
-     *
-     * @param slow Slow change if true otherwise fast
-     * @return The fraction to change
-     */
-    private static double getTimeFraction (final boolean slow)
+    private double calcScrollFraction (final double resolution, final boolean slow)
     {
-        return slow ? TransportConstants.INC_FRACTION_TIME_SLOW : TransportConstants.INC_FRACTION_TIME;
+        return slow ? resolution : resolution * this.getQuartersPerMeasure () * 4;
     }
 
 
@@ -558,8 +577,11 @@ public class TransportImpl implements ITransport
     @Override
     public void changeLoopStart (final boolean increase, final boolean slow)
     {
-        final double frac = getTimeFraction (slow);
-        this.transport.arrangerLoopStart ().inc (increase ? frac : -frac);
+        final double resolution = this.getZoomResolution ();
+        final double fraction = this.calcScrollFraction (resolution, slow);
+        final SettableBeatTimeValue arrangerLoopStart = this.transport.arrangerLoopStart ();
+        final double position = Math.round (arrangerLoopStart.get () / fraction) * fraction;
+        arrangerLoopStart.set (increase ? position + fraction : Math.max (position - fraction, 0.0));
     }
 
 
@@ -603,8 +625,11 @@ public class TransportImpl implements ITransport
     @Override
     public void changeLoopLength (final boolean increase, final boolean slow)
     {
-        final double frac = getTimeFraction (slow);
-        this.transport.arrangerLoopDuration ().inc (increase ? frac : -frac);
+        final double resolution = this.getZoomResolution ();
+        final double fraction = this.calcScrollFraction (resolution, slow);
+        final SettableBeatTimeValue arrangerLoopDuration = this.transport.arrangerLoopDuration ();
+        final double position = Math.round (arrangerLoopDuration.get () / fraction) * fraction;
+        arrangerLoopDuration.set (increase ? position + fraction : Math.max (position - fraction, 0.0));
     }
 
 
@@ -923,5 +948,19 @@ public class TransportImpl implements ITransport
             final int quartersPerMeasure = 4 * timeSignatureNumerator / timeSignatureDenominator;
             return StringUtils.formatMeasuresLong (quartersPerMeasure, beatTime, offset, true);
         };
+    }
+
+
+    private double getZoomResolution ()
+    {
+        final double contentPerPixel = this.bwArranger.getHorizontalScrollbarModel ().getContentPerPixel ().get ();
+        final double inverseContentPerPixel = 1 / contentPerPixel;
+
+        for (final Map.Entry<Double, Double> entry: ZOOM_RESOLUTIONS.entrySet ())
+        {
+            if (inverseContentPerPixel < entry.getKey ().doubleValue ())
+                return entry.getValue ().doubleValue ();
+        }
+        return 800000.0;
     }
 }

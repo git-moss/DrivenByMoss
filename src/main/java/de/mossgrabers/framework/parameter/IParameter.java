@@ -128,4 +128,12 @@ public interface IParameter extends IItem
      * @param enable True in case visual indications should be shown
      */
     void setIndication (boolean enable);
+
+
+    /**
+     * If the parameter is stepped return the number of discrete steps available.
+     *
+     * @return The number of discrete steps available in the range or -1 for continuous value ranges
+     */
+    int getNumberOfSteps ();
 }

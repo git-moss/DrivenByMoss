@@ -160,4 +160,12 @@ public class SoloParameterImpl extends AbstractParameterImpl
     {
         // Not supported
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getNumberOfSteps ()
+    {
+        return 2;
+    }
 }

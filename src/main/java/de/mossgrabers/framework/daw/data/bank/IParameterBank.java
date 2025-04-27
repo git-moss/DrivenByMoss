@@ -4,7 +4,7 @@
 
 package de.mossgrabers.framework.daw.data.bank;
 
-import de.mossgrabers.framework.observer.IValueObserver;
+import de.mossgrabers.framework.observer.IParameterValueObserver;
 import de.mossgrabers.framework.parameter.IParameter;
 
 
@@ -27,8 +27,8 @@ public interface IParameterBank extends IBank<IParameter>
      * Add an observer for value changes of the parameters on the active page. Must only be called
      * on startup!
      *
-     * @param observer The observer to notify on a value change, the parameter is the index of the
-     *            parameter on the active page [0..page_size-1]
+     * @param observer The observer to notify on a value change, the parameters are the index of the
+     *            active page and the index of the parameter
      */
-    void addValueObserver (final IValueObserver<Integer> observer);
+    void addValueObserver (final IParameterValueObserver observer);
 }

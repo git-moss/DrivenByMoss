@@ -94,7 +94,7 @@ public class ModelImpl extends AbstractModel
         this.rootTrackGroup = proj.getRootTrackGroup ();
         this.project = new ProjectImpl (this.host, this.valueChanger, proj, bwApplication, numParamPages, numParams);
 
-        this.transport = new TransportImpl (controllerHost, this.application, this.valueChanger);
+        this.transport = new TransportImpl (controllerHost, this.application, bwArranger, this.valueChanger);
         this.arranger = new ArrangerImpl (bwArranger);
         final int numMarkers = modelSetup.getNumMarkers ();
         if (numMarkers > 0)

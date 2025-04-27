@@ -4,15 +4,9 @@
 
 package de.mossgrabers.bitwig.framework.extension;
 
-import de.mossgrabers.framework.configuration.Configuration;
-import de.mossgrabers.framework.controller.IControlSurface;
-import de.mossgrabers.framework.controller.IControllerDefinition;
-import de.mossgrabers.framework.controller.IControllerSetup;
-import de.mossgrabers.framework.usb.UsbMatcher;
-import de.mossgrabers.framework.usb.UsbMatcher.EndpointMatcher;
-import de.mossgrabers.framework.utils.OperatingSystem;
-import de.mossgrabers.framework.utils.Pair;
-import de.mossgrabers.framework.utils.StringUtils;
+import java.util.List;
+import java.util.Locale;
+import java.util.UUID;
 
 import com.bitwig.extension.api.PlatformType;
 import com.bitwig.extension.controller.AutoDetectionMidiPortNamesList;
@@ -25,9 +19,15 @@ import com.bitwig.extension.controller.UsbInterfaceMatcher;
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.UsbTransferType;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
+import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.IControlSurface;
+import de.mossgrabers.framework.controller.IControllerDefinition;
+import de.mossgrabers.framework.controller.IControllerSetup;
+import de.mossgrabers.framework.usb.UsbMatcher;
+import de.mossgrabers.framework.usb.UsbMatcher.EndpointMatcher;
+import de.mossgrabers.framework.utils.OperatingSystem;
+import de.mossgrabers.framework.utils.Pair;
+import de.mossgrabers.framework.utils.StringUtils;
 
 
 /**
@@ -116,7 +116,7 @@ public abstract class AbstractControllerExtensionDefinition<S extends IControlSu
     @Override
     public int getRequiredAPIVersion ()
     {
-        return 18;
+        return 21;
     }
 
 

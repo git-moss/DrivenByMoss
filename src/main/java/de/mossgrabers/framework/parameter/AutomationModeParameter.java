@@ -114,4 +114,12 @@ public class AutomationModeParameter extends AbstractParameterImpl
     {
         return "Automation Mode";
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getNumberOfSteps ()
+    {
+        return this.transport.getAutomationWriteModes ().length;
+    }
 }

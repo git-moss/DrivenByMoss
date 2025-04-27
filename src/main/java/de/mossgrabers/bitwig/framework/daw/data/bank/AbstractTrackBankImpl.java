@@ -147,7 +147,7 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBankImpl<Trac
         {
             final boolean isSelected = index == i;
             final ITrack item = this.getItem (i);
-            if (item instanceof AbstractItemImpl itemImpl && itemImpl.getRawSelectionState () != isSelected)
+            if (item instanceof final AbstractItemImpl itemImpl && itemImpl.getRawSelectionState () != isSelected)
             {
                 item.setSelected (isSelected);
                 this.notifySelectionObservers (i, isSelected);

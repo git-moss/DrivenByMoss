@@ -15,7 +15,7 @@ import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.bank.AbstractItemBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
-import de.mossgrabers.framework.observer.IValueObserver;
+import de.mossgrabers.framework.observer.IParameterValueObserver;
 import de.mossgrabers.framework.parameter.IParameter;
 
 
@@ -184,13 +184,19 @@ public class ParameterBankImpl extends AbstractItemBank<IParameter> implements I
 
     /** {@inheritDoc} */
     @Override
-    public void addValueObserver (final IValueObserver<Integer> observer)
+    public void addValueObserver (final IParameterValueObserver observer)
     {
         for (int i = 0; i < this.getPageSize (); i++)
         {
             final IParameter parameter = this.getItem (i);
-            final Integer index = Integer.valueOf (i);
-            ((ParameterImpl) parameter).getParameter ().value ().addValueObserver (value -> observer.update (index));
+            final int index = i;
+            ((ParameterImpl) parameter).getParameter ().value ().addValueObserver (value -> {
+
+                final int page = this.getPageBank ().getSelectedItemIndex ();
+                if (page >= 0)
+                    observer.update (page, index);
+
+            });
         }
     }
 }
