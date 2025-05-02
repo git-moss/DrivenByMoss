@@ -43,6 +43,7 @@ public class ModelSetup
     private int                  numMarkers                 = 0;
 
     private final List<DeviceID> deviceIDs                  = new ArrayList<> ();
+    private boolean              wantsFocusedParameter      = false;
 
 
     /**
@@ -485,5 +486,27 @@ public class ModelSetup
     public void setWantsClipLauncherNavigator (final boolean wantsClipLauncherNavigator)
     {
         this.wantsClipLauncherNavigator = wantsClipLauncherNavigator;
+    }
+
+
+    /**
+     * Should a focused parameter be created?
+     *
+     * @return True if one should be created
+     */
+    public boolean wantsFocusedParameter ()
+    {
+        return this.wantsFocusedParameter;
+    }
+
+
+    /**
+     * Set if a focused parameter should be created.
+     *
+     * @param wantsFocusedParameter True if one should be created
+     */
+    public void setWantsFocusedParameter (final boolean wantsFocusedParameter)
+    {
+        this.wantsFocusedParameter = wantsFocusedParameter;
     }
 }

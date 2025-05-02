@@ -573,6 +573,7 @@ public enum FlexiCommand
     DEVICE_TOGGLE_PARAMETER_6(CommandCategory.DEVICE, "Device: Toggle Parameter 6", true),
     DEVICE_TOGGLE_PARAMETER_7(CommandCategory.DEVICE, "Device: Toggle Parameter 7", true),
     DEVICE_TOGGLE_PARAMETER_8(CommandCategory.DEVICE, "Device: Toggle Parameter 8", true),
+    DEVICE_LAST_PARAM(CommandCategory.DEVICE, "Device: Last Parameter", false),
 
     INSTRUMENT_DEVICE_TOGGLE_WINDOW(CommandCategory.INSTRUMENT_DEVICE, "Instrument Device: Toggle Window", true),
     INSTRUMENT_DEVICE_TOGGLE_BYPASS(CommandCategory.INSTRUMENT_DEVICE, "Instrument Device: Bypass", true),

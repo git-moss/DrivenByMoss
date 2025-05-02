@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.akai.fire.command.continuous;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.akai.fire.FireConfiguration;
 import de.mossgrabers.controller.akai.fire.controller.FireControlSurface;
 import de.mossgrabers.controller.akai.fire.mode.FireUserMode;
@@ -19,6 +21,7 @@ import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.featuregroup.IView;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.parameter.IFocusedParameter;
 import de.mossgrabers.framework.utils.Timeout;
 
 
@@ -94,6 +97,18 @@ public class SelectKnobCommand extends AbstractContinuousCommand<FireControlSurf
         {
             this.surface.setTriggerConsumed (ButtonID.METRONOME);
             this.handlePlayPosition (value);
+            return;
+        }
+
+        if (this.surface.getConfiguration ().isControlLastParam ())
+        {
+            final Optional<IFocusedParameter> parameterOpt = this.model.getFocusedParameter ();
+            if (parameterOpt.isPresent () && parameterOpt.get ().doesExist ())
+            {
+                // Speed it up a bit...
+                final double changeValue = this.model.getValueChanger ().calcKnobChange (value);
+                parameterOpt.get ().inc (changeValue * 6);
+            }
             return;
         }
 

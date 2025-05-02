@@ -31,7 +31,9 @@ import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.daw.data.empty.EmptyLayer;
+import de.mossgrabers.framework.daw.data.empty.EmptyParameter;
 import de.mossgrabers.framework.osc.IOpenSoundControlWriter;
+import de.mossgrabers.framework.parameter.IFocusedParameter;
 import de.mossgrabers.framework.parameter.IParameter;
 
 
@@ -121,6 +123,11 @@ public class DeviceModule extends AbstractModule
 
         this.flushDevice (this.writer, "/primary/", this.model.getSpecificDevice (DeviceID.FIRST_INSTRUMENT), dump);
         this.flushDevice (this.writer, "/eq/", this.model.getSpecificDevice (DeviceID.EQ), dump);
+
+        // Last hovered/clicked parameter
+        final Optional<IFocusedParameter> focusedParameter = this.model.getFocusedParameter ();
+        final IParameter param = focusedParameter.isPresent () ? focusedParameter.get () : EmptyParameter.INSTANCE;
+        this.flushParameterData (this.writer, "/device/lastparam/", param, dump);
     }
 
 
@@ -267,6 +274,12 @@ public class DeviceModule extends AbstractModule
                     else
                         throw new UnknownCommandException (subCommand3);
                 }
+                break;
+
+            case "lastparam":
+                final Optional<IFocusedParameter> focusedParameter = this.model.getFocusedParameter ();
+                if (focusedParameter.isPresent () && focusedParameter.get ().doesExist ())
+                    parseFXParamValue (focusedParameter.get (), path, value);
                 break;
 
             case "+":

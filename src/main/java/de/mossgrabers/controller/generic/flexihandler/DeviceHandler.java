@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.generic.flexihandler;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.generic.GenericFlexiConfiguration;
 import de.mossgrabers.controller.generic.controller.FlexiCommand;
 import de.mossgrabers.controller.generic.controller.GenericFlexiControlSurface;
@@ -14,6 +16,7 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
+import de.mossgrabers.framework.parameter.IFocusedParameter;
 import de.mossgrabers.framework.parameter.IParameter;
 
 
@@ -92,7 +95,8 @@ public class DeviceHandler extends AbstractHandler
             FlexiCommand.DEVICE_RESET_PARAMETER_5,
             FlexiCommand.DEVICE_RESET_PARAMETER_6,
             FlexiCommand.DEVICE_RESET_PARAMETER_7,
-            FlexiCommand.DEVICE_RESET_PARAMETER_8
+            FlexiCommand.DEVICE_RESET_PARAMETER_8,
+            FlexiCommand.DEVICE_LAST_PARAM
         };
     }
 
@@ -129,6 +133,10 @@ public class DeviceHandler extends AbstractHandler
 
             case DEVICE_SELECT_PARAMETER_PAGE_1, DEVICE_SELECT_PARAMETER_PAGE_2, DEVICE_SELECT_PARAMETER_PAGE_3, DEVICE_SELECT_PARAMETER_PAGE_4, DEVICE_SELECT_PARAMETER_PAGE_5, DEVICE_SELECT_PARAMETER_PAGE_6, DEVICE_SELECT_PARAMETER_PAGE_7, DEVICE_SELECT_PARAMETER_PAGE_8:
                 return cursorDevice.getParameterBank ().getItem (command.ordinal () - FlexiCommand.DEVICE_SELECT_PARAMETER_PAGE_1.ordinal ()).isSelected () ? 127 : 0;
+
+            case DEVICE_LAST_PARAM:
+                final Optional<IFocusedParameter> focusedParameter = this.model.getFocusedParameter ();
+                return focusedParameter.isPresent () && focusedParameter.get ().doesExist () ? focusedParameter.get ().getValue () : 0;
 
             default:
                 return -1;
@@ -240,6 +248,20 @@ public class DeviceHandler extends AbstractHandler
             case DEVICE_RESET_PARAMETER_1, DEVICE_RESET_PARAMETER_2, DEVICE_RESET_PARAMETER_3, DEVICE_RESET_PARAMETER_4, DEVICE_RESET_PARAMETER_5, DEVICE_RESET_PARAMETER_6, DEVICE_RESET_PARAMETER_7, DEVICE_RESET_PARAMETER_8:
                 if (isButtonPressed)
                     cursorDevice.getParameterBank ().getItem (command.ordinal () - FlexiCommand.DEVICE_RESET_PARAMETER_1.ordinal ()).resetValue ();
+                break;
+
+            case DEVICE_LAST_PARAM:
+                final Optional<IFocusedParameter> focusedParameter = this.model.getFocusedParameter ();
+                if (focusedParameter.isPresent () && focusedParameter.get ().doesExist ())
+                {
+                    // Speed it up a bit...
+                    final IFocusedParameter parameter = focusedParameter.get ();
+                    final int val = value.getValue ();
+                    if (isAbsolute (knobMode))
+                        parameter.setValue (this.getAbsoluteValueChanger (value), val);
+                    else
+                        parameter.changeValue (this.getRelativeValueChanger (knobMode), val);
+                }
                 break;
 
             default:

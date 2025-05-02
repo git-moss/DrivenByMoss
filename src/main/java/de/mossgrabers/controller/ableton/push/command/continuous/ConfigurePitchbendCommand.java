@@ -4,16 +4,17 @@
 
 package de.mossgrabers.controller.ableton.push.command.continuous;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.ableton.push.PushConfiguration;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.parameter.IFocusedParameter;
 import de.mossgrabers.framework.parameter.IParameter;
-import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
 
@@ -56,17 +57,8 @@ public class ConfigurePitchbendCommand extends AbstractTriggerCommand<PushContro
                 break;
 
             case PushConfiguration.RIBBON_MODE_LAST_TOUCHED:
-                final IMode activeMode = this.surface.getModeManager ().getActive ();
-                if (activeMode != null)
-                {
-                    final int touchedKnob = activeMode.getLastTouchedKnob ();
-                    if (touchedKnob >= 0)
-                    {
-                        final IParameterProvider parameterProvider = activeMode.getParameterProvider ();
-                        if (parameterProvider != null)
-                            parameter = parameterProvider.get (touchedKnob);
-                    }
-                }
+                final Optional<IFocusedParameter> focusedParameter = this.model.getFocusedParameter ();
+                parameter = focusedParameter.isPresent () ? focusedParameter.get () : null;
                 break;
 
             default:

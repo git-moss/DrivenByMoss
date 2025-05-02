@@ -4,11 +4,15 @@
 
 package de.mossgrabers.framework.command.continuous;
 
+import java.util.Optional;
+
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.parameter.IFocusedParameter;
 
 
 /**
@@ -21,6 +25,9 @@ import de.mossgrabers.framework.daw.IModel;
  */
 public class JogWheelCommand<S extends IControlSurface<C>, C extends Configuration> extends PlayPositionCommand<S, C>
 {
+    private boolean controlLastParamActive = false;
+
+
     /**
      * Constructor.
      *
@@ -33,11 +40,45 @@ public class JogWheelCommand<S extends IControlSurface<C>, C extends Configurati
     }
 
 
+    /**
+     * Dis-/enable controlling the last touched/clicked parameter.
+     */
+    public void toggleControlLastParamActive ()
+    {
+        this.controlLastParamActive = !this.controlLastParamActive;
+    }
+
+
+    /**
+     * Is controlling the last touched/clicked parameter active?
+     * 
+     * @return True if active
+     */
+    public boolean isControlLastParamActive ()
+    {
+        return this.controlLastParamActive;
+    }
+
+
     /** {@inheritDoc} */
     @Override
     public void execute (final int value)
     {
-        final boolean increase = this.model.getValueChanger ().isIncrease (value);
+        final IValueChanger valueChanger = this.model.getValueChanger ();
+
+        if (this.controlLastParamActive)
+        {
+            final Optional<IFocusedParameter> parameterOpt = this.model.getFocusedParameter ();
+            if (parameterOpt.isPresent () && parameterOpt.get ().doesExist ())
+            {
+                double increment = valueChanger.calcKnobChange (value);
+                increment *= this.surface.isShiftPressed () ? 10 : 50;
+                parameterOpt.get ().inc (increment);
+            }
+            return;
+        }
+
+        final boolean increase = valueChanger.isIncrease (value);
 
         // Scroll results in Browser
         final IBrowser browser = this.model.getBrowser ();

@@ -10,7 +10,6 @@ import de.mossgrabers.controller.akai.fire.mode.FireNoteMode;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -57,23 +56,28 @@ public class FireSelectButtonCommand extends AbstractTriggerCommand<FireControlS
         }
 
         final FireConfiguration configuration = this.surface.getConfiguration ();
-        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
         if (modeManager.isActive (Modes.DEVICE_PARAMS))
         {
             if (configuration.isDeleteModeActive ())
             {
-                cursorDevice.remove ();
+                this.model.getCursorDevice ().remove ();
                 configuration.toggleDeleteModeActive ();
                 return;
             }
 
-            if (this.surface.isPressed (ButtonID.ALT))
+            if (this.surface.isPressed (ButtonID.ALT) && this.surface.isPressed (ButtonID.SHIFT))
             {
-                cursorDevice.toggleEnabledState ();
+                this.model.getCursorDevice ().toggleEnabledState ();
                 return;
             }
         }
 
-        cursorDevice.toggleWindowOpen ();
+        if (this.surface.isPressed (ButtonID.ALT))
+            this.model.getCursorDevice ().toggleWindowOpen ();
+        else
+        {
+            configuration.toggleControlLastParam ();
+            this.mvHelper.delayDisplay ( () -> "Last Param: " + (configuration.isControlLastParam () ? "ON" : "OFF"));
+        }
     }
 }

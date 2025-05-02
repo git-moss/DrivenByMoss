@@ -1,14 +1,14 @@
 package de.mossgrabers.framework.featuregroup;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
-
-import java.util.Arrays;
-import java.util.Optional;
 
 
 /**
@@ -32,7 +32,6 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     protected boolean          isActive;
 
     private boolean []         isKnobTouched;
-    private int                lastTouchedKnob;
 
 
     /**
@@ -147,8 +146,6 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     public void setTouchedKnob (final int knobIndex, final boolean isTouched)
     {
         this.isKnobTouched[knobIndex] = isTouched;
-        if (isTouched)
-            this.lastTouchedKnob = knobIndex;
     }
 
 
@@ -183,14 +180,6 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
     public boolean isKnobTouched (final int index)
     {
         return index < this.isKnobTouched.length && this.isKnobTouched[index];
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getLastTouchedKnob ()
-    {
-        return this.lastTouchedKnob;
     }
 
 

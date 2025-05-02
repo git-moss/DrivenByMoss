@@ -143,8 +143,10 @@ public class MCUConfiguration extends AbstractConfiguration
     public static final int           PREV_CHANNEL                          = 23;
     /** Use a Function button to switch to next channel. */
     public static final int           NEXT_CHANNEL                          = 24;
+    /** Toggle between the encoder knob behavior and controlling the last selected parameter. */
+    public static final int           CONTROL_LAST_PARAM                    = 25;
     /** Use a Function button to execute an action. */
-    public static final int           FOOTSWITCH_ACTION                     = 25;
+    public static final int           FOOTSWITCH_ACTION                     = 26;
 
     private static final String       CATEGORY_EXTENDER_SETUP               = "Extender Setup (requires restart)";
     private static final String       CATEGORY_SEGMENT_DISPLAY              = "Segment Display";
@@ -201,10 +203,12 @@ public class MCUConfiguration extends AbstractConfiguration
         "Device on/off",
         "Channel Prev",
         "Channel Next",
+        "Last hovered/clicked parameter",
         "Action"
     };
 
-    private static final String []    ASSIGNABLE_BUTTON_NAMES               =
+    /** The names of the assignable buttons / switches. */
+    public static final String []     ASSIGNABLE_BUTTON_NAMES               =
     {
         "Footswitch 1",
         "Footswitch 2",

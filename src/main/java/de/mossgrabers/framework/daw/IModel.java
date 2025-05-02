@@ -4,6 +4,8 @@
 
 package de.mossgrabers.framework.daw;
 
+import java.util.Optional;
+
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.clip.INoteClip;
@@ -20,9 +22,8 @@ import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.observer.IValueObserver;
+import de.mossgrabers.framework.parameter.IFocusedParameter;
 import de.mossgrabers.framework.scale.Scales;
-
-import java.util.Optional;
 
 
 /**
@@ -126,6 +127,14 @@ public interface IModel
      * @return The scales
      */
     Scales getScales ();
+
+
+    /**
+     * Get the focused (e.g. hovered or last used) parameter.
+     * 
+     * @return The parameter
+     */
+    Optional<IFocusedParameter> getFocusedParameter ();
 
 
     /**

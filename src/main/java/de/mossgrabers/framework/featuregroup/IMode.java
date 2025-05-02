@@ -4,10 +4,10 @@
 
 package de.mossgrabers.framework.featuregroup;
 
+import java.util.Optional;
+
 import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
-
-import java.util.Optional;
 
 
 /**
@@ -85,14 +85,6 @@ public interface IMode extends IFeatureGroup
      * @return The index or -1 if none is touched
      */
     int getTouchedKnob ();
-
-
-    /**
-     * Get the index of the last touched knob, if any.
-     *
-     * @return The index or -1 if none was touched in this mode so far
-     */
-    int getLastTouchedKnob ();
 
 
     /**

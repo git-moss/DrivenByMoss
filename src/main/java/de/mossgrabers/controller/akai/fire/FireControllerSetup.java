@@ -22,11 +22,11 @@ import de.mossgrabers.controller.akai.fire.controller.FireScales;
 import de.mossgrabers.controller.akai.fire.mode.BrowserMode;
 import de.mossgrabers.controller.akai.fire.mode.FireLayerMixerMode;
 import de.mossgrabers.controller.akai.fire.mode.FireLayerMode;
+import de.mossgrabers.controller.akai.fire.mode.FireNoteMode;
 import de.mossgrabers.controller.akai.fire.mode.FireParameterMode;
 import de.mossgrabers.controller.akai.fire.mode.FireTrackMixerMode;
 import de.mossgrabers.controller.akai.fire.mode.FireTrackMode;
 import de.mossgrabers.controller.akai.fire.mode.FireUserMode;
-import de.mossgrabers.controller.akai.fire.mode.FireNoteMode;
 import de.mossgrabers.controller.akai.fire.view.Drum4View;
 import de.mossgrabers.controller.akai.fire.view.DrumView64;
 import de.mossgrabers.controller.akai.fire.view.DrumXoXView;
@@ -116,6 +116,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
     {
         final ModelSetup ms = new ModelSetup ();
         ms.enableDevice (DeviceID.FIRST_INSTRUMENT);
+        ms.setWantsFocusedParameter (true);
         ms.setNumTracks (16);
         ms.setNumScenes (4);
         ms.setNumSends (6);

@@ -41,6 +41,8 @@ public class FireConfiguration extends AbstractConfiguration
 
     private int                   padBrightness        = 100;
     private int                   padSaturation        = 100;
+    private boolean               controlLastParam;
+    private IEnumSetting          controlLastParamSetting;
 
 
     /**
@@ -116,6 +118,9 @@ public class FireConfiguration extends AbstractConfiguration
         ///////////////////////////
         // Workflow
 
+        this.controlLastParamSetting = globalSettings.getEnumSetting ("Control last touched/clicked parameter with SELECT", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
+        this.controlLastParamSetting.addValueObserver (value -> this.controlLastParam = ON_OFF_OPTIONS[1].equals (value));
+
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);
         this.activateKnobSpeedSetting (globalSettings);
@@ -159,5 +164,25 @@ public class FireConfiguration extends AbstractConfiguration
     public int getPadSaturation ()
     {
         return this.padSaturation;
+    }
+
+
+    /**
+     * Should the SELECT knob control the last touched parameter?
+     * 
+     * @return True to control
+     */
+    public boolean isControlLastParam ()
+    {
+        return this.controlLastParam;
+    }
+
+
+    /**
+     * Toggle if the SELECT knob should control the last touched parameter.
+     */
+    public void toggleControlLastParam ()
+    {
+        this.controlLastParamSetting.set (ON_OFF_OPTIONS[this.controlLastParam ? 0 : 1]);
     }
 }

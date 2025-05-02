@@ -6,6 +6,7 @@ package de.mossgrabers.bitwig.framework.daw;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import com.bitwig.extension.controller.api.Application;
@@ -17,6 +18,7 @@ import com.bitwig.extension.controller.api.CursorTrack;
 import com.bitwig.extension.controller.api.Device;
 import com.bitwig.extension.controller.api.DeviceBank;
 import com.bitwig.extension.controller.api.DeviceMatcher;
+import com.bitwig.extension.controller.api.LastClickedParameter;
 import com.bitwig.extension.controller.api.MasterTrack;
 import com.bitwig.extension.controller.api.PinnableCursorDevice;
 import com.bitwig.extension.controller.api.Project;
@@ -28,6 +30,7 @@ import de.mossgrabers.bitwig.framework.daw.data.CursorDeviceImpl;
 import de.mossgrabers.bitwig.framework.daw.data.CursorTrackImpl;
 import de.mossgrabers.bitwig.framework.daw.data.DrumDeviceImpl;
 import de.mossgrabers.bitwig.framework.daw.data.EqualizerDeviceImpl;
+import de.mossgrabers.bitwig.framework.daw.data.FocusedParameterImpl;
 import de.mossgrabers.bitwig.framework.daw.data.KompleteDevice;
 import de.mossgrabers.bitwig.framework.daw.data.MasterTrackImpl;
 import de.mossgrabers.bitwig.framework.daw.data.SpecificDeviceImpl;
@@ -46,6 +49,7 @@ import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.daw.data.bank.ISlotBank;
+import de.mossgrabers.framework.parameter.IFocusedParameter;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.FrameworkException;
 
@@ -64,9 +68,10 @@ public class ModelImpl extends AbstractModel
     private final CursorTrack              bwCursorTrack;
     private final Track                    rootTrackGroup;
     private final BooleanValue             masterTrackEqualsValue;
-    private final Map<Integer, ISceneBank> sceneBanks              = new HashMap<> (1);
-    private final Map<Integer, ISlotBank>  slotBanks               = new HashMap<> (1);
+    private final Map<Integer, ISceneBank> sceneBanks              = HashMap.newHashMap (1);
+    private final Map<Integer, ISlotBank>  slotBanks               = HashMap.newHashMap (1);
     private final SceneBank                sceneBank;
+    private FocusedParameterImpl           focusedParameter        = null;
 
 
     /**
@@ -141,6 +146,12 @@ public class ModelImpl extends AbstractModel
 
         //////////////////////////////////////////////////////////////////////////////
         // Create devices
+
+        if (this.modelSetup.wantsFocusedParameter ())
+        {
+            final LastClickedParameter lcp = this.controllerHost.createLastClickedParameter ("LastHoveredParam", "Last hovered");
+            this.focusedParameter = new FocusedParameterImpl (this.valueChanger, lcp.parameter ());
+        }
 
         final int numDevicesInBank = this.modelSetup.getNumDevicesInBank ();
         final int numDeviceLayers = this.modelSetup.getNumDeviceLayers ();
@@ -327,5 +338,15 @@ public class ModelImpl extends AbstractModel
     public void cleanup ()
     {
         // Nothing to do
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public Optional<IFocusedParameter> getFocusedParameter ()
+    {
+        if (this.focusedParameter == null)
+            throw new FrameworkException ("No focused parameter created!");
+        return Optional.of (this.focusedParameter);
     }
 }

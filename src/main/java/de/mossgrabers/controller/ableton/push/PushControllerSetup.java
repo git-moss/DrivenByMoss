@@ -288,6 +288,8 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         ms.setHasFlatTrackList (this.configuration.isTrackNavigationFlat ());
         ms.setHasFullFlatTrackList (this.configuration.areMasterTracksIncluded ());
         ms.setWantsClipLauncherNavigator (true);
+        ms.setWantsFocusedParameter (true);
+
         this.model = this.factory.createModel (this.configuration, this.colorManager, this.valueChanger, this.scales, ms);
         this.model.getSceneBank (64);
 
