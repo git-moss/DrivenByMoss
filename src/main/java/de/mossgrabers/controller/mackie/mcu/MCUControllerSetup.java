@@ -105,6 +105,7 @@ import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.MasterVolumeMode;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.parameter.IFocusedParameter;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.ControlOnlyView;
 import de.mossgrabers.framework.view.Views;
@@ -161,15 +162,16 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         MODE_ACRONYMS.put (Modes.USER, "US");
     }
 
-    private static final Set<Modes>                              VALUE_MODES      = EnumSet.of (Modes.VOLUME, Modes.PAN, Modes.TRACK, Modes.SEND1, Modes.SEND2, Modes.SEND3, Modes.SEND4, Modes.SEND5, Modes.SEND6, Modes.SEND7, Modes.SEND8, Modes.DEVICE_PARAMS, Modes.EQ_DEVICE_PARAMS, Modes.INSTRUMENT_DEVICE_PARAMS, Modes.USER);
+    private static final Set<Modes>                               VALUE_MODES      = EnumSet.of (Modes.VOLUME, Modes.PAN, Modes.TRACK, Modes.SEND1, Modes.SEND2, Modes.SEND3, Modes.SEND4, Modes.SEND5, Modes.SEND6, Modes.SEND7, Modes.SEND8, Modes.DEVICE_PARAMS, Modes.EQ_DEVICE_PARAMS, Modes.INSTRUMENT_DEVICE_PARAMS, Modes.USER);
 
-    private final int []                                         vuValues         = new int [32];
-    private final int []                                         vuValuesRight    = new int [32];
-    private final int []                                         masterVuValues   = new int [2];
-    private final int []                                         faderValues      = new int [32];
-    private int                                                  masterFaderValue = -1;
-    private final int                                            numMCUDevices;
-    private JogWheelCommand<MCUControlSurface, MCUConfiguration> jogWheelCommand  = null;
+    private final int []                                          vuValues         = new int [32];
+    private final int []                                          vuValuesRight    = new int [32];
+    private final int []                                          masterVuValues   = new int [2];
+    private final int []                                          faderValues      = new int [32];
+    private int                                                   masterFaderValue = -1;
+    private final int                                             numMCUDevices;
+    private JogWheelCommand<MCUControlSurface, MCUConfiguration>  jogWheelCommand  = null;
+    private MasterVolumeMode<MCUControlSurface, MCUConfiguration> masterVolumeMode;
 
 
     /**
@@ -311,6 +313,9 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             final MCUControlSurface surface = this.getSurface (index);
             final ModeManager modeManager = surface.getModeManager ();
 
+            if (this.configuration.getDeviceType (index) == MCUDeviceType.MAIN)
+                this.masterVolumeMode = new MasterVolumeMode<> (surface, this.model, ContinuousID.FADER_MASTER);
+
             modeManager.register (Modes.TRACK, new TrackMode (surface, this.model));
             modeManager.register (Modes.VOLUME, new VolumeMode (surface, this.model));
             modeManager.register (Modes.PAN, new PanMode (surface, this.model));
@@ -415,6 +420,13 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             }
         });
 
+        this.configuration.addSettingObserver (MCUConfiguration.ASSIGNABLE_BUTTONS, () -> {
+
+            this.jogWheelCommand.setControlLastParamActive (false);
+            this.masterVolumeMode.setControlLastParamActive (false);
+
+        });
+
         this.configuration.registerDeactivatedItemsHandler (this.model);
 
         this.activateBrowserObserver (Modes.BROWSER);
@@ -465,11 +477,11 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 this.addButton (surface, ButtonID.SELECT, "Option", NopCommand.INSTANCE, 0, MCUControlSurface.MCU_OPTION);
 
                 // Foot-switches and Function keys
-                this.addButton (surface, ButtonID.FOOTSWITCH1, "Footswitch 1", new AssignableCommand (0, this.model, surface, this.jogWheelCommand), MCUControlSurface.MCU_USER_A);
-                this.addButton (surface, ButtonID.FOOTSWITCH2, "Footswitch 2", new AssignableCommand (1, this.model, surface, this.jogWheelCommand), MCUControlSurface.MCU_USER_B);
+                this.addButton (surface, ButtonID.FOOTSWITCH1, "Footswitch 1", new AssignableCommand (0, this.model, surface, this.jogWheelCommand, this.masterVolumeMode), MCUControlSurface.MCU_USER_A);
+                this.addButton (surface, ButtonID.FOOTSWITCH2, "Footswitch 2", new AssignableCommand (1, this.model, surface, this.jogWheelCommand, this.masterVolumeMode), MCUControlSurface.MCU_USER_B);
                 for (int i = 0; i < 8; i++)
                 {
-                    final AssignableCommand command = new AssignableCommand (2 + i, this.model, surface, this.jogWheelCommand);
+                    final AssignableCommand command = new AssignableCommand (2 + i, this.model, surface, this.jogWheelCommand, this.masterVolumeMode);
                     this.addButton (surface, ButtonID.get (ButtonID.F1, i), "F" + (i + 1), command, 0, MCUControlSurface.MCU_F1 + i, command::isActive);
                 }
 
@@ -580,13 +592,13 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 this.addRelativeKnob (surface, ContinuousID.PLAY_POSITION, "Jog Wheel", this.jogWheelCommand, MCUControlSurface.MCU_CC_JOG, RelativeEncoding.SIGNED_BIT2);
 
                 final IHwFader master = this.addFader (surface, ContinuousID.FADER_MASTER, "Master", null, 8);
-                master.bindTouch (new FaderTouchCommand (8, this.model, surface), input, BindType.NOTE, 0, MCUControlSurface.MCU_FADER_MASTER);
+                master.bindTouch (new FaderTouchCommand (8, this.model, surface, this.masterVolumeMode), input, BindType.NOTE, 0, MCUControlSurface.MCU_FADER_MASTER);
                 if (this.configuration.hasMotorFaders ())
                 {
                     // Prevent catch up jitter with motor faders
                     master.disableTakeOver ();
                 }
-                new MasterVolumeMode<> (surface, this.model, ContinuousID.FADER_MASTER).onActivate ();
+                this.masterVolumeMode.onActivate ();
             }
 
             for (int i = 0; i < 8; i++)
@@ -603,7 +615,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                     fader.disableTakeOver ();
                 }
 
-                fader.bindTouch (new FaderTouchCommand (i, this.model, surface), input, BindType.NOTE, 0, MCUControlSurface.MCU_FADER_TOUCH1 + i);
+                fader.bindTouch (new FaderTouchCommand (i, this.model, surface, null), input, BindType.NOTE, 0, MCUControlSurface.MCU_FADER_TOUCH1 + i);
                 fader.setIndexInGroup (index * 8 + i);
             }
         }
@@ -939,11 +951,24 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             // Update motor fader of master channel
             if (this.configuration.getDeviceType (index) == MCUDeviceType.MAIN)
             {
-                final int volume = isShiftPressed ? this.model.getTransport ().getMetronomeVolume () : this.model.getMasterTrack ().getVolume ();
-                if (volume != this.masterFaderValue)
+                if (this.masterVolumeMode.isControlLastParamActive ())
                 {
-                    this.masterFaderValue = volume;
-                    output.sendPitchbend (8, volume % 127, volume / 127);
+                    final IFocusedParameter focusedParameter = this.model.getFocusedParameter ().get ();
+                    final int value = focusedParameter.doesExist () ? focusedParameter.getValue () : 0;
+                    if (value != this.masterFaderValue)
+                    {
+                        this.masterFaderValue = value;
+                        output.sendPitchbend (8, value % 127, value / 127);
+                    }
+                }
+                else
+                {
+                    final int volume = isShiftPressed ? this.model.getTransport ().getMetronomeVolume () : this.model.getMasterTrack ().getVolume ();
+                    if (volume != this.masterFaderValue)
+                    {
+                        this.masterFaderValue = volume;
+                        output.sendPitchbend (8, volume % 127, volume / 127);
+                    }
                 }
             }
         }

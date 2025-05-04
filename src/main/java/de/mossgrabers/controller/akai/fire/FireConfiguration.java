@@ -169,7 +169,7 @@ public class FireConfiguration extends AbstractConfiguration
 
     /**
      * Should the SELECT knob control the last touched parameter?
-     * 
+     *
      * @return True to control
      */
     public boolean isControlLastParam ()

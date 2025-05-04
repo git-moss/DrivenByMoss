@@ -131,7 +131,7 @@ public interface IModel
 
     /**
      * Get the focused (e.g. hovered or last used) parameter.
-     * 
+     *
      * @return The parameter
      */
     Optional<IFocusedParameter> getFocusedParameter ();

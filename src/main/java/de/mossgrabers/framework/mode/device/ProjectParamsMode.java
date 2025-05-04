@@ -124,8 +124,7 @@ public class ProjectParamsMode<S extends IControlSurface<C>, C extends Configura
     {
         super.selectPreviousItem ();
 
-        if (this.notifyPageChange)
-            this.mvHelper.notifySelectedProjectParameterPage ();
+        this.notifyPage ();
     }
 
 
@@ -135,8 +134,7 @@ public class ProjectParamsMode<S extends IControlSurface<C>, C extends Configura
     {
         super.selectNextItem ();
 
-        if (this.notifyPageChange)
-            this.mvHelper.notifySelectedProjectParameterPage ();
+        this.notifyPage ();
     }
 
 
@@ -160,5 +158,17 @@ public class ProjectParamsMode<S extends IControlSurface<C>, C extends Configura
         this.switchBanks (this.isProjectMode ? this.model.getProject ().getParameterBank () : this.model.getCursorTrack ().getParameterBank ());
         this.setParameterProvider (this.isProjectMode ? this.projectParameterProvider : this.trackParameterProvider);
         this.bindControls ();
+    }
+
+
+    private void notifyPage ()
+    {
+        if (this.notifyPageChange)
+        {
+            if (this.isProjectMode)
+                this.mvHelper.notifySelectedProjectParameterPage ();
+            else
+                this.mvHelper.notifySelectedTrackParameterPage ();
+        }
     }
 }

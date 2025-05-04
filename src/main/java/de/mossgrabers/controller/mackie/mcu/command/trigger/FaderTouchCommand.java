@@ -9,6 +9,7 @@ import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.featuregroup.ModeManager;
+import de.mossgrabers.framework.mode.MasterVolumeMode;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -20,7 +21,9 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class FaderTouchCommand extends SelectCommand
 {
-    private static final boolean [] isTrackTouched = new boolean [8 * 4];
+    private static final boolean []                                     isTrackTouched = new boolean [8 * 4];
+
+    private final MasterVolumeMode<MCUControlSurface, MCUConfiguration> masterVolumeMode;
 
 
     /**
@@ -29,10 +32,13 @@ public class FaderTouchCommand extends SelectCommand
      * @param index The channel index
      * @param model The model
      * @param surface The surface
+     * @param masterVolumeMode
      */
-    public FaderTouchCommand (final int index, final IModel model, final MCUControlSurface surface)
+    public FaderTouchCommand (final int index, final IModel model, final MCUControlSurface surface, final MasterVolumeMode<MCUControlSurface, MCUConfiguration> masterVolumeMode)
     {
         super (index, model, surface);
+
+        this.masterVolumeMode = masterVolumeMode;
     }
 
 
@@ -50,6 +56,9 @@ public class FaderTouchCommand extends SelectCommand
         // Master Channel
         if (this.index == 8)
         {
+            if (this.masterVolumeMode.isControlLastParamActive ())
+                return;
+
             if (isTouched && configuration.isTouchSelectsChannel ())
                 this.model.getMasterTrack ().select ();
             modeManager.get (Modes.MASTER).onKnobTouch (0, isTouched);

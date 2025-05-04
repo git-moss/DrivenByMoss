@@ -70,6 +70,7 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
 
         ms.enableMainDrumDevice (false);
         ms.enableDevice (DeviceID.EQ);
+        ms.setWantsFocusedParameter (true);
 
         ms.setNumTracks (5);
         ms.setHasFlatTrackList (true);

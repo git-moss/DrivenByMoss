@@ -50,8 +50,19 @@ public class JogWheelCommand<S extends IControlSurface<C>, C extends Configurati
 
 
     /**
+     * De-/activate controlling the last touched/clicked parameter .
+     *
+     * @param active True to activate
+     */
+    public void setControlLastParamActive (final boolean active)
+    {
+        this.controlLastParamActive = active;
+    }
+
+
+    /**
      * Is controlling the last touched/clicked parameter active?
-     * 
+     *
      * @return True if active
      */
     public boolean isControlLastParamActive ()
@@ -66,6 +77,7 @@ public class JogWheelCommand<S extends IControlSurface<C>, C extends Configurati
     {
         final IValueChanger valueChanger = this.model.getValueChanger ();
 
+        // Control the last touched/clicked parameter
         if (this.controlLastParamActive)
         {
             final Optional<IFocusedParameter> parameterOpt = this.model.getFocusedParameter ();

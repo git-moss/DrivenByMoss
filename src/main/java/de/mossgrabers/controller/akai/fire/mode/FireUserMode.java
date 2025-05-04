@@ -39,6 +39,7 @@ public class FireUserMode extends ProjectParamsMode<FireControlSurface, FireConf
         super (surface, model, false, ContinuousID.createSequentialList (ContinuousID.KNOB1, 4), surface::isShiftPressed, false);
 
         this.notifyPageChange = false;
+        this.isAlternativeFunction = () -> false;
 
         this.projectParameterProvider = new FourKnobProvider<> (surface, new BankParameterProvider (model.getProject ().getParameterBank ()), ButtonID.ALT);
         this.trackParameterProvider = new FourKnobProvider<> (surface, new BankParameterProvider (model.getCursorTrack ().getParameterBank ()), ButtonID.ALT);

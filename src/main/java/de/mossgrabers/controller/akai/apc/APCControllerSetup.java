@@ -4,6 +4,9 @@
 
 package de.mossgrabers.controller.akai.apc;
 
+import java.util.Optional;
+import java.util.function.IntSupplier;
+
 import de.mossgrabers.controller.akai.apc.command.continuous.APCPlayPositionCommand;
 import de.mossgrabers.controller.akai.apc.command.continuous.APCTempoCommand;
 import de.mossgrabers.controller.akai.apc.command.trigger.APCBrowserCommand;
@@ -32,6 +35,7 @@ import de.mossgrabers.controller.akai.apc.view.SequencerView;
 import de.mossgrabers.controller.akai.apc.view.SessionView;
 import de.mossgrabers.controller.akai.apc.view.ShiftView;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
+import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.command.trigger.FootswitchCommand;
 import de.mossgrabers.framework.command.trigger.application.PaneCommand;
@@ -87,8 +91,6 @@ import de.mossgrabers.framework.utils.Timeout;
 import de.mossgrabers.framework.view.TempoView;
 import de.mossgrabers.framework.view.Views;
 
-import java.util.Optional;
-
 
 /**
  * Support for the Akai APC40 mkI and APC40 mkII controllers.
@@ -97,7 +99,8 @@ import java.util.Optional;
  */
 public class APCControllerSetup extends AbstractControllerSetup<APCControlSurface, APCConfiguration>
 {
-    private final boolean isMkII;
+    private final boolean      isMkII;
+    private APCTapTempoCommand tapTempoCommand;
 
 
     /**
@@ -217,7 +220,8 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         this.addButton (ButtonID.SHIFT, "SHIFT", new ToggleShiftViewCommand<> (this.model, surface), APCControlSurface.APC_BUTTON_SHIFT);
         this.addButton (ButtonID.PLAY, "PLAY", new PlayCommand<> (this.model, surface), APCControlSurface.APC_BUTTON_PLAY, t::isPlaying, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
         this.addButton (ButtonID.RECORD, "RECORD", new APCRecordCommand (this.model, surface), APCControlSurface.APC_BUTTON_RECORD, t::isRecording, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
-        this.addButton (ButtonID.TAP_TEMPO, "TEMPO", new APCTapTempoCommand (this.model, surface), APCControlSurface.APC_BUTTON_TAP_TEMPO);
+        this.tapTempoCommand = new APCTapTempoCommand (this.model, surface);
+        this.addButton (ButtonID.TAP_TEMPO, "TEMPO", this.tapTempoCommand, APCControlSurface.APC_BUTTON_TAP_TEMPO);
         this.addButton (ButtonID.QUANTIZE, this.isMkII ? "DEV.LOCK" : "REC QUANTIZATION", new APCQuantizeCommand (this.model, surface), APCControlSurface.APC_BUTTON_REC_QUANT, () -> surface.isPressed (ButtonID.QUANTIZE) ? 1 : 0, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
         this.addButton (ButtonID.MASTERTRACK, "MASTER", new MasterCommand<> (this.model, surface), APCControlSurface.APC_BUTTON_MASTER, this.model.getMasterTrack ()::isSelected, ColorManager.BUTTON_STATE_OFF, ColorManager.BUTTON_STATE_ON);
         // Note: the stop-all-clips button has no LED
@@ -316,7 +320,7 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
         this.addFader (ContinuousID.FADER_MASTER, "Master", null, BindType.CC, APCControlSurface.APC_KNOB_MASTER_LEVEL).bind (this.model.getMasterTrack ().getVolumeParameter ());
         this.addFader (ContinuousID.CROSSFADER, "Crossfader", null, BindType.CC, APCControlSurface.APC_KNOB_CROSSFADER, false).bind (this.model.getTransport ().getCrossfadeParameter ());
 
-        final Timeout timeout = ((APCTapTempoCommand) surface.getButton (ButtonID.TAP_TEMPO).getCommand ()).getTimeout ();
+        final Timeout timeout = this.tapTempoCommand.getTimeout ();
         this.addRelativeKnob (ContinuousID.PLAY_POSITION, "Play Position", new APCPlayPositionCommand (this.model, surface, timeout), APCControlSurface.APC_KNOB_CUE_LEVEL);
 
         for (int i = 0; i < 8; i++)
@@ -774,5 +778,29 @@ public class APCControllerSetup extends AbstractControllerSetup<APCControlSurfac
             default:
                 return false;
         }
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void addButton (final APCControlSurface surface, final ButtonID buttonID, final String label, final TriggerCommand command, final int midiInputChannel, final int midiOutputChannel, final int midiControl, final int value, final boolean hasLight, final IntSupplier supplier, final String... colorIds)
+    {
+        // Wrap all commands to automatically close the shift mode, if shift was used in combination
+        // with a button outside of the grid
+
+        final TriggerCommand shiftModeCloserCommand = buttonID == ButtonID.SHIFT ? command : (event, velocity) -> {
+
+            if (surface.isShiftPressed () && event == ButtonEvent.DOWN)
+            {
+                final ViewManager viewManager = surface.getViewManager ();
+                if (viewManager.getActiveID () == Views.SHIFT)
+                    viewManager.restore ();
+            }
+
+            command.execute (event, velocity);
+
+        };
+
+        super.addButton (surface, buttonID, label, shiftModeCloserCommand, midiInputChannel, midiOutputChannel, midiControl, value, hasLight, supplier, colorIds);
     }
 }

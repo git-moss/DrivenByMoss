@@ -153,7 +153,7 @@ public class RotoControlDeviceParameterMode extends AbstractParameterMode<RotoCo
     /**
      * If a remote control knob has been moved in Bitwig send the related parameter data to the
      * ROTO-CONTROL if learn mode is active.
-     * 
+     *
      * @param page The page of the parameter
      * @param index The index of the remote control (0-7)
      */

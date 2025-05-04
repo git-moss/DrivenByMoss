@@ -147,6 +147,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
 
     private final Maschine                maschine;
     private ShiftView                     shiftView;
+    private MainKnobRowModeCommand        mainKnobCommand;
 
 
     /**
@@ -195,6 +196,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
     {
         final ModelSetup ms = new ModelSetup ();
         ms.setHasFullFlatTrackList (true);
+        ms.setWantsFocusedParameter (true);
         ms.setNumTracks (this.maschine.hasGroupButtons () ? 8 : 16);
         ms.setNumDevicesInBank (16);
         ms.setNumScenes (16);
@@ -384,9 +386,8 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
             }
             else
             {
-                final boolean isSlow = !surface.isKnobSensitivitySlow ();
-                surface.setKnobSensitivityIsSlow (isSlow);
-                surface.getDisplay ().notify ("Value change speed: " + (isSlow ? "Slow" : "Fast"));
+                this.mainKnobCommand.toggleControlLastParamActive ();
+                surface.getDisplay ().notify ("Last Param: " + (this.mainKnobCommand.isControlLastParamActive () ? " ON" : "OFF"));
             }
 
         }, MaschineControlSurface.ENCODER_PUSH);
@@ -682,7 +683,8 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         final ModeManager modeManager = surface.getModeManager ();
         final ViewManager viewManager = surface.getViewManager ();
 
-        final IHwRelativeKnob knob = this.addRelativeKnob (ContinuousID.MASTER_KNOB, "Encoder", new MainKnobRowModeCommand (this.model, surface), MaschineControlSurface.ENCODER);
+        this.mainKnobCommand = new MainKnobRowModeCommand (this.model, surface);
+        final IHwRelativeKnob knob = this.addRelativeKnob (ContinuousID.MASTER_KNOB, "Encoder", this.mainKnobCommand, MaschineControlSurface.ENCODER);
         knob.bindTouch ( (event, velocity) -> {
             final IMode mode = modeManager.getActive ();
             if (mode != null && event != ButtonEvent.LONG)

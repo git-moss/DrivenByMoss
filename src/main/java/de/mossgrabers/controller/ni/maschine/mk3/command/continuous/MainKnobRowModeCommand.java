@@ -1,14 +1,16 @@
 package de.mossgrabers.controller.ni.maschine.mk3.command.continuous;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.ni.maschine.mk3.MaschineConfiguration;
 import de.mossgrabers.controller.ni.maschine.mk3.controller.MaschineControlSurface;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.IBank;
-
-import java.util.Optional;
+import de.mossgrabers.framework.parameter.IFocusedParameter;
 
 
 /**
@@ -19,6 +21,9 @@ import java.util.Optional;
  */
 public class MainKnobRowModeCommand extends KnobRowModeCommand<MaschineControlSurface, MaschineConfiguration>
 {
+    private boolean controlLastParamActive = false;
+
+
     /**
      * Constructor.
      *
@@ -31,10 +36,56 @@ public class MainKnobRowModeCommand extends KnobRowModeCommand<MaschineControlSu
     }
 
 
+    /**
+     * Dis-/enable controlling the last touched/clicked parameter.
+     */
+    public void toggleControlLastParamActive ()
+    {
+        this.controlLastParamActive = !this.controlLastParamActive;
+    }
+
+
+    /**
+     * De-/activate controlling the last touched/clicked parameter .
+     *
+     * @param active True to activate
+     */
+    public void setControlLastParamActive (final boolean active)
+    {
+        this.controlLastParamActive = active;
+    }
+
+
+    /**
+     * Is controlling the last touched/clicked parameter active?
+     *
+     * @return True if active
+     */
+    public boolean isControlLastParamActive ()
+    {
+        return this.controlLastParamActive;
+    }
+
+
     /** {@inheritDoc} */
     @Override
     public void execute (final int value)
     {
+        final IValueChanger valueChanger = this.model.getValueChanger ();
+
+        // Control the last touched/clicked parameter
+        if (this.controlLastParamActive)
+        {
+            final Optional<IFocusedParameter> parameterOpt = this.model.getFocusedParameter ();
+            if (parameterOpt.isPresent () && parameterOpt.get ().doesExist ())
+            {
+                final double increment = valueChanger.calcKnobChange (value);
+                // TODO increment *= this.surface.isShiftPressed () ? 10 : 50;
+                parameterOpt.get ().inc (increment);
+            }
+            return;
+        }
+
         if (this.surface.isPressed (ButtonID.SCENE1))
         {
             this.switchPage (ButtonID.SCENE1, this.model.getSceneBank (), value);
@@ -69,7 +120,7 @@ public class MainKnobRowModeCommand extends KnobRowModeCommand<MaschineControlSu
 
         if (this.surface.isPressed (ButtonID.ACCENT))
         {
-            final int speed = this.model.getValueChanger ().decode (value);
+            final int speed = valueChanger.decode (value);
             this.surface.setTriggerConsumed (ButtonID.ACCENT);
 
             final MaschineConfiguration configuration = this.surface.getConfiguration ();

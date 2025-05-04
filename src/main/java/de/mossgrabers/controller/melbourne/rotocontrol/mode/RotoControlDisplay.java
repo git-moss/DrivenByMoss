@@ -150,7 +150,7 @@ public class RotoControlDisplay
         if (updateAll)
         {
             // If tracks have been added or removed, ensure that the button mode is updated as well
-            for (IHwButton button: this.surface.getButtons ().values ())
+            for (final IHwButton button: this.surface.getButtons ().values ())
                 button.getLight ().forceFlush ();
         }
 

@@ -19,6 +19,7 @@ import de.mossgrabers.framework.daw.data.IMarker;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.bank.IMarkerBank;
+import de.mossgrabers.framework.parameter.IFocusedParameter;
 import de.mossgrabers.framework.parameter.PlayPositionParameter;
 import de.mossgrabers.framework.parameter.TempoParameter;
 import de.mossgrabers.framework.parameterprovider.special.CombinedParameterProvider;
@@ -73,7 +74,7 @@ public class TransportMode extends AbstractElectraOneMode
                 // Row 5
                 new EmptyParameterProvider (1), new FixedParameterProvider (this.transport.getMetronomeVolumeParameter ()), new FixedParameterProvider (this.project.getCueVolumeParameter ()), new EmptyParameterProvider (3),
                 // Row 6
-                emptyParameterProvider6));
+                new EmptyParameterProvider (2), new FixedParameterProvider (this.model.getFocusedParameter ().get ()), new EmptyParameterProvider (3)));
     }
 
 
@@ -245,6 +246,10 @@ public class TransportMode extends AbstractElectraOneMode
 
         // Row 6
         this.pageCache.updateColor (5, 1, this.transport.isMetronomeOn () ? ElectraOneColorManager.METRONOME_ON : ElectraOneColorManager.METRONOME_OFF);
+        final Optional<IFocusedParameter> focusedParameter = this.model.getFocusedParameter ();
+        final int paramValue = focusedParameter.isPresent () ? focusedParameter.get ().getValue () : 0;
+        final String paramStr = focusedParameter.isPresent () ? focusedParameter.get ().getDisplayedValue () : "";
+        this.pageCache.updateValue (5, 2, paramValue, StringUtils.optimizeName (StringUtils.fixASCII (paramStr), 15));
         this.pageCache.updateColor (5, 3, this.transport.isArrangerOverdub () ? ElectraOneColorManager.AUTO_MODE_ON : ElectraOneColorManager.AUTO_MODE_OFF);
         this.pageCache.updateColor (5, 4, this.launchMarkers ? ElectraOneColorManager.MARKER_LAUNCH_ON : ElectraOneColorManager.MARKER_LAUNCH_OFF);
 
