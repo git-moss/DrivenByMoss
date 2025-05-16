@@ -897,9 +897,14 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
     {
         for (final JsonNode preset: root.get ("presets"))
         {
-            final String presetName = preset.get ("name").asText ();
-            final int bankNumber = preset.get ("bankNumber").asInt ();
-            final int slot = preset.get ("slot").asInt ();
+            final JsonNode nameNode = preset.get ("name");
+            final JsonNode bankNumberNode = preset.get ("bankNumber");
+            final JsonNode slotNode = preset.get ("slot");
+            if (nameNode == null || bankNumberNode == null || slotNode == null)
+                continue;
+            final String presetName = nameNode.asText ();
+            final int bankNumber = bankNumberNode.asInt ();
+            final int slot = slotNode.asInt ();
 
             if ("DrivenByMoss".equals (presetName))
             {
