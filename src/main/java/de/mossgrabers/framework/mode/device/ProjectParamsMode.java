@@ -78,7 +78,7 @@ public class ProjectParamsMode<S extends IControlSurface<C>, C extends Configura
      *            shift button
      * @param addParameterProvider True to add the default parameter provider
      */
-    protected ProjectParamsMode (final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> knobs, final BooleanSupplier isAlternativeFunction, final boolean addParameterProvider)
+    public ProjectParamsMode (final S surface, final IModel model, final boolean isAbsolute, final List<ContinuousID> knobs, final BooleanSupplier isAlternativeFunction, final boolean addParameterProvider)
     {
         super ("Project Parameters", surface, model, isAbsolute, model.getProject ().getParameterBank (), knobs, isAlternativeFunction);
 

@@ -26,7 +26,7 @@ public class ModeSelectCommand<S extends IControlSurface<C>, C extends Configura
     protected final ModeManager modeManager;
     protected final Modes       modeId;
     protected final boolean     toggle;
-    protected final boolean     notify;
+    protected boolean           notify;
 
 
     /**

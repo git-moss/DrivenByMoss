@@ -103,6 +103,8 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
             this.wasAlternateInteractionUsed = true;
 
         final Pair<Integer, Integer> padPos = this.getPad (note);
+        if (padPos == null)
+            return;
         final ITrack track = this.model.getCurrentTrackBank ().getItem (padPos.getKey ().intValue ());
         final ISlot slot = track.getSlotBank ().getItem (padPos.getValue ().intValue ());
 
@@ -181,7 +183,7 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
             return true;
 
         // Delete selected clip
-        if (this.isButtonCombination (ButtonID.DELETE))
+        if (this.isDeletePressed ())
         {
             if (slot.doesExist ())
                 slot.remove ();
@@ -189,7 +191,7 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
         }
 
         // Duplicate a clip
-        if (this.isButtonCombination (ButtonID.DUPLICATE))
+        if (this.isDuplicatePressed ())
         {
             if (slot.doesExist () && slot.hasContent ())
                 this.sourceSlot = slot;
@@ -213,6 +215,18 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
         }
 
         return false;
+    }
+
+
+    protected boolean isDeletePressed ()
+    {
+        return this.isButtonCombination (ButtonID.DELETE);
+    }
+
+
+    protected boolean isDuplicatePressed ()
+    {
+        return this.isButtonCombination (ButtonID.DUPLICATE);
     }
 
 

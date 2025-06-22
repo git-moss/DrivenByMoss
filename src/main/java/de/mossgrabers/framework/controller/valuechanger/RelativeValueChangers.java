@@ -19,10 +19,10 @@ public class RelativeValueChangers
 
     static
     {
-        VALUE_CHANGERS.put (RelativeEncoding.TWOS_COMPLEMENT, new TwosComplementValueChanger (127, 1));
-        VALUE_CHANGERS.put (RelativeEncoding.OFFSET_BINARY, new OffsetBinaryRelativeValueChanger (127, 1));
-        VALUE_CHANGERS.put (RelativeEncoding.SIGNED_BIT, new SignedBitRelativeValueChanger (127, 1));
-        VALUE_CHANGERS.put (RelativeEncoding.SIGNED_BIT2, new SignedBit2RelativeValueChanger (127, 1));
+        VALUE_CHANGERS.put (RelativeEncoding.TWOS_COMPLEMENT, new TwosComplementValueChanger (128, 1));
+        VALUE_CHANGERS.put (RelativeEncoding.OFFSET_BINARY, new OffsetBinaryRelativeValueChanger (128, 1));
+        VALUE_CHANGERS.put (RelativeEncoding.SIGNED_BIT, new SignedBitRelativeValueChanger (128, 1));
+        VALUE_CHANGERS.put (RelativeEncoding.SIGNED_BIT2, new SignedBit2RelativeValueChanger (128, 1));
     }
 
 

@@ -943,8 +943,20 @@ public abstract class AbstractConfiguration implements Configuration
      */
     protected void activateScaleSetting (final ISettingsUI settingsUI)
     {
-        final String [] scaleNames = Scale.getNames ();
-        this.scaleSetting = settingsUI.getEnumSetting ("Scale", CATEGORY_SCALES, scaleNames, Scale.MAJOR.getName ());
+        this.activateScaleSetting (settingsUI, Scale.getNames (), Scale.MAJOR.getName ());
+    }
+
+
+    /**
+     * Activate the scale setting.
+     *
+     * @param settingsUI The settings
+     * @param scaleNames The names of all available scales
+     * @param defaultScale The name of the default scale
+     */
+    protected void activateScaleSetting (final ISettingsUI settingsUI, final String [] scaleNames, final String defaultScale)
+    {
+        this.scaleSetting = settingsUI.getEnumSetting ("Scale", CATEGORY_SCALES, scaleNames, defaultScale);
         this.scaleSetting.addValueObserver (value -> {
             this.scale = value;
             this.notifyObservers (SCALES_SCALE);
@@ -1428,19 +1440,36 @@ public abstract class AbstractConfiguration implements Configuration
      */
     protected void activateKnobSpeedSetting (final ISettingsUI settingsUI, final int sensitivity, final int slowSensitivity)
     {
+        this.activateKnobSpeedSetting (settingsUI, sensitivity, slowSensitivity, false);
+    }
+
+
+    /**
+     * Activate the knob speed settings.
+     *
+     * @param settingsUI The settings
+     * @param sensitivity The index of the sensitivity, 0-200
+     * @param slowSensitivity The index of the slow sensitivity, 0-200
+     * @param onlyNormalSetting If true, adds only the normal setting and not the slow one
+     */
+    protected void activateKnobSpeedSetting (final ISettingsUI settingsUI, final int sensitivity, final int slowSensitivity, final boolean onlyNormalSetting)
+    {
         final IEnumSetting knobSpeedNormalSetting = settingsUI.getEnumSetting ("Knob Sensitivity Default", CATEGORY_WORKFLOW, KNOB_SENSITIVITY, KNOB_SENSITIVITY[sensitivity]);
         knobSpeedNormalSetting.addValueObserver (value -> {
             this.knobSpeedDefault = lookupIndex (KNOB_SENSITIVITY, value) - 100;
             this.notifyObservers (KNOB_SENSITIVITY_DEFAULT);
         });
-        final IEnumSetting knobSpeedSlowSetting = settingsUI.getEnumSetting ("Knob Sensitivity Slow", CATEGORY_WORKFLOW, KNOB_SENSITIVITY, KNOB_SENSITIVITY[slowSensitivity]);
-        knobSpeedSlowSetting.addValueObserver (value -> {
-            this.knobSpeedSlow = lookupIndex (KNOB_SENSITIVITY, value) - 100;
-            this.notifyObservers (KNOB_SENSITIVITY_SLOW);
-        });
-
         this.isSettingActive.add (KNOB_SENSITIVITY_DEFAULT);
-        this.isSettingActive.add (KNOB_SENSITIVITY_SLOW);
+
+        if (!onlyNormalSetting)
+        {
+            final IEnumSetting knobSpeedSlowSetting = settingsUI.getEnumSetting ("Knob Sensitivity Slow", CATEGORY_WORKFLOW, KNOB_SENSITIVITY, KNOB_SENSITIVITY[slowSensitivity]);
+            knobSpeedSlowSetting.addValueObserver (value -> {
+                this.knobSpeedSlow = lookupIndex (KNOB_SENSITIVITY, value) - 100;
+                this.notifyObservers (KNOB_SENSITIVITY_SLOW);
+            });
+            this.isSettingActive.add (KNOB_SENSITIVITY_SLOW);
+        }
     }
 
 
@@ -1659,14 +1688,27 @@ public abstract class AbstractConfiguration implements Configuration
         this.enableMPESetting = settingsUI.getEnumSetting ("MIDI Polyphonic Expression (MPE)", category, ON_OFF_OPTIONS, ON_OFF_OPTIONS[enableMPE ? 1 : 0]);
         this.isMPEEnabled = ON_OFF_OPTIONS[1].equals (this.enableMPESetting.get ());
 
-        this.pitchBendRangeSetting = settingsUI.getRangeSetting ("MPE Pitch Bend Sensitivity", category, 1, 96, 1, "", 48);
-        this.mpePitchBendRange = this.pitchBendRangeSetting.get ().intValue ();
+        this.activateMPEBendRange (settingsUI, category);
 
         this.enableMPESetting.addValueObserver (value -> {
             this.isMPEEnabled = ON_OFF_OPTIONS[1].equals (value);
             this.notifyObservers (ENABLED_MPE_ZONES);
             this.pitchBendRangeSetting.setEnabled (this.isMPEEnabled);
         });
+    }
+
+
+    /**
+     * Activate (only) the MPE Pitch-bend range setting. Consider to call activateMPESetting
+     * instead.
+     *
+     * @param settingsUI The settings
+     * @param category The category to use
+     */
+    protected void activateMPEBendRange (final ISettingsUI settingsUI, final String category)
+    {
+        this.pitchBendRangeSetting = settingsUI.getRangeSetting ("MPE Pitch Bend Sensitivity", category, 1, 96, 1, "", 48);
+        this.mpePitchBendRange = this.pitchBendRangeSetting.get ().intValue ();
 
         this.pitchBendRangeSetting.addValueObserver (value -> {
             this.mpePitchBendRange = value.intValue ();
