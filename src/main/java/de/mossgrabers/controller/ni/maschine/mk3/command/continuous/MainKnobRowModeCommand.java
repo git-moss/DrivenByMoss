@@ -80,7 +80,6 @@ public class MainKnobRowModeCommand extends KnobRowModeCommand<MaschineControlSu
             if (parameterOpt.isPresent () && parameterOpt.get ().doesExist ())
             {
                 final double increment = valueChanger.calcKnobChange (value);
-                // TODO increment *= this.surface.isShiftPressed () ? 10 : 50;
                 parameterOpt.get ().inc (increment);
             }
             return;

@@ -268,11 +268,7 @@ public class ExquisControllerSetup extends AbstractControllerSetup<ExquisControl
         }
 
         this.touchstrip = this.addAbsoluteKnob (ContinuousID.TOUCHSTRIP, "Touchstrip", this::selectBankPage, BindType.CC, MIDI_CHANNEL, ExquisControlSurface.TOUCHSTRIP);
-        this.touchstrip.addOutput ( () -> {
-
-            return this.isMoveTracks ? this.model.getTrackBank ().getScrollPosition () / 4 : this.model.getSceneBank ().getScrollPosition () / 7;
-
-        }, value -> {
+        this.touchstrip.addOutput ( () -> this.isMoveTracks ? this.model.getTrackBank ().getScrollPosition () / 4 : this.model.getSceneBank ().getScrollPosition () / 7, value -> {
 
             final ColorEx hiColor = this.isMoveTracks ? ColorEx.BLUE : ColorEx.GREEN;
             for (int i = 0; i < 6; i++)
