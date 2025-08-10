@@ -46,6 +46,7 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
     protected LightInfo        clipColorIsRecordingQueued      = new LightInfo (1, -1, false);
     protected LightInfo        clipColorIsPlaying              = new LightInfo (2, -1, false);
     protected LightInfo        clipColorIsPlayingQueued        = new LightInfo (3, -1, false);
+    protected LightInfo        clipColorIsStopQueued           = new LightInfo (3, -1, false);
     protected LightInfo        clipColorHasContent             = new LightInfo (4, -1, false);
     protected LightInfo        clipColorHasNoContent           = new LightInfo (5, -1, false);
     protected LightInfo        clipColorIsRecArmed             = new LightInfo (6, -1, false);
@@ -393,12 +394,13 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
     }
 
 
-    protected void setColors (final LightInfo isRecording, final LightInfo isRecordingQueued, final LightInfo isPlaying, final LightInfo isPlayingQueued, final LightInfo hasContent, final LightInfo noContent, final LightInfo recArmed, final LightInfo isMuted)
+    protected void setColors (final LightInfo isRecording, final LightInfo isRecordingQueued, final LightInfo isPlaying, final LightInfo isPlayingQueued, final LightInfo isStopQueued, final LightInfo hasContent, final LightInfo noContent, final LightInfo recArmed, final LightInfo isMuted)
     {
         this.clipColorIsRecording = isRecording;
         this.clipColorIsRecordingQueued = isRecordingQueued;
         this.clipColorIsPlaying = isPlaying;
         this.clipColorIsPlayingQueued = isPlayingQueued;
+        this.clipColorIsStopQueued = isStopQueued;
         this.clipColorHasContent = hasContent;
         this.clipColorHasNoContent = noContent;
         this.clipColorIsRecArmed = recArmed;
@@ -463,6 +465,9 @@ public abstract class AbstractSessionView<S extends IControlSurface<C>, C extend
 
         if (slot.isPlayingQueued ())
             return this.insertClipColor (cm, colorID, this.clipColorIsPlayingQueued);
+
+        if (slot.isStopQueued ())
+            return this.insertClipColor (cm, colorID, this.clipColorIsStopQueued);
 
         if (slot.isPlaying ())
             return this.insertClipColor (cm, colorID, this.clipColorIsPlaying);

@@ -4,6 +4,9 @@
 
 package de.mossgrabers.framework.graphics.canvas.component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -15,9 +18,6 @@ import de.mossgrabers.framework.graphics.IGraphicsContext;
 import de.mossgrabers.framework.graphics.IGraphicsDimensions;
 import de.mossgrabers.framework.graphics.IGraphicsInfo;
 import de.mossgrabers.framework.utils.Pair;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -108,23 +108,27 @@ public class ClipListComponent extends ChannelSelectComponent
             {
                 // Draw the play/record state indicator box
                 final boolean isPlaying = slot.isPlaying ();
-                if (isPlaying || slot.isRecording () || slot.isPlayingQueued () || slot.isRecordingQueued ())
+                final boolean isPlayingQueued = slot.isPlayingQueued ();
+                final boolean isRecording = slot.isRecording ();
+                final boolean isRecordingQueued = slot.isRecordingQueued ();
+                final boolean isStopQueued = slot.isStopQueued ();
+                if (isPlaying || isPlayingQueued || isRecording || isRecordingQueued || isStopQueued)
                     gc.fillRectangle (boxLeft, boxTop, fontHeight, fontHeight, ColorEx.BLACK);
 
                 // Draw the play, record or stop symbol depending on the slots state
-                if (slot.hasContent ())
+                ColorEx fillColor = ColorEx.darker (clipBackgroundColor);
+                if (isRecording || isRecordingQueued)
                 {
-                    if (slot.isRecording ())
-                        gc.fillCircle (boxLeft + separatorSize + radius, boxTop + separatorSize + radius, radius, ColorEx.RED);
-                    else
-                    {
-                        ColorEx fillColor = ColorEx.darker (clipBackgroundColor);
-                        if (isPlaying)
-                            fillColor = ColorEx.GREEN;
-                        else if (slot.isPlayingQueued () || slot.isRecordingQueued ())
-                            fillColor = ColorEx.WHITE;
-                        gc.fillTriangle (boxLeft + separatorSize, boxTop + separatorSize, boxLeft + separatorSize, boxTop + fontHeight - separatorSize, boxLeft + fontHeight - separatorSize, boxTop + fontHeight / 2, fillColor);
-                    }
+                    fillColor = isStopQueued ? ColorEx.WHITE : ColorEx.RED;
+                    gc.fillCircle (boxLeft + separatorSize + radius, boxTop + separatorSize + radius, radius, fillColor);
+                }
+                else if (slot.hasContent ())
+                {
+                    if (isStopQueued)
+                        fillColor = ColorEx.WHITE;
+                    else if (isPlaying || isPlayingQueued)
+                        fillColor = isPlayingQueued ? ColorEx.DARKER_GREEN : ColorEx.GREEN;
+                    gc.fillTriangle (boxLeft + separatorSize, boxTop + separatorSize, boxLeft + separatorSize, boxTop + fontHeight - separatorSize, boxLeft + fontHeight - separatorSize, boxTop + fontHeight / 2, fillColor);
                 }
                 else
                 {

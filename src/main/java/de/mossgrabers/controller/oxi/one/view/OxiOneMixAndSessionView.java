@@ -47,11 +47,12 @@ public class OxiOneMixAndSessionView extends AbstractSessionView<OxiOneControlSu
         final LightInfo isRecordingQueued = new LightInfo (redHi, black, true);
         final LightInfo isPlaying = new LightInfo (green, -1, false);
         final LightInfo isPlayingQueued = new LightInfo (green, green, true);
+        final LightInfo isStopQueued = new LightInfo (green, green, true);
         final LightInfo hasContent = new LightInfo (amber, white, false);
         final LightInfo noContent = new LightInfo (black, -1, false);
         final LightInfo recArmed = new LightInfo (redLo, -1, false);
         final LightInfo isMuted = new LightInfo (gray, -1, false);
-        this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed, isMuted);
+        this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, isStopQueued, hasContent, noContent, recArmed, isMuted);
     }
 
 

@@ -129,11 +129,11 @@ public class BeatstepControllerSetup extends AbstractControllerSetup<BeatstepCon
         // Sequencer 1 is on channel 1
         final INoteInput seqNoteInput = input.createNoteInput ("Hardware Sequencer", "90????", "80????");
 
-        final Integer [] table = new Integer [128];
+        final int [] table = new int [128];
         for (int i = 0; i < 128; i++)
         {
             // Block the Shift key
-            table[i] = Integer.valueOf (i == 7 ? -1 : i);
+            table[i] = i == 7 ? -1 : i;
         }
         seqNoteInput.setKeyTranslationTable (table);
 

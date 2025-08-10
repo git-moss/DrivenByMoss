@@ -434,12 +434,9 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
         this.keyTranslationTable = table;
         if (this.input == null)
             return;
-        final Integer [] t = new Integer [table.length];
-        for (int i = 0; i < table.length; i++)
-            t[i] = Integer.valueOf (table[i]);
         final INoteInput defaultNoteInput = this.input.getDefaultNoteInput ();
         if (defaultNoteInput != null)
-            defaultNoteInput.setKeyTranslationTable (t);
+            defaultNoteInput.setKeyTranslationTable (table);
     }
 
 
@@ -457,12 +454,9 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
     {
         if (this.input == null)
             return;
-        final Integer [] t = new Integer [table.length];
-        for (int i = 0; i < table.length; i++)
-            t[i] = Integer.valueOf (table[i]);
         final INoteInput defaultNoteInput = this.input.getDefaultNoteInput ();
         if (defaultNoteInput != null)
-            defaultNoteInput.setVelocityTranslationTable (t);
+            defaultNoteInput.setVelocityTranslationTable (table);
     }
 
 

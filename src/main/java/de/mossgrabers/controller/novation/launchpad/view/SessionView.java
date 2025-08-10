@@ -61,11 +61,12 @@ public class SessionView extends AbstractSessionView<LaunchpadControlSurface, La
         final LightInfo isRecordingQueued = new LightInfo (LaunchpadColorManager.LAUNCHPAD_COLOR_RED_HI, LaunchpadColorManager.LAUNCHPAD_COLOR_RED_LO, true);
         final LightInfo isPlaying = new LightInfo (LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN, LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN, false);
         final LightInfo isPlayingQueued = new LightInfo (LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN, LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_LO, true);
+        final LightInfo isStopQueued = new LightInfo (LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN, LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_LO, true);
         final LightInfo hasContent = new LightInfo (LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER, -1, false);
         final LightInfo noContent = new LightInfo (LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK, -1, false);
         final LightInfo recArmed = new LightInfo (LaunchpadColorManager.LAUNCHPAD_COLOR_RED_LO, -1, false);
         final LightInfo isMuted = new LightInfo (LaunchpadColorManager.LAUNCHPAD_COLOR_GREY_LO, -1, false);
-        this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed, isMuted);
+        this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, isStopQueued, hasContent, noContent, recArmed, isMuted);
 
         this.birdColorHasContent = hasContent;
         this.birdColorSelected = new LightInfo (LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN, -1, false);

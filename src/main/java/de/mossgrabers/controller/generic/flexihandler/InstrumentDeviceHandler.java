@@ -82,6 +82,7 @@ public class InstrumentDeviceHandler extends AbstractHandler
             FlexiCommand.INSTRUMENT_DEVICE_TOGGLE_PARAMETER_6,
             FlexiCommand.INSTRUMENT_DEVICE_TOGGLE_PARAMETER_7,
             FlexiCommand.INSTRUMENT_DEVICE_TOGGLE_PARAMETER_8,
+            FlexiCommand.INSTRUMENT_DEVICE_RESET_PARAMETER_1,
             FlexiCommand.INSTRUMENT_DEVICE_RESET_PARAMETER_2,
             FlexiCommand.INSTRUMENT_DEVICE_RESET_PARAMETER_3,
             FlexiCommand.INSTRUMENT_DEVICE_RESET_PARAMETER_4,

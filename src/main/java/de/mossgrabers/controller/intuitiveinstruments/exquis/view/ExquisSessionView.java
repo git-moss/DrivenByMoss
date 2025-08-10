@@ -85,11 +85,12 @@ public class ExquisSessionView extends AbstractSessionView<ExquisControlSurface,
         final LightInfo isRecordingQueued = new LightInfo (redHi, black, true);
         final LightInfo isPlaying = new LightInfo (green, green, false);
         final LightInfo isPlayingQueued = new LightInfo (green, green, true);
+        final LightInfo isStopQueued = new LightInfo (green, green, true);
         final LightInfo hasContent = new LightInfo (orange, white, false);
         final LightInfo noContent = new LightInfo (black, -1, false);
         final LightInfo recArmed = new LightInfo (redLo, -1, false);
         final LightInfo isMuted = new LightInfo (grey, -1, false);
-        this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed, isMuted);
+        this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, isStopQueued, hasContent, noContent, recArmed, isMuted);
 
         this.birdColorHasContent = new LightInfo (orange, -1, false);
         this.birdColorSelected = isPlaying;

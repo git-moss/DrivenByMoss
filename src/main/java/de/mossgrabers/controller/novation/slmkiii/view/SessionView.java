@@ -39,11 +39,12 @@ public class SessionView extends AbstractSessionView<SLMkIIIControlSurface, SLMk
         final LightInfo isRecordingQueued = new LightInfo (SLMkIIIColorManager.SLMKIII_RED_HALF, SLMkIIIColorManager.SLMKIII_RED_HALF, true);
         final LightInfo isPlaying = new LightInfo (SLMkIIIColorManager.SLMKIII_GREEN_GRASS, SLMkIIIColorManager.SLMKIII_GREEN, false);
         final LightInfo isPlayingQueued = new LightInfo (SLMkIIIColorManager.SLMKIII_GREEN_GRASS, SLMkIIIColorManager.SLMKIII_GREEN, true);
+        final LightInfo isStopQueued = new LightInfo (SLMkIIIColorManager.SLMKIII_GREEN_GRASS, SLMkIIIColorManager.SLMKIII_GREEN, true);
         final LightInfo hasContent = new LightInfo (SLMkIIIColorManager.SLMKIII_AMBER, -1, false);
         final LightInfo noContent = new LightInfo (SLMkIIIColorManager.SLMKIII_BLACK, -1, false);
         final LightInfo recArmed = new LightInfo (SLMkIIIColorManager.SLMKIII_RED_HALF, -1, false);
         final LightInfo isMuted = new LightInfo (SLMkIIIColorManager.SLMKIII_RED_HALF, -1, false);
-        this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed, isMuted);
+        this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, isStopQueued, hasContent, noContent, recArmed, isMuted);
     }
 
 

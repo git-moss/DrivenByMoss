@@ -24,7 +24,7 @@ public interface INoteInput
      * @param table An array which should contain 128 entries. Each entry should be a note value in
      *            the range [0..127] or -1 in case of filtering.
      */
-    void setKeyTranslationTable (Integer [] table);
+    void setKeyTranslationTable (int [] table);
 
 
     /**
@@ -39,7 +39,7 @@ public interface INoteInput
      * @param table An array which should contain 128 entries. Each entry should be a note value in
      *            the range [0..127] or -1 in case of filtering.
      */
-    void setVelocityTranslationTable (Integer [] table);
+    void setVelocityTranslationTable (int [] table);
 
 
     /**

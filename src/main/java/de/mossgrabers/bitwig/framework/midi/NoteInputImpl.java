@@ -4,9 +4,9 @@
 
 package de.mossgrabers.bitwig.framework.midi;
 
-import de.mossgrabers.framework.daw.midi.AbstractNoteInput;
-
 import com.bitwig.extension.controller.api.NoteInput;
+
+import de.mossgrabers.framework.daw.midi.AbstractNoteInput;
 
 
 /**
@@ -37,17 +37,17 @@ class NoteInputImpl extends AbstractNoteInput
 
     /** {@inheritDoc} */
     @Override
-    public void setKeyTranslationTable (final Integer [] table)
+    public void setKeyTranslationTable (final int [] table)
     {
-        this.noteInput.setKeyTranslationTable (table);
+        this.noteInput.setKeyTranslationTable (boxArray (table));
     }
 
 
     /** {@inheritDoc} */
     @Override
-    public void setVelocityTranslationTable (final Integer [] table)
+    public void setVelocityTranslationTable (final int [] table)
     {
-        this.noteInput.setVelocityTranslationTable (table);
+        this.noteInput.setVelocityTranslationTable (boxArray (table));
     }
 
 
@@ -72,5 +72,14 @@ class NoteInputImpl extends AbstractNoteInput
     {
         this.mpePitchBendSensitivity = pitchBendRange;
         this.noteInput.setUseExpressiveMidi (this.isMPEEnabled, 0, this.mpePitchBendSensitivity);
+    }
+
+
+    private static Integer [] boxArray (final int [] table)
+    {
+        final Integer [] boxedArray = new Integer [table.length];
+        for (int i = 0; i < table.length; i++)
+            boxedArray[i] = Integer.valueOf (table[i]);
+        return boxedArray;
     }
 }

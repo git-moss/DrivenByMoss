@@ -53,11 +53,12 @@ public class SessionView extends AbstractSessionView<LaunchkeyMk3ControlSurface,
         final LightInfo isRecordingQueued = new LightInfo (LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_RED_LO, LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_RED_LO, true);
         final LightInfo isPlaying = new LightInfo (LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_GREEN_SPRING, LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_GREEN, false);
         final LightInfo isPlayingQueued = new LightInfo (LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_GREEN_SPRING, LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_GREEN, true);
+        final LightInfo isStopQueued = new LightInfo (LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_GREEN_SPRING, LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_GREEN, true);
         final LightInfo hasContent = new LightInfo (LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_AMBER, -1, false);
         final LightInfo noContent = new LightInfo (LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_BLACK, -1, false);
         final LightInfo recArmed = new LightInfo (LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_RED_LO, -1, false);
         final LightInfo isMuted = new LightInfo (LaunchkeyMk3ColorManager.LAUNCHKEY_COLOR_GREY_LO, -1, false);
-        this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed, isMuted);
+        this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, isStopQueued, hasContent, noContent, recArmed, isMuted);
     }
 
 

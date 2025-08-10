@@ -42,11 +42,12 @@ public class SessionView extends AbstractSessionView<MaschineJamControlSurface, 
         final LightInfo isRecordingQueued = new LightInfo (MaschineColorManager.COLOR_RED, MaschineColorManager.COLOR_BLACK, true);
         final LightInfo isPlaying = new LightInfo (MaschineColorManager.COLOR_GREEN, -1, false);
         final LightInfo isPlayingQueued = new LightInfo (MaschineColorManager.COLOR_GREEN, MaschineColorManager.COLOR_GREEN, true);
+        final LightInfo isStopQueued = new LightInfo (MaschineColorManager.COLOR_GREEN, MaschineColorManager.COLOR_GREEN, true);
         final LightInfo hasContent = new LightInfo (MaschineColorManager.COLOR_AMBER, MaschineColorManager.COLOR_WHITE, false);
         final LightInfo noContent = new LightInfo (MaschineColorManager.COLOR_BLACK, -1, false);
         final LightInfo recArmed = new LightInfo (MaschineColorManager.COLOR_RED_LO, -1, false);
         final LightInfo isMuted = new LightInfo (MaschineColorManager.COLOR_DARK_GREY, -1, false);
-        this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed, isMuted);
+        this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, isStopQueued, hasContent, noContent, recArmed, isMuted);
 
         this.birdColorHasContent = hasContent;
         this.birdColorSelected = isPlaying;

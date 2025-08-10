@@ -43,11 +43,12 @@ public class SessionView extends AbstractSessionView<APCControlSurface, APCConfi
             final LightInfo isRecordingQueued = new LightInfo (APCColorManager.APC_MKII_COLOR_RED_HI, APCColorManager.APC_MKII_COLOR_RED_HI, true);
             final LightInfo isPlaying = new LightInfo (APCColorManager.APC_MKII_COLOR_GREEN_HI, APCColorManager.APC_MKII_COLOR_GREEN_HI, false);
             final LightInfo isPlayingQueued = new LightInfo (APCColorManager.APC_MKII_COLOR_GREEN_HI, APCColorManager.APC_MKII_COLOR_GREEN_HI, true);
+            final LightInfo isStopQueued = new LightInfo (APCColorManager.APC_MKII_COLOR_GREEN_HI, APCColorManager.APC_MKII_COLOR_GREEN_HI, true);
             final LightInfo hasContent = new LightInfo (APCColorManager.APC_MKII_COLOR_AMBER, APCColorManager.APC_MKII_COLOR_WHITE, false);
             final LightInfo noContent = new LightInfo (APCColorManager.APC_MKII_COLOR_BLACK, -1, false);
             final LightInfo recArmed = new LightInfo (APCColorManager.APC_MKII_COLOR_RED_LO, -1, false);
             final LightInfo isMuted = new LightInfo (APCColorManager.APC_MKII_COLOR_GREY_LO, -1, false);
-            this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed, isMuted);
+            this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, isStopQueued, hasContent, noContent, recArmed, isMuted);
         }
         else
         {
@@ -55,11 +56,12 @@ public class SessionView extends AbstractSessionView<APCControlSurface, APCConfi
             final LightInfo isRecordingQueued = new LightInfo (APCColorManager.APC_COLOR_RED, APCColorManager.APC_COLOR_RED_BLINK, false);
             final LightInfo isPlaying = new LightInfo (APCColorManager.APC_COLOR_GREEN, -1, false);
             final LightInfo isPlayingQueued = new LightInfo (APCColorManager.APC_COLOR_GREEN, APCColorManager.APC_COLOR_GREEN_BLINK, false);
+            final LightInfo isStopQueued = new LightInfo (APCColorManager.APC_COLOR_GREEN, APCColorManager.APC_COLOR_GREEN_BLINK, false);
             final LightInfo hasContent = new LightInfo (APCColorManager.APC_COLOR_YELLOW, APCColorManager.APC_COLOR_YELLOW_BLINK, false);
             final LightInfo noContent = new LightInfo (APCColorManager.APC_COLOR_BLACK, -1, false);
             final LightInfo recArmed = new LightInfo (APCColorManager.APC_COLOR_BLACK, -1, false);
             final LightInfo isMuted = new LightInfo (APCColorManager.APC_COLOR_BLACK, -1, false);
-            this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed, isMuted);
+            this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, isStopQueued, hasContent, noContent, recArmed, isMuted);
         }
     }
 

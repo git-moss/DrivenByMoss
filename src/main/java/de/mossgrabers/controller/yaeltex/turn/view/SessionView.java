@@ -44,11 +44,12 @@ public class SessionView extends AbstractSessionView<YaeltexTurnControlSurface, 
         final LightInfo isRecordingQueued = new LightInfo (red, redLow, true);
         final LightInfo isPlaying = new LightInfo (green, green, false);
         final LightInfo isPlayingQueued = new LightInfo (green, green, true);
+        final LightInfo isStopQueued = new LightInfo (green, green, true);
         final LightInfo hasContent = new LightInfo (orange, -1, false);
         final LightInfo noContent = new LightInfo (black, -1, false);
         final LightInfo recArmed = new LightInfo (redLow, -1, false);
         final LightInfo isMuted = new LightInfo (darkGray, -1, false);
-        this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, hasContent, noContent, recArmed, isMuted);
+        this.setColors (isRecording, isRecordingQueued, isPlaying, isPlayingQueued, isStopQueued, hasContent, noContent, recArmed, isMuted);
     }
 
 
