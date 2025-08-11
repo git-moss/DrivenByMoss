@@ -64,7 +64,6 @@ public class PushUsbDisplay
     private final Object                   bufferUpdateLock = new Object ();
     private final ScheduledExecutorService sendExecutor     = Executors.newSingleThreadScheduledExecutor ();
 
-
     /**
      * Connect to the USB port and claim the display interface.
      *
@@ -83,7 +82,7 @@ public class PushUsbDisplay
         {
             this.usbDevice = null;
             this.usbEndpoint = null;
-            host.error ("Could not open USB output.");
+            host.error ("Could not open USB output: " + ex.getLocalizedMessage ());
         }
 
         this.headerBlock = host.createMemoryBlock (DISPLAY_HEADER.length);
