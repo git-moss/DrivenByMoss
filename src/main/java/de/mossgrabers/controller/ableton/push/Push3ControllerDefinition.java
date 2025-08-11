@@ -4,13 +4,13 @@
 
 package de.mossgrabers.controller.ableton.push;
 
-import java.util.List;
-import java.util.UUID;
-
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
 import de.mossgrabers.framework.usb.UsbMatcher;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
+
+import java.util.List;
+import java.util.UUID;
 
 
 /**
@@ -30,7 +30,6 @@ public class Push3ControllerDefinition extends DefaultControllerDefinition
     private static final byte  INTERFACE_NUMBER = 0;
     /** Push 3 USB display endpoint. */
     private static final byte  ENDPOINT_ADDRESS = (byte) 0x01;
-
 
     /**
      * Constructor.
@@ -54,6 +53,7 @@ public class Push3ControllerDefinition extends DefaultControllerDefinition
 
             case MAC, MAC_ARM:
                 midiDiscoveryPairs.add (this.addDeviceDiscoveryPair ("Ableton Push 3 Live Port"));
+                midiDiscoveryPairs.add (this.addDeviceDiscoveryPair ("Ableton AG - Ableton Push 3 - Live Port"));
                 break;
 
             case LINUX:
