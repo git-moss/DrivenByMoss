@@ -93,7 +93,7 @@ public class SLControlSurface extends AbstractControlSurface<SLConfiguration>
     public static final int     MKII_BUTTON_ROWSEL2        = 81;
     public static final int     MKII_BUTTON_ROWSEL3        = 82;
     public static final int     MKII_BUTTON_ROWSEL4        = 83;
-    public static final int     MKII_BUTTON_ROWSEL5        = 84;
+    public static final int     MKII_BUTTON_SHIFT          = 84;
     public static final int     MKII_BUTTON_ROWSEL6        = 85;
     public static final int     MKII_BUTTON_ROWSEL7        = 86;
     public static final int     MKII_BUTTON_ROWSEL8        = 87;
@@ -187,14 +187,6 @@ public class SLControlSurface extends AbstractControlSurface<SLConfiguration>
         this.output.sendSysex (SYSEX_AUTOMAP_OFF);
 
         super.internalShutdown ();
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isShiftPressed ()
-    {
-        return this.isTransportActive;
     }
 
 

@@ -31,6 +31,7 @@ import de.mossgrabers.controller.novation.sl.view.PlayView;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
 import de.mossgrabers.framework.controller.ButtonID;
+import de.mossgrabers.framework.command.trigger.ShiftCommand;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.hardware.BindType;
@@ -231,6 +232,7 @@ public class SLControllerSetup extends AbstractControllerSetup<SLControlSurface,
         this.addButton (ButtonID.ARROW_UP, "Up", new P2ButtonCommand (true, this.model, surface), SLControlSurface.MKII_BUTTON_P2_UP);
         this.addButton (ButtonID.ARROW_DOWN, "Down", new P2ButtonCommand (false, this.model, surface), SLControlSurface.MKII_BUTTON_P2_DOWN);
         this.addButton (ButtonID.NOTE, "Play View", new TransportButtonCommand (this.model, surface), SLControlSurface.MKII_BUTTON_TRANSPORT);
+        this.addButton (ButtonID.SHIFT, "Shift", new ShiftCommand<> (this.model, surface), SLControlSurface.MKII_BUTTON_SHIFT);
     }
 
 
