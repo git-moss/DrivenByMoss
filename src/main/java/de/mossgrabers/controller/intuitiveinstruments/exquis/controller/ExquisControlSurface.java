@@ -147,7 +147,7 @@ public class ExquisControlSurface extends AbstractControlSurface<ExquisConfigura
 
     /**
      * Send a developer mode configuration command to the device.
-     * 
+     *
      * @param configurationMask The mask, use the predefined constants in this class
      */
     public void configureDeveloperMode (final int configurationMask)
@@ -161,7 +161,7 @@ public class ExquisControlSurface extends AbstractControlSurface<ExquisConfigura
 
     /**
      * Set the color of a LED.
-     * 
+     *
      * @param ledID The ID of the LED
      * @param color The color
      */
@@ -173,14 +173,14 @@ public class ExquisControlSurface extends AbstractControlSurface<ExquisConfigura
 
     /**
      * Set the color of a LED.
-     * 
+     *
      * @param ledID The ID of the LED
      * @param color The color
      * @param fx A blink effect
      */
     public void setLED (final int ledID, final ColorEx color, final int fx)
     {
-        int [] intRGB127 = color.toIntRGB127 ();
+        final int [] intRGB127 = color.toIntRGB127 ();
         final byte [] params = new byte []
         {
             (byte) ledID,
@@ -196,7 +196,7 @@ public class ExquisControlSurface extends AbstractControlSurface<ExquisConfigura
 
     /**
      * Send the current tempo to the device if it has changed.
-     * 
+     *
      * @param tempo The tempo, it will be clipped to an integer in [20..240]
      */
     public void updateTempo (final int tempo)
@@ -215,7 +215,7 @@ public class ExquisControlSurface extends AbstractControlSurface<ExquisConfigura
 
     /**
      * Send the updated root note to the device.
-     * 
+     *
      * @param scaleOffset The index of the note in the scale (0-11)
      */
     public void updateRootNote (final int scaleOffset)
@@ -229,7 +229,7 @@ public class ExquisControlSurface extends AbstractControlSurface<ExquisConfigura
 
     /**
      * Send the updated scale to the device.
-     * 
+     *
      * @param scaleIndex The index of the scale [0..13]
      */
     public void updateScale (final int scaleIndex)
@@ -251,8 +251,8 @@ public class ExquisControlSurface extends AbstractControlSurface<ExquisConfigura
     {
         try (final ByteArrayOutputStream out = new ByteArrayOutputStream ())
         {
-            for (int i = 0; i < SYSEX_HEADER.length; i++)
-                out.write (SYSEX_HEADER[i]);
+            for (final int element: SYSEX_HEADER)
+                out.write (element);
             out.write (command);
             out.write (content);
             out.write ((byte) 0xF7);

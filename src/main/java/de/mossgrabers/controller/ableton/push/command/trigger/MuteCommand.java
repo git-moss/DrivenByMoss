@@ -61,6 +61,12 @@ public class MuteCommand extends AbstractTriggerCommand<PushControlSurface, Push
             return;
         }
 
+        if (event == ButtonEvent.LONG)
+        {
+            this.surface.setTriggerConsumed (ButtonID.MUTE);
+            return;
+        }
+
         if (event != ButtonEvent.UP)
             return;
 

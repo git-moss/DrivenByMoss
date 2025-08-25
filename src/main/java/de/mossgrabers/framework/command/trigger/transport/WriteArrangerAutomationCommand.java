@@ -40,4 +40,13 @@ public class WriteArrangerAutomationCommand<S extends IControlSurface<C>, C exte
         if (event == ButtonEvent.DOWN)
             this.model.getTransport ().toggleWriteArrangerAutomation ();
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void executeShifted (final ButtonEvent event)
+    {
+        if (event == ButtonEvent.DOWN)
+            this.model.getTransport ().toggleWriteClipLauncherAutomation ();
+    }
 }

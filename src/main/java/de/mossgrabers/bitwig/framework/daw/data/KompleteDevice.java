@@ -4,6 +4,9 @@
 
 package de.mossgrabers.bitwig.framework.daw.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.bitwig.extension.controller.api.Device;
 import com.bitwig.extension.controller.api.Parameter;
 import com.bitwig.extension.controller.api.SpecificPluginDevice;
@@ -20,18 +23,17 @@ import de.mossgrabers.framework.daw.IHost;
 public class KompleteDevice extends SpecificDeviceImpl
 {
     /** The ID of the Komplete Kontrol VST2 plugin. */
-    public static final int    VST2_KOMPLETE_ID  = 1315523403;
+    public static final int       VST2_KOMPLETE_ID   = 1315523403;
     /** The ID of the Komplete Kontrol VST3 plugin. */
-    public static final String VST3_KOMPLETE_ID  = "5653544E694B4B6B6F6D706C65746520";
+    public static final String    VST3_KOMPLETE_ID   = "5653544E694B4B6B6F6D706C65746520";
     /** The ID of the Konktakt 7 VST3 plugin. */
-    public static final String VST3_KONTAKT_7_ID = "5653544E694B376B6F6E74616B742037";
+    public static final String    VST3_KONTAKT_7_ID  = "5653544E694B376B6F6E74616B742037";
     /** The ID of the Konktakt 8 VST3 plugin. */
-    public static final String VST3_KONTAKT_8_ID = "5653544E694B386B6F6E74616B742038";
+    public static final String    VST3_KONTAKT_8_ID  = "5653544E694B386B6F6E74616B742038";
+    /** The ID of the Maschine 3 VST3 plugin. */
+    public static final String    VST3_MASCHINE_3_ID = "5653544E694D336D61736368696E6520";
 
-    private final Parameter    nikbVst2;
-    private final Parameter    nikbVst3;
-    private final Parameter    nikbVst3Kontakt7;
-    private final Parameter    nikbVst3Kontakt8;
+    private final List<Parameter> parameters         = new ArrayList<> ();
 
 
     /**
@@ -45,25 +47,20 @@ public class KompleteDevice extends SpecificDeviceImpl
     {
         super (host, valueChanger, device, 0, 0, 0, 0, 0, 0, 0);
 
-        SpecificPluginDevice specificDevice = device.createSpecificVst2Device (VST2_KOMPLETE_ID);
-        this.nikbVst2 = specificDevice.createParameter (0);
-        this.nikbVst2.exists ().markInterested ();
-        this.nikbVst2.name ().markInterested ();
+        this.registerSpecificDevice (device.createSpecificVst2Device (VST2_KOMPLETE_ID), 0);
+        this.registerSpecificDevice (device.createSpecificVst3Device (VST3_KOMPLETE_ID), 0);
+        this.registerSpecificDevice (device.createSpecificVst3Device (VST3_KONTAKT_7_ID), 2048);
+        this.registerSpecificDevice (device.createSpecificVst3Device (VST3_KONTAKT_8_ID), 2048);
+        this.registerSpecificDevice (device.createSpecificVst3Device (VST3_MASCHINE_3_ID), 128);
+    }
 
-        specificDevice = device.createSpecificVst3Device (VST3_KOMPLETE_ID);
-        this.nikbVst3 = specificDevice.createParameter (0);
-        this.nikbVst3.exists ().markInterested ();
-        this.nikbVst3.name ().markInterested ();
 
-        specificDevice = device.createSpecificVst3Device (VST3_KONTAKT_7_ID);
-        this.nikbVst3Kontakt7 = specificDevice.createParameter (2048);
-        this.nikbVst3Kontakt7.exists ().markInterested ();
-        this.nikbVst3Kontakt7.name ().markInterested ();
-
-        specificDevice = device.createSpecificVst3Device (VST3_KONTAKT_8_ID);
-        this.nikbVst3Kontakt8 = specificDevice.createParameter (2048);
-        this.nikbVst3Kontakt8.exists ().markInterested ();
-        this.nikbVst3Kontakt8.name ().markInterested ();
+    private void registerSpecificDevice (final SpecificPluginDevice specificDevice, final int parameterIndex)
+    {
+        final Parameter parameter = specificDevice.createParameter (parameterIndex);
+        parameter.exists ().markInterested ();
+        parameter.name ().markInterested ();
+        this.parameters.add (parameter);
     }
 
 
@@ -71,14 +68,11 @@ public class KompleteDevice extends SpecificDeviceImpl
     @Override
     public String getID ()
     {
-        if (this.nikbVst2.exists ().get ())
-            return this.nikbVst2.name ().get ();
-        if (this.nikbVst3.exists ().get ())
-            return this.nikbVst3.name ().get ();
-        if (this.nikbVst3Kontakt7.exists ().get ())
-            return this.nikbVst3Kontakt7.name ().get ();
-        if (this.nikbVst3Kontakt8.exists ().get ())
-            return this.nikbVst3Kontakt8.name ().get ();
+        for (final Parameter parameter: this.parameters)
+        {
+            if (parameter.exists ().get ())
+                return parameter.name ().get ();
+        }
         return "";
     }
 }

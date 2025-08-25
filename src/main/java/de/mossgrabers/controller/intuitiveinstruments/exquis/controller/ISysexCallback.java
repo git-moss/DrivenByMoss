@@ -13,7 +13,7 @@ public interface ISysexCallback
 {
     /**
      * Update the tempo.
-     * 
+     *
      * @param tempo The tempo
      */
     void updateTempo (final int tempo);

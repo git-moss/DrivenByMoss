@@ -4,6 +4,10 @@
 
 package de.mossgrabers.framework.mode.track;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.function.BooleanSupplier;
+
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.IControlSurface;
@@ -11,10 +15,6 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.parameterprovider.track.VolumeParameterProvider;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.function.BooleanSupplier;
 
 
 /**

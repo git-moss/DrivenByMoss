@@ -4,15 +4,15 @@
 
 package de.mossgrabers.bitwig.framework.daw.data;
 
+import com.bitwig.extension.controller.api.Channel;
+import com.bitwig.extension.controller.api.Device;
+import com.bitwig.extension.controller.api.DeviceBank;
+
 import de.mossgrabers.bitwig.framework.daw.data.bank.AbstractChannelBankImpl;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.resource.ChannelType;
-
-import com.bitwig.extension.controller.api.Channel;
-import com.bitwig.extension.controller.api.Device;
-import com.bitwig.extension.controller.api.DeviceBank;
 
 
 /**

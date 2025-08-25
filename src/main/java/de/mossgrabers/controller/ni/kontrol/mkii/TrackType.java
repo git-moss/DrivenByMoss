@@ -92,6 +92,8 @@ public class TrackType
                 return RETURN_BUS;
             case MASTER:
                 return MASTER;
+            case LAYER:
+                return AUDIO;
             case UNKNOWN:
             default:
                 return EMPTY;

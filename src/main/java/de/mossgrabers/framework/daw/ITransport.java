@@ -510,6 +510,22 @@ public interface ITransport extends IObserverManagement
 
 
     /**
+     * Get the minimum tempo supported by the DAW.
+     *
+     * @return The minimum tempo in BPM
+     */
+    double getMinimumTempo ();
+
+
+    /**
+     * Get the maximum tempo supported by the DAW.
+     *
+     * @return The maximum tempo in BPM
+     */
+    double getMaximumTempo ();
+
+
+    /**
      * Format the tempo with 2 fractions.
      *
      * @param tempo The tempo to format

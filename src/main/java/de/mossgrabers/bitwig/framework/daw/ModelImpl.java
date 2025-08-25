@@ -14,6 +14,7 @@ import com.bitwig.extension.controller.api.Arranger;
 import com.bitwig.extension.controller.api.BooleanValue;
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.CursorDeviceFollowMode;
+import com.bitwig.extension.controller.api.CursorDeviceLayer;
 import com.bitwig.extension.controller.api.CursorTrack;
 import com.bitwig.extension.controller.api.Device;
 import com.bitwig.extension.controller.api.DeviceBank;
@@ -27,6 +28,7 @@ import com.bitwig.extension.controller.api.Track;
 import com.bitwig.extension.controller.api.TrackBank;
 
 import de.mossgrabers.bitwig.framework.daw.data.CursorDeviceImpl;
+import de.mossgrabers.bitwig.framework.daw.data.CursorLayerImpl;
 import de.mossgrabers.bitwig.framework.daw.data.CursorTrackImpl;
 import de.mossgrabers.bitwig.framework.daw.data.DrumDeviceImpl;
 import de.mossgrabers.bitwig.framework.daw.data.EqualizerDeviceImpl;
@@ -187,6 +189,11 @@ public class ModelImpl extends AbstractModel
                 case FIRST_INSTRUMENT:
                     final Device instrumentDevice = this.createDevice (controllerHost.createInstrumentMatcher ());
                     specificDevice = new SpecificDeviceImpl (this.host, this.valueChanger, instrumentDevice, modelSetup);
+                    if (modelSetup.wantsCursorLayer ())
+                    {
+                        final CursorDeviceLayer cursorDeviceLayer = instrumentDevice.createCursorLayer ();
+                        this.cursorLayer = new CursorLayerImpl (this.host, this.valueChanger, specificDevice.getLayerBank (), cursorDeviceLayer, this.cursorDevice, numParamPages, numParams, numDevicesInBank);
+                    }
                     break;
 
                 case EQ:
@@ -199,7 +206,8 @@ public class ModelImpl extends AbstractModel
                     final DeviceMatcher vst3DeviceMatcher = controllerHost.createVST3DeviceMatcher (KompleteDevice.VST3_KOMPLETE_ID);
                     final DeviceMatcher vst3Kontakt7DeviceMatcher = controllerHost.createVST3DeviceMatcher (KompleteDevice.VST3_KONTAKT_7_ID);
                     final DeviceMatcher vst3Kontakt8DeviceMatcher = controllerHost.createVST3DeviceMatcher (KompleteDevice.VST3_KONTAKT_8_ID);
-                    final Device kompleteDevice = this.createDevice (controllerHost.createOrDeviceMatcher (vst2DeviceMatcher, vst3DeviceMatcher, vst3Kontakt7DeviceMatcher, vst3Kontakt8DeviceMatcher));
+                    final DeviceMatcher vst3Maschine3DeviceMatcher = controllerHost.createVST3DeviceMatcher (KompleteDevice.VST3_MASCHINE_3_ID);
+                    final Device kompleteDevice = this.createDevice (controllerHost.createOrDeviceMatcher (vst2DeviceMatcher, vst3DeviceMatcher, vst3Kontakt7DeviceMatcher, vst3Kontakt8DeviceMatcher, vst3Maschine3DeviceMatcher));
                     specificDevice = new KompleteDevice (this.host, this.valueChanger, kompleteDevice);
                     break;
 
@@ -244,7 +252,7 @@ public class ModelImpl extends AbstractModel
      */
     private void flushWorkaround ()
     {
-        // There are enough flushes happening if playback is active
+        // There are enough flushes happening if play-back is active
         if (!this.getTransport ().isPlaying ())
             this.controllerHost.requestFlush ();
         this.controllerHost.scheduleTask (this::flushWorkaround, 100);

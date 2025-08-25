@@ -298,7 +298,7 @@ public interface IBrowser extends IObserverManagement
 
 
     /**
-     * Get an info text about what the browser is currently itendended to browse. E.g. 'Insert
+     * Get an info text about what the browser is currently intending to browse. E.g. 'Insert
      * device'.
      *
      * @return The info text

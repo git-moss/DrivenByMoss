@@ -61,6 +61,12 @@ public class SoloCommand extends AbstractTriggerCommand<PushControlSurface, Push
             return;
         }
 
+        if (event == ButtonEvent.LONG)
+        {
+            this.surface.setTriggerConsumed (ButtonID.SOLO);
+            return;
+        }
+
         if (event != ButtonEvent.UP)
             return;
 

@@ -43,7 +43,7 @@ public class ExquisSessionView extends AbstractSessionView<ExquisControlSurface,
         { 28, 29, 30, 31 },
         { 23, 24, 25, 26 }
     };
-    
+
     private static final int [] GRID_SCENES    = { 27, 32, 38, 43, 49, 54, 60 };
     private static final int [] GRID_STOP      = { 17, 18, 19, 20, 21 };
     private static final int [] GRID_MUTE      = { 12, 13, 14, 15, 16 };
@@ -268,7 +268,7 @@ public class ExquisSessionView extends AbstractSessionView<ExquisControlSurface,
         // Draw the scenes
         for (int i = 0; i < GRID_SCENES.length; i++)
         {
-            final String buttonColorID = getButtonColorID (ButtonID.get (ButtonID.SCENE1, this.rows - i - 1));
+            final String buttonColorID = this.getButtonColorID (ButtonID.get (ButtonID.SCENE1, this.rows - i - 1));
             padGrid.light (36 + GRID_SCENES[i], buttonColorID);
         }
 

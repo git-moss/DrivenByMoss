@@ -4,6 +4,27 @@
 
 package de.mossgrabers.bitwig.framework.daw;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import com.bitwig.extension.api.graphics.BitmapFormat;
+import com.bitwig.extension.api.opensoundcontrol.OscAddressSpace;
+import com.bitwig.extension.api.opensoundcontrol.OscModule;
+import com.bitwig.extension.controller.api.ControllerHost;
+import com.bitwig.extension.controller.api.HardwareDevice;
+import com.bitwig.extension.controller.api.UsbDevice;
+
 import de.mossgrabers.bitwig.framework.daw.DeviceMetadataImpl.PluginType;
 import de.mossgrabers.bitwig.framework.graphics.BitmapImpl;
 import de.mossgrabers.bitwig.framework.graphics.ImageImpl;
@@ -28,25 +49,6 @@ import de.mossgrabers.framework.usb.IUsbDevice;
 import de.mossgrabers.framework.usb.UsbException;
 import de.mossgrabers.framework.utils.ConsoleLogger;
 
-import com.bitwig.extension.api.graphics.BitmapFormat;
-import com.bitwig.extension.api.opensoundcontrol.OscAddressSpace;
-import com.bitwig.extension.api.opensoundcontrol.OscModule;
-import com.bitwig.extension.controller.api.ControllerHost;
-import com.bitwig.extension.controller.api.HardwareDevice;
-import com.bitwig.extension.controller.api.UsbDevice;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
 
 /**
  * Encapsulates the ControllerHost instance.
@@ -55,6 +57,8 @@ import java.util.Set;
  */
 public class HostImpl implements IHost
 {
+    private static final Pattern               VERSION_PATTERN        = Pattern.compile ("(\\d+)\\.(\\d+)");
+
     private static final List<IDeviceMetadata> INSTRUMENT_METADATA    = new ArrayList<> ();
     private static final List<IDeviceMetadata> AUDIO_EFFECTS_METADATA = new ArrayList<> ();
     private static final Set<Capability>       CAPABILITIES           = new HashSet<> ();
@@ -106,7 +110,29 @@ public class HostImpl implements IHost
     @Override
     public String getName ()
     {
-        return "Bitwig";
+        return this.host.getHostProduct ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int [] getVersion ()
+    {
+        final Matcher m = VERSION_PATTERN.matcher (this.host.getHostVersion ());
+        if (!m.find ())
+            return new int []
+            {
+                1,
+                0
+            };
+
+        final int major = Integer.parseInt (m.group (1));
+        final int minor = Integer.parseInt (m.group (2));
+        return new int []
+        {
+            major,
+            minor
+        };
     }
 
 

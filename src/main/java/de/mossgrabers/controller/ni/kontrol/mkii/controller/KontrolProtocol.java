@@ -17,9 +17,11 @@ public final class KontrolProtocol
     public static final int VERSION_2   = 2;
     /** Protocol version 3. */
     public static final int VERSION_3   = 3;
+    /** Protocol version 4. */
+    public static final int VERSION_4   = 4;
 
     /** The maximal NIHIA protocol version which is supported by this extension. */
-    public static final int MAX_VERSION = VERSION_3;
+    public static final int MAX_VERSION = VERSION_4;
 
 
     /**

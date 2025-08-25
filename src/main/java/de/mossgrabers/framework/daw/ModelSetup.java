@@ -36,6 +36,8 @@ public class ModelSetup
     private int                  numParams                  = 8;
     private int                  numDrumPadLayers           = 16;
     private int                  numListParams              = 0;
+    private boolean              wantsCursorLayer           = false;
+    private boolean              wantsFocusedParameter      = false;
 
     private int                  numFilterColumnEntries     = 16;
     private int                  numResults                 = 16;
@@ -43,7 +45,6 @@ public class ModelSetup
     private int                  numMarkers                 = 0;
 
     private final List<DeviceID> deviceIDs                  = new ArrayList<> ();
-    private boolean              wantsFocusedParameter      = false;
 
 
     /**
@@ -508,5 +509,27 @@ public class ModelSetup
     public void setWantsFocusedParameter (final boolean wantsFocusedParameter)
     {
         this.wantsFocusedParameter = wantsFocusedParameter;
+    }
+
+
+    /**
+     * Should a cursor layer be created?
+     *
+     * @return True if one should be created
+     */
+    public boolean wantsCursorLayer ()
+    {
+        return this.wantsCursorLayer;
+    }
+
+
+    /**
+     * Set if a cursor layer should be created.
+     *
+     * @param wantsCursorLayer True if one should be created
+     */
+    public void setCursorLayer (final boolean wantsCursorLayer)
+    {
+        this.wantsCursorLayer = wantsCursorLayer;
     }
 }

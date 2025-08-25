@@ -26,9 +26,9 @@ public interface ISpecificDevice extends IDevice
 
 
     /**
-     * Returns true if the device is a non-DAW plugin.
+     * Returns true if the device is a non-DAW plug-in.
      *
-     * @return True if the device is a non-DAW plugin
+     * @return True if the device is a non-DAW plug-in
      */
     boolean isPlugin ();
 
@@ -153,4 +153,12 @@ public interface ISpecificDevice extends IDevice
      * @return The bank
      */
     IDrumPadBank getDrumPadBank ();
+
+
+    /**
+     * Get the name of the preset.
+     *
+     * @return The preset name, if any otherwise an empty string
+     */
+    String getPresetName ();
 }

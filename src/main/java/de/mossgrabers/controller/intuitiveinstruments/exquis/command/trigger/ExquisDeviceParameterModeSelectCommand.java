@@ -50,7 +50,7 @@ public class ExquisDeviceParameterModeSelectCommand extends ModeSelectCommand<Ex
         else
             super.executeNormal (event);
 
-        final String message = ("Cursor Device Parameters ") + (mode.are1To4Bound () ? "1 - 4" : "5 - 8");
+        final String message = "Cursor Device Parameters " + (mode.are1To4Bound () ? "1 - 4" : "5 - 8");
         this.surface.getDisplay ().notify (message);
     }
 }

@@ -11,6 +11,7 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.clip.INoteClip;
 import de.mossgrabers.framework.daw.constants.DeviceID;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
+import de.mossgrabers.framework.daw.data.ICursorLayer;
 import de.mossgrabers.framework.daw.data.ICursorTrack;
 import de.mossgrabers.framework.daw.data.IDrumDevice;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
@@ -231,6 +232,14 @@ public interface IModel
      * @return The effect track bank
      */
     ITrackBank getEffectTrackBank ();
+
+
+    /**
+     * Get the cursor layer.
+     *
+     * @return The cursor layer, if one was requested in the model setup otherwise null
+     */
+    ICursorLayer getCursorLayer ();
 
 
     /**

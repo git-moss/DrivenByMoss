@@ -24,51 +24,25 @@ public class KontrolProtocolConfiguration extends AbstractConfiguration
 {
     private static final Integer   FLIP_TRACK_CLIP_NAVIGATION = Integer.valueOf (52);
     private static final Integer   FLIP_CLIP_SCENE_NAVIGATION = Integer.valueOf (53);
-    private static final Integer   MODE_SWITCH_BUTTON         = Integer.valueOf (54);
+    /** ID for the DAW switch. */
+    public static final Integer    DAW_SWITCH                 = Integer.valueOf (54);
 
     private static final String    CATEGORY_NAVIGATION        = "Navigation";
-    private static final String [] MODE_SWITCH_BUTTONS        = new String []
+
+    private static final String [] DAW_NAMES                  = new String []
     {
-        "Off",
-        "Auto",
-        "Loop",
-        "Metronome",
-        "Quantize",
-        "Redo",
-        "Restart",
-        "Stop",
-        "Tempo"
+        "Generic",
+        "Bitwig",
+        "Cubase",
+        "Live",
+        "Digital Performer",
+        "Logic Pro"
     };
 
-
-    /** The button to switch modes. */
-    public enum SwitchButton
-    {
-        /** None. */
-        OFF,
-        /** The Auto button. */
-        AUTO,
-        /** The Loop button. */
-        LOOP,
-        /** The Metronome button. */
-        METRONOME,
-        /** The Quantize button. */
-        QUANTIZE,
-        /** The Redo button. */
-        REDO,
-        /** The Restart button. */
-        RESTART,
-        /** The Stop button. */
-        STOP,
-        /** The Tempo button. */
-        TEMPO
-    }
-
-
-    private final int    version;
-    private boolean      flipTrackClipNavigation = false;
-    private boolean      flipClipSceneNavigation = false;
-    private SwitchButton modeSwitchButton        = SwitchButton.OFF;
+    private final int              version;
+    private boolean                flipTrackClipNavigation    = false;
+    private boolean                flipClipSceneNavigation    = false;
+    private int                    dawNameIndex               = 0;
 
 
     /**
@@ -91,14 +65,14 @@ public class KontrolProtocolConfiguration extends AbstractConfiguration
     @Override
     public void init (final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
-        if (this.version == KontrolProtocol.VERSION_3)
+        if (this.version >= KontrolProtocol.VERSION_3)
         {
-            final IEnumSetting modeSwitchButtonSetting = globalSettings.getEnumSetting ("Switch modes with", CATEGORY_HARDWARE_SETUP, MODE_SWITCH_BUTTONS, MODE_SWITCH_BUTTONS[this.version >= 3 ? 7 : 0]);
+            final IEnumSetting modeSwitchButtonSetting = globalSettings.getEnumSetting ("Device Background (requires restart)", CATEGORY_HARDWARE_SETUP, DAW_NAMES, DAW_NAMES[1]);
             modeSwitchButtonSetting.addValueObserver (value -> {
-                this.modeSwitchButton = SwitchButton.values ()[lookupIndex (MODE_SWITCH_BUTTONS, value)];
-                this.notifyObservers (MODE_SWITCH_BUTTON);
+                this.dawNameIndex = lookupIndex (DAW_NAMES, value);
+                this.notifyObservers (DAW_SWITCH);
             });
-            this.isSettingActive.add (MODE_SWITCH_BUTTON);
+            this.isSettingActive.add (DAW_SWITCH);
         }
 
         ///////////////////////////
@@ -131,7 +105,7 @@ public class KontrolProtocolConfiguration extends AbstractConfiguration
 
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);
-        this.activateKnobSpeedSetting (globalSettings, 0, 20);
+        this.activateKnobSpeedSetting (globalSettings, 30, 0);
     }
 
 
@@ -158,12 +132,12 @@ public class KontrolProtocolConfiguration extends AbstractConfiguration
 
 
     /**
-     * Get the button to use as the mode switcher.
+     * Get the DAW name to use which triggers a different background image for the plug-in mode.
      *
-     * @return The mode switch button
+     * @return The DAW name
      */
-    public SwitchButton getModeSwitchButton ()
+    public String getSelectedDaw ()
     {
-        return this.modeSwitchButton;
+        return DAW_NAMES[this.dawNameIndex];
     }
 }

@@ -4,16 +4,16 @@
 
 package de.mossgrabers.bitwig.framework.daw.data.bank;
 
+import java.util.Optional;
+
+import com.bitwig.extension.controller.api.DeviceBank;
+
 import de.mossgrabers.bitwig.framework.daw.data.DeviceImpl;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IDevice;
 import de.mossgrabers.framework.daw.data.bank.IDeviceBank;
-
-import com.bitwig.extension.controller.api.DeviceBank;
-
-import java.util.Optional;
 
 
 /**
@@ -54,7 +54,10 @@ public class DeviceBankImpl extends AbstractItemBankImpl<DeviceBank, IDevice> im
     @Override
     public void selectNextItem ()
     {
-        this.cursorDevice.selectNext ();
+        if (this.cursorDevice == null)
+            super.selectNextItem ();
+        else
+            this.cursorDevice.selectNext ();
     }
 
 
@@ -62,7 +65,10 @@ public class DeviceBankImpl extends AbstractItemBankImpl<DeviceBank, IDevice> im
     @Override
     public void selectPreviousItem ()
     {
-        this.cursorDevice.selectPrevious ();
+        if (this.cursorDevice == null)
+            super.selectPreviousItem ();
+        else
+            this.cursorDevice.selectPrevious ();
     }
 
 
@@ -70,6 +76,8 @@ public class DeviceBankImpl extends AbstractItemBankImpl<DeviceBank, IDevice> im
     @Override
     public Optional<IDevice> getSelectedItem ()
     {
+        if (this.cursorDevice == null)
+            return super.getSelectedItem ();
         return this.cursorDevice.doesExist () ? Optional.of (this.cursorDevice) : Optional.empty ();
     }
 }

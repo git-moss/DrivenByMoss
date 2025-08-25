@@ -4,6 +4,10 @@
 
 package de.mossgrabers.framework.mode.layer;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.function.BooleanSupplier;
+
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
@@ -14,10 +18,6 @@ import de.mossgrabers.framework.daw.data.ILayer;
 import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.function.BooleanSupplier;
 
 
 /**
@@ -30,7 +30,7 @@ import java.util.function.BooleanSupplier;
  */
 public abstract class DefaultLayerMode<S extends IControlSurface<C>, C extends Configuration> extends AbstractParameterMode<S, C, ILayer>
 {
-    private final ISpecificDevice firstInstrument;
+    protected final ISpecificDevice firstInstrument;
 
 
     /**

@@ -33,7 +33,7 @@ public class ExquisTrackMode extends TrackMode<ExquisControlSurface, ExquisConfi
 
     /** {@inheritDoc} */
     @Override
-    public int getKnobColor (int index)
+    public int getKnobColor (final int index)
     {
         if (index != 0)
             return ExquisColorManager.FIRST_DAW_COLOR_INDEX + DAWColor.DAW_COLOR_SILVER.ordinal ();

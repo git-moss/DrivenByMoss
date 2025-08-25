@@ -34,7 +34,7 @@ public class ExquisFourKnobProvider extends FourKnobProvider<ExquisControlSurfac
 
     /**
      * Check if parameters 1..4 or 5..8 are currently bound.
-     * 
+     *
      * @return True if parameters 1..4 are bound
      */
     public boolean are1To4Bound ()

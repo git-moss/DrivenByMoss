@@ -36,6 +36,14 @@ public interface IHost
 
 
     /**
+     * Get the version number of the host.
+     *
+     * @return The major and minor version
+     */
+    int [] getVersion ();
+
+
+    /**
      * Returns true if the DAW supports editing a specific property.
      *
      * @param capability The capability to check

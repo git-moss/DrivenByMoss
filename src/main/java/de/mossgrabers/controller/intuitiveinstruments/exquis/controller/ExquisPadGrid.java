@@ -33,7 +33,7 @@ public class ExquisPadGrid extends PadGridImpl
 
     /**
      * Set the surface.
-     * 
+     *
      * @param surface The surface
      */
     public void setSurface (final ExquisControlSurface surface)

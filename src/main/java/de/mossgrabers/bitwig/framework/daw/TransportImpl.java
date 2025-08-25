@@ -724,6 +724,22 @@ public class TransportImpl implements ITransport
 
     /** {@inheritDoc} */
     @Override
+    public double getMinimumTempo ()
+    {
+        return 20.0;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public double getMaximumTempo ()
+    {
+        return 666.0;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public String formatTempo (final double tempo)
     {
         return new DecimalFormat ("#.00").format (tempo);

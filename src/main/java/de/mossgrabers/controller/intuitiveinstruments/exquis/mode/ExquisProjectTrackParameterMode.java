@@ -49,7 +49,7 @@ public class ExquisProjectTrackParameterMode extends ProjectParamsMode<ExquisCon
 
     /**
      * Check if the project or track parameters are active.
-     * 
+     *
      * @return True if the project parameters are active
      */
     public boolean areProjectParametersActive ()
@@ -60,7 +60,7 @@ public class ExquisProjectTrackParameterMode extends ProjectParamsMode<ExquisCon
 
     /** {@inheritDoc} */
     @Override
-    public int getKnobColor (int index)
+    public int getKnobColor (final int index)
     {
         return ExquisColorManager.FIRST_DAW_COLOR_INDEX + PARAM_COLORS[index];
     }
@@ -80,7 +80,7 @@ public class ExquisProjectTrackParameterMode extends ProjectParamsMode<ExquisCon
 
     /**
      * Check if parameters 1..4 or 5..8 are currently bound.
-     * 
+     *
      * @return True if parameters 1..4 are bound
      */
     public boolean are1To4Bound ()

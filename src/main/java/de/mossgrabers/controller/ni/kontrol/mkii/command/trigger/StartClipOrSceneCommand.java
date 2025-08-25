@@ -9,6 +9,7 @@ import de.mossgrabers.controller.ni.kontrol.mkii.controller.KontrolProtocolContr
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.command.trigger.clip.StartClipCommand;
 import de.mossgrabers.framework.command.trigger.clip.StartSceneCommand;
+import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -44,6 +45,14 @@ public class StartClipOrSceneCommand extends AbstractTriggerCommand<KontrolProto
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
+        final IBrowser browser = this.model.getBrowser ();
+        if (browser.isActive ())
+        {
+            // SHIFT button is not working in combination with encoder press!
+            browser.stopBrowsing (true);
+            return;
+        }
+
         if (this.surface.getModeManager ().isActive (Modes.VOLUME))
         {
             if (this.surface.getConfiguration ().isFlipClipSceneNavigation ())

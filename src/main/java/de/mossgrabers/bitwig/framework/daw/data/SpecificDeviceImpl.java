@@ -80,6 +80,7 @@ public class SpecificDeviceImpl extends DeviceImpl implements ISpecificDevice
         this.device.hasLayers ().markInterested ();
         this.device.hasSlots ().markInterested ();
         this.device.slotNames ().markInterested ();
+        this.device.presetName ().markInterested ();
 
         final int checkedNumDevices = numDevicesInBank >= 0 ? numDevicesInBank : 8;
         final int checkedNumParamPages = numParamPages >= 0 ? numParamPages : 8;
@@ -123,6 +124,7 @@ public class SpecificDeviceImpl extends DeviceImpl implements ISpecificDevice
         Util.setIsSubscribed (this.device.hasLayers (), enable);
         Util.setIsSubscribed (this.device.hasSlots (), enable);
         Util.setIsSubscribed (this.device.slotNames (), enable);
+        Util.setIsSubscribed (this.device.presetName (), enable);
 
         if (this.parameterBank != null)
             this.parameterBank.enableObservers (enable);
@@ -279,5 +281,13 @@ public class SpecificDeviceImpl extends DeviceImpl implements ISpecificDevice
     public IParameterList getParameterList ()
     {
         return this.parameterList;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public String getPresetName ()
+    {
+        return this.device.presetName ().get ();
     }
 }

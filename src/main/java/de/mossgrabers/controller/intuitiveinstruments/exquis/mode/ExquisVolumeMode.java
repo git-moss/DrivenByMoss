@@ -31,7 +31,7 @@ public class ExquisVolumeMode extends TrackVolumeMode<ExquisControlSurface, Exqu
 
     /** {@inheritDoc} */
     @Override
-    public int getKnobColor (int index)
+    public int getKnobColor (final int index)
     {
         final String colorID = this.model.getTrackBank ().getSelectedChannelColorEntry ();
         return this.colorManager.getColorIndex (colorID);

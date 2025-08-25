@@ -74,15 +74,15 @@ public class SendMode extends DefaultTrackMode<KontrolProtocolControlSurface, Ko
         final Optional<ITrack> selectedTrack = this.bank.getSelectedItem ();
         final ISendBank sendBank = selectedTrack.isEmpty () ? null : selectedTrack.get ().getSendBank ();
 
-        if (index >= KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME && index < KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME + 8)
+        if (index >= KontrolProtocolControlSurface.CC_TRACK_VOLUME && index < KontrolProtocolControlSurface.CC_TRACK_VOLUME + 8)
         {
-            final ISend send = sendBank == null ? EmptySend.INSTANCE : sendBank.getItem (index - KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME);
+            final ISend send = sendBank == null ? EmptySend.INSTANCE : sendBank.getItem (index - KontrolProtocolControlSurface.CC_TRACK_VOLUME);
             return valueChanger.toMidiValue (send.getValue ());
         }
 
-        if (index >= KontrolProtocolControlSurface.KONTROL_TRACK_PAN && index < KontrolProtocolControlSurface.KONTROL_TRACK_PAN + 8)
+        if (index >= KontrolProtocolControlSurface.CC_TRACK_PAN && index < KontrolProtocolControlSurface.CC_TRACK_PAN + 8)
         {
-            final ISend send = sendBank == null ? EmptySend.INSTANCE : sendBank.getItem (index - KontrolProtocolControlSurface.KONTROL_TRACK_PAN);
+            final ISend send = sendBank == null ? EmptySend.INSTANCE : sendBank.getItem (index - KontrolProtocolControlSurface.CC_TRACK_PAN);
             return valueChanger.toMidiValue (send.getValue ());
         }
 
@@ -92,11 +92,11 @@ public class SendMode extends DefaultTrackMode<KontrolProtocolControlSurface, Ko
         final KontrolProtocolConfiguration configuration = this.surface.getConfiguration ();
         switch (index)
         {
-            case KontrolProtocolControlSurface.KONTROL_NAVIGATE_BANKS:
+            case KontrolProtocolControlSurface.CC_NAVIGATE_BANKS:
                 return scrollTracksState;
-            case KontrolProtocolControlSurface.KONTROL_NAVIGATE_TRACKS:
+            case KontrolProtocolControlSurface.CC_NAVIGATE_TRACKS:
                 return configuration.isFlipTrackClipNavigation () ? scrollScenesState : scrollTracksState;
-            case KontrolProtocolControlSurface.KONTROL_NAVIGATE_CLIPS:
+            case KontrolProtocolControlSurface.CC_NAVIGATE_CLIPS:
                 return configuration.isFlipTrackClipNavigation () ? scrollTracksState : scrollScenesState;
             default:
                 return 0;
@@ -108,6 +108,8 @@ public class SendMode extends DefaultTrackMode<KontrolProtocolControlSurface, Ko
     @Override
     public void updateDisplay ()
     {
+        this.surface.sendGlobalValues (this.model);
+
         final IValueChanger valueChanger = this.model.getValueChanger ();
         final Optional<ITrack> selectedTrack = this.bank.getSelectedItem ();
         final ISendBank sendBank = selectedTrack.isEmpty () ? null : selectedTrack.get ().getSendBank ();
@@ -117,26 +119,26 @@ public class SendMode extends DefaultTrackMode<KontrolProtocolControlSurface, Ko
         {
             final ISend send = sendBank == null ? EmptySend.INSTANCE : sendBank.getItem (i);
 
-            this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_AVAILABLE, send.doesExist () ? TrackType.RETURN_BUS : TrackType.EMPTY, i);
-            this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_SELECTED, send.isSelected () ? 1 : 0, i);
-            this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_RECARM, 0, i);
-            this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_VOLUME_TEXT, 0, i, send.getDisplayedValue (8));
-            this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_PAN_TEXT, 0, i, send.getDisplayedValue (8));
+            this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_TRACK_AVAILABLE, send.doesExist () ? TrackType.RETURN_BUS : TrackType.EMPTY, i);
+            this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_TRACK_SELECTED, send.isSelected () ? 1 : 0, i);
+            this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_TRACK_RECARM, 0, i);
+            this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_TRACK_VOLUME_TEXT, 0, i, send.getDisplayedValue (8));
+            this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_TRACK_PAN_TEXT, 0, i, send.getDisplayedValue (8));
             final String n = selectedTrack.isPresent () ? this.getLabel (selectedTrack.get (), send) : "";
-            this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_NAME, 0, i, n);
+            this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_TRACK_NAME, 0, i, n);
 
             final int j = 2 * i;
             vuData[j] = valueChanger.toMidiValue (send.getModulatedValue ());
             vuData[j + 1] = valueChanger.toMidiValue (send.getModulatedValue ());
 
             // Switch off all mutes and solos otherwise "tracks" will be darkened
-            this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_MUTE, 0, i);
-            this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_SOLO, 0, i);
-            this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_MUTED_BY_SOLO, 0, i);
-            this.surface.sendCommand (KontrolProtocolControlSurface.KONTROL_SELECTED_TRACK_AVAILABLE, 0);
-            this.surface.sendCommand (KontrolProtocolControlSurface.KONTROL_SELECTED_TRACK_MUTED_BY_SOLO, 0);
+            this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_TRACK_MUTE, 0, i);
+            this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_TRACK_SOLO, 0, i);
+            this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_TRACK_MUTED_BY_SOLO, 0, i);
+            this.surface.sendCommand (KontrolProtocolControlSurface.CC_SELECTED_TRACK_AVAILABLE, 0);
+            this.surface.sendCommand (KontrolProtocolControlSurface.CC_SELECTED_TRACK_MUTED_BY_SOLO, 0);
         }
-        this.surface.sendKontrolTrackSysEx (KontrolProtocolControlSurface.KONTROL_TRACK_VU, 2, 0, vuData);
+        this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_TRACK_VU, 2, 0, vuData);
     }
 
 
@@ -183,6 +185,6 @@ public class SendMode extends DefaultTrackMode<KontrolProtocolControlSurface, Ko
         if (this.surface.getProtocolVersion () == KontrolProtocol.VERSION_1)
             return "S" + (send.getPosition () + 1) + ": " + n;
 
-        return "Track " + (track.getPosition () + 1) + "\nFX " + (send.getPosition () + 1) + "\n\n" + n;
+        return "FX Track " + (track.getPosition () + 1) + (send.getPosition () + 1) + "\n" + n;
     }
 }
