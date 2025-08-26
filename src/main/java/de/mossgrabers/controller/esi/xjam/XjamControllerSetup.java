@@ -27,7 +27,7 @@ import de.mossgrabers.framework.controller.ISetupFactory;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.controller.hardware.BindType;
-import de.mossgrabers.framework.controller.hardware.IHwAbsoluteKnob;
+import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
 import de.mossgrabers.framework.controller.valuechanger.TwosComplementValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ModelSetup;
@@ -55,7 +55,7 @@ public class XjamControllerSetup extends AbstractControllerSetup<XjamControlSurf
         4
     };
 
-    private IHwAbsoluteKnob []  knobBank2;
+    private IHwRelativeKnob []  knobBank2;
     private boolean             bindOneToFour = true;
 
 
@@ -188,21 +188,21 @@ public class XjamControllerSetup extends AbstractControllerSetup<XjamControlSurf
 
         final IParameterBank projectParameterBank = this.model.getProject ().getParameterBank ();
 
-        final IHwAbsoluteKnob [] knobBank1 = new IHwAbsoluteKnob [6];
-        this.knobBank2 = new IHwAbsoluteKnob [6];
+        final IHwRelativeKnob [] knobBank1 = new IHwRelativeKnob [6];
+        this.knobBank2 = new IHwRelativeKnob [6];
 
         for (int i = 0; i < 6; i++)
         {
             final ContinuousID continuousID = ContinuousID.get (ContinuousID.KNOB1, i);
-            knobBank1[i] = this.addAbsoluteKnob (continuousID, " Bank 1 - Knob" + (i + 1), null, BindType.CC, MIDI_CHANNEL, XjamControlSurface.BANK1_ENCODER_1 + i);
+            knobBank1[i] = this.addRelativeKnob (continuousID, " Bank 1 - Knob" + (i + 1), null, BindType.CC, MIDI_CHANNEL, XjamControlSurface.BANK1_ENCODER_1 + i);
             knobBank1[i].setIndexInGroup (i);
 
             final ContinuousID continuousID2 = ContinuousID.get (ContinuousID.DEVICE_KNOB1, i);
-            this.knobBank2[i] = this.addAbsoluteKnob (continuousID2, "Bank 2 - Knob " + (i + 1), null, BindType.CC, MIDI_CHANNEL, XjamControlSurface.BANK2_ENCODER_1 + i);
+            this.knobBank2[i] = this.addRelativeKnob (continuousID2, "Bank 2 - Knob " + (i + 1), null, BindType.CC, MIDI_CHANNEL, XjamControlSurface.BANK2_ENCODER_1 + i);
             this.knobBank2[i].setIndexInGroup (i);
 
             final ContinuousID continuousID3 = ContinuousID.get (ContinuousID.PARAM_KNOB1, i);
-            final IHwAbsoluteKnob bank3Knob = this.addAbsoluteKnob (continuousID3, "Bank 3 - Knob " + (i + 1), null, BindType.CC, MIDI_CHANNEL, XjamControlSurface.BANK3_ENCODER_1 + i);
+            final IHwRelativeKnob bank3Knob = this.addRelativeKnob (continuousID3, "Bank 3 - Knob " + (i + 1), null, BindType.CC, MIDI_CHANNEL, XjamControlSurface.BANK3_ENCODER_1 + i);
             bank3Knob.setIndexInGroup (i);
             bank3Knob.bind (projectParameterBank.getItem (i));
         }

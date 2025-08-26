@@ -444,7 +444,7 @@ public class StringUtils
      */
     public static String formatMeasuresLong (final int quartersPerMeasure, final double beats, final int startOffset, final boolean includeFrames)
     {
-        return formatMeasures (quartersPerMeasure, beats, startOffset, includeFrames, "%03d.%d.%d", "%d.%d.%d:%02d");
+        return formatMeasures (quartersPerMeasure, beats, startOffset, includeFrames, "%03d.%d.%d", "%d.%02d.%02d:%02d");
     }
 
 
