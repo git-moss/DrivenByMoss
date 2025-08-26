@@ -94,7 +94,7 @@ public interface IHwButton extends IHwInputControl
      * Manually triggers a button press and release.
      *
      * @param event The button event
-     * @param velocity The press velocity
+     * @param velocity The pressure value in the range of [0..1]
      */
     void trigger (final ButtonEvent event, final double velocity);
 

@@ -53,6 +53,7 @@ import de.mossgrabers.framework.daw.IClipLauncherNavigator;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
+import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.constants.DeviceID;
 import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -78,17 +79,30 @@ import de.mossgrabers.framework.view.Views;
  */
 public class KontrolProtocolControllerSetup extends AbstractControllerSetup<KontrolProtocolControlSurface, KontrolProtocolConfiguration> implements NIHIASysExCallback
 {
-    private static final Modes []                                                               WORKAROUND_MODES  =
+    private static final Modes []                                                               WORKAROUND_MODES      =
     {
         Modes.VOLUME,
         Modes.SEND,
         Modes.DEVICE_PARAMS
     };
 
+    private static final Modes []                                                               MIX_MODES_WITH_LAYERS =
+    {
+        Modes.VOLUME,
+        Modes.SEND,
+        Modes.DEVICE_LAYER
+    };
+
+    private static final Modes []                                                               MIX_MODES             =
+    {
+        Modes.VOLUME,
+        Modes.SEND
+    };
+
     private ModeMultiSelectCommand<KontrolProtocolControlSurface, KontrolProtocolConfiguration> switcher;
     private final int                                                                           version;
-    private String                                                                              kompleteInstance  = "";
-    private boolean                                                                             triggerModeSwitch = false;
+    private String                                                                              kompleteInstance      = "";
+    private boolean                                                                             triggerModeSwitch     = false;
 
 
     /**
@@ -219,7 +233,8 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
         {
             final List<ContinuousID> paramControls = ContinuousID.createSequentialList (ContinuousID.PARAM_KNOB1, 8);
             modeManager.register (Modes.DEVICE_PARAMS, new ParamsMode (surface, this.model, paramControls));
-            modeManager.register (Modes.DEVICE_LAYER, new LayerMode (surface, this.model, mixerControls));
+            if (this.host.supports (Capability.HAS_DEVICE_LAYERS))
+                modeManager.register (Modes.DEVICE_LAYER, new LayerMode (surface, this.model, mixerControls));
         }
     }
 
@@ -243,7 +258,7 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
         final KontrolProtocolControlSurface surface = this.getSurface ();
         final ITransport t = this.model.getTransport ();
 
-        this.switcher = new ModeMultiSelectCommand<> (this.model, surface, Modes.VOLUME, Modes.SEND, Modes.DEVICE_LAYER);
+        this.switcher = new ModeMultiSelectCommand<> (this.model, surface, this.host.supports (Capability.HAS_DEVICE_LAYERS) ? MIX_MODES_WITH_LAYERS : MIX_MODES);
 
         this.addButton (ButtonID.PLAY, "Play", new PlayCommand<> (this.model, surface), 15, KontrolProtocolControlSurface.CC_PLAY, t::isPlaying);
         this.addButton (ButtonID.NEW, "Restart", new NewCommand<> (this.model, surface), 15, KontrolProtocolControlSurface.CC_RESTART);
@@ -370,7 +385,9 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
         if (this.triggerModeSwitch)
         {
             final ModeManager modeManager = this.getSurface ().getModeManager ();
-            if (value == 1)
+            if (value == 0)
+                this.switcher.executeNormal (event);
+            else
             {
                 final ParamsMode paramsMode = (ParamsMode) modeManager.get (Modes.DEVICE_PARAMS);
 
@@ -386,8 +403,6 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
                     paramsMode.enableLayerSubMode (isLayerModeActive);
                 }
             }
-            else
-                this.switcher.executeNormal (event);
         }
 
         // Prevent double triggers

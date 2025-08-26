@@ -40,9 +40,11 @@ public enum Capability
     HAS_DRUM_DEVICE,
     /** Support for a cross-fader. */
     HAS_CROSSFADER,
+    /** Support for device layers. */
+    HAS_DEVICE_LAYERS,
     /** If the DAW supports track/device pinning. */
     HAS_PINNING,
-    /** If plugins have a parameter page which can be toggled. */
+    /** If plug-ins have a parameter page which can be toggled. */
     HAS_PARAMETER_PAGE_SECTION,
     /** The host has a dedicated send bank. */
     HAS_EFFECT_BANK,

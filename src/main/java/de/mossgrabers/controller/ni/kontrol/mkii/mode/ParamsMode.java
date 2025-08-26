@@ -194,8 +194,7 @@ public class ParamsMode extends AbstractParameterMode<KontrolProtocolControlSurf
             final int deviceIndex = selectedDevice.isPresent () ? selectedDevice.get ().getIndex () : 0;
 
             // Ugly workaround to sync the state between the device selection managed on the
-            // hardware
-            // and device selection changes initiated in the DAW
+            // hardware and device selection changes initiated in the DAW
             synchronized (this.deviceChangeLock)
             {
                 if (this.currentlySelectedDevice >= 0)
