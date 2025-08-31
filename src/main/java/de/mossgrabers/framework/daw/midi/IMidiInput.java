@@ -7,6 +7,7 @@ package de.mossgrabers.framework.daw.midi;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwAbsoluteControl;
 import de.mossgrabers.framework.controller.hardware.IHwButton;
+import de.mossgrabers.framework.controller.hardware.IHwContinuousControl;
 import de.mossgrabers.framework.controller.hardware.IHwFader;
 import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
 import de.mossgrabers.framework.controller.valuechanger.RelativeEncoding;
@@ -133,7 +134,7 @@ public interface IMidiInput
     /**
      * Unbind the given absolute control from a MIDI command.
      *
-     * @param absoluteControl The absolute control to unbind
+     * @param absoluteControl The absolute control to un-bind
      */
     void unbind (IHwAbsoluteControl absoluteControl);
 
@@ -151,31 +152,20 @@ public interface IMidiInput
 
 
     /**
-     * Unbind the given relative knob from a MIDI command.
+     * Un-bind the given relative knob from a MIDI command.
      *
-     * @param relativeKnob The relative knob to unbind
+     * @param relativeKnob The relative knob to un-bind
      */
     void unbind (IHwRelativeKnob relativeKnob);
 
 
     /**
-     * Bind the given relative knob to a MIDI command received on this MIDI input as a touch action.
-     *
-     * @param relativeKnob The relative knob to bind
-     * @param type The MIDI binding type
-     * @param channel The MIDI channel
-     * @param control The MIDI command (CC, Note, ...)
-     */
-    void bindTouch (IHwRelativeKnob relativeKnob, BindType type, int channel, int control);
-
-
-    /**
      * Bind the given fader to a MIDI command received on this MIDI input as a touch action.
      *
-     * @param fader The fader to bind
+     * @param continuousControl The continuous control to bind
      * @param type The MIDI binding type
      * @param channel The MIDI channel
      * @param control The MIDI command (CC, Note, ...)
      */
-    void bindTouch (IHwFader fader, BindType type, int channel, int control);
+    void bindTouch (IHwContinuousControl continuousControl, BindType type, int channel, int control);
 }

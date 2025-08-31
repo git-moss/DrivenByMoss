@@ -20,16 +20,21 @@ import de.mossgrabers.framework.daw.midi.IMidiInput;
  */
 public class HwAbsoluteKnobImpl extends AbstractHwAbsoluteControl<AbsoluteHardwareKnob> implements IHwAbsoluteKnob
 {
+    private final AbsoluteHardwareKnob hardwareKnob;
+
+
     /**
      * Constructor.
      *
      * @param host The controller host
-     * @param hardwareControl The Bitwig hardware knob
+     * @param hardwareKnob The Bitwig hardware knob
      * @param label The label of the knob
      */
-    public HwAbsoluteKnobImpl (final HostImpl host, final AbsoluteHardwareKnob hardwareControl, final String label)
+    public HwAbsoluteKnobImpl (final HostImpl host, final AbsoluteHardwareKnob hardwareKnob, final String label)
     {
-        super (host, label, hardwareControl);
+        super (host, label, hardwareKnob);
+
+        this.hardwareKnob = hardwareKnob;
     }
 
 
@@ -37,6 +42,11 @@ public class HwAbsoluteKnobImpl extends AbstractHwAbsoluteControl<AbsoluteHardwa
     @Override
     public void bindTouch (final TriggerCommand command, final IMidiInput input, final BindType type, final int channel, final int control)
     {
-        // No touch on absolute knob
+        this.touchCommand = command;
+
+        this.hardwareKnob.beginTouchAction ().addBinding (this.controllerHost.createAction ( () -> this.triggerTouch (true), () -> ""));
+        this.hardwareKnob.endTouchAction ().addBinding (this.controllerHost.createAction ( () -> this.triggerTouch (false), () -> ""));
+
+        input.bindTouch (this, type, channel, control);
     }
 }

@@ -4,14 +4,14 @@
 
 package de.mossgrabers.framework.controller.hardware;
 
+import java.util.function.IntConsumer;
+import java.util.function.IntSupplier;
+
 import de.mossgrabers.framework.command.core.ContinuousCommand;
 import de.mossgrabers.framework.command.core.PitchbendCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.parameter.IParameter;
-
-import java.util.function.IntConsumer;
-import java.util.function.IntSupplier;
 
 
 /**
@@ -30,7 +30,7 @@ public interface IHwContinuousControl extends IHwInputControl
 
 
     /**
-     * Assign a pitchbend command to the control.
+     * Assign a pitch-bend command to the control.
      *
      * @param command The command to assign
      */

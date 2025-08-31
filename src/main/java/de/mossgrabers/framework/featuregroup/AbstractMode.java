@@ -126,7 +126,7 @@ public abstract class AbstractMode<S extends IControlSurface<C>, C extends Confi
      *
      * @param size The size for the touch states
      */
-    protected final void initTouchedStates (final int size)
+    public final void initTouchedStates (final int size)
     {
         this.isKnobTouched = new boolean [size];
         Arrays.fill (this.isKnobTouched, false);

@@ -11,19 +11,17 @@ import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.HardwareAction;
 import com.bitwig.extension.controller.api.HardwareActionMatcher;
 import com.bitwig.extension.controller.api.HardwareButton;
-import com.bitwig.extension.controller.api.HardwareSlider;
 import com.bitwig.extension.controller.api.MidiIn;
-import com.bitwig.extension.controller.api.RelativeHardwareKnob;
 import com.bitwig.extension.controller.api.RelativeHardwareValueMatcher;
 
 import de.mossgrabers.bitwig.framework.hardware.AbstractHwAbsoluteControl;
 import de.mossgrabers.bitwig.framework.hardware.HwButtonImpl;
-import de.mossgrabers.bitwig.framework.hardware.HwFaderImpl;
 import de.mossgrabers.bitwig.framework.hardware.HwRelativeKnobImpl;
 import de.mossgrabers.framework.controller.hardware.BindException;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwAbsoluteControl;
 import de.mossgrabers.framework.controller.hardware.IHwButton;
+import de.mossgrabers.framework.controller.hardware.IHwContinuousControl;
 import de.mossgrabers.framework.controller.hardware.IHwFader;
 import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
 import de.mossgrabers.framework.controller.valuechanger.RelativeEncoding;
@@ -274,18 +272,17 @@ public class MidiInputImpl implements IMidiInput
 
     /** {@inheritDoc} */
     @Override
-    public void bindTouch (final IHwRelativeKnob relativeKnob, final BindType type, final int channel, final int control)
+    public void bindTouch (final IHwContinuousControl continuousControl, final BindType type, final int channel, final int control)
     {
-        final RelativeHardwareKnob hardwareControl = ((HwRelativeKnobImpl) relativeKnob).getHardwareKnob ();
-        this.bindTouch (hardwareControl, type, channel, control);
-    }
+        final ContinuousHardwareControl<?> hardwareControl;
 
+        if (continuousControl instanceof HwRelativeKnobImpl relativeKnob)
+            hardwareControl = relativeKnob.getHardwareKnob ();
+        else if (continuousControl instanceof AbstractHwAbsoluteControl absoluteControl)
+            hardwareControl = absoluteControl.getHardwareControl ();
+        else
+            return;
 
-    /** {@inheritDoc} */
-    @Override
-    public void bindTouch (final IHwFader fader, final BindType type, final int channel, final int control)
-    {
-        final HardwareSlider hardwareControl = ((HwFaderImpl) fader).getHardwareControl ();
         this.bindTouch (hardwareControl, type, channel, control);
     }
 
