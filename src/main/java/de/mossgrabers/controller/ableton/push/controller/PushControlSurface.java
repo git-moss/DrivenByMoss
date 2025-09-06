@@ -462,6 +462,9 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     private static final int         PAD_VELOCITY_CURVE_CHUNK_SIZE        = 16;
     private static final int         NUM_VELOCITY_CURVE_ENTRIES           = 128;
 
+    private static final int         MIN_OUT                              = 1;
+    private static final int         MAX_OUT                              = 127;
+
     private final ColorPalette       colorPalette;
 
     private int                      ribbonMode                           = -1;
@@ -472,6 +475,17 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     private int                      buildNumber                          = -1;
     private int                      serialNumber                         = -1;
     private int                      boardRevision                        = -1;
+
+    // Push 2
+    private int                      currentPadSensitivityPush2           = -1;
+    private int                      currentPadGainPush2                  = -1;
+    private int                      currentPadDynamicsPush2              = -1;
+    // Push 3
+    private int                      currentThreshold                     = -1;
+    private int                      currentDrive                         = -1;
+    private int                      currentCompand                       = -1;
+    private int                      currentRange                         = -1;
+    private int []                   currentCurve                         = null;
 
 
     /**
@@ -504,7 +518,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
      */
     public String getSelectedPadThreshold ()
     {
-        return PUSH_PAD_THRESHOLDS_NAME.get (this.configuration.getPadThreshold ());
+        return PUSH_PAD_THRESHOLDS_NAME.get (this.configuration.getPadThresholdPush1 ());
     }
 
 
@@ -618,9 +632,107 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     /**
      * Set the pad sensitivity of Push 1.
      */
-    public void sendPadSensitivity ()
+    public void sendPadSensitivityPush1 ()
     {
-        this.sendSysExPush1 ("5D 00 20 " + PUSH_PAD_THRESHOLDS_DATA[this.configuration.getPadThreshold ()] + " " + PUSH_PAD_CURVES_DATA[this.configuration.getVelocityCurve ()]);
+        this.sendSysExPush1 ("5D 00 20 " + PUSH_PAD_THRESHOLDS_DATA[this.configuration.getPadThresholdPush1 ()] + " " + PUSH_PAD_CURVES_DATA[this.configuration.getVelocityCurve ()]);
+    }
+
+
+    /**
+     * Set the pad sensitivity of Push 2.
+     */
+    public void sendPadSensitivityPush2 ()
+    {
+        this.sendPadVelocityCurvePush2 ();
+        this.sendPadThresholdPush2 ();
+    }
+
+
+    /**
+     * Set the pad sensitivity of Push 3.
+     */
+    public void sendPadSensitivityPush3 ()
+    {
+        final int [] curve = createPadSensitivityCurvePush3 ();
+        final int [] data = new int [129];
+        // The command
+        data[0] = 0x43;
+        System.arraycopy (curve, 0, data, 1, curve.length);
+        this.sendSysEx (curve);
+    }
+
+
+    /**
+     * Get the pad sensitivity curve for the Push 3.
+     * 
+     * @return The curve with 128 entries
+     */
+    public int [] createPadSensitivityCurvePush3 ()
+    {
+        final int threshold = this.configuration.getPadCurveThresholdPush3 ();
+        final int drive = this.configuration.getPadCurveDrivePush3 ();
+        final int compand = this.configuration.getPadCurveCompandPush3 ();
+        final int range = this.configuration.getPadCurveRangePush3 ();
+        if (this.currentThreshold == threshold && this.currentDrive == drive && this.currentCompand == compand && this.currentRange == range)
+            return this.currentCurve;
+        this.currentThreshold = threshold;
+        this.currentDrive = drive;
+        this.currentCompand = compand;
+        this.currentRange = range;
+
+        // Scale threshold to a maximum of 16 values
+        final int numThresholdValues = (int) Math.round (Math.clamp (threshold, 0, 100) * 16 / 100.0);
+        // Scale range to a maximum of 103 values
+        final int numRangeValues = (int) Math.round (Math.clamp (range, 0, 100) * 103 / 100.0);
+        // Calculate 2 more curve values since the first is 1 and the last 127
+        final int numCurveValues = 128 - numThresholdValues - numRangeValues + 2;
+
+        final int [] curve = new int [128];
+
+        // Fill the threshold part
+        for (int i = 0; i < numThresholdValues; i++)
+            curve[i] = 1;
+
+        // Create the curve
+        // Compand: g>0.5 = slow attack, g<0.5 = fast attack
+        final double g = Math.clamp (0.5 + compand / 100.0, 0.01, 0.99);
+        // Drive: b>0.5 = faster early increase, b<0.5 = slower early increase
+        final double b = Math.clamp (0.5 + drive / 100.0, 0.01, 0.99);
+        for (int i = 0; i < numCurveValues; i++)
+        {
+            final double x = (double) i / (numCurveValues - 1); // 0..1
+            double y = gain (x, g); // S-shape (Compand)
+            y = bias (y, b); // skew (Drive)
+
+            int v = (int) Math.round (MIN_OUT + y * (MAX_OUT - MIN_OUT));
+            v = Math.max (MIN_OUT, Math.min (MAX_OUT, v));
+            if (numThresholdValues + i <= 128)
+                curve[Math.max (0, numThresholdValues + i - 1)] = v;
+        }
+
+        // Fill the range part
+        final int offset = 128 - numRangeValues;
+        for (int i = offset; i < curve.length; i++)
+            curve[i] = 127;
+
+        this.currentCurve = curve;
+        return curve;
+    }
+
+
+    // Schlick bias: b in (0,1); 0.5 ≈ linear; >0.5 faster early rise; <0.5 slower early rise
+    private static double bias (final double x, final double b)
+    {
+        return x / ((1.0 / b - 2.0) * (1.0 - x) + 1.0);
+    }
+
+
+    // Schlick gain: g in (0,1); 0.5 = linear; g>0.5 slow attack; g<0.5 fast attack
+    private static double gain (final double x, final double g)
+    {
+        if (x < 0.5)
+            return 0.5 * bias (2.0 * x, 1.0 - g);
+        return 1.0 - 0.5 * bias (2.0 - 2.0 * x, 1.0 - g);
     }
 
 
@@ -641,13 +753,13 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     /**
      * Send the pad threshold.
      */
-    public void sendPadThreshold ()
+    private void sendPadThresholdPush2 ()
     {
         final int [] args = new int [9];
         args[0] = 27;
         add7L5M (args, 1, 33); // threshold0
         add7L5M (args, 3, 31); // threshold1
-        final int padSensitivity = this.configuration.getPadSensitivity ();
+        final int padSensitivity = this.configuration.getPadSensitivityPush2 ();
         add7L5M (args, 5, PUSH2_CPMIN[padSensitivity]); // cpmin
         add7L5M (args, 7, PUSH2_CPMAX[padSensitivity]); // cpmax
         this.sendSysEx (args);
@@ -657,9 +769,9 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     /**
      * Set the pad velocity of Push 2.
      */
-    public void sendPadVelocityCurve ()
+    private void sendPadVelocityCurvePush2 ()
     {
-        final int [] velocities = generateVelocityCurve (this.configuration.getPadSensitivity (), this.configuration.getPadGain (), this.configuration.getPadDynamics ());
+        final int [] velocities = this.createPadSensitivityCurvePush2 ();
         for (int index = 0; index < velocities.length; index += PAD_VELOCITY_CURVE_CHUNK_SIZE)
         {
             final int [] args = new int [2 + PAD_VELOCITY_CURVE_CHUNK_SIZE];
@@ -864,13 +976,27 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     }
 
 
-    private static int [] generateVelocityCurve (final int sensitivity, final int gain, final int dynamics)
+    /**
+     * Get the pad sensitivity curve for the Push 2.
+     * 
+     * @return The curve with 128 entries
+     */
+    public int [] createPadSensitivityCurvePush2 ()
     {
+        final int sensitivity = this.configuration.getPadSensitivityPush2 ();
+        final int gain = this.configuration.getPadGainPush2 ();
+        final int dynamics = this.configuration.getPadDynamicsPush2 ();
+        if (this.currentPadSensitivityPush2 == sensitivity && this.currentPadGainPush2 == gain && this.currentPadDynamicsPush2 == dynamics)
+            return this.currentCurve;
+        this.currentPadSensitivityPush2 = sensitivity;
+        this.currentPadGainPush2 = gain;
+        this.currentPadDynamicsPush2 = dynamics;
+
         final int minw = 160;
         final int maxw = MAXW[sensitivity];
         final int minv = MINV[gain];
         final int maxv = MAXV[gain];
-        final double [] result = calculatePoints (ALPHA[dynamics]);
+        final double [] result = calculatePointsPush2 (ALPHA[dynamics]);
         final double p1x = result[0];
         final double p1y = result[1];
         final double p2x = result[2];
@@ -893,7 +1019,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
             else
             {
                 final double wnorm = (w - minw) / (maxw - minw);
-                final double [] bez = bezier (wnorm, t, p1x, p1y, p2x, p2y);
+                final double [] bez = bezierPush2 (wnorm, t, p1x, p1y, p2x, p2y);
                 final double b = bez[0];
                 t = bez[1];
                 final double velonorm = gammaFunc (b, GAMMA[gain]);
@@ -901,11 +1027,13 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
             }
             curve[index] = (int) Math.min (Math.max (Math.round (velocity), 1), 127);
         }
+
+        this.currentCurve = curve;
         return curve;
     }
 
 
-    private static double [] bezier (final double x, final double t, final double p1x, final double p1y, final double p2x, final double p2y)
+    private static double [] bezierPush2 (final double x, final double t, final double p1x, final double p1y, final double p2x, final double p2y)
     {
         final double p0x = 0.0;
         final double p0y = 0.0;
@@ -942,7 +1070,7 @@ public class PushControlSurface extends AbstractControlSurface<PushConfiguration
     }
 
 
-    private static double [] calculatePoints (final double alpha)
+    private static double [] calculatePointsPush2 (final double alpha)
     {
         final double a1 = (225.0 - alpha) * Math.PI / 180.0;
         final double a2 = (45.0 - alpha) * Math.PI / 180.0;

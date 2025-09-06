@@ -408,27 +408,30 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         super.createObservers ();
 
         final PushControlSurface surface = this.getSurface ();
-        if (this.configuration.isPushModern ())
+
+        switch (this.configuration.getPushVersion ())
         {
-            this.configuration.addSettingObserver (PushConfiguration.DISPLAY_BRIGHTNESS, surface::sendDisplayBrightness);
-            this.configuration.addSettingObserver (PushConfiguration.LED_BRIGHTNESS, surface::sendLEDBrightness);
-            this.configuration.addSettingObserver (PushConfiguration.PAD_SENSITIVITY, () -> {
-                surface.sendPadVelocityCurve ();
-                surface.sendPadThreshold ();
-            });
-            this.configuration.addSettingObserver (PushConfiguration.PAD_GAIN, () -> {
-                surface.sendPadVelocityCurve ();
-                surface.sendPadThreshold ();
-            });
-            this.configuration.addSettingObserver (PushConfiguration.PAD_DYNAMICS, () -> {
-                surface.sendPadVelocityCurve ();
-                surface.sendPadThreshold ();
-            });
-        }
-        else
-        {
-            this.configuration.addSettingObserver (PushConfiguration.VELOCITY_CURVE, surface::sendPadSensitivity);
-            this.configuration.addSettingObserver (PushConfiguration.PAD_THRESHOLD, surface::sendPadSensitivity);
+            case PushVersion.VERSION_1:
+                this.configuration.addSettingObserver (PushConfiguration.VELOCITY_CURVE, surface::sendPadSensitivityPush1);
+                this.configuration.addSettingObserver (PushConfiguration.PAD_PUSH1_THRESHOLD, surface::sendPadSensitivityPush1);
+                break;
+
+            case PushVersion.VERSION_2:
+                this.configuration.addSettingObserver (PushConfiguration.DISPLAY_BRIGHTNESS, surface::sendDisplayBrightness);
+                this.configuration.addSettingObserver (PushConfiguration.LED_BRIGHTNESS, surface::sendLEDBrightness);
+                this.configuration.addSettingObserver (PushConfiguration.PAD_PUSH2_SENSITIVITY, surface::sendPadSensitivityPush2);
+                this.configuration.addSettingObserver (PushConfiguration.PAD_PUSH2_GAIN, surface::sendPadSensitivityPush2);
+                this.configuration.addSettingObserver (PushConfiguration.PAD_PUSH2_DYNAMICS, surface::sendPadSensitivityPush2);
+                break;
+
+            case PushVersion.VERSION_3:
+                this.configuration.addSettingObserver (PushConfiguration.DISPLAY_BRIGHTNESS, surface::sendDisplayBrightness);
+                this.configuration.addSettingObserver (PushConfiguration.LED_BRIGHTNESS, surface::sendLEDBrightness);
+                this.configuration.addSettingObserver (PushConfiguration.PAD_PUSH3_THRESHOLD, surface::sendPadSensitivityPush3);
+                this.configuration.addSettingObserver (PushConfiguration.PAD_PUSH3_DRIVE, surface::sendPadSensitivityPush3);
+                this.configuration.addSettingObserver (PushConfiguration.PAD_PUSH3_COMPAND, surface::sendPadSensitivityPush3);
+                this.configuration.addSettingObserver (PushConfiguration.PAD_PUSH3_RANGE, surface::sendPadSensitivityPush3);
+                break;
         }
 
         this.configuration.addSettingObserver (PushConfiguration.RIBBON_MODE, this::updateRibbonMode);

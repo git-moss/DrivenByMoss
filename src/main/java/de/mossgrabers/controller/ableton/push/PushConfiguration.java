@@ -54,25 +54,33 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
 
     /** Setting for the velocity curve. */
     public static final Integer     VELOCITY_CURVE                             = Integer.valueOf (53);
-    /** Setting for the pad threshold. */
-    public static final Integer     PAD_THRESHOLD                              = Integer.valueOf (54);
+    /** Setting for the Push 1 pad threshold. */
+    public static final Integer     PAD_PUSH1_THRESHOLD                        = Integer.valueOf (54);
     /** Setting for the display brightness. */
     public static final Integer     DISPLAY_BRIGHTNESS                         = Integer.valueOf (55);
     /** Setting for the pad LED brightness. */
     public static final Integer     LED_BRIGHTNESS                             = Integer.valueOf (56);
-    /** Setting for the pad sensitivity. */
-    public static final Integer     PAD_SENSITIVITY                            = Integer.valueOf (57);
-    /** Setting for the pad gain. */
-    public static final Integer     PAD_GAIN                                   = Integer.valueOf (58);
-    /** Setting for the pad dynamics. */
-    public static final Integer     PAD_DYNAMICS                               = Integer.valueOf (59);
+    /** Setting for the Push 2 pad sensitivity. */
+    public static final Integer     PAD_PUSH2_SENSITIVITY                      = Integer.valueOf (57);
+    /** Setting for the Push 2 pad gain. */
+    public static final Integer     PAD_PUSH2_GAIN                             = Integer.valueOf (58);
+    /** Setting for the Push 2 pad dynamics. */
+    public static final Integer     PAD_PUSH2_DYNAMICS                         = Integer.valueOf (59);
+    /** Setting for the Push 3 pad velocity curve - threshold parameter. */
+    public static final Integer     PAD_PUSH3_THRESHOLD                        = Integer.valueOf (60);
+    /** Setting for the Push 3 pad velocity curve - drive parameter. */
+    public static final Integer     PAD_PUSH3_DRIVE                            = Integer.valueOf (61);
+    /** Setting for the Push 3 pad velocity curve - compand parameter. */
+    public static final Integer     PAD_PUSH3_COMPAND                          = Integer.valueOf (62);
+    /** Setting for the Push 3 pad velocity curve - range parameter. */
+    public static final Integer     PAD_PUSH3_RANGE                            = Integer.valueOf (64);
 
     /** Setting for stopping automation recording on knob release. */
-    public static final Integer     STOP_AUTOMATION_ON_KNOB_RELEASE            = Integer.valueOf (60);
+    public static final Integer     STOP_AUTOMATION_ON_KNOB_RELEASE            = Integer.valueOf (65);
     /** Mode debug. */
-    public static final Integer     DEBUG_MODE                                 = Integer.valueOf (61);
+    public static final Integer     DEBUG_MODE                                 = Integer.valueOf (66);
     /** Push 2 display debug window. */
-    public static final Integer     DEBUG_WINDOW                               = Integer.valueOf (62);
+    public static final Integer     DEBUG_WINDOW                               = Integer.valueOf (67);
 
     /** Background color of an element. */
     public static final Integer     COLOR_BACKGROUND                           = Integer.valueOf (70);
@@ -381,15 +389,15 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     private Modes                 layerMode                    = null;
 
     // Only Push 1
-    private int                   velocityCurve                = 1;
-    private int                   padThreshold                 = 20;
+    private int                   velocityCurvePush1           = 1;
+    private int                   padThresholdPush1            = 20;
 
     // Only Push 2
     private int                   displayBrightness            = 255;
     private int                   ledBrightness                = 127;
-    private int                   padSensitivity               = 5;
-    private int                   padGain                      = 5;
-    private int                   padDynamics                  = 5;
+    private int                   padSensitivityPush2          = 5;
+    private int                   padGainPush2                 = 5;
+    private int                   padDynamicsPush2             = 5;
     private ColorEx               colorBackground              = DEFAULT_COLOR_BACKGROUND;
     private ColorEx               colorBorder                  = DEFAULT_COLOR_BORDER;
     private ColorEx               colorText                    = DEFAULT_COLOR_TEXT;
@@ -415,6 +423,11 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     private int                   preamp2Gain;
     private int                   audioOutputs;
 
+    private int                   padCurveThresholdPush3       = 7;
+    private int                   padCurveDrivePush3           = 4;
+    private int                   padCurveCompandPush3         = -26;
+    private int                   padCurveRangePush3           = 35;
+
     private final PushVersion     pushVersion;
 
     private IIntegerSetting       displayBrightnessSetting;
@@ -422,11 +435,20 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     private IEnumSetting          ribbonModeSetting;
     private IIntegerSetting       ribbonModeCCSetting;
     private IEnumSetting          ribbonModeNoteRepeatSetting;
+
+    // Push 1
+    private IEnumSetting          velocityCurveSetting;
+    private IEnumSetting          padThresholdSetting;
+    // Push 2
     private IIntegerSetting       padSensitivitySetting;
     private IIntegerSetting       padGainSetting;
     private IIntegerSetting       padDynamicsSetting;
-    private IEnumSetting          velocityCurveSetting;
-    private IEnumSetting          padThresholdSetting;
+    // Push 3
+    private IIntegerSetting       padCurveThresholdSetting;
+    private IIntegerSetting       padCurveDriveSetting;
+    private IIntegerSetting       padCurveCompandSetting;
+    private IIntegerSetting       padCurveRangeSetting;
+
     private IEnumSetting          debugModeSetting;
     private IColorSetting         colorBackgroundSetting;
     private IColorSetting         colorBackgroundDarkerSetting;
@@ -550,19 +572,25 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         ///////////////////////////
         // Hardware configuration
 
-        if (this.pushVersion == PushVersion.VERSION_1)
-            this.activatePush1PadSettings (globalSettings);
-        else
-            this.activatePush2PadSettings (globalSettings);
-
-        if (this.pushVersion == PushVersion.VERSION_3)
+        switch (this.pushVersion)
         {
-            this.activatePush3MPESettings (globalSettings);
-            this.convertAftertouch = AbstractConfiguration.AFTERTOUCH_CONVERT_OFF;
-            this.activatePush3AudioSettings (globalSettings);
+            case PushVersion.VERSION_1:
+                this.activatePush1PadSettings (globalSettings);
+                this.activateConvertAftertouchSetting (globalSettings);
+                break;
+
+            case PushVersion.VERSION_2:
+                this.activatePush2PadSettings (globalSettings);
+                this.activateConvertAftertouchSetting (globalSettings);
+                break;
+
+            case PushVersion.VERSION_3:
+                this.activatePush3PadSettings (globalSettings);
+                this.activatePush3MPESettings (globalSettings);
+                this.convertAftertouch = AbstractConfiguration.AFTERTOUCH_CONVERT_OFF;
+                this.activatePush3AudioSettings (globalSettings);
+                break;
         }
-        else
-            this.activateConvertAftertouchSetting (globalSettings);
 
         ///////////////////////////
         // Push 2 Hardware
@@ -695,9 +723,9 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     public void changePadThreshold (final int control)
     {
         final int size = PushControlSurface.PUSH_PAD_THRESHOLDS_NAME.size ();
-        final int value = this.valueChanger.changeValue (control, this.padThreshold, -100, size);
-        this.padThreshold = Math.max (0, Math.min (value, size - 1));
-        this.padThresholdSetting.set (PushControlSurface.PUSH_PAD_THRESHOLDS_NAME.get (this.padThreshold));
+        final int value = this.valueChanger.changeValue (control, this.padThresholdPush1, -100, size);
+        this.padThresholdPush1 = Math.max (0, Math.min (value, size - 1));
+        this.padThresholdSetting.set (PushControlSurface.PUSH_PAD_THRESHOLDS_NAME.get (this.padThresholdPush1));
     }
 
 
@@ -709,9 +737,9 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     public void changeVelocityCurve (final int control)
     {
         final int size = PushControlSurface.PUSH_PAD_CURVES_NAME.size ();
-        final int value = this.valueChanger.changeValue (control, this.velocityCurve, -100, size);
-        this.velocityCurve = Math.max (0, Math.min (value, size - 1));
-        this.velocityCurveSetting.set (PushControlSurface.PUSH_PAD_CURVES_NAME.get (this.velocityCurve));
+        final int value = this.valueChanger.changeValue (control, this.velocityCurvePush1, -100, size);
+        this.velocityCurvePush1 = Math.max (0, Math.min (value, size - 1));
+        this.velocityCurveSetting.set (PushControlSurface.PUSH_PAD_CURVES_NAME.get (this.velocityCurvePush1));
     }
 
 
@@ -744,7 +772,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
      */
     public void changePadSensitivity (final int control)
     {
-        this.padSensitivitySetting.set (this.valueChanger.changeValue (control, this.padSensitivity, -100, 11));
+        this.padSensitivitySetting.set (this.valueChanger.changeValue (control, this.padSensitivityPush2, -100, 11));
     }
 
 
@@ -755,7 +783,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
      */
     public void changePadGain (final int control)
     {
-        this.padGainSetting.set (this.valueChanger.changeValue (control, this.padGain, -100, 11));
+        this.padGainSetting.set (this.valueChanger.changeValue (control, this.padGainPush2, -100, 11));
     }
 
 
@@ -766,7 +794,51 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
      */
     public void changePadDynamics (final int control)
     {
-        this.padDynamicsSetting.set (this.valueChanger.changeValue (control, this.padDynamics, -100, 11));
+        this.padDynamicsSetting.set (this.valueChanger.changeValue (control, this.padDynamicsPush2, -100, 11));
+    }
+
+
+    /**
+     * Change the pad curve threshold.
+     *
+     * @param control The control value
+     */
+    public void changePadCurveThresholdPush3 (final int control)
+    {
+        this.padCurveThresholdSetting.set (this.valueChanger.changeValue (control, this.padCurveThresholdPush3, -100, 101));
+    }
+
+
+    /**
+     * Change the pad curve drive.
+     *
+     * @param control The control value
+     */
+    public void changePadCurveDrivePush3 (final int control)
+    {
+        this.padCurveDriveSetting.set (this.valueChanger.changeValue (control, this.padCurveDrivePush3 + 50, -100, 101) - 50);
+    }
+
+
+    /**
+     * Change the pad curve compand.
+     *
+     * @param control The control value
+     */
+    public void changePadCurveCompandPush3 (final int control)
+    {
+        this.padCurveCompandSetting.set (this.valueChanger.changeValue (control, this.padCurveCompandPush3 + 50, -100, 101) - 50);
+    }
+
+
+    /**
+     * Change the pad curve range.
+     *
+     * @param control The control value
+     */
+    public void changePadCurveRangePush3 (final int control)
+    {
+        this.padCurveRangeSetting.set (this.valueChanger.changeValue (control, this.padCurveRangePush3, -100, 101));
     }
 
 
@@ -799,7 +871,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
      */
     public int getVelocityCurve ()
     {
-        return this.velocityCurve;
+        return this.velocityCurvePush1;
     }
 
 
@@ -810,7 +882,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
      */
     public void setVelocityCurve (final int velocityCurve)
     {
-        this.velocityCurve = velocityCurve;
+        this.velocityCurvePush1 = velocityCurve;
     }
 
 
@@ -819,9 +891,9 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
      *
      * @return The pad threshold
      */
-    public int getPadThreshold ()
+    public int getPadThresholdPush1 ()
     {
-        return this.padThreshold;
+        return this.padThresholdPush1;
     }
 
 
@@ -830,9 +902,9 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
      *
      * @param padThreshold The pad threshold
      */
-    public void setPadThreshold (final int padThreshold)
+    public void setPadThresholdPush1 (final int padThreshold)
     {
-        this.padThreshold = padThreshold;
+        this.padThresholdPush1 = padThreshold;
     }
 
 
@@ -951,68 +1023,156 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
 
 
     /**
-     * Get the pad sensitivity.
+     * Get the pad sensitivity for Push 2.
      *
      * @return The pad sensitivity
      */
-    public int getPadSensitivity ()
+    public int getPadSensitivityPush2 ()
     {
-        return this.padSensitivity;
+        return this.padSensitivityPush2;
     }
 
 
     /**
-     * Set the pad sensitivity.
+     * Set the pad sensitivity for Push 2.
      *
      * @param padSensitivity The pad sensitivity
      */
-    public void setPadSensitivity (final int padSensitivity)
+    public void setPadSensitivityPush2 (final int padSensitivity)
     {
         this.padSensitivitySetting.set (padSensitivity);
     }
 
 
     /**
-     * Get the pad gain.
+     * Get the pad gain for Push 2.
      *
      * @return The pad gain
      */
-    public int getPadGain ()
+    public int getPadGainPush2 ()
     {
-        return this.padGain;
+        return this.padGainPush2;
     }
 
 
     /**
-     * Set the pad gain.
+     * Set the pad gain for Push 2.
      *
      * @param padGain The pad gain
      */
-    public void setPadGain (final int padGain)
+    public void setPadGainPush2 (final int padGain)
     {
         this.padGainSetting.set (padGain);
     }
 
 
     /**
-     * Get the pad dynamics.
+     * Get the pad dynamics for Push 2.
      *
      * @return The pad dynamics.
      */
-    public int getPadDynamics ()
+    public int getPadDynamicsPush2 ()
     {
-        return this.padDynamics;
+        return this.padDynamicsPush2;
     }
 
 
     /**
-     * Set the pad dynamics.
+     * Set the pad dynamics for Push 2.
      *
      * @param padDynamics The pad dynamics.
      */
-    public void setPadDynamics (final int padDynamics)
+    public void setPadDynamicsPush2 (final int padDynamics)
     {
         this.padDynamicsSetting.set (padDynamics);
+    }
+
+
+    /**
+     * Get the threshold parameter of the pad curve for Push 3.
+     *
+     * @return The threshold parameter value in the range of [0..100]
+     */
+    public int getPadCurveThresholdPush3 ()
+    {
+        return this.padCurveThresholdPush3;
+    }
+
+
+    /**
+     * Set the threshold parameter of the pad curve for Push 3.
+     *
+     * @param threshold The threshold parameter value in the range of [0..100]
+     */
+    public void setPadCurveThresholdPush3 (final int threshold)
+    {
+        this.padCurveThresholdSetting.set (threshold);
+    }
+
+
+    /**
+     * Get the drive parameter of the pad curve for Push 3.
+     *
+     * @return The drive parameter value in the range of [-50..50]
+     */
+    public int getPadCurveDrivePush3 ()
+    {
+        return this.padCurveDrivePush3;
+    }
+
+
+    /**
+     * Set the drive parameter of the pad curve for Push 3.
+     *
+     * @param drive The drive parameter value in the range of [-50..50]
+     */
+    public void setPadCurveDrivePush3 (final int drive)
+    {
+        this.padCurveDriveSetting.set (drive);
+    }
+
+
+    /**
+     * Get the compand parameter of the pad curve for Push 3.
+     *
+     * @return The compand parameter value in the range of [-50..50]
+     */
+    public int getPadCurveCompandPush3 ()
+    {
+        return this.padCurveCompandPush3;
+    }
+
+
+    /**
+     * Set the compand parameter of the pad curve for Push 3.
+     *
+     * @param compand The compand parameter value in the range of [-50..50]
+     */
+    public void setPadCurveCompandPush3 (final int compand)
+    {
+        this.padCurveCompandSetting.set (compand);
+    }
+
+
+    /**
+     * Get the range parameter of the pad curve for Push 3.
+     *
+     * @return The range parameter value in the range of [0..100]
+     */
+    public int getPadCurveRangePush3 ()
+    {
+        return this.padCurveRangePush3;
+    }
+
+
+    /**
+     * Set the range parameter of the pad curve for Push 3.
+     *
+     * @param range The range parameter value in the range of [0..100]
+     */
+    public void setPadCurveRangePush3 (final int range)
+    {
+        this.padCurveRangeSetting.set (range);
     }
 
 
@@ -1727,14 +1887,14 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     {
         this.velocityCurveSetting = settingsUI.getEnumSetting ("Velocity Curve", CATEGORY_PADS, PushControlSurface.PUSH_PAD_CURVES_NAME, PushControlSurface.PUSH_PAD_CURVES_NAME.get (1));
         this.velocityCurveSetting.addValueObserver (value -> {
-            this.velocityCurve = lookupIndex (PushControlSurface.PUSH_PAD_CURVES_NAME, value);
+            this.velocityCurvePush1 = lookupIndex (PushControlSurface.PUSH_PAD_CURVES_NAME, value);
             this.notifyObservers (VELOCITY_CURVE);
         });
 
         this.padThresholdSetting = settingsUI.getEnumSetting ("Pad Threshold", CATEGORY_PADS, PushControlSurface.PUSH_PAD_THRESHOLDS_NAME, PushControlSurface.PUSH_PAD_THRESHOLDS_NAME.get (20));
         this.padThresholdSetting.addValueObserver (value -> {
-            this.padThreshold = lookupIndex (PushControlSurface.PUSH_PAD_THRESHOLDS_NAME, value);
-            this.notifyObservers (PAD_THRESHOLD);
+            this.padThresholdPush1 = lookupIndex (PushControlSurface.PUSH_PAD_THRESHOLDS_NAME, value);
+            this.notifyObservers (PAD_PUSH1_THRESHOLD);
         });
     }
 
@@ -1748,20 +1908,53 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     {
         this.padSensitivitySetting = settingsUI.getRangeSetting ("Sensitivity", CATEGORY_PADS, 0, 10, 1, "", 5);
         this.padSensitivitySetting.addValueObserver (value -> {
-            this.padSensitivity = value.intValue ();
-            this.notifyObservers (PAD_SENSITIVITY);
+            this.padSensitivityPush2 = value.intValue ();
+            this.notifyObservers (PAD_PUSH2_SENSITIVITY);
         });
 
         this.padGainSetting = settingsUI.getRangeSetting ("Gain", CATEGORY_PADS, 0, 10, 1, "", 5);
         this.padGainSetting.addValueObserver (value -> {
-            this.padGain = value.intValue ();
-            this.notifyObservers (PAD_GAIN);
+            this.padGainPush2 = value.intValue ();
+            this.notifyObservers (PAD_PUSH2_GAIN);
         });
 
         this.padDynamicsSetting = settingsUI.getRangeSetting ("Dynamics", CATEGORY_PADS, 0, 10, 1, "", 5);
         this.padDynamicsSetting.addValueObserver (value -> {
-            this.padDynamics = value.intValue ();
-            this.notifyObservers (PAD_DYNAMICS);
+            this.padDynamicsPush2 = value.intValue ();
+            this.notifyObservers (PAD_PUSH2_DYNAMICS);
+        });
+    }
+
+
+    /**
+     * Activate the Push 3 pad settings.
+     *
+     * @param settingsUI The settings
+     */
+    private void activatePush3PadSettings (final ISettingsUI settingsUI)
+    {
+        this.padCurveThresholdSetting = settingsUI.getRangeSetting ("Threshold", CATEGORY_PADS, 0, 100, 1, "", 7);
+        this.padCurveThresholdSetting.addValueObserver (value -> {
+            this.padCurveThresholdPush3 = value.intValue ();
+            this.notifyObservers (PAD_PUSH3_THRESHOLD);
+        });
+
+        this.padCurveDriveSetting = settingsUI.getRangeSetting ("Drive", CATEGORY_PADS, -50, 50, 1, "", 4);
+        this.padCurveDriveSetting.addValueObserver (value -> {
+            this.padCurveDrivePush3 = value.intValue ();
+            this.notifyObservers (PAD_PUSH3_DRIVE);
+        });
+
+        this.padCurveCompandSetting = settingsUI.getRangeSetting ("Compand", CATEGORY_PADS, -50, 50, 1, "", -26);
+        this.padCurveCompandSetting.addValueObserver (value -> {
+            this.padCurveCompandPush3 = value.intValue ();
+            this.notifyObservers (PAD_PUSH3_COMPAND);
+        });
+
+        this.padCurveRangeSetting = settingsUI.getRangeSetting ("Range", CATEGORY_PADS, 0, 100, 1, "", 35);
+        this.padCurveRangeSetting.addValueObserver (value -> {
+            this.padCurveRangePush3 = value.intValue ();
+            this.notifyObservers (PAD_PUSH3_RANGE);
         });
     }
 

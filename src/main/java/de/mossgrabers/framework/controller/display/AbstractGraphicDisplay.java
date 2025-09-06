@@ -32,6 +32,7 @@ import de.mossgrabers.framework.graphics.IGraphicsInfo;
 import de.mossgrabers.framework.graphics.canvas.component.ChannelComponent;
 import de.mossgrabers.framework.graphics.canvas.component.ChannelSelectComponent;
 import de.mossgrabers.framework.graphics.canvas.component.ClipListComponent;
+import de.mossgrabers.framework.graphics.canvas.component.GraphOverlayComponent;
 import de.mossgrabers.framework.graphics.canvas.component.IComponent;
 import de.mossgrabers.framework.graphics.canvas.component.LabelComponent.LabelLayout;
 import de.mossgrabers.framework.graphics.canvas.component.ListComponent;
@@ -79,8 +80,9 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
     private final Object                   counterSync                     = new Object ();
 
     private final List<IComponent>         columns                         = new ArrayList<> (8);
+    private List<IComponent>               overlays                        = new ArrayList<> ();
     private final AtomicReference<String>  notificationMessage             = new AtomicReference<> ();
-    private ModelInfo                      info                            = new ModelInfo (null, Collections.emptyList ());
+    private ModelInfo                      info                            = new ModelInfo (null, Collections.emptyList (), Collections.emptyList ());
 
     protected final IHost                  host;
     protected final IGraphicsConfiguration configuration;
@@ -177,7 +179,7 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
                 notification = this.notificationMessage.get ();
             }
 
-            final ModelInfo newInfo = new ModelInfo (notification, this.columns);
+            final ModelInfo newInfo = new ModelInfo (notification, this.columns, this.overlays);
 
             // Only render image if there is a change in the data
             if (!this.info.equals (newInfo))
@@ -189,6 +191,7 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
         finally
         {
             this.columns.clear ();
+            this.overlays.clear ();
         }
 
         this.send (this.image);
@@ -406,6 +409,14 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
 
     /** {@inheritDoc} */
     @Override
+    public void addGraphOverlay (final int x, final int y, final int width, final int height, final ColorEx color, final int [] data, final int maxValue)
+    {
+        this.overlays.add (new GraphOverlayComponent (x, y, width, height, color, data, maxValue));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public void setHardwareDisplay (final IHwGraphicsDisplay display)
     {
         this.hardwareDisplay = display;
@@ -431,6 +442,7 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
     private void renderImage ()
     {
         this.image.render (this.configuration.isAntialiasEnabled (), gc -> {
+
             final int width = this.dimensions.getWidth ();
             final int height = this.dimensions.getHeight ();
             final double separatorSize = this.dimensions.getSeparatorSize ();
@@ -439,6 +451,7 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
             final ColorEx colorBorder = this.configuration.getColorBorder ();
             gc.fillRectangle (0, 0, width, height, colorBorder);
 
+            // Draw the component element
             final List<IComponent> elements = this.info.getComponents ();
             final int size = elements.size ();
             if (size == 0)
@@ -455,12 +468,18 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
                     component.draw (graphicsInfo.withBounds (i * gridWidth + offsetX, 0, paintWidth, height));
             }
 
+            // Draw overlays
+            for (final IComponent overlay: this.info.getOverlays ())
+                overlay.draw (graphicsInfo.withBounds (0, 0, width, height));
+
+            // Draw an overlay notification
             final String notification = this.info.getNotification ();
             if (notification == null)
                 return;
 
             final ColorEx colorText = this.configuration.getColorText ();
             gc.drawTextInBounds (notification, 0, 0, width, height, Align.CENTER, colorText, ColorEx.calcContrastColor (colorText), height / 4.0);
+
         });
     }
 

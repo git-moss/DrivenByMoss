@@ -72,6 +72,7 @@ public abstract class AbstractHwButton extends AbstractHwInputControl implements
      */
     protected void handleButtonPressed (final double value)
     {
+        // This is necessary since it is called as well for an release event!
         if (value == 0)
             return;
 

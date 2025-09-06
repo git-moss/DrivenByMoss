@@ -58,7 +58,7 @@ public class ConfigurationMode extends BaseMode<IItem>
         display.setBlock (0, 0, "Pad Threshold").setBlock (1, 0, this.surface.getSelectedPadThreshold ());
         display.setBlock (0, 1, "Velocity Curve").setBlock (1, 1, this.surface.getSelectedVelocityCurve ());
         display.setBlock (0, 3, "Firmware: " + this.surface.getMajorVersion () + "." + this.surface.getMinorVersion ());
-        if (this.surface.getConfiguration ().getPadThreshold () < 20)
+        if (this.surface.getConfiguration ().getPadThresholdPush1 () < 20)
             display.setRow (3, StringUtils.pad ("Low threshold maycause stuck pads!", 68));
     }
 

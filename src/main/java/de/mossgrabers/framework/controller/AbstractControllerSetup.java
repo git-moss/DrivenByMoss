@@ -39,7 +39,6 @@ import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.ConsoleLogger;
-import de.mossgrabers.framework.utils.IntConsumerSupplier;
 import de.mossgrabers.framework.utils.TestCallback;
 import de.mossgrabers.framework.utils.TestFramework;
 import de.mossgrabers.framework.view.AbstractDrum64View;
@@ -802,40 +801,6 @@ public abstract class AbstractControllerSetup<S extends IControlSurface<C>, C ex
         {
             final IntSupplier supp = supplier == null ? new ButtonPressedSupplier (button) : supplier;
             this.addLight (surface, null, buttonID, button, bindType, midiOutputChannel, midiControl, supp, colorIds);
-        }
-    }
-
-
-    /**
-     * Create multiple hardware button proxies. Each button is matched by a specific value. The
-     * first value is startValue, which gets increased by one for the other buttons.
-     *
-     * @param surface The control surface
-     * @param startValue The first matched value
-     * @param numberOfValues The number of buttons
-     * @param firstButtonID The first ID of the buttons
-     * @param label The label of the button
-     * @param supplier Callback for retrieving the state of the light
-     * @param midiChannel The MIDI channel
-     * @param midiControl The MIDI CC or note
-     * @param command The command to bind
-     * @param colorIds The color IDs to map to the states
-     */
-    protected void addButtons (final S surface, final int startValue, final int numberOfValues, final ButtonID firstButtonID, final String label, final TriggerCommand command, final int midiChannel, final int midiControl, final IntConsumerSupplier supplier, final String... colorIds)
-    {
-        for (int i = 0; i < numberOfValues; i++)
-        {
-            final int index = i;
-
-            final ButtonID buttonID = ButtonID.get (firstButtonID, i);
-            final IHwButton button = surface.createButton (buttonID, label + " " + (i + 1));
-            button.bind ( (event, velocity) -> command.execute (event, index));
-            if (midiControl < 0)
-                continue;
-            final BindType bindType = this.getTriggerBindType (buttonID);
-            button.bind (surface.getMidiInput (), bindType, midiChannel, midiControl, startValue + i);
-            final IntSupplier supp = supplier == null ? new ButtonPressedSupplier (button) : () -> supplier.process (index);
-            this.addLight (surface, null, buttonID, button, bindType, midiChannel, midiControl, supp, colorIds);
         }
     }
 

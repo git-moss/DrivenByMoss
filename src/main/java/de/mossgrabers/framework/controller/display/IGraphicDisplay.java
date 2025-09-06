@@ -335,6 +335,22 @@ public interface IGraphicDisplay extends IDisplay
 
 
     /**
+     * Draws a graph. The data parameter provides the input data. The index of the array is the
+     * x-axis and the value the y-axis. Each distinct value is connected with a line to the next
+     * value. The graph is adjusted to the given bounding rectangle (x,y,width,height).
+     * 
+     * @param x The left side of the bounding box
+     * @param y The upper side of the bounding box
+     * @param width The width of the bounding box
+     * @param height The height of the bounding box
+     * @param color The color of the line
+     * @param data The data to draw
+     * @param maxValue The maximum y-value of the data
+     */
+    void addGraphOverlay (int x, int y, int width, int height, ColorEx color, int [] data, int maxValue);
+
+
+    /**
      * Assign a proxy to the hardware display, which gets filled by this graphics display.
      *
      * @param display The hardware display

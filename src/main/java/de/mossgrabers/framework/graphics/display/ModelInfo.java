@@ -4,10 +4,10 @@
 
 package de.mossgrabers.framework.graphics.display;
 
-import de.mossgrabers.framework.graphics.canvas.component.IComponent;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import de.mossgrabers.framework.graphics.canvas.component.IComponent;
 
 
 /**
@@ -19,6 +19,7 @@ public class ModelInfo
 {
     private final String           notification;
     private final List<IComponent> components;
+    private final List<IComponent> overlays;
 
 
     /**
@@ -26,11 +27,13 @@ public class ModelInfo
      *
      * @param notification The notification message, if any
      * @param elements The elements
+     * @param overlays Additional overlays which are drawn on top of the elements
      */
-    public ModelInfo (final String notification, final List<IComponent> elements)
+    public ModelInfo (final String notification, final List<IComponent> elements, final List<IComponent> overlays)
     {
         this.notification = notification;
         this.components = new ArrayList<> (elements);
+        this.overlays = new ArrayList<> (overlays);
     }
 
 
@@ -53,6 +56,17 @@ public class ModelInfo
     public List<IComponent> getComponents ()
     {
         return this.components;
+    }
+
+
+    /**
+     * Get the overlay components.
+     *
+     * @return The components
+     */
+    public List<IComponent> getOverlays ()
+    {
+        return this.overlays;
     }
 
 
