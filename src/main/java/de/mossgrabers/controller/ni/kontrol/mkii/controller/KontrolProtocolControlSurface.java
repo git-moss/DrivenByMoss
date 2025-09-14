@@ -367,13 +367,11 @@ public class KontrolProtocolControlSurface extends AbstractControlSurface<Kontro
      */
     public void sendKontrolSysEx (final int stateID, final int value, final int index, final int [] info, final boolean doCache)
     {
-        if (doCache)
+        synchronized (this.cacheLock)
         {
-            synchronized (this.cacheLock)
-            {
-                if (this.valueCache.store (stateID, index, value, info))
-                    return;
-            }
+            final boolean isPresent = this.valueCache.store (stateID, index, value, info);
+            if (doCache && isPresent)
+                return;
         }
 
         final byte [] data = new byte [3 + info.length];
@@ -526,7 +524,7 @@ public class KontrolProtocolControlSurface extends AbstractControlSurface<Kontro
             return false;
         for (int i = 0; i < NHIA_SYSEX_HEADER.length; i++)
         {
-            // & 0xFF ensures the int is compared as an unsigned byte
+            // & 0xFF ensures the integer is compared as an unsigned byte
             if ((byteData[i] & 0xFF) != (NHIA_SYSEX_HEADER[i] & 0xFF))
                 return false;
         }

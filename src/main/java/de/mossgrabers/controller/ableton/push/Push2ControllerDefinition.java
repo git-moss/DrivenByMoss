@@ -31,6 +31,7 @@ public class Push2ControllerDefinition extends DefaultControllerDefinition
     /** Push 2 USB display endpoint. */
     private static final byte  ENDPOINT_ADDRESS = (byte) 0x01;
 
+
     /**
      * Constructor.
      */

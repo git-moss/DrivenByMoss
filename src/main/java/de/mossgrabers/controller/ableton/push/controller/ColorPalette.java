@@ -45,7 +45,7 @@ public class ColorPalette
             {
                 // Re-apply the color palette, if necessary
                 if (this.entriesHasUpdate)
-                    this.surface.scheduleTask ( () -> this.surface.sendSysEx ("05"), 1000);
+                    this.surface.scheduleTask ( () -> this.surface.sendSysex ("05"), 1000);
                 return;
             }
 
@@ -63,7 +63,7 @@ public class ColorPalette
 
                 case WRITE:
                     if (this.entries[entryIndex].incWriteRetries ())
-                        this.surface.sendSysEx (this.entries[entryIndex].createUpdateMessage ());
+                        this.surface.sendSysex (this.entries[entryIndex].createUpdateMessage ());
                     else
                         this.surface.errorln ("Failed writing color palette entry #" + entryIndex + ".");
                     break;
@@ -134,7 +134,7 @@ public class ColorPalette
             return;
         }
 
-        this.surface.sendSysEx (new int []
+        this.surface.sendSysex (new int []
         {
             0x04,
             entryIndex

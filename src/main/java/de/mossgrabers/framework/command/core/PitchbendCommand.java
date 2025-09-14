@@ -5,23 +5,18 @@
 package de.mossgrabers.framework.command.core;
 
 /**
- * An pitchbend command.
+ * An pitch-bend command.
  *
  * @author Jürgen Moßgraber
  */
+@FunctionalInterface
 public interface PitchbendCommand
 {
     /**
-     * Execute the pitchbend command.
+     * Execute the pitch-bend command.
      *
-     * @param data1 The first pitchbend byte (low byte)
-     * @param data2 The second pitchbend byte (high byte)
+     * @param data1 The first pitch-bend byte (low byte)
+     * @param data2 The second pitch-bend byte (high byte)
      */
     void onPitchbend (final int data1, int data2);
-
-
-    /**
-     * Callback to update the value visually on the controller.
-     */
-    void updateValue ();
 }

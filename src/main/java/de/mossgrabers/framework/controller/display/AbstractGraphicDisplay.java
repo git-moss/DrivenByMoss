@@ -80,7 +80,7 @@ public abstract class AbstractGraphicDisplay implements IGraphicDisplay
     private final Object                   counterSync                     = new Object ();
 
     private final List<IComponent>         columns                         = new ArrayList<> (8);
-    private List<IComponent>               overlays                        = new ArrayList<> ();
+    private final List<IComponent>         overlays                        = new ArrayList<> ();
     private final AtomicReference<String>  notificationMessage             = new AtomicReference<> ();
     private ModelInfo                      info                            = new ModelInfo (null, Collections.emptyList (), Collections.emptyList ());
 

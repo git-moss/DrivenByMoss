@@ -159,8 +159,9 @@ public class TouchstripCommand extends AbstractPitchbendCommand<PushControlSurfa
     }
 
 
-    /** {@inheritDoc} */
-    @Override
+    /**
+     * Callback to update the value visually on the controller.
+     */
     public void updateValue ()
     {
         final IValueChanger valueChanger = this.model.getValueChanger ();

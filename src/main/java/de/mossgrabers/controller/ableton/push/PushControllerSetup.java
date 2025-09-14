@@ -100,7 +100,6 @@ import de.mossgrabers.controller.ableton.push.view.SessionView;
 import de.mossgrabers.framework.command.aftertouch.AftertouchViewCommand;
 import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.core.NopCommand;
-import de.mossgrabers.framework.command.core.PitchbendCommand;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.command.trigger.FootswitchCommand;
@@ -197,22 +196,22 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         "DD????",
         "DE????",
         "DF????",
-        // Pitchbend (MPE) - channel 1-15
-        "E1????",
-        "E2????",
-        "E3????",
-        "E4????",
-        "E5????",
-        "E6????",
-        "E7????",
-        "E8????",
-        "E9????",
-        "EA????",
-        "EB????",
-        "EC????",
-        "ED????",
-        "EE????",
-        "EF????",
+        // Pitch-bend (MPE) - channel 1-15 -> now handled in handleMidi to support scales
+        // "E1????",
+        // "E2????",
+        // "E3????",
+        // "E4????",
+        // "E5????",
+        // "E6????",
+        // "E7????",
+        // "E8????",
+        // "E9????",
+        // "EA????",
+        // "EB????",
+        // "EC????",
+        // "ED????",
+        // "EE????",
+        // "EF????",
         // Brightness (MPE) - channel 1-15
         "B14A??",
         "B24A??",
@@ -236,6 +235,8 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
     private final PushVersion       pushVersion;
     private RasteredKnobCommand     tempoShuffleCommand;
     private PushMasterVolumeCommand masterVolumeCommand;
+
+    private TouchstripCommand       touchstripCommand;
 
 
     /**
@@ -264,11 +265,8 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
     {
         super.flush ();
 
-        final PushControlSurface surface = this.getSurface ();
-
-        final PitchbendCommand pitchbendCommand = surface.getContinuous (ContinuousID.TOUCHSTRIP).getPitchbendCommand ();
-        if (pitchbendCommand != null)
-            pitchbendCommand.updateValue ();
+        if (this.touchstripCommand != null)
+            this.touchstripCommand.updateValue ();
     }
 
 
@@ -327,6 +325,8 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             surface.addGraphicsDisplay (new Push2Display (this.host, this.valueChanger.getUpperBound (), this.configuration));
 
         surface.getModeManager ().setDefaultID (Modes.TRACK);
+
+        this.touchstripCommand = new TouchstripCommand (this.model, surface);
     }
 
 
@@ -752,6 +752,14 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             this.addButton (ButtonID.LEFT, "Left", (event, value) -> encoderCommand.left (event), PushControlSurface.PUSH_ENCODER_LEFT);
             this.addButton (ButtonID.RIGHT, "Right", (event, value) -> encoderCommand.right (event), PushControlSurface.PUSH_ENCODER_RIGHT);
             this.addButton (ButtonID.ARROW_CENTER, "Center", (event, value) -> encoderCommand.center (event), PushControlSurface.PUSH_BUTTON_CURSOR_CENTER);
+
+            // It seems if pitch-bend is already bound to one channel Bitwig API blocks all others
+            // as well, therefore, assign them with the API as well
+            for (int i = 1; i < 16; i++)
+            {
+                final int midiChannel = i;
+                this.addFader (ContinuousID.get (ContinuousID.MPE_PITCH_BEND2, i - 1), "Pitchbend " + midiChannel, (data1, data2) -> this.getSurface ().handleMPEPitchbend (midiChannel, data1, data2), i);
+            }
         }
         else
         {
@@ -775,7 +783,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             view.registerAftertouchCommand (new AftertouchViewCommand<> (view, this.model, surface));
         }
 
-        final IHwFader touchstrip = this.addFader (ContinuousID.TOUCHSTRIP, "Touchstrip", new TouchstripCommand (this.model, surface));
+        final IHwFader touchstrip = this.addFader (ContinuousID.TOUCHSTRIP, "Touchstrip", this.touchstripCommand);
         touchstrip.bindTouch (new ConfigurePitchbendCommand (this.model, surface), input, BindType.NOTE, 0, PushControlSurface.PUSH_RIBBON_TOUCH);
     }
 

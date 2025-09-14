@@ -913,7 +913,7 @@ public abstract class AbstractControlSurface<C extends Configuration> implements
 
 
     /**
-     * Handle pitchbend command.
+     * Handle pitch-bend command.
      *
      * @param data1 First data byte
      * @param data2 Second data byte

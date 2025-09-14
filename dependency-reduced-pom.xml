@@ -4,7 +4,7 @@
   <groupId>de.mossgrabers</groupId>
   <artifactId>DrivenByMoss</artifactId>
   <name>DrivenByMoss</name>
-  <version>26.1.0</version>
+  <version>26.2.0</version>
   <licenses>
     <license>
       <name>LGPL-2.1-or-later</name>
@@ -156,7 +156,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>versions-maven-plugin</artifactId>
-        <version>2.18.0</version>
+        <version>2.19.0</version>
         <configuration>
           <ignoredVersions>.*-M.*,.*-alpha.*,.*-beta.*,.*-ea.*,.*-rc.*</ignoredVersions>
           <generateBackupPoms>false</generateBackupPoms>

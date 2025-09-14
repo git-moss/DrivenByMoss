@@ -338,7 +338,7 @@ public interface IGraphicDisplay extends IDisplay
      * Draws a graph. The data parameter provides the input data. The index of the array is the
      * x-axis and the value the y-axis. Each distinct value is connected with a line to the next
      * value. The graph is adjusted to the given bounding rectangle (x,y,width,height).
-     * 
+     *
      * @param x The left side of the bounding box
      * @param y The upper side of the bounding box
      * @param width The width of the bounding box

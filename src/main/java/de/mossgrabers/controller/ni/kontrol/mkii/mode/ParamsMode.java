@@ -31,6 +31,7 @@ import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 import de.mossgrabers.framework.parameterprovider.device.SelectedLayerDeviceBankParameterProvider;
+import de.mossgrabers.framework.utils.Pair;
 
 
 /**
@@ -40,7 +41,7 @@ import de.mossgrabers.framework.parameterprovider.device.SelectedLayerDeviceBank
  */
 public class ParamsMode extends AbstractParameterMode<KontrolProtocolControlSurface, KontrolProtocolConfiguration, IParameter>
 {
-    private static final String []      BANK_NAMES                   =
+    private static final String []      BANK_NAMES               =
     {
         "Cursor Device ",
         "Track ",
@@ -48,16 +49,16 @@ public class ParamsMode extends AbstractParameterMode<KontrolProtocolControlSurf
         "Layer"
     };
 
-    private static final int            LAYER_INDEX                  = 3;
+    private static final int            LAYER_INDEX              = 3;
 
-    private final List<IParameterBank>  banks                        = new ArrayList<> (4);
-    private final IParameterProvider [] providers                    = new IParameterProvider [4];
-    private int                         activeProviderIndex          = 0;
-
-    private long                        selectedDeviceHasChangedTime = -1;
-    private int                         currentlySelectedDevice      = -1;
-    private final Object                deviceChangeLock             = new Object ();
-    private boolean                     layerSubModeEnabled          = false;
+    private final List<IParameterBank>  banks                    = new ArrayList<> (4);
+    private final IParameterProvider [] providers                = new IParameterProvider [4];
+    private int                         activeProviderIndex      = 0;
+    private boolean                     layerSubModeEnabled      = false;
+    private int                         previouslySelectedDevice = -1;
+    private long                        previouslyDeviceChange   = System.currentTimeMillis ();
+    private int                         currentlySelectedDevice  = -1;
+    private String                      currentChainInfo         = "";
 
 
     /**
@@ -141,8 +142,6 @@ public class ParamsMode extends AbstractParameterMode<KontrolProtocolControlSurf
     @Override
     public void updateDisplay ()
     {
-        this.surface.sendGlobalValues (this.model);
-
         // The track name needs to be updated as well for different formatting
         final ICursorLayer cursorLayer = this.model.getCursorLayer ();
         if (this.layerSubModeEnabled)
@@ -173,66 +172,31 @@ public class ParamsMode extends AbstractParameterMode<KontrolProtocolControlSurf
             }
         }
 
-        String presetName = "";
-        if (this.activeProviderIndex != 1 && this.activeProviderIndex != 2)
+        this.surface.sendGlobalValues (this.model);
+    }
+
+
+    private Pair<Integer, String> getSelectedDeviceInfo ()
+    {
+        final Optional<IDevice> selectedDevice;
+        final String presetName;
+        if (this.layerSubModeEnabled)
         {
-            final Optional<IDevice> selectedDevice;
-            if (this.layerSubModeEnabled)
-            {
-                final Optional<ISpecificDevice> selectedSpecificDevice = cursorLayer.getSelectedDevice ();
-                presetName = selectedSpecificDevice.isPresent () ? selectedSpecificDevice.get ().getPresetName () : "none";
-                selectedDevice = selectedSpecificDevice.isPresent () ? Optional.of (selectedSpecificDevice.get ()) : Optional.empty ();
-            }
-            else
-            {
-                final ICursorDevice cursorDevice = this.model.getCursorDevice ();
-                final IDeviceBank deviceBank = cursorDevice.getDeviceBank ();
-                presetName = cursorDevice.getPresetName ();
-                selectedDevice = deviceBank.getSelectedItem ();
-            }
-
-            final int deviceIndex = selectedDevice.isPresent () ? selectedDevice.get ().getIndex () : 0;
-
-            // Ugly workaround to sync the state between the device selection managed on the
-            // hardware and device selection changes initiated in the DAW
-            synchronized (this.deviceChangeLock)
-            {
-                if (this.currentlySelectedDevice >= 0)
-                {
-                    if (deviceIndex == this.currentlySelectedDevice)
-                    {
-                        if (System.currentTimeMillis () - this.selectedDeviceHasChangedTime > 1000)
-                            this.selectedDeviceHasChangedTime = -1;
-                    }
-                    else if (this.selectedDeviceHasChangedTime < 0)
-                    {
-                        this.currentlySelectedDevice = deviceIndex;
-                        this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_PLUGIN_SELECTED_PLUGIN, 0, deviceIndex, false);
-                    }
-                }
-            }
+            final ICursorLayer cursorLayer = this.model.getCursorLayer ();
+            final Optional<ISpecificDevice> selectedSpecificDevice = cursorLayer.getSelectedDevice ();
+            presetName = selectedSpecificDevice.isPresent () ? selectedSpecificDevice.get ().getPresetName () : "none";
+            selectedDevice = selectedSpecificDevice.isPresent () ? Optional.of (selectedSpecificDevice.get ()) : Optional.empty ();
+        }
+        else
+        {
+            final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+            final IDeviceBank deviceBank = cursorDevice.getDeviceBank ();
+            presetName = cursorDevice.getPresetName ();
+            selectedDevice = deviceBank.getSelectedItem ();
         }
 
-        final IParameterBank parameterBank = this.banks.get (this.activeProviderIndex);
-        final IParameterPageBank parameterPageBank = parameterBank.getPageBank ();
-        final Optional<String> selectedItem = parameterPageBank.getSelectedItem ();
-        final String selectedPage = selectedItem.isPresent () ? selectedItem.get () : "";
-        final int selectedPageIndex = Math.max (0, parameterPageBank.getSelectedItemIndex ());
-        this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_PLUGIN_SELECTED_PARAM_PAGE, parameterPageBank.getItemCount (), selectedPageIndex);
-        this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_PLUGIN_PAGE_NAME, 0, 0, selectedPage);
-
-        this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_PLUGIN_SELECTED_PRESET, 0, 0, presetName);
-
-        for (int i = 0; i < 8; i++)
-        {
-            final IParameter parameter = parameterBank.getItem (i);
-
-            final String name = parameter.doesExist () ? parameter.getName () : "";
-            this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_PLUGIN_PARAM_DISPLAY_NAME, 0, i, name);
-
-            final String info = parameter.doesExist () ? parameter.getDisplayedValue () : "";
-            this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_PLUGIN_PARAM_DISPLAY_VALUE, 0, i, info);
-        }
+        final int deviceIndex = selectedDevice.isPresent () ? selectedDevice.get ().getIndex () : 0;
+        return new Pair<> (Integer.valueOf (deviceIndex), presetName);
     }
 
 
@@ -303,19 +267,14 @@ public class ParamsMode extends AbstractParameterMode<KontrolProtocolControlSurf
         final IDevice item = deviceBank.getItem (deviceIndex);
         if (item.doesExist ())
         {
-            synchronized (this.deviceChangeLock)
-            {
-                this.selectedDeviceHasChangedTime = System.currentTimeMillis ();
-                this.currentlySelectedDevice = deviceIndex;
-                item.select ();
+            item.select ();
 
-                if (this.layerSubModeEnabled)
-                {
-                    this.surface.getHost ().scheduleTask ( () -> {
-                        ((SelectedLayerDeviceBankParameterProvider) this.providers[LAYER_INDEX]).configureCurrentBank ();
-                        this.banks.set (LAYER_INDEX, ((SelectedLayerDeviceBankParameterProvider) this.providers[LAYER_INDEX]).getBank ());
-                    }, 100);
-                }
+            if (this.layerSubModeEnabled)
+            {
+                this.surface.getHost ().scheduleTask ( () -> {
+                    ((SelectedLayerDeviceBankParameterProvider) this.providers[LAYER_INDEX]).configureCurrentBank ();
+                    this.banks.set (LAYER_INDEX, ((SelectedLayerDeviceBankParameterProvider) this.providers[LAYER_INDEX]).getBank ());
+                }, 100);
             }
         }
     }
@@ -337,35 +296,96 @@ public class ParamsMode extends AbstractParameterMode<KontrolProtocolControlSurf
      */
     public void updateAvailableDevices ()
     {
-        final StringBuilder sb = new StringBuilder ();
 
-        switch (this.activeProviderIndex)
+        String presetName = "";
+        final StringBuilder chainInfoSb = new StringBuilder ();
+        int deviceIndex = 0;
+
+        if (this.isTrackOrProjectMode ())
         {
-            case 1:
-                sb.append ("Track\0");
-                break;
+            chainInfoSb.append (this.activeProviderIndex == 1 ? "Track\0" : "Project\0");
+        }
+        else
+        {
+            final Pair<Integer, String> pair = this.getSelectedDeviceInfo ();
+            deviceIndex = pair.getKey ().intValue ();
+            presetName = pair.getValue ();
 
-            case 2:
-                sb.append ("Project\0");
-                break;
+            final IDeviceBank deviceBank;
+            if (((ParamsMode) this.surface.getModeManager ().get (Modes.DEVICE_PARAMS)).isLayerSubModeEnabled ())
+                deviceBank = this.model.getCursorLayer ().getDeviceBank ();
+            else
+                deviceBank = this.model.getCursorDevice ().getDeviceBank ();
 
-            default:
-                final IDeviceBank deviceBank;
-                if (((ParamsMode) this.surface.getModeManager ().get (Modes.DEVICE_PARAMS)).isLayerSubModeEnabled ())
-                    deviceBank = this.model.getCursorLayer ().getDeviceBank ();
-                else
-                    deviceBank = this.model.getCursorDevice ().getDeviceBank ();
-
-                for (int i = 0; i < 8; i++)
-                {
-                    final IDevice device = deviceBank.getItem (i);
-                    if (!device.doesExist ())
-                        break;
-                    sb.append (device.getName (16)).append ('\0');
-                }
-                break;
+            for (int i = 0; i < 8; i++)
+            {
+                final IDevice device = deviceBank.getItem (i);
+                if (!device.doesExist ())
+                    break;
+                chainInfoSb.append (device.getName (16)).append ('\0');
+            }
         }
 
-        this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_PLUGIN_CHAIN_INFO, 0, 0, sb.append ('\0').toString ());
+        final String chainInfo = chainInfoSb.append ('\0').toString ();
+        final boolean respectCache = this.currentChainInfo.equals (chainInfo) && this.currentlySelectedDevice == deviceIndex;
+        if (this.currentlySelectedDevice != deviceIndex)
+        {
+            this.previouslyDeviceChange = System.currentTimeMillis ();
+            // Blocks device switching for some time to workaround the not notified NKS mode
+            this.previouslySelectedDevice = this.currentlySelectedDevice;
+            this.currentlySelectedDevice = deviceIndex;
+        }
+        else if (System.currentTimeMillis () - this.previouslyDeviceChange > 1000)
+        {
+            // Free the blocked mode switching again
+            this.previouslySelectedDevice = this.currentlySelectedDevice;
+        }
+
+        this.currentChainInfo = chainInfo;
+
+        this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_PLUGIN_SELECTED_PLUGIN, 0, deviceIndex, respectCache);
+
+        final IParameterBank parameterBank = this.banks.get (this.activeProviderIndex);
+        final IParameterPageBank parameterPageBank = parameterBank.getPageBank ();
+        final Optional<String> selectedItem = parameterPageBank.getSelectedItem ();
+        final String selectedPage = selectedItem.isPresent () ? selectedItem.get () : "";
+        final int selectedPageIndex = Math.max (0, parameterPageBank.getSelectedItemIndex ());
+
+        for (int i = 0; i < 8; i++)
+        {
+            final IParameter parameter = parameterBank.getItem (i);
+            final String name = parameter.doesExist () ? parameter.getName () : "";
+            final String info = parameter.doesExist () ? parameter.getDisplayedValue () : "";
+            this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_PLUGIN_PARAM_DISPLAY_NAME, 0, i, name, respectCache);
+            this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_PLUGIN_PARAM_DISPLAY_VALUE, 0, i, info, respectCache);
+        }
+
+        this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_PLUGIN_PAGE_NAME, 0, 0, selectedPage, respectCache);
+        this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_PLUGIN_CHAIN_INFO, 0, 0, chainInfo, respectCache);
+        this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_PLUGIN_SELECTED_PARAM_PAGE, parameterPageBank.getItemCount (), selectedPageIndex, respectCache);
+        this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_PLUGIN_SELECTED_PRESET, 0, 0, presetName, respectCache);
+        this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_PLUGIN_SELECTED_PLUGIN, 0, deviceIndex, respectCache);
+    }
+
+
+    /**
+     * Returns true if the track or project controls are active.
+     *
+     * @return True if the track or project controls are active.
+     */
+    public boolean isTrackOrProjectMode ()
+    {
+        return this.activeProviderIndex == 1 || this.activeProviderIndex == 2;
+    }
+
+
+    /**
+     * Get the index of the previously selected device.
+     *
+     * @return The previously selected device
+     */
+    public int getPreviouslySelectedDevice ()
+    {
+        return this.previouslySelectedDevice;
     }
 }

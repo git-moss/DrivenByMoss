@@ -110,7 +110,7 @@ public class GraphOverlayComponent implements IComponent
     {
         if (this == obj)
             return true;
-        if ((obj == null) || (this.getClass () != obj.getClass ()))
+        if (obj == null || this.getClass () != obj.getClass ())
             return false;
         final GraphOverlayComponent other = (GraphOverlayComponent) obj;
         if (this.color == null)
@@ -120,13 +120,7 @@ public class GraphOverlayComponent implements IComponent
         }
         else if (!this.color.equals (other.color))
             return false;
-        if (!Arrays.equals (this.data, other.data))
-            return false;
-        if (Double.doubleToLongBits (this.height) != Double.doubleToLongBits (other.height))
-            return false;
-        if (this.maxValue != other.maxValue)
-            return false;
-        if (Double.doubleToLongBits (this.width) != Double.doubleToLongBits (other.width))
+        if (!Arrays.equals (this.data, other.data) || (Double.doubleToLongBits (this.height) != Double.doubleToLongBits (other.height)) || (this.maxValue != other.maxValue) || (Double.doubleToLongBits (this.width) != Double.doubleToLongBits (other.width)))
             return false;
         if (Double.doubleToLongBits (this.x) != Double.doubleToLongBits (other.x))
             return false;

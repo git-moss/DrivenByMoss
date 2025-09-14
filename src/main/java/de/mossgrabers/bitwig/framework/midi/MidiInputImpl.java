@@ -276,9 +276,9 @@ public class MidiInputImpl implements IMidiInput
     {
         final ContinuousHardwareControl<?> hardwareControl;
 
-        if (continuousControl instanceof HwRelativeKnobImpl relativeKnob)
+        if (continuousControl instanceof final HwRelativeKnobImpl relativeKnob)
             hardwareControl = relativeKnob.getHardwareKnob ();
-        else if (continuousControl instanceof AbstractHwAbsoluteControl absoluteControl)
+        else if (continuousControl instanceof final AbstractHwAbsoluteControl absoluteControl)
             hardwareControl = absoluteControl.getHardwareControl ();
         else
             return;

@@ -204,4 +204,15 @@ public class KeyManager implements INoteObserver
     {
         this.noteMap = matrix;
     }
+
+
+    /**
+     * Get the scales object.
+     *
+     * @return The scales object
+     */
+    public Scales getScales ()
+    {
+        return this.scales;
+    }
 }

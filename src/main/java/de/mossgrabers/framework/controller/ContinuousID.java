@@ -194,7 +194,7 @@ public enum ContinuousID
     /** Select a view. */
     VIEW_SELECTION,
 
-    /** A touchstrip fader. */
+    /** A touch-strip fader. */
     TOUCHSTRIP,
     /** The modulation wheel. */
     MODULATION_WHEEL,
@@ -372,7 +372,38 @@ public enum ContinuousID
     EQ_GAIN_KNOB8,
 
     /** Cue knob. */
-    CUE;
+    CUE,
+
+    /** MPE pitch-bend on MIDI channel 2. */
+    MPE_PITCH_BEND2,
+    /** MPE pitch-bend on MIDI channel 3. */
+    MPE_PITCH_BEND3,
+    /** MPE pitch-bend on MIDI channel 4. */
+    MPE_PITCH_BEND4,
+    /** MPE pitch-bend on MIDI channel 5. */
+    MPE_PITCH_BEND5,
+    /** MPE pitch-bend on MIDI channel 6. */
+    MPE_PITCH_BEND6,
+    /** MPE pitch-bend on MIDI channel 7. */
+    MPE_PITCH_BEND7,
+    /** MPE pitch-bend on MIDI channel 8. */
+    MPE_PITCH_BEND8,
+    /** MPE pitch-bend on MIDI channel 9. */
+    MPE_PITCH_BEND9,
+    /** MPE pitch-bend on MIDI channel 10. */
+    MPE_PITCH_BEND10,
+    /** MPE pitch-bend on MIDI channel 11. */
+    MPE_PITCH_BEND11,
+    /** MPE pitch-bend on MIDI channel 12. */
+    MPE_PITCH_BEND12,
+    /** MPE pitch-bend on MIDI channel 13. */
+    MPE_PITCH_BEND13,
+    /** MPE pitch-bend on MIDI channel 14. */
+    MPE_PITCH_BEND14,
+    /** MPE pitch-bend on MIDI channel 15. */
+    MPE_PITCH_BEND15,
+    /** MPE pitch-bend on MIDI channel 16. */
+    MPE_PITCH_BEND16;
 
 
     /**

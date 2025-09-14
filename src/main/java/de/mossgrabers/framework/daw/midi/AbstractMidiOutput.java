@@ -18,7 +18,8 @@ public abstract class AbstractMidiOutput implements IMidiOutput
 
     protected static final int REGISTERED_PARAMETER_NUMBER_MSB         = 0x65;
     protected static final int REGISTERED_PARAMETER_NUMBER_LSB         = 0x64;
-    protected static final int DATA_ENTRY_MPE                          = 0x06;
+    protected static final int DATA_ENTRY_MPE_MSB                      = 0x06;
+    protected static final int DATA_ENTRY_MPE_LSB                      = 0x26;
     protected static final int PARAMETER_MPE_CONFIG_MSB                = 0x00;
     protected static final int PARAMETER_MPE_CONFIG_LSB                = 0x06;
     protected static final int PARAMETER_MPE_PITCHBEND_SENSITIVITY_MSB = 0x00;
@@ -127,10 +128,12 @@ public abstract class AbstractMidiOutput implements IMidiOutput
     @Override
     public void configureMPE (final int zone, final int numberOfChannels)
     {
-        this.sendMidiShort (zone, 79, 0);
         this.sendMidiShort (zone, REGISTERED_PARAMETER_NUMBER_MSB, PARAMETER_MPE_CONFIG_MSB);
         this.sendMidiShort (zone, REGISTERED_PARAMETER_NUMBER_LSB, PARAMETER_MPE_CONFIG_LSB);
-        this.sendMidiShort (zone, DATA_ENTRY_MPE, numberOfChannels);
+        this.sendMidiShort (zone, DATA_ENTRY_MPE_MSB, numberOfChannels);
+        this.sendMidiShort (zone, DATA_ENTRY_MPE_LSB, 0);
+        this.sendMidiShort (zone, REGISTERED_PARAMETER_NUMBER_MSB, 127);
+        this.sendMidiShort (zone, REGISTERED_PARAMETER_NUMBER_LSB, 127);
     }
 
 
@@ -140,7 +143,10 @@ public abstract class AbstractMidiOutput implements IMidiOutput
     {
         this.sendMidiShort (zone, REGISTERED_PARAMETER_NUMBER_MSB, PARAMETER_MPE_PITCHBEND_SENSITIVITY_MSB);
         this.sendMidiShort (zone, REGISTERED_PARAMETER_NUMBER_LSB, PARAMETER_MPE_PITCHBEND_SENSITIVITY_LSB);
-        this.sendMidiShort (zone, DATA_ENTRY_MPE, range);
+        this.sendMidiShort (zone, DATA_ENTRY_MPE_MSB, range);
+        this.sendMidiShort (zone, DATA_ENTRY_MPE_LSB, 0);
+        this.sendMidiShort (zone, REGISTERED_PARAMETER_NUMBER_MSB, 127);
+        this.sendMidiShort (zone, REGISTERED_PARAMETER_NUMBER_LSB, 127);
     }
 
 

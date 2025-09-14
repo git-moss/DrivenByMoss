@@ -55,6 +55,7 @@ import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
 import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.constants.DeviceID;
+import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
@@ -103,7 +104,7 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
     private ModeMultiSelectCommand<KontrolProtocolControlSurface, KontrolProtocolConfiguration> switcher;
     private final int                                                                           version;
     private String                                                                              kompleteInstance      = "";
-    private boolean                                                                             triggerModeSwitch     = false;
+    private long                                                                                lastTriggerTime       = -1;
 
 
     /**
@@ -417,32 +418,57 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
         if (event != ButtonEvent.UP)
             return;
 
-        // Prevent double trigger on button press/release which sends the exact same values
-        if (this.triggerModeSwitch)
+        // Prevent double triggers which occur most of the time
+        final long triggerTime = System.currentTimeMillis ();
+        if (this.lastTriggerTime == -1)
         {
-            final ModeManager modeManager = this.getSurface ().getModeManager ();
-            if (value == 0)
-                this.switcher.executeNormal (event);
-            else
-            {
-                final ParamsMode paramsMode = (ParamsMode) modeManager.get (Modes.DEVICE_PARAMS);
+            // Prevent mode change on startup
+            this.lastTriggerTime = triggerTime;
+            return;
+        }
+        if (triggerTime - this.lastTriggerTime < 300)
+            return;
+        this.lastTriggerTime = triggerTime;
 
+        // Prevent double trigger on button press/release which sends the exact same values
+        final ISpecificDevice nksDevice = this.model.getSpecificDevice (DeviceID.NI_KOMPLETE);
+        final ICursorDevice cursorDevice = this.model.getCursorDevice ();
+        final boolean isNksDeviceSelected = nksDevice.doesExist () && cursorDevice.getPosition () == nksDevice.getPosition ();
+
+        // Note: There is no notification when the special NKS device mode is entered. As a
+        // workaround all switches in the same mode (between device and between volume modes)
+        // are blocked!
+
+        final ModeManager modeManager = this.getSurface ().getModeManager ();
+        final ParamsMode paramsMode = (ParamsMode) modeManager.get (Modes.DEVICE_PARAMS);
+        if (value == 0)
+        {
+            // Switch Volume modes
+            if (!isNksDeviceSelected || paramsMode.getPreviouslySelectedDevice () != nksDevice.getPosition () || modeManager.isActive (Modes.DEVICE_PARAMS))
+                this.switcher.executeNormal (event);
+        }
+        else
+        {
+            // Switch Device modes
+            if (!isNksDeviceSelected || modeManager.isActive (Modes.VOLUME, Modes.SEND, Modes.DEVICE_LAYER))
+            {
                 if (modeManager.isActive (Modes.DEVICE_PARAMS))
-                    paramsMode.selectNextMode ();
+                {
+                    // Prevent accidental switching to Track controls mode when coming from NKS mode
+                    if (paramsMode.isTrackOrProjectMode () || !nksDevice.doesExist () || paramsMode.getPreviouslySelectedDevice () != nksDevice.getPosition ())
+                        paramsMode.selectNextMode ();
+                }
                 else
                 {
                     final boolean isLayerModeActive = modeManager.isActive (Modes.DEVICE_LAYER);
                     if (!isLayerModeActive)
-                        this.model.getCursorDevice ().selectParent ();
+                        cursorDevice.selectParent ();
 
                     modeManager.setActive (Modes.DEVICE_PARAMS);
                     paramsMode.enableLayerSubMode (isLayerModeActive);
                 }
             }
         }
-
-        // Prevent double triggers
-        this.triggerModeSwitch = !this.triggerModeSwitch;
     }
 
 
@@ -618,6 +644,8 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
             case DEVICE_PARAMS:
                 if (modeManager.getActive () instanceof final FakeParamsMode paramMode)
                     paramMode.switchProvider (isLeft);
+                else
+                    this.model.getClipLauncherNavigator ().navigateTracks (isLeft);
                 break;
 
             default:
