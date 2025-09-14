@@ -4,10 +4,6 @@
 
 package de.mossgrabers.controller.ni.kontrol.mkii.controller;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.TreeMap;
-
 import de.mossgrabers.controller.ni.kontrol.mkii.KontrolProtocolConfiguration;
 import de.mossgrabers.controller.ni.kontrol.mkii.NIHIASysExCallback;
 import de.mossgrabers.controller.ni.kontrol.mkii.TrackType;
@@ -21,6 +17,10 @@ import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.utils.StringUtils;
+
+import java.util.Arrays;
+import java.util.Map;
+import java.util.TreeMap;
 
 
 /**
@@ -191,7 +191,7 @@ public class KontrolProtocolControlSurface extends AbstractControlSurface<Kontro
     private double                   cachedTempo                      = 0;
     private final Object             handshakeLock                    = new Object ();
     private boolean                  isConnectedToNIHIA               = false;
-
+    private int []                   ccValueCache                     = new int [255];
 
     /**
      * Constructor.
@@ -296,6 +296,9 @@ public class KontrolProtocolControlSurface extends AbstractControlSurface<Kontro
      */
     public void sendCommand (final int command, final int value)
     {
+        if (this.ccValueCache[command] == value)
+            return;
+        this.ccValueCache[command] = value;
         this.output.sendCCEx (15, command, value);
     }
 
@@ -470,6 +473,7 @@ public class KontrolProtocolControlSurface extends AbstractControlSurface<Kontro
         synchronized (this.cacheLock)
         {
             this.valueCache.clearCache ();
+            Arrays.fill (this.ccValueCache, -1);
         }
 
         super.clearCache ();
@@ -553,7 +557,6 @@ public class KontrolProtocolControlSurface extends AbstractControlSurface<Kontro
         this.protocolVersion = protocolVersion;
     }
 
-
     /**
      * Caches the values of the system exclusive values.
      */
@@ -563,7 +566,6 @@ public class KontrolProtocolControlSurface extends AbstractControlSurface<Kontro
 
         private int                                      numParameterPages     = -1;
         private int                                      selectedParameterPage = -1;
-
 
         /**
          * Clear the cache.
