@@ -180,11 +180,15 @@ public class SendMode extends DefaultTrackMode<KontrolProtocolControlSurface, Ko
 
     private String getLabel (final ITrack track, final ISend send)
     {
-        final String n = send.doesExist () ? send.getName () : "None";
-
-        if (this.surface.getProtocolVersion () == KontrolProtocol.VERSION_1)
-            return "S" + (send.getPosition () + 1) + ": " + n;
-
-        return "FX Track " + (track.getPosition () + 1) + (send.getPosition () + 1) + "\n" + n;
+        final String name = send.doesExist () ? send.getName () : "None";
+        switch (this.surface.getProtocolVersion ())
+        {
+            case KontrolProtocol.VERSION_1:
+                return "S" + (send.getPosition () + 1) + ": " + name;
+            case KontrolProtocol.VERSION_2:
+                return "FX Track " + (track.getPosition () + 1) + (send.getPosition () + 1) + "\n" + name;
+            default:
+                return "S" + (send.getPosition () + 1) + ": " + name;
+        }
     }
 }

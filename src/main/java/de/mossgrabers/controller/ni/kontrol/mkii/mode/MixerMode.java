@@ -146,8 +146,14 @@ public class MixerMode extends TrackVolumeMode<KontrolProtocolControlSurface, Ko
         if (!track.doesExist ())
             return "";
         final String name = track.getName ();
-        if (this.surface.getProtocolVersion () == KontrolProtocol.VERSION_1)
-            return name;
-        return "Track " + (track.getPosition () + 1) + "\n" + name;
+        switch (this.surface.getProtocolVersion ())
+        {
+            case KontrolProtocol.VERSION_1:
+                return name;
+            case KontrolProtocol.VERSION_2:
+                return "Track " + (track.getPosition () + 1) + "\n" + name;
+            default:
+                return (track.getPosition () + 1) + ": " + name;
+        }
     }
 }

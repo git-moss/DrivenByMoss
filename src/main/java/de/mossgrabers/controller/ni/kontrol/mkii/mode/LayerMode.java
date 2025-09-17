@@ -143,7 +143,7 @@ public class LayerMode extends DefaultLayerMode<KontrolProtocolControlSurface, K
             this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_TRACK_RECARM, 0, i);
             this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_TRACK_VOLUME_TEXT, 0, i, layer.getVolumeStr (8));
             this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_TRACK_PAN_TEXT, 0, i, layer.getPanStr (8));
-            this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_TRACK_NAME, 0, i, formatLayerName (cursorDevice, layer));
+            this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_TRACK_NAME, 0, i, this.formatLayerName (cursorDevice, layer));
 
             if (protocolVersion == KontrolProtocol.VERSION_4)
                 this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_TRACK_COLOR, 0, i, "#" + StringUtils.formatColor (layer.getColor ()));
@@ -174,11 +174,20 @@ public class LayerMode extends DefaultLayerMode<KontrolProtocolControlSurface, K
     }
 
 
-    private static String formatLayerName (final ICursorDevice cursorDevice, final ILayer layer)
+    private String formatLayerName (final ICursorDevice cursorDevice, final ILayer layer)
     {
         if (!cursorDevice.doesExist () || !layer.doesExist ())
             return "";
-        return "Layer " + (layer.getPosition () + 1) + "\n" + layer.getName ();
+        final String name = layer.getName ();
+        switch (this.surface.getProtocolVersion ())
+        {
+            case KontrolProtocol.VERSION_1:
+                return name;
+            case KontrolProtocol.VERSION_2:
+                return "Layer " + (layer.getPosition () + 1) + "\n" + name;
+            default:
+                return layer.getPosition () + 1 + ": " + name;
+        }
     }
 
 

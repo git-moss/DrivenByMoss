@@ -138,9 +138,7 @@ public class MixerMode extends AbstractElectraOneMode
             final ITrack track = trackOpt.isPresent () ? trackOpt.get () : EmptyTrack.getInstance (this.model.getTrackBank ().getItem (0).getSendBank ().getPageSize ());
 
             final boolean trackExists = track.doesExist ();
-
-            // Do not hide the elements until the knob touch issue gets fixed
-            final Boolean exists = Boolean.TRUE;
+            final Boolean exists = Boolean.valueOf (trackExists);
 
             final String trackLabel = trackExists ? track.getPosition () + 1 + ": " + track.getName () : "";
             this.pageCache.updateGroupLabel (FIRST_TRACK_GROUP + column, trackLabel);
@@ -149,12 +147,12 @@ public class MixerMode extends AbstractElectraOneMode
 
             final ColorEx color = track.getColor ();
 
-            this.pageCache.updateElement (0, column, trackExists ? "VOLUME" : "", color, exists);
-            this.pageCache.updateElement (1, column, trackExists ? "PAN" : "", color, exists);
-            this.pageCache.updateElement (2, column, trackExists ? "REC ARM" : "", track.isRecArm () ? ElectraOneColorManager.REC_ARM_ON : ElectraOneColorManager.REC_ARM_OFF, exists);
-            this.pageCache.updateElement (3, column, trackExists ? "MUTE" : "", track.isMute () ? ElectraOneColorManager.MUTE_ON : ElectraOneColorManager.MUTE_OFF, exists);
-            this.pageCache.updateElement (4, column, trackExists ? "SOLO" : "", track.isSolo () ? ElectraOneColorManager.SOLO_ON : ElectraOneColorManager.SOLO_OFF, exists);
-            this.pageCache.updateElement (5, column, trackExists ? "SELECT" : "", track.isSelected () ? ElectraOneColorManager.SELECT_ON : ElectraOneColorManager.SELECT_OFF, exists);
+            this.pageCache.updateElement (0, column, trackExists ? "VOLUME" : " ", color, exists);
+            this.pageCache.updateElement (1, column, trackExists ? "PAN" : " ", color, exists);
+            this.pageCache.updateElement (2, column, trackExists ? "REC ARM" : " ", track.isRecArm () ? ElectraOneColorManager.REC_ARM_ON : ElectraOneColorManager.REC_ARM_OFF, exists);
+            this.pageCache.updateElement (3, column, trackExists ? "MUTE" : " ", track.isMute () ? ElectraOneColorManager.MUTE_ON : ElectraOneColorManager.MUTE_OFF, exists);
+            this.pageCache.updateElement (4, column, trackExists ? "SOLO" : " ", track.isSolo () ? ElectraOneColorManager.SOLO_ON : ElectraOneColorManager.SOLO_OFF, exists);
+            this.pageCache.updateElement (5, column, trackExists ? "SELECT" : " ", track.isSelected () ? ElectraOneColorManager.SELECT_ON : ElectraOneColorManager.SELECT_OFF, exists);
         }
 
         // Master

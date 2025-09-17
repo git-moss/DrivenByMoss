@@ -117,13 +117,13 @@ public class ProjectTrackMode extends AbstractElectraOneMode
             boolean paramExists = param.doesExist ();
             int row = i / 4;
             final int column = 1 + i % 4;
-            this.pageCache.updateElement (row, column, paramExists ? StringUtils.fixASCII (param.getName ()) : "", paramExists ? ColorEx.PINK : ColorEx.BLACK, Boolean.TRUE);
+            this.pageCache.updateElement (row, column, paramExists ? StringUtils.fixASCII (param.getName ()) : "", paramExists ? ColorEx.PINK : ColorEx.BLACK, Boolean.valueOf (paramExists));
             this.pageCache.updateValue (row, column, param.getValue (), paramExists ? StringUtils.optimizeName (StringUtils.fixASCII (param.getDisplayedValue ()), 15) : " ");
 
             param = trackParameterBank.getItem (i);
             paramExists = param.doesExist ();
             row += 4;
-            this.pageCache.updateElement (row, column, paramExists ? StringUtils.fixASCII (param.getName ()) : "", paramExists ? ColorEx.MINT : ColorEx.BLACK, Boolean.TRUE);
+            this.pageCache.updateElement (row, column, paramExists ? StringUtils.fixASCII (param.getName ()) : "", paramExists ? ColorEx.MINT : ColorEx.BLACK, Boolean.valueOf (paramExists));
             this.pageCache.updateValue (row, column, param.getValue (), paramExists ? StringUtils.optimizeName (StringUtils.fixASCII (param.getDisplayedValue ()), 15) : " ");
         }
 
@@ -136,14 +136,14 @@ public class ProjectTrackMode extends AbstractElectraOneMode
             boolean isSelected = projectPageBank.getSelectedItemIndex () == column;
             boolean pageExists = !paramPage.isBlank ();
             ColorEx color = isSelected ? ElectraOneColorManager.PROJECT_PARAM_PAGE_SELECTED : ElectraOneColorManager.PROJECT_PARAM_PAGE;
-            this.pageCache.updateElement (2, column, pageExists ? StringUtils.fixASCII (paramPage) : " ", pageExists ? color : ColorEx.BLACK, Boolean.TRUE);
+            this.pageCache.updateElement (2, column, pageExists ? StringUtils.fixASCII (paramPage) : " ", pageExists ? color : ColorEx.BLACK, Boolean.valueOf (pageExists));
 
             // Set track page names
             paramPage = trackPageBank.getItem (column);
             isSelected = trackPageBank.getSelectedItemIndex () == column;
             pageExists = !paramPage.isBlank ();
             color = isSelected ? ElectraOneColorManager.TRACK_PARAM_PAGE_SELECTED : ElectraOneColorManager.TRACK_PARAM_PAGE;
-            this.pageCache.updateElement (3, column, pageExists ? StringUtils.fixASCII (paramPage) : " ", pageExists ? color : ColorEx.BLACK, Boolean.TRUE);
+            this.pageCache.updateElement (3, column, pageExists ? StringUtils.fixASCII (paramPage) : " ", pageExists ? color : ColorEx.BLACK, Boolean.valueOf (pageExists));
         }
 
         // Row 3 / 4

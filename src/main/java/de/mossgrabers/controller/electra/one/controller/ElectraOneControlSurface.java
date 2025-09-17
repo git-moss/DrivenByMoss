@@ -880,11 +880,8 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
     {
         this.host.println ("Going online...");
         this.isOnline = true;
-
-        if (this.activeMode == null || this.activeMode == Modes.VOLUME)
-            this.modeManager.setActive (Modes.VOLUME);
-        else
-            this.selectPage (MODES.indexOf (this.activeMode));
+        this.modeManager.setActive (Modes.VOLUME);
+        this.selectPage (MODES.indexOf (this.activeMode == null ? Modes.VOLUME : this.activeMode));
     }
 
 

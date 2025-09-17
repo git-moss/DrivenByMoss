@@ -45,7 +45,7 @@ import de.mossgrabers.framework.view.Views;
 public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOneControlSurface, ElectraOneConfiguration>
 {
     /**
-     * Constructor.
+     * O Constructor.
      *
      * @param host The DAW host
      * @param factory The factory

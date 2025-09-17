@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.electra.one.mode;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.electra.one.controller.ElectraOneColorManager;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneControlSurface;
 import de.mossgrabers.framework.controller.color.ColorEx;
@@ -22,8 +24,6 @@ import de.mossgrabers.framework.parameterprovider.special.FixedParameterProvider
 import de.mossgrabers.framework.parameterprovider.track.SendParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
-
-import java.util.Optional;
 
 
 /**
@@ -121,7 +121,7 @@ public class SendsMode extends AbstractElectraOneMode
                 final boolean doesExist = send.doesExist ();
 
                 this.pageCache.updateValue (row, column, send.getValue (), doesExist ? StringUtils.optimizeName (StringUtils.fixASCII (send.getDisplayedValue ()), 15) : " ");
-                this.pageCache.updateElement (row, column, send.getName (), doesExist ? color : ColorEx.BLACK, Boolean.TRUE);
+                this.pageCache.updateElement (row, column, send.getName (), doesExist ? color : ColorEx.BLACK, Boolean.valueOf (doesExist));
             }
         }
 

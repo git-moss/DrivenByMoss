@@ -156,7 +156,7 @@ public class DeviceMode extends AbstractElectraOneMode
             final boolean exists = param.doesExist ();
             int row = i / 4;
             final int column = 1 + i % 4;
-            this.pageCache.updateElement (row, column, exists ? StringUtils.fixASCII (param.getName ()) : "", exists ? ColorEx.ORANGE : ColorEx.BLACK, Boolean.TRUE);
+            this.pageCache.updateElement (row, column, exists ? StringUtils.fixASCII (param.getName ()) : "", exists ? ColorEx.ORANGE : ColorEx.BLACK, Boolean.valueOf (exists));
             this.pageCache.updateValue (row, column, param.getValue (), exists ? StringUtils.optimizeName (StringUtils.fixASCII (param.getDisplayedValue ()), 15) : " ");
 
             // Set page names
@@ -165,14 +165,14 @@ public class DeviceMode extends AbstractElectraOneMode
             final boolean isSelected = parameterPageBank.getSelectedItemIndex () == i;
             final boolean pageExists = !paramPage.isBlank ();
             final ColorEx color = isSelected ? ElectraOneColorManager.PARAM_PAGE_SELECTED : ElectraOneColorManager.PARAM_PAGE;
-            this.pageCache.updateElement (row, column, pageExists ? StringUtils.fixASCII (paramPage) : " ", pageExists ? color : ColorEx.BLACK, Boolean.TRUE);
+            this.pageCache.updateElement (row, column, pageExists ? StringUtils.fixASCII (paramPage) : " ", pageExists ? color : ColorEx.BLACK, Boolean.valueOf (pageExists));
 
             // Set device names
             row += 2;
             final IDevice device = siblingBank.getItem (i);
             final boolean deviceExists = device.doesExist ();
             final ColorEx deviceColor = cursorDevice.getIndex () == i ? ElectraOneColorManager.DEVICE_SELECTED : ElectraOneColorManager.DEVICE;
-            this.pageCache.updateElement (row, column, deviceExists ? StringUtils.fixASCII (device.getName ()) : " ", deviceExists ? deviceColor : ColorEx.BLACK, Boolean.TRUE);
+            this.pageCache.updateElement (row, column, deviceExists ? StringUtils.fixASCII (device.getName ()) : " ", deviceExists ? deviceColor : ColorEx.BLACK, Boolean.valueOf (deviceExists));
         }
 
         this.pageCache.updateColor (0, 0, cursorDevice.isEnabled () ? ElectraOneColorManager.DEVICE_ON : ElectraOneColorManager.DEVICE_OFF);

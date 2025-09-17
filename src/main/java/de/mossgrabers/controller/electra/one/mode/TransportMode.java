@@ -233,11 +233,11 @@ public class TransportMode extends AbstractElectraOneMode
         {
             IMarker marker = markerBank.getItem (i);
             boolean doesExist = marker.doesExist ();
-            this.pageCache.updateElement (2, 1 + i, doesExist ? marker.getName () : " ", doesExist ? marker.getColor () : ColorEx.BLACK, Boolean.TRUE);
+            this.pageCache.updateElement (2, 1 + i, doesExist ? marker.getName () : " ", getMarkerColor (marker, doesExist), Boolean.valueOf (doesExist));
 
             marker = markerBank.getItem (4 + i);
             doesExist = marker.doesExist ();
-            this.pageCache.updateElement (3, 1 + i, doesExist ? marker.getName () : " ", doesExist ? marker.getColor () : ColorEx.BLACK, Boolean.TRUE);
+            this.pageCache.updateElement (3, 1 + i, doesExist ? marker.getName () : " ", getMarkerColor (marker, doesExist), Boolean.valueOf (doesExist));
         }
 
         // Row 5
@@ -263,7 +263,21 @@ public class TransportMode extends AbstractElectraOneMode
         this.pageCache.updateColor (4, 5, this.transport.isRecording () ? ElectraOneColorManager.RECORD_ON : ElectraOneColorManager.RECORD_OFF);
         this.pageCache.updateColor (5, 5, this.transport.isPlaying () ? ElectraOneColorManager.PLAY_ON : ElectraOneColorManager.PLAY_OFF);
 
+        this.pageCache.updateElement (4, 3, " ", null, Boolean.FALSE);
+        this.pageCache.updateElement (5, 2, " ", null, Boolean.FALSE);
+
         this.pageCache.flush ();
+    }
+
+
+    private static ColorEx getMarkerColor (final IMarker marker, final boolean doesExist)
+    {
+        if (doesExist)
+        {
+            final ColorEx color = marker.getColor ();
+            return ColorEx.BLACK.equals (color) ? ColorEx.GRAY : color;
+        }
+        return ColorEx.BLACK;
     }
 
 
