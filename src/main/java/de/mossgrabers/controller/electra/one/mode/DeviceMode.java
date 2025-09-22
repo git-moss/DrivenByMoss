@@ -120,7 +120,7 @@ public class DeviceMode extends AbstractElectraOneMode
                         this.model.getTransport ().startRecording ();
                         break;
                     case 5:
-                        this.model.getTransport ().play ();
+                        this.playCommand.execute (ButtonEvent.UP, 127);
                         break;
                     default:
                         // Not used

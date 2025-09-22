@@ -14,6 +14,7 @@ import de.mossgrabers.controller.ni.kontrol.mkii.controller.KontrolProtocolContr
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.constants.DeviceID;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.ICursorLayer;
 import de.mossgrabers.framework.daw.data.IDevice;
@@ -296,7 +297,6 @@ public class ParamsMode extends AbstractParameterMode<KontrolProtocolControlSurf
      */
     public void updateAvailableDevices ()
     {
-
         String presetName = "";
         final StringBuilder chainInfoSb = new StringBuilder ();
         int deviceIndex = 0;
@@ -322,7 +322,7 @@ public class ParamsMode extends AbstractParameterMode<KontrolProtocolControlSurf
                 final IDevice device = deviceBank.getItem (i);
                 if (!device.doesExist ())
                     break;
-                chainInfoSb.append (device.getName (16)).append ('\0');
+                chainInfoSb.append (device.getName ()).append ('\0');
             }
         }
 
@@ -365,6 +365,10 @@ public class ParamsMode extends AbstractParameterMode<KontrolProtocolControlSurf
         this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_PLUGIN_SELECTED_PARAM_PAGE, parameterPageBank.getItemCount (), selectedPageIndex, respectCache);
         this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_PLUGIN_SELECTED_PRESET, 0, 0, presetName, respectCache);
         this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_PLUGIN_SELECTED_PLUGIN, 0, deviceIndex, respectCache);
+
+        final ISpecificDevice kkDevice = this.model.getSpecificDevice (DeviceID.NI_KOMPLETE);
+        final String kompleteInstanceNew = kkDevice.doesExist () ? kkDevice.getID () : "";
+        this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_TRACK_INSTANCE, 0, 0, kompleteInstanceNew, respectCache);
     }
 
 

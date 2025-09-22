@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.electra.one.mode;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.electra.one.controller.ElectraOneColorManager;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneControlSurface;
 import de.mossgrabers.framework.daw.IModel;
@@ -22,8 +24,6 @@ import de.mossgrabers.framework.parameterprovider.special.EmptyParameterProvider
 import de.mossgrabers.framework.parameterprovider.special.FixedParameterProvider;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
-
-import java.util.Optional;
 
 
 /**
@@ -104,7 +104,7 @@ public class EqualizerMode extends AbstractElectraOneMode
                     break;
                 // Play
                 case 5:
-                    this.transport.play ();
+                    this.playCommand.execute (ButtonEvent.UP, 127);
                     break;
 
                 default:

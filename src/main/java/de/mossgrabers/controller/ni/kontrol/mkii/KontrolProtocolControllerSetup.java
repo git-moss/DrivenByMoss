@@ -103,7 +103,6 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
 
     private ModeMultiSelectCommand<KontrolProtocolControlSurface, KontrolProtocolConfiguration> switcher;
     private final int                                                                           version;
-    private String                                                                              kompleteInstance      = "";
     private long                                                                                lastTriggerTime       = -1;
 
 
@@ -143,19 +142,9 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
     @Override
     public void flush ()
     {
-        final KontrolProtocolControlSurface surface = this.getSurface ();
-
         // Do not flush until handshake has finished
-        if (!surface.isConnectedToNIHIA ())
-            return;
-
-        final String kompleteInstanceNew = this.getKompleteInstance ();
-        if (!this.kompleteInstance.equals (kompleteInstanceNew))
-        {
-            this.kompleteInstance = kompleteInstanceNew;
-            surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_TRACK_INSTANCE, 0, 0, kompleteInstanceNew);
-        }
-        super.flush ();
+        if (this.getSurface ().isConnectedToNIHIA ())
+            super.flush ();
     }
 
 
@@ -569,19 +558,6 @@ public class KontrolProtocolControllerSetup extends AbstractControllerSetup<Kont
         surface.getViewManager ().setActive (Views.CONTROL);
         surface.getModeManager ().setActive (Modes.VOLUME);
         surface.initHandshake ();
-    }
-
-
-    /**
-     * Get the name of an Komplete Kontrol instance on the current track.
-     *
-     * @return The instance name, which is the actual label of the first parameter (e.g. NIKB01). An
-     *         empty string if none is present
-     */
-    private String getKompleteInstance ()
-    {
-        final ISpecificDevice kkDevice = this.model.getSpecificDevice (DeviceID.NI_KOMPLETE);
-        return kkDevice.doesExist () ? kkDevice.getID () : "";
     }
 
 

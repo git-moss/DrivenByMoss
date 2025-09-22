@@ -95,7 +95,7 @@ public class ProjectTrackMode extends AbstractElectraOneMode
 
             case 5:
                 if (column == 5)
-                    this.transport.play ();
+                    this.playCommand.execute (ButtonEvent.UP, 127);
                 break;
 
             default:

@@ -4,15 +4,16 @@
 
 package de.mossgrabers.controller.electra.one.mode;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.electra.one.ElectraOneConfiguration;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneColorManager;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneControlSurface;
+import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.mode.track.DefaultTrackMode;
-
-import java.util.Optional;
 
 
 /**
@@ -22,7 +23,8 @@ import java.util.Optional;
  */
 public abstract class AbstractElectraOneMode extends DefaultTrackMode<ElectraOneControlSurface, ElectraOneConfiguration>
 {
-    protected final PageCache pageCache;
+    protected final PlayCommand<ElectraOneControlSurface, ElectraOneConfiguration> playCommand;
+    protected final PageCache                                                      pageCache;
 
 
     /**
@@ -37,6 +39,7 @@ public abstract class AbstractElectraOneMode extends DefaultTrackMode<ElectraOne
     {
         super (name, surface, model, false, ElectraOneControlSurface.KNOB_IDS);
 
+        this.playCommand = new PlayCommand<> (model, surface);
         this.pageCache = new PageCache (pageIndex, surface);
     }
 

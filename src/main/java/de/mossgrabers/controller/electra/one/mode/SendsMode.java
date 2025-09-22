@@ -91,7 +91,7 @@ public class SendsMode extends AbstractElectraOneMode
                 break;
             // Play
             case 5:
-                this.transport.play ();
+                this.playCommand.execute (ButtonEvent.UP, 127);
                 break;
 
             default:

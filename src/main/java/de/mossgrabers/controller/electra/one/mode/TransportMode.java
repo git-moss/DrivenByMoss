@@ -197,7 +197,7 @@ public class TransportMode extends AbstractElectraOneMode
                         this.launchMarkers = !this.launchMarkers;
                         break;
                     case 5:
-                        this.transport.play ();
+                        this.playCommand.execute (ButtonEvent.UP, 127);
                         break;
                     default:
                         // Not used
