@@ -28,9 +28,9 @@ public class OSCConfiguration extends AbstractOpenSoundControlConfiguration
     private static final String CATEGORY_SETUP         = "Setup";
 
     /** ID for receive port setting. */
-    public static final Integer RECEIVE_PORT           = Integer.valueOf (50);
+    public static final Integer RECEIVE_PORT           = Integer.valueOf (NEXT_SETTING_ID + 3);
     /** ID for value resolution setting. */
-    public static final Integer VALUE_RESOLUTION       = Integer.valueOf (51);
+    public static final Integer VALUE_RESOLUTION       = Integer.valueOf (NEXT_SETTING_ID + 4);
 
     /** The number of assignable actions. */
     public static final int     NUM_ASSIGNABLE_ACTIONS = 20;

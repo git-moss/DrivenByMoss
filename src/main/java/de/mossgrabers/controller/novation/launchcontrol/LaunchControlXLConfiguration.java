@@ -21,7 +21,7 @@ import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 public class LaunchControlXLConfiguration extends AbstractConfiguration
 {
     /** Active template. */
-    public static final Integer ACTIVE_TEMPLATE = Integer.valueOf (50);
+    public static final Integer ACTIVE_TEMPLATE = Integer.valueOf (NEXT_SETTING_ID);
 
     private int                 templateID      = -1;
     private boolean             isDeviceActive  = false;

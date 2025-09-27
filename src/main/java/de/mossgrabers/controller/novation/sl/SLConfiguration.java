@@ -4,14 +4,14 @@
 
 package de.mossgrabers.controller.novation.sl;
 
+import java.util.List;
+
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
-
-import java.util.List;
 
 
 /**
@@ -22,9 +22,9 @@ import java.util.List;
 public class SLConfiguration extends AbstractConfiguration
 {
     /** Touchpad mode. */
-    public static final Integer    TOUCHPAD_MODE              = Integer.valueOf (50);
+    public static final Integer    TOUCHPAD_MODE              = Integer.valueOf (NEXT_SETTING_ID);
     /** Use drum pads for mode selection. */
-    public static final Integer    DRUMPADS_AS_MODE_SELECTION = Integer.valueOf (51);
+    public static final Integer    DRUMPADS_AS_MODE_SELECTION = Integer.valueOf (NEXT_SETTING_ID + 1);
 
     /** Touchpad mode: Use as the crossfader. */
     public static final String     TOUCHPAD_MODE_CROSSFADER   = "Crossfader";

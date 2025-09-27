@@ -22,7 +22,7 @@ import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 public class Kontrol1Configuration extends AbstractConfiguration
 {
     /** ID for enable scale setting. */
-    public static final Integer SCALE_IS_ACTIVE = Integer.valueOf (50);
+    public static final Integer SCALE_IS_ACTIVE = Integer.valueOf (NEXT_SETTING_ID);
 
     private IEnumSetting        scaleIsActiveSetting;
     private boolean             scaleIsActive;

@@ -35,9 +35,9 @@ public class FireConfiguration extends AbstractConfiguration
     };
 
     /** Setting for the pad brightness. */
-    public static final Integer   PAD_BRIGHTNESS       = Integer.valueOf (50);
+    public static final Integer   PAD_BRIGHTNESS       = Integer.valueOf (NEXT_SETTING_ID);
     /** Setting for the pad color saturation. */
-    public static final Integer   PAD_SATURATION       = Integer.valueOf (51);
+    public static final Integer   PAD_SATURATION       = Integer.valueOf (NEXT_SETTING_ID + 1);
 
     private int                   padBrightness        = 100;
     private int                   padSaturation        = 100;

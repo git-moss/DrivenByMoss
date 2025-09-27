@@ -24,11 +24,11 @@ import de.mossgrabers.framework.view.Views;
 public class APCminiConfiguration extends AbstractConfiguration
 {
     /** Default function of the faders. */
-    public static final Integer                FADER_CTRL           = Integer.valueOf (50);
+    public static final Integer                FADER_CTRL           = Integer.valueOf (NEXT_SETTING_ID);
     /** Default function of the track buttons. */
-    public static final Integer                SOFT_KEYS            = Integer.valueOf (51);
+    public static final Integer                SOFT_KEYS            = Integer.valueOf (NEXT_SETTING_ID + 1);
     /** The pad brightness. */
-    public static final Integer                PAD_BRIGHTNESS       = Integer.valueOf (52);
+    public static final Integer                PAD_BRIGHTNESS       = Integer.valueOf (NEXT_SETTING_ID + 2);
 
     private static final List<String>          FADER_CTRL_OPTIONS   = List.of ("Volume", "Pan", "Send 1", "Send 2", "Send 3", "Send 4", "Send 5", "Send 6", "Send 7", "Send 8", "Device");
 

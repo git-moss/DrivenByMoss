@@ -122,7 +122,7 @@ public class MasterMode extends BaseMode<ITrack>
     public void updateDisplay ()
     {
         final MainDisplay mainDisplayType = this.configuration.getMainDisplayType ();
-        if (mainDisplayType == MainDisplay.OFF)
+        if (mainDisplayType == MainDisplay.NONE)
             return;
 
         this.drawDisplay2 ();

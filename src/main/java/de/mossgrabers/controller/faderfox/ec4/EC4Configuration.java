@@ -23,7 +23,7 @@ import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 public class EC4Configuration extends AbstractConfiguration
 {
     /** Display log state. */
-    public static final Integer    SETUP_SLOT                  = Integer.valueOf (50);
+    public static final Integer    SETUP_SLOT                  = Integer.valueOf (NEXT_SETTING_ID);
 
     private static final String [] SETUP_SLOTS                 = new String []
     {

@@ -4,14 +4,14 @@
 
 package de.mossgrabers.framework.osc;
 
+import java.util.List;
+
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
-
-import java.util.List;
 
 
 /**
@@ -22,11 +22,11 @@ import java.util.List;
 public abstract class AbstractOpenSoundControlConfiguration extends AbstractConfiguration implements IOpenSoundControlConfiguration
 {
     /** ID for logging input commands option. */
-    public static final Integer   LOG_INPUT_COMMANDS        = Integer.valueOf (50);
+    public static final Integer   LOG_INPUT_COMMANDS        = Integer.valueOf (NEXT_SETTING_ID);
     /** ID for logging output commands option. */
-    public static final Integer   LOG_OUTPUT_COMMANDS       = Integer.valueOf (51);
+    public static final Integer   LOG_OUTPUT_COMMANDS       = Integer.valueOf (NEXT_SETTING_ID + 1);
     /** ID for filtering heartbeat OSC messages from logging. */
-    public static final Integer   FILTER_HEARTBEAT_COMMANDS = Integer.valueOf (52);
+    public static final Integer   FILTER_HEARTBEAT_COMMANDS = Integer.valueOf (NEXT_SETTING_ID + 2);
 
     protected static final String DEFAULT_SERVER            = "127.0.0.1";
 

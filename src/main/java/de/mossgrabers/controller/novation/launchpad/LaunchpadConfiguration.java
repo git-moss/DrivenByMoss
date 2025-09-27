@@ -38,7 +38,7 @@ public class LaunchpadConfiguration extends AbstractConfiguration
     };
 
     /** Setting for the brightness of the pad LEDs. */
-    public static final Integer    PAD_BRIGHTNESS        = Integer.valueOf (50);
+    public static final Integer    PAD_BRIGHTNESS        = Integer.valueOf (NEXT_SETTING_ID);
 
     private static final String [] PAD_BRIGHTNESS_VALUES = new String [128];
     static

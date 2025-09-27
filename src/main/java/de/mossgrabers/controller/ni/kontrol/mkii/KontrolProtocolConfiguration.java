@@ -22,10 +22,10 @@ import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
  */
 public class KontrolProtocolConfiguration extends AbstractConfiguration
 {
-    private static final Integer   FLIP_TRACK_CLIP_NAVIGATION = Integer.valueOf (52);
-    private static final Integer   FLIP_CLIP_SCENE_NAVIGATION = Integer.valueOf (53);
+    private static final Integer   FLIP_TRACK_CLIP_NAVIGATION = Integer.valueOf (NEXT_SETTING_ID);
+    private static final Integer   FLIP_CLIP_SCENE_NAVIGATION = Integer.valueOf (NEXT_SETTING_ID + 1);
     /** ID for the DAW switch. */
-    public static final Integer    DAW_SWITCH                 = Integer.valueOf (54);
+    public static final Integer    DAW_SWITCH                 = Integer.valueOf (NEXT_SETTING_ID + 2);
 
     private static final String    CATEGORY_NAVIGATION        = "Navigation";
 

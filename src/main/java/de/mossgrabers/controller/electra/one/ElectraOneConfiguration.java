@@ -24,7 +24,7 @@ import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 public class ElectraOneConfiguration extends AbstractConfiguration
 {
     /** A knob touch combination configuration change. */
-    public static final Integer    KNOB_TOUCH_COMBINATION_COMMANDS    = Integer.valueOf (50);
+    public static final Integer    KNOB_TOUCH_COMBINATION_COMMANDS    = Integer.valueOf (NEXT_SETTING_ID);
 
     private static final String    CATEGORY_ASSIGNABLE_BUTTONS        = "Assignable button touches";
 

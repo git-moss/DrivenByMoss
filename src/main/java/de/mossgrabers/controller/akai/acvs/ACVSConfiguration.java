@@ -4,14 +4,14 @@
 
 package de.mossgrabers.controller.akai.acvs;
 
+import java.util.List;
+
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
-
-import java.util.List;
 
 
 /**
@@ -22,7 +22,7 @@ import java.util.List;
 public class ACVSConfiguration extends AbstractConfiguration
 {
     /** Setting for launching clips or scenes. */
-    public static final Integer    LAUNCH_CLIPS_OR_SCENES = Integer.valueOf (50);
+    public static final Integer    LAUNCH_CLIPS_OR_SCENES = Integer.valueOf (NEXT_SETTING_ID);
 
     private static final String [] SCENE_CLIPS_OPTIONS    =
     {

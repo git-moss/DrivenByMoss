@@ -4,14 +4,14 @@
 
 package de.mossgrabers.controller.novation.slmkiii;
 
+import java.util.List;
+
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
-
-import java.util.List;
 
 
 /**
@@ -22,9 +22,9 @@ import java.util.List;
 public class SLMkIIIConfiguration extends AbstractConfiguration
 {
     /** Setting for the ribbon mode. */
-    public static final Integer ENABLE_FADERS     = Integer.valueOf (50);
+    public static final Integer ENABLE_FADERS     = Integer.valueOf (NEXT_SETTING_ID);
     /** Setting for dis-/enabling the lightguide. */
-    public static final Integer ENABLE_LIGHTGUIDE = Integer.valueOf (51);
+    public static final Integer ENABLE_LIGHTGUIDE = Integer.valueOf (NEXT_SETTING_ID + 1);
 
     private boolean             enableFaders      = true;
     private boolean             enableLightguide  = true;

@@ -345,7 +345,7 @@ public abstract class BaseMode<B extends IItem> extends AbstractParameterMode<MC
     public void updateDisplay ()
     {
         final MainDisplay mainDisplayType = this.configuration.getMainDisplayType ();
-        if (mainDisplayType == MainDisplay.OFF)
+        if (mainDisplayType == MainDisplay.NONE)
             return;
         final boolean isAsparion = mainDisplayType == MainDisplay.ASPARION;
 
@@ -442,7 +442,7 @@ public abstract class BaseMode<B extends IItem> extends AbstractParameterMode<MC
                 break;
 
             default:
-            case OFF:
+            case NONE:
                 // Off
                 break;
         }
@@ -481,7 +481,7 @@ public abstract class BaseMode<B extends IItem> extends AbstractParameterMode<MC
                 return 7;
 
             default:
-            case OFF:
+            case NONE:
                 return 0;
         }
     }

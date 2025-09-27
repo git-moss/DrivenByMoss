@@ -4,6 +4,9 @@
 
 package de.mossgrabers.controller.utilities.autocolor;
 
+import java.util.EnumMap;
+import java.util.Map;
+
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
@@ -11,9 +14,6 @@ import de.mossgrabers.framework.configuration.IStringSetting;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IHost;
-
-import java.util.EnumMap;
-import java.util.Map;
 
 
 /**
@@ -26,9 +26,9 @@ public class AutoColorConfiguration extends AbstractConfiguration
     private static final String         CATEGORY_AUTO_COLOR = "Auto Color";
 
     /** ID for dis-/enabling the auto color setting. */
-    public static final Integer         ENABLE_AUTO_COLOR   = Integer.valueOf (50);
+    public static final Integer         ENABLE_AUTO_COLOR   = Integer.valueOf (NEXT_SETTING_ID);
     /** First ID for all auto color settings. NOTE: All colors increase from that value! */
-    public static final Integer         COLOR_REGEX         = Integer.valueOf (100);
+    public static final Integer         COLOR_REGEX         = Integer.valueOf (NEXT_SETTING_ID + 1);
 
     private boolean                     enableAutoColor;
     private final Map<DAWColor, String> colorRegEx          = new EnumMap<> (DAWColor.class);

@@ -32,7 +32,7 @@ public class MaschineConfiguration extends AbstractConfiguration
     };
 
     /** Setting for the ribbon mode. */
-    public static final Integer   RIBBON_MODE          = Integer.valueOf (50);
+    public static final Integer   RIBBON_MODE          = Integer.valueOf (NEXT_SETTING_ID);
 
     private final Maschine        maschine;
 

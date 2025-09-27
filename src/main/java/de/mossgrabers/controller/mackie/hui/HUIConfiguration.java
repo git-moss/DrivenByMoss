@@ -23,17 +23,17 @@ import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 public class HUIConfiguration extends AbstractConfiguration
 {
     /** Zoom state. */
-    public static final Integer    ZOOM_STATE              = Integer.valueOf (50);
+    public static final Integer    ZOOM_STATE              = Integer.valueOf (NEXT_SETTING_ID);
     /** Has a display. */
-    public static final Integer    HAS_DISPLAY1            = Integer.valueOf (51);
+    public static final Integer    HAS_DISPLAY1            = Integer.valueOf (NEXT_SETTING_ID + 1);
     /** Should send ping. */
-    public static final Integer    SEND_PING               = Integer.valueOf (52);
+    public static final Integer    SEND_PING               = Integer.valueOf (NEXT_SETTING_ID + 2);
     /** Has a segment display. */
-    public static final Integer    HAS_SEGMENT_DISPLAY     = Integer.valueOf (53);
+    public static final Integer    HAS_SEGMENT_DISPLAY     = Integer.valueOf (NEXT_SETTING_ID + 3);
     /** Has motor faders. */
-    public static final Integer    HAS_MOTOR_FADERS        = Integer.valueOf (54);
+    public static final Integer    HAS_MOTOR_FADERS        = Integer.valueOf (NEXT_SETTING_ID + 4);
     /** Select the channel when touching it's fader. */
-    private static final Integer   TOUCH_CHANNEL           = Integer.valueOf (55);
+    private static final Integer   TOUCH_CHANNEL           = Integer.valueOf (NEXT_SETTING_ID + 5);
 
     /** Use a Function button to switch to previous mode. */
     public static final int        FOOTSWITCH_2_PREV_MODE  = 15;

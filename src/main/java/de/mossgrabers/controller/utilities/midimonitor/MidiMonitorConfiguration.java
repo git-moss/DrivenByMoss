@@ -19,7 +19,7 @@ import de.mossgrabers.framework.daw.IHost;
 public class MidiMonitorConfiguration extends AbstractConfiguration
 {
     /** Setting for filtering system real-time. */
-    public static final Integer FILTER_SYSTEM_REALTIME   = Integer.valueOf (50);
+    public static final Integer FILTER_SYSTEM_REALTIME   = Integer.valueOf (NEXT_SETTING_ID);
 
     private boolean             isFilterSystemRealtimeOn = false;
 

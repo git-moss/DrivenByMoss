@@ -57,13 +57,13 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     private static final String                      TAG_COMMAND                  = "COMMAND";
 
     /** Export signal. */
-    public static final Integer                      BUTTON_SAVE                  = Integer.valueOf (50);
+    public static final Integer                      BUTTON_SAVE                  = Integer.valueOf (NEXT_SETTING_ID);
     /** Import signal. */
-    public static final Integer                      BUTTON_LOAD                  = Integer.valueOf (51);
+    public static final Integer                      BUTTON_LOAD                  = Integer.valueOf (NEXT_SETTING_ID + 1);
     /** Enable MMC. */
-    public static final Integer                      ENABLE_MMC                   = Integer.valueOf (52);
+    public static final Integer                      ENABLE_MMC                   = Integer.valueOf (NEXT_SETTING_ID + 2);
     /** The selected mode. */
-    public static final Integer                      SELECTED_MODE                = Integer.valueOf (53);
+    public static final Integer                      SELECTED_MODE                = Integer.valueOf (NEXT_SETTING_ID + 3);
 
     private static final String                      CATEGORY_KEYBOARD            = "Keyboard / Pads (requires restart)";
     private static final String                      CATEGORY_OPTIONS             = "Options";

@@ -477,7 +477,7 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
                 }
                 break;
 
-            case OFF:
+            case NONE:
             default:
                 return;
         }

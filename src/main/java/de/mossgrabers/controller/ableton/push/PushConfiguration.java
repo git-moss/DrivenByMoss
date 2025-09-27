@@ -46,93 +46,93 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
 
 
     /** Setting for the ribbon mode. */
-    public static final Integer     RIBBON_MODE                                = Integer.valueOf (50);
+    public static final Integer     RIBBON_MODE                                = Integer.valueOf (NEXT_SETTING_ID);
     /** Setting for the ribbon mode MIDI CC. */
-    public static final Integer     RIBBON_MODE_CC_VAL                         = Integer.valueOf (51);
+    public static final Integer     RIBBON_MODE_CC_VAL                         = Integer.valueOf (NEXT_SETTING_ID + 1);
     /** Setting for the ribbon mode note repeat. */
-    public static final Integer     RIBBON_MODE_NOTE_REPEAT                    = Integer.valueOf (52);
+    public static final Integer     RIBBON_MODE_NOTE_REPEAT                    = Integer.valueOf (NEXT_SETTING_ID + 2);
 
     /** Setting for the velocity curve. */
-    public static final Integer     VELOCITY_CURVE                             = Integer.valueOf (53);
+    public static final Integer     VELOCITY_CURVE                             = Integer.valueOf (NEXT_SETTING_ID + 3);
     /** Setting for the Push 1 pad threshold. */
-    public static final Integer     PAD_PUSH1_THRESHOLD                        = Integer.valueOf (54);
+    public static final Integer     PAD_PUSH1_THRESHOLD                        = Integer.valueOf (NEXT_SETTING_ID + 4);
     /** Setting for the display brightness. */
-    public static final Integer     DISPLAY_BRIGHTNESS                         = Integer.valueOf (55);
+    public static final Integer     DISPLAY_BRIGHTNESS                         = Integer.valueOf (NEXT_SETTING_ID + 5);
     /** Setting for the pad LED brightness. */
-    public static final Integer     LED_BRIGHTNESS                             = Integer.valueOf (56);
+    public static final Integer     LED_BRIGHTNESS                             = Integer.valueOf (NEXT_SETTING_ID + 6);
     /** Setting for the Push 2 pad sensitivity. */
-    public static final Integer     PAD_PUSH2_SENSITIVITY                      = Integer.valueOf (57);
+    public static final Integer     PAD_PUSH2_SENSITIVITY                      = Integer.valueOf (NEXT_SETTING_ID + 7);
     /** Setting for the Push 2 pad gain. */
-    public static final Integer     PAD_PUSH2_GAIN                             = Integer.valueOf (58);
+    public static final Integer     PAD_PUSH2_GAIN                             = Integer.valueOf (NEXT_SETTING_ID + 8);
     /** Setting for the Push 2 pad dynamics. */
-    public static final Integer     PAD_PUSH2_DYNAMICS                         = Integer.valueOf (59);
+    public static final Integer     PAD_PUSH2_DYNAMICS                         = Integer.valueOf (NEXT_SETTING_ID + 9);
     /** Setting for the Push 3 pad velocity curve - threshold parameter. */
-    public static final Integer     PAD_PUSH3_THRESHOLD                        = Integer.valueOf (60);
+    public static final Integer     PAD_PUSH3_THRESHOLD                        = Integer.valueOf (NEXT_SETTING_ID + 10);
     /** Setting for the Push 3 pad velocity curve - drive parameter. */
-    public static final Integer     PAD_PUSH3_DRIVE                            = Integer.valueOf (61);
+    public static final Integer     PAD_PUSH3_DRIVE                            = Integer.valueOf (NEXT_SETTING_ID + 11);
     /** Setting for the Push 3 pad velocity curve - compand parameter. */
-    public static final Integer     PAD_PUSH3_COMPAND                          = Integer.valueOf (62);
+    public static final Integer     PAD_PUSH3_COMPAND                          = Integer.valueOf (NEXT_SETTING_ID + 12);
     /** Setting for the Push 3 pad velocity curve - range parameter. */
-    public static final Integer     PAD_PUSH3_RANGE                            = Integer.valueOf (64);
+    public static final Integer     PAD_PUSH3_RANGE                            = Integer.valueOf (NEXT_SETTING_ID + 14);
 
     /** Setting for stopping automation recording on knob release. */
-    public static final Integer     STOP_AUTOMATION_ON_KNOB_RELEASE            = Integer.valueOf (65);
+    public static final Integer     STOP_AUTOMATION_ON_KNOB_RELEASE            = Integer.valueOf (NEXT_SETTING_ID + 15);
     /** Mode debug. */
-    public static final Integer     DEBUG_MODE                                 = Integer.valueOf (66);
+    public static final Integer     DEBUG_MODE                                 = Integer.valueOf (NEXT_SETTING_ID + 16);
     /** Push 2 display debug window. */
-    public static final Integer     DEBUG_WINDOW                               = Integer.valueOf (67);
+    public static final Integer     DEBUG_WINDOW                               = Integer.valueOf (NEXT_SETTING_ID + 17);
 
     /** Background color of an element. */
-    public static final Integer     COLOR_BACKGROUND                           = Integer.valueOf (70);
+    public static final Integer     COLOR_BACKGROUND                           = Integer.valueOf (NEXT_SETTING_ID + 20);
     /** Border color of an element. */
-    public static final Integer     COLOR_BORDER                               = Integer.valueOf (71);
+    public static final Integer     COLOR_BORDER                               = Integer.valueOf (NEXT_SETTING_ID + 21);
     /** Text color of an element. */
-    public static final Integer     COLOR_TEXT                                 = Integer.valueOf (72);
+    public static final Integer     COLOR_TEXT                                 = Integer.valueOf (NEXT_SETTING_ID + 22);
     /** Fader color of an element. */
-    public static final Integer     COLOR_FADER                                = Integer.valueOf (73);
+    public static final Integer     COLOR_FADER                                = Integer.valueOf (NEXT_SETTING_ID + 23);
     /** VU color of an element. */
-    public static final Integer     COLOR_VU                                   = Integer.valueOf (74);
+    public static final Integer     COLOR_VU                                   = Integer.valueOf (NEXT_SETTING_ID + 24);
     /** Edit color of an element. */
-    public static final Integer     COLOR_EDIT                                 = Integer.valueOf (75);
+    public static final Integer     COLOR_EDIT                                 = Integer.valueOf (NEXT_SETTING_ID + 25);
     /** Record color of an element. */
-    public static final Integer     COLOR_RECORD                               = Integer.valueOf (76);
+    public static final Integer     COLOR_RECORD                               = Integer.valueOf (NEXT_SETTING_ID + 26);
     /** Solo color of an element. */
-    public static final Integer     COLOR_SOLO                                 = Integer.valueOf (77);
+    public static final Integer     COLOR_SOLO                                 = Integer.valueOf (NEXT_SETTING_ID + 27);
     /** Mute color of an element. */
-    public static final Integer     COLOR_MUTE                                 = Integer.valueOf (78);
+    public static final Integer     COLOR_MUTE                                 = Integer.valueOf (NEXT_SETTING_ID + 28);
     /** Background color darker of an element. */
-    public static final Integer     COLOR_BACKGROUND_DARKER                    = Integer.valueOf (79);
+    public static final Integer     COLOR_BACKGROUND_DARKER                    = Integer.valueOf (NEXT_SETTING_ID + 29);
     /** Background color lighter of an element. */
-    public static final Integer     COLOR_BACKGROUND_LIGHTER                   = Integer.valueOf (80);
+    public static final Integer     COLOR_BACKGROUND_LIGHTER                   = Integer.valueOf (NEXT_SETTING_ID + 30);
 
     /** Session view options. */
-    public static final Integer     SESSION_VIEW                               = Integer.valueOf (81);
+    public static final Integer     SESSION_VIEW                               = Integer.valueOf (NEXT_SETTING_ID + 31);
     /** Display scenes or clips. */
-    public static final Integer     DISPLAY_SCENES_CLIPS                       = Integer.valueOf (82);
+    public static final Integer     DISPLAY_SCENES_CLIPS                       = Integer.valueOf (NEXT_SETTING_ID + 32);
 
     /** MPE - Per-pad pitchbend. */
-    public static final Integer     PER_PAD_PITCHBEND                          = Integer.valueOf (83);
+    public static final Integer     PER_PAD_PITCHBEND                          = Integer.valueOf (NEXT_SETTING_ID + 33);
     /** MPE - Pad in-tune location. */
-    public static final Integer     IN_TUNE_LOCATION                           = Integer.valueOf (84);
+    public static final Integer     IN_TUNE_LOCATION                           = Integer.valueOf (NEXT_SETTING_ID + 34);
     /** MPE - Pad in-tune location width. */
-    public static final Integer     IN_TUNE_WIDTH                              = Integer.valueOf (85);
+    public static final Integer     IN_TUNE_WIDTH                              = Integer.valueOf (NEXT_SETTING_ID + 35);
     /** MPE - Pad in-tune location height. */
-    public static final Integer     IN_TUNE_SLIDE_HEIGHT                       = Integer.valueOf (86);
+    public static final Integer     IN_TUNE_SLIDE_HEIGHT                       = Integer.valueOf (NEXT_SETTING_ID + 36);
 
     /** Audio Interface - Footswitch or CV 1. */
-    public static final Integer     PEDAL_1                                    = Integer.valueOf (87);
+    public static final Integer     PEDAL_1                                    = Integer.valueOf (NEXT_SETTING_ID + 37);
     /** Audio Interface - Footswitch or CV 2. */
-    public static final Integer     PEDAL_2                                    = Integer.valueOf (88);
+    public static final Integer     PEDAL_2                                    = Integer.valueOf (NEXT_SETTING_ID + 38);
     /** Audio Interface - Pre-amp type 1. */
-    public static final Integer     PREAMP_TYPE_1                              = Integer.valueOf (89);
+    public static final Integer     PREAMP_TYPE_1                              = Integer.valueOf (NEXT_SETTING_ID + 39);
     /** Audio Interface - Pre-amp type 2. */
-    public static final Integer     PREAMP_TYPE_2                              = Integer.valueOf (90);
+    public static final Integer     PREAMP_TYPE_2                              = Integer.valueOf (NEXT_SETTING_ID + 40);
     /** Audio Interface - Pre-amp gain 1. */
-    public static final Integer     PREAMP_GAIN_1                              = Integer.valueOf (91);
+    public static final Integer     PREAMP_GAIN_1                              = Integer.valueOf (NEXT_SETTING_ID + 41);
     /** Audio Interface - Pre-amp gain 2. */
-    public static final Integer     PREAMP_GAIN_2                              = Integer.valueOf (92);
+    public static final Integer     PREAMP_GAIN_2                              = Integer.valueOf (NEXT_SETTING_ID + 42);
     /** Audio Interface - Output configuration. */
-    public static final Integer     AUDIO_OUTPUTS                              = Integer.valueOf (93);
+    public static final Integer     AUDIO_OUTPUTS                              = Integer.valueOf (NEXT_SETTING_ID + 43);
 
     /** Use ribbon for pitch bend. */
     public static final int         RIBBON_MODE_PITCH                          = 0;

@@ -4,6 +4,17 @@
 
 package de.mossgrabers.controller.gamepad;
 
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+
+import com.studiohartman.jamepad.ControllerAxis;
+import com.studiohartman.jamepad.ControllerButton;
+import com.studiohartman.jamepad.ControllerIndex;
+import com.studiohartman.jamepad.ControllerManager;
+import com.studiohartman.jamepad.ControllerUnpluggedException;
+
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IEnumSetting;
 import de.mossgrabers.framework.configuration.ISettingsUI;
@@ -13,17 +24,6 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 import de.mossgrabers.framework.daw.midi.MidiConstants;
 import de.mossgrabers.framework.scale.Scales;
-
-import com.studiohartman.jamepad.ControllerAxis;
-import com.studiohartman.jamepad.ControllerButton;
-import com.studiohartman.jamepad.ControllerIndex;
-import com.studiohartman.jamepad.ControllerManager;
-import com.studiohartman.jamepad.ControllerUnpluggedException;
-
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -76,7 +76,7 @@ public class GamepadConfiguration extends AbstractConfiguration
     public static final int                             FUNCTION_RANGE_CENTER_64_FLIP = 2;
 
     /** A different gamepad was selected. */
-    public static final Integer                         SELECTED_GAMEPAD              = Integer.valueOf (50);
+    public static final Integer                         SELECTED_GAMEPAD              = Integer.valueOf (NEXT_SETTING_ID);
 
     private static final String                         NOT_AVAILABLE                 = "<Not available>";
     private static final String                         CATEGORY_GAMEPAD              = "Gamepad";
