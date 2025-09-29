@@ -83,6 +83,7 @@ import de.mossgrabers.framework.controller.OutputID;
 import de.mossgrabers.framework.controller.hardware.BindType;
 import de.mossgrabers.framework.controller.hardware.IHwFader;
 import de.mossgrabers.framework.controller.hardware.IHwRelativeKnob;
+import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.controller.valuechanger.RelativeEncoding;
 import de.mossgrabers.framework.controller.valuechanger.SignedBit2RelativeValueChanger;
 import de.mossgrabers.framework.daw.IApplication;
@@ -170,6 +171,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
     private final int []                                          faderValues      = new int [32];
     private int                                                   masterFaderValue = -1;
     private final int                                             numMCUDevices;
+    private IValueChanger                                         encoderValueChanger;
     private JogWheelCommand<MCUControlSurface, MCUConfiguration>  jogWheelCommand  = null;
     private MasterVolumeMode<MCUControlSurface, MCUConfiguration> masterVolumeMode;
 
@@ -195,6 +197,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
         this.colorManager = new MCUColorManager ();
         this.valueChanger = new SignedBit2RelativeValueChanger (16241 + 1, 10);
+        this.encoderValueChanger = new SignedBit2RelativeValueChanger (16241 + 1, 10);
         this.configuration = new MCUConfiguration (host, this.valueChanger, numMCUDevices, factory.getArpeggiatorModes ());
     }
 
@@ -446,7 +449,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
 
             if (this.configuration.getDeviceType (index) == MCUDeviceType.MAIN)
             {
-                this.jogWheelCommand = new JogWheelCommand<> (this.model, surface);
+                this.jogWheelCommand = new JogWheelCommand<> (this.model, surface, this.encoderValueChanger);
 
                 // Navigation
                 final MCUWindCommand rewindCommand = new MCUWindCommand (this.model, surface, false);

@@ -412,6 +412,7 @@ public class MCUConfiguration extends AbstractConfiguration
         this.activateZoomStateSetting (globalSettings);
         this.activateChannelTouchSetting (globalSettings);
         this.activateKnobSpeedSetting (globalSettings);
+        this.activateEncoderKnobSpeedSetting (globalSettings);
     }
 
 

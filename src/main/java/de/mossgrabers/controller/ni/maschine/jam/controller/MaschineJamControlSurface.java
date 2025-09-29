@@ -186,7 +186,7 @@ public class MaschineJamControlSurface extends AbstractMaschineControlSurface<Ma
      *
      * @param host The host
      * @param colorManager The color manager
-     * @param maschine The maschine description
+     * @param data.maschine The maschine description
      * @param configuration The configuration
      * @param output The MIDI output
      * @param input The MIDI input

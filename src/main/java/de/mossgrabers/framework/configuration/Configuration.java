@@ -375,6 +375,14 @@ public interface Configuration
 
 
     /**
+     * Get the value of how much the main encoder should be slowed down. 0 is no slow down.
+     *
+     * @return The value in the range of [0, 100], default is 0
+     */
+    int getEncoderKnobSlowDown ();
+
+
+    /**
      * Get all supported Arpeggiator modes.
      *
      * @return The modes

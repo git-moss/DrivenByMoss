@@ -6,12 +6,15 @@ package de.mossgrabers.framework.command.continuous;
 
 import java.util.Optional;
 
+import de.mossgrabers.framework.command.core.AbstractContinuousCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
+import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IBrowser;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.parameter.IFocusedParameter;
 
 
@@ -23,9 +26,13 @@ import de.mossgrabers.framework.parameter.IFocusedParameter;
  *
  * @author Jürgen Moßgraber
  */
-public class JogWheelCommand<S extends IControlSurface<C>, C extends Configuration> extends PlayPositionCommand<S, C>
+public class JogWheelCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractContinuousCommand<S, C>
 {
-    private boolean controlLastParamActive = false;
+    private boolean             controlLastParamActive = false;
+    private final ITransport    transport;
+    private final IApplication  application;
+    private final IValueChanger valueChanger;
+    private int                 slowDownCounter        = 1;
 
 
     /**
@@ -36,7 +43,24 @@ public class JogWheelCommand<S extends IControlSurface<C>, C extends Configurati
      */
     public JogWheelCommand (final IModel model, final S surface)
     {
+        this (model, surface, model.getValueChanger ());
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param model The model
+     * @param surface The surface
+     * @param valueChanger The value changer to use
+     */
+    public JogWheelCommand (final IModel model, final S surface, final IValueChanger valueChanger)
+    {
         super (model, surface);
+
+        this.valueChanger = valueChanger;
+        this.transport = this.model.getTransport ();
+        this.application = this.model.getApplication ();
     }
 
 
@@ -75,7 +99,18 @@ public class JogWheelCommand<S extends IControlSurface<C>, C extends Configurati
     @Override
     public void execute (final int value)
     {
-        final IValueChanger valueChanger = this.model.getValueChanger ();
+        // Slow down option for fast encoders
+        final int encoderKnobSlowDown = this.surface.getConfiguration ().getEncoderKnobSlowDown ();
+        if (encoderKnobSlowDown > 0)
+        {
+            if (this.slowDownCounter % (encoderKnobSlowDown + 1) == 0)
+                this.slowDownCounter = 1;
+            else
+            {
+                this.slowDownCounter++;
+                return;
+            }
+        }
 
         // Control the last touched/clicked parameter
         if (this.controlLastParamActive)
@@ -83,14 +118,14 @@ public class JogWheelCommand<S extends IControlSurface<C>, C extends Configurati
             final Optional<IFocusedParameter> parameterOpt = this.model.getFocusedParameter ();
             if (parameterOpt.isPresent () && parameterOpt.get ().doesExist ())
             {
-                double increment = valueChanger.calcKnobChange (value);
+                double increment = this.valueChanger.calcKnobChange (value);
                 increment *= this.surface.isShiftPressed () ? 10 : 50;
                 parameterOpt.get ().inc (increment);
             }
             return;
         }
 
-        final boolean increase = valueChanger.isIncrease (value);
+        final boolean increase = this.valueChanger.isIncrease (value);
 
         // Scroll results in Browser
         final IBrowser browser = this.model.getBrowser ();
@@ -106,21 +141,21 @@ public class JogWheelCommand<S extends IControlSurface<C>, C extends Configurati
         // Change tempo with Select button
         if (this.surface.isPressed (ButtonID.SELECT))
         {
-            this.model.getTransport ().changeTempo (increase, this.surface.isKnobSensitivitySlow ());
+            this.transport.changeTempo (increase, this.surface.isKnobSensitivitySlow ());
             return;
         }
 
         // Change Loop start with Control button
         if (this.surface.isPressed (ButtonID.CONTROL))
         {
-            this.model.getTransport ().changeLoopStart (increase, this.surface.isKnobSensitivitySlow ());
+            this.transport.changeLoopStart (increase, this.surface.isKnobSensitivitySlow ());
             return;
         }
 
         // Change Loop length with ALT button
         if (this.surface.isPressed (ButtonID.ALT))
         {
-            this.model.getTransport ().changeLoopLength (increase, this.surface.isKnobSensitivitySlow ());
+            this.transport.changeLoopLength (increase, this.surface.isKnobSensitivitySlow ());
             return;
         }
 
@@ -131,9 +166,9 @@ public class JogWheelCommand<S extends IControlSurface<C>, C extends Configurati
             this.surface.setTriggerConsumed (ButtonID.ARROW_RIGHT);
 
             if (increase)
-                this.model.getApplication ().zoomIn ();
+                this.application.zoomIn ();
             else
-                this.model.getApplication ().zoomOut ();
+                this.application.zoomOut ();
             return;
         }
 
@@ -144,12 +179,12 @@ public class JogWheelCommand<S extends IControlSurface<C>, C extends Configurati
             this.surface.setTriggerConsumed (ButtonID.ARROW_DOWN);
 
             if (increase)
-                this.model.getApplication ().incTrackHeight ();
+                this.application.incTrackHeight ();
             else
-                this.model.getApplication ().decTrackHeight ();
+                this.application.decTrackHeight ();
             return;
         }
 
-        super.execute (value);
+        this.transport.changePosition (this.valueChanger.isIncrease (value), this.surface.isKnobSensitivitySlow ());
     }
 }

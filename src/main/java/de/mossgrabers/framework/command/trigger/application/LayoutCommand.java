@@ -65,4 +65,13 @@ public class LayoutCommand<S extends IControlSurface<C>, C extends Configuration
         else
             application.setPanelLayout (this.layout);
     }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void executeShifted (final ButtonEvent event)
+    {
+        if (event == ButtonEvent.DOWN)
+            this.model.getApplication ().setPanelLayout (IApplication.PANEL_LAYOUT_EDIT);
+    }
 }

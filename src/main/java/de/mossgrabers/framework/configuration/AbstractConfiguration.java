@@ -142,6 +142,8 @@ public abstract class AbstractConfiguration implements Configuration
     public static final Integer      MPE_PITCHBEND_RANGE             = Integer.valueOf (49);
     /** Should all track states be colored in mix view? */
     public static final Integer      COLOR_TRACK_STATES              = Integer.valueOf (50);
+    /** The speed of the encoder knob can be slowed down. */
+    public static final Integer      ENCODER_KNOB_SLOW_DOWN          = Integer.valueOf (51);
 
     // Implementation IDs start at 100
     protected static final int       NEXT_SETTING_ID                 = 100;
@@ -197,6 +199,7 @@ public abstract class AbstractConfiguration implements Configuration
 
     protected static final String [] OPTIONS_MIDI_CHANNEL            = new String [16];
     protected static final String [] KNOB_SENSITIVITY                = new String [201];
+    protected static final String [] ENCODER_KNOB_SLOW_VALUES        = new String [101];
     static
     {
         for (int i = 0; i < OPTIONS_MIDI_CHANNEL.length; i++)
@@ -208,6 +211,10 @@ public abstract class AbstractConfiguration implements Configuration
             KNOB_SENSITIVITY[101 + i] = "+" + (i + 1);
         }
         KNOB_SENSITIVITY[100] = "Normal";
+
+        ENCODER_KNOB_SLOW_VALUES[0] = "Normal";
+        for (int i = 1; i <= 100; i++)
+            ENCODER_KNOB_SLOW_VALUES[i] = Integer.toString (i);
     }
 
     protected static final ColorEx DEFAULT_COLOR_BACKGROUND         = ColorEx.fromRGB (83, 83, 83);
@@ -425,6 +432,7 @@ public abstract class AbstractConfiguration implements Configuration
     private final int []                              footswitch                          = new int [NUMBER_OF_FOOTSWITCHES];
     private int                                       knobSpeedDefault                    = 0;
     private int                                       knobSpeedSlow                       = -40;
+    private int                                       encoderKnobSlowDown                 = 0;
 
     private boolean                                   noteRepeatActive                    = false;
     private Resolution                                noteRepeatPeriod                    = Resolution.RES_1_8;
@@ -830,6 +838,14 @@ public abstract class AbstractConfiguration implements Configuration
     public int getKnobSensitivitySlow ()
     {
         return this.knobSpeedSlow;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getEncoderKnobSlowDown ()
+    {
+        return this.encoderKnobSlowDown;
     }
 
 
@@ -1473,6 +1489,22 @@ public abstract class AbstractConfiguration implements Configuration
             });
             this.isSettingActive.add (KNOB_SENSITIVITY_SLOW);
         }
+    }
+
+
+    /**
+     * Activate the encoder knob slow down setting.
+     *
+     * @param settingsUI The settings
+     */
+    protected void activateEncoderKnobSpeedSetting (final ISettingsUI settingsUI)
+    {
+        final IEnumSetting encoderknobSpeedNormalSetting = settingsUI.getEnumSetting ("Encoder Knob Slow Down", CATEGORY_WORKFLOW, ENCODER_KNOB_SLOW_VALUES, ENCODER_KNOB_SLOW_VALUES[0]);
+        encoderknobSpeedNormalSetting.addValueObserver (value -> {
+            this.encoderKnobSlowDown = lookupIndex (ENCODER_KNOB_SLOW_VALUES, value);
+            this.notifyObservers (ENCODER_KNOB_SLOW_DOWN);
+        });
+        this.isSettingActive.add (ENCODER_KNOB_SLOW_DOWN);
     }
 
 

@@ -269,7 +269,7 @@ public class TransportModule extends AbstractModule
                         this.transport.setClipLauncherPostRecordingAction (PostRecordingAction.lookup (value.toString ()));
                         break;
                     case "postRecordingTimeOffset":
-                        final double beats = Math.min (4000, Math.max (0, toNumber (value)));
+                        final double beats = Math.clamp (toNumber (value), 0, 4000);
                         this.transport.setClipLauncherPostRecordingTimeOffset (beats);
                         break;
                     case "defaultQuantization":
