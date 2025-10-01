@@ -11,6 +11,7 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.clip.IClip;
+import de.mossgrabers.framework.daw.constants.RecordQuantization;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -54,6 +55,29 @@ public class OptionsMode extends BaseMode<IItem>
             case 5:
                 this.model.getTransport ().changeMetronomeVolume (value);
                 break;
+            case 7:
+                if (this.increaseKnobMovement ())
+                {
+                    final RecordQuantization currentQuantization = this.model.getApplication ().getRecordQuantizationGrid ();
+                    final RecordQuantization [] values = RecordQuantization.values ();
+                    int currentIndex = 0;
+                    for (int i = 0; i < values.length; i++)
+                    {
+                        if (currentQuantization == values[i])
+                        {
+                            currentIndex = i;
+                            break;
+                        }
+                    }
+                    
+                    final int newIndex = this.model.getValueChanger ().isIncrease (value) ? 
+                        (currentIndex + 1) % values.length : 
+                        (currentIndex - 1 + values.length) % values.length;
+                    
+                    this.model.getApplication ().setRecordQuantizationGrid (values[newIndex]);
+                    this.surface.getDisplay ().notify ("Rec. Quant.: " + values[newIndex].getName ());
+                }
+                break;
             default:
                 // Not used
                 break;
@@ -80,6 +104,16 @@ public class OptionsMode extends BaseMode<IItem>
 
             case 5:
                 return transport.getMetronomeVolume ();
+
+            case 7:
+                final RecordQuantization currentQuantization = this.model.getApplication ().getRecordQuantizationGrid ();
+                final RecordQuantization [] values = RecordQuantization.values ();
+                for (int i = 0; i < values.length; i++)
+                {
+                    if (currentQuantization == values[i])
+                        return (int) (i * 127.0 / (values.length - 1));
+                }
+                return 0;
 
             default:
                 return 0;
@@ -204,6 +238,10 @@ public class OptionsMode extends BaseMode<IItem>
         d.setCell (0, 5, StringUtils.fixASCII ("Metronome")).setCell (1, 5, transport.getMetronomeVolumeStr ());
         d.setPropertyColor (5, 0, SLMkIIIColorManager.SLMKIII_BROWN);
         d.setPropertyColor (5, 1, SLMkIIIColorManager.SLMKIII_BROWN);
+
+        d.setCell (0, 7, StringUtils.fixASCII ("Rec. Quant.")).setCell (1, 7, this.model.getApplication ().getRecordQuantizationGrid ().getName ());
+        d.setPropertyColor (7, 0, SLMkIIIColorManager.SLMKIII_BROWN);
+        d.setPropertyColor (7, 1, SLMkIIIColorManager.SLMKIII_BROWN);
 
         d.setCell (0, 8, "Master");
 
