@@ -12,6 +12,7 @@ import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.clip.IClip;
 import de.mossgrabers.framework.daw.constants.RecordQuantization;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.IItem;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -58,7 +59,11 @@ public class OptionsMode extends BaseMode<IItem>
             case 7:
                 if (this.increaseKnobMovement ())
                 {
-                    final RecordQuantization currentQuantization = this.model.getApplication ().getRecordQuantizationGrid ();
+                    final ITrack cursorTrack = this.model.getCursorTrack ();
+                    if (!cursorTrack.doesExist ())
+                        break;
+
+                    final RecordQuantization currentQuantization = cursorTrack.getRecordQuantizationGrid ();
                     final RecordQuantization [] values = RecordQuantization.values ();
                     int currentIndex = 0;
                     for (int i = 0; i < values.length; i++)
@@ -69,12 +74,12 @@ public class OptionsMode extends BaseMode<IItem>
                             break;
                         }
                     }
-                    
-                    final int newIndex = this.model.getValueChanger ().isIncrease (value) ? 
-                        (currentIndex + 1) % values.length : 
+
+                    final int newIndex = this.model.getValueChanger ().isIncrease (value) ?
+                        (currentIndex + 1) % values.length :
                         (currentIndex - 1 + values.length) % values.length;
-                    
-                    this.model.getApplication ().setRecordQuantizationGrid (values[newIndex]);
+
+                    cursorTrack.setRecordQuantizationGrid (values[newIndex]);
                     this.surface.getDisplay ().notify ("Rec. Quant.: " + values[newIndex].getName ());
                 }
                 break;
@@ -106,7 +111,10 @@ public class OptionsMode extends BaseMode<IItem>
                 return transport.getMetronomeVolume ();
 
             case 7:
-                final RecordQuantization currentQuantization = this.model.getApplication ().getRecordQuantizationGrid ();
+                final ITrack cursorTrack = this.model.getCursorTrack ();
+                if (!cursorTrack.doesExist ())
+                    return 0;
+                final RecordQuantization currentQuantization = cursorTrack.getRecordQuantizationGrid ();
                 final RecordQuantization [] values = RecordQuantization.values ();
                 for (int i = 0; i < values.length; i++)
                 {
@@ -239,7 +247,8 @@ public class OptionsMode extends BaseMode<IItem>
         d.setPropertyColor (5, 0, SLMkIIIColorManager.SLMKIII_BROWN);
         d.setPropertyColor (5, 1, SLMkIIIColorManager.SLMKIII_BROWN);
 
-        d.setCell (0, 7, StringUtils.fixASCII ("Rec. Quant.")).setCell (1, 7, this.model.getApplication ().getRecordQuantizationGrid ().getName ());
+        final ITrack cursorTrack = this.model.getCursorTrack ();
+        d.setCell (0, 7, StringUtils.fixASCII ("Rec. Quant.")).setCell (1, 7, cursorTrack.doesExist () ? cursorTrack.getRecordQuantizationGrid ().getName () : "-");
         d.setPropertyColor (7, 0, SLMkIIIColorManager.SLMKIII_BROWN);
         d.setPropertyColor (7, 1, SLMkIIIColorManager.SLMKIII_BROWN);
 
