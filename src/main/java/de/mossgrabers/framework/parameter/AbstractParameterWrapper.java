@@ -9,8 +9,7 @@ import de.mossgrabers.framework.observer.IValueObserver;
 
 
 /**
- * Encapsulates a parameter and forwards all methods to the wrapped parameter. Use fore
- * sub-classing.
+ * Encapsulates a parameter and forwards all methods to the wrapped parameter. Use for sub-classing.
  *
  * @author Jürgen Moßgraber
  */
@@ -235,5 +234,13 @@ public abstract class AbstractParameterWrapper implements IParameter
     public void setIndication (final boolean enable)
     {
         this.parameter.setIndication (enable);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public int getNumberOfSteps ()
+    {
+        return this.parameter.getNumberOfSteps ();
     }
 }

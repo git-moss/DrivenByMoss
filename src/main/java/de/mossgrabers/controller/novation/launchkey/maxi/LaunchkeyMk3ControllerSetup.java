@@ -4,6 +4,11 @@
 
 package de.mossgrabers.controller.novation.launchkey.maxi;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.BooleanSupplier;
+import java.util.function.IntSupplier;
+
 import de.mossgrabers.controller.novation.launchkey.maxi.command.trigger.ButtonAreaCommand;
 import de.mossgrabers.controller.novation.launchkey.maxi.command.trigger.DeviceLockCommand;
 import de.mossgrabers.controller.novation.launchkey.maxi.command.trigger.LaunchkeyMk3PlayCommand;
@@ -62,11 +67,6 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.StringUtils;
 import de.mossgrabers.framework.view.DummyView;
 import de.mossgrabers.framework.view.Views;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.BooleanSupplier;
-import java.util.function.IntSupplier;
 
 
 /**
@@ -554,6 +554,7 @@ public class LaunchkeyMk3ControllerSetup extends AbstractControllerSetup<Launchk
 
         surface.getPadGrid ().setView (Views.SESSION);
         surface.getViewManager ().setActive (Views.SESSION);
+        // Note: the mode cannot be changed from the DAW!
         surface.getModeManager ().setActive (Modes.PAN);
         surface.getFaderModeManager ().setActive (Modes.VOLUME);
         surface.setKnobMode (LaunchkeyMk3ControlSurface.KNOB_MODE_VOLUME);

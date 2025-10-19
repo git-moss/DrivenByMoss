@@ -58,5 +58,6 @@ public class MaschineJamControlCommand extends ModeMultiSelectCommand<MaschineJa
             return;
 
         this.model.getCursorDevice ().toggleWindowOpen ();
+        this.surface.setTriggerConsumed (ButtonID.SHIFT);
     }
 }

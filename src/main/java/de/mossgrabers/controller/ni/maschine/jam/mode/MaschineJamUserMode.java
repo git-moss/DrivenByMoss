@@ -8,8 +8,9 @@ import de.mossgrabers.controller.ni.maschine.core.MaschineColorManager;
 import de.mossgrabers.controller.ni.maschine.jam.MaschineJamConfiguration;
 import de.mossgrabers.controller.ni.maschine.jam.controller.FaderConfig;
 import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSurface;
-import de.mossgrabers.framework.controller.ContinuousID;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.mode.device.ProjectParamsMode;
 import de.mossgrabers.framework.parameter.IParameter;
 
@@ -21,7 +22,9 @@ import de.mossgrabers.framework.parameter.IParameter;
  */
 public class MaschineJamUserMode extends ProjectParamsMode<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineJamMode
 {
-    private static final FaderConfig FADER_OFF = new FaderConfig (FaderConfig.TYPE_SINGLE, 0, 0);
+    private static final FaderConfig FADER_OFF  = new FaderConfig (FaderConfig.TYPE_SINGLE, 0, 0);
+
+    private FaderSlowChange          slowChange = new FaderSlowChange ();
 
 
     /**
@@ -32,7 +35,37 @@ public class MaschineJamUserMode extends ProjectParamsMode<MaschineJamControlSur
      */
     public MaschineJamUserMode (final MaschineJamControlSurface surface, final IModel model)
     {
-        super (surface, model, true, ContinuousID.createSequentialList (ContinuousID.FADER1, 8));
+        super (surface, model, true, null);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onKnobValue (final int index, final int value)
+    {
+        final IParameterBank bank = this.isProjectMode ? this.model.getProject ().getParameterBank () : this.model.getCursorTrack ().getParameterBank ();
+        final IParameter item = bank.getItem (index);
+        if (item != null && item.doesExist ())
+            this.slowChange.changeValue (this.surface, item, value);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onKnobTouch (final int index, final boolean isTouched)
+    {
+        this.setTouchedKnob (index, isTouched);
+
+        final IParameter param = this.bank.getItem (index);
+        if (!param.doesExist ())
+            return;
+
+        if (isTouched && this.surface.isDeletePressed ())
+        {
+            this.surface.setTriggerConsumed (ButtonID.DELETE);
+            param.resetValue ();
+        }
+        param.touchValue (isTouched);
     }
 
 

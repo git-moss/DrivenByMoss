@@ -82,7 +82,7 @@ public class ProjectParamsMode<S extends IControlSurface<C>, C extends Configura
     {
         super ("Project Parameters", surface, model, isAbsolute, model.getProject ().getParameterBank (), knobs, isAlternativeFunction);
 
-        if (addParameterProvider)
+        if (addParameterProvider && knobs != null)
         {
             this.projectParameterProvider = new BankParameterProvider (model.getProject ().getParameterBank ());
             this.trackParameterProvider = new BankParameterProvider (model.getCursorTrack ().getParameterBank ());
@@ -156,7 +156,8 @@ public class ProjectParamsMode<S extends IControlSurface<C>, C extends Configura
     {
         this.isProjectMode = isProjectMode;
         this.switchBanks (this.isProjectMode ? this.model.getProject ().getParameterBank () : this.model.getCursorTrack ().getParameterBank ());
-        this.setParameterProvider (this.isProjectMode ? this.projectParameterProvider : this.trackParameterProvider);
+        if (this.controls != null && !this.controls.isEmpty ())
+            this.setParameterProvider (this.isProjectMode ? this.projectParameterProvider : this.trackParameterProvider);
         this.bindControls ();
     }
 

@@ -4,6 +4,10 @@
 
 package de.mossgrabers.framework.mode.track;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.function.BooleanSupplier;
+
 import de.mossgrabers.framework.command.trigger.clip.TemporaryNewCommand;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -15,10 +19,6 @@ import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.function.BooleanSupplier;
 
 
 /**
@@ -100,7 +100,7 @@ public abstract class DefaultTrackMode<S extends IControlSurface<C>, C extends C
 
 
     /**
-     * Get the track for which to change the volume.
+     * Get the track for which to change a parameter.
      *
      * @param index The index of the track. If set to -1 the selected track is used.
      * @return The selected track

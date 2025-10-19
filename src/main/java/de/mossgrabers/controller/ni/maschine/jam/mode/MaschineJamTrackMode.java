@@ -4,19 +4,19 @@
 
 package de.mossgrabers.controller.ni.maschine.jam.mode;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.ni.maschine.core.MaschineColorManager;
 import de.mossgrabers.controller.ni.maschine.jam.MaschineJamConfiguration;
 import de.mossgrabers.controller.ni.maschine.jam.controller.FaderConfig;
 import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSurface;
-import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ISendBank;
 import de.mossgrabers.framework.mode.track.TrackMode;
-
-import java.util.Optional;
+import de.mossgrabers.framework.parameter.IParameter;
 
 
 /**
@@ -26,7 +26,9 @@ import java.util.Optional;
  */
 public class MaschineJamTrackMode extends TrackMode<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineJamMode
 {
-    private static final FaderConfig FADER_OFF = new FaderConfig (FaderConfig.TYPE_DOT, 0, 0);
+    private static final FaderConfig FADER_OFF  = new FaderConfig (FaderConfig.TYPE_DOT, 0, 0);
+
+    private FaderSlowChange          slowChange = new FaderSlowChange ();
 
 
     /**
@@ -37,7 +39,38 @@ public class MaschineJamTrackMode extends TrackMode<MaschineJamControlSurface, M
      */
     public MaschineJamTrackMode (final MaschineJamControlSurface surface, final IModel model)
     {
-        super (surface, model, true, ContinuousID.createSequentialList (ContinuousID.FADER1, 8));
+        super (surface, model, true);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onKnobValue (final int index, final int value)
+    {
+        final Optional<ITrack> track = this.model.getCurrentTrackBank ().getSelectedItem ();
+        if (track.isEmpty ())
+            return;
+        final ITrack t = track.get ();
+        final IParameter parameter;
+        switch (index)
+        {
+            case 0:
+                parameter = t.getVolumeParameter ();
+                break;
+
+            case 1:
+                parameter = t.getPanParameter ();
+                break;
+
+            default:
+                final ISendBank sendBank = t.getSendBank ();
+                if (!sendBank.hasExistingItems ())
+                    return;
+                parameter = sendBank.getItem (index - 2);
+                break;
+        }
+
+        this.slowChange.changeValue (this.surface, parameter, value);
     }
 
 

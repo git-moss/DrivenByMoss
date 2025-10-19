@@ -8,6 +8,7 @@ import de.mossgrabers.controller.ni.maschine.jam.MaschineJamConfiguration;
 import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSurface;
 import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.command.trigger.mode.ModeCursorCommand;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
 
@@ -39,7 +40,10 @@ public class MaschineJamPageRightCommand extends ModeCursorCommand<MaschineJamCo
             return;
 
         if (this.surface.isShiftPressed ())
+        {
             this.model.getTransport ().toggleLoop ();
+            this.surface.setTriggerConsumed (ButtonID.SHIFT);
+        }
         else
             super.execute (event, velocity);
     }

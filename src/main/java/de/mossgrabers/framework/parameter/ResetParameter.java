@@ -104,12 +104,4 @@ public class ResetParameter extends AbstractParameterWrapper
     {
         this.parameter.resetValue ();
     }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public int getNumberOfSteps ()
-    {
-        return this.parameter.getNumberOfSteps ();
-    }
 }

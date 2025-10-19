@@ -4,17 +4,16 @@
 
 package de.mossgrabers.controller.ni.maschine.jam.mode;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.ni.maschine.core.MaschineColorManager;
 import de.mossgrabers.controller.ni.maschine.jam.MaschineJamConfiguration;
 import de.mossgrabers.controller.ni.maschine.jam.controller.FaderConfig;
 import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSurface;
-import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.track.TrackSendMode;
-
-import java.util.Optional;
 
 
 /**
@@ -24,7 +23,9 @@ import java.util.Optional;
  */
 public class MaschineJamSendMode extends TrackSendMode<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineJamMode
 {
-    private static final FaderConfig FADER_OFF = new FaderConfig (FaderConfig.TYPE_DOT, 0, 0);
+    private static final FaderConfig FADER_OFF  = new FaderConfig (FaderConfig.TYPE_DOT, 0, 0);
+
+    private FaderSlowChange          slowChange = new FaderSlowChange ();
 
 
     /**
@@ -36,7 +37,20 @@ public class MaschineJamSendMode extends TrackSendMode<MaschineJamControlSurface
      */
     public MaschineJamSendMode (final int sendIndex, final MaschineJamControlSurface surface, final IModel model)
     {
-        super (sendIndex, surface, model, true, ContinuousID.createSequentialList (ContinuousID.FADER1, 8));
+        super (sendIndex, surface, model, true);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onKnobValue (final int index, final int value)
+    {
+        final Optional<ITrack> track = this.getTrack (index);
+        if (track.isEmpty ())
+            return;
+        final ISend item = track.get ().getSendBank ().getItem (this.sendIndex);
+        if (item.doesExist ())
+            this.slowChange.changeValue (this.surface, item, value);
     }
 
 

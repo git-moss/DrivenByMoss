@@ -26,6 +26,7 @@ import de.mossgrabers.framework.daw.data.bank.IDeviceBank;
 import de.mossgrabers.framework.daw.data.bank.IDrumPadBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.observer.ISettingObserver;
 import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.ScaleLayout;
@@ -132,18 +133,20 @@ public abstract class AbstractConfiguration implements Configuration
     public static final Integer      FOOTSWITCH_3                    = Integer.valueOf (44);
     /** Setting for the foot-switch functionality. */
     public static final Integer      FOOTSWITCH_4                    = Integer.valueOf (45);
-    /** Preferred note view. */
+    /** Preferred view. */
     public static final Integer      STARTUP_VIEW                    = Integer.valueOf (46);
+    /** Preferred mode. */
+    public static final Integer      STARTUP_MODE                    = Integer.valueOf (47);
     /** Start with session view if active. */
-    public static final Integer      START_WITH_SESSION_VIEW         = Integer.valueOf (47);
+    public static final Integer      START_WITH_SESSION_VIEW         = Integer.valueOf (48);
     /** The MPE on/off setting has changed. */
-    public static final Integer      ENABLED_MPE_ZONES               = Integer.valueOf (48);
+    public static final Integer      ENABLED_MPE_ZONES               = Integer.valueOf (49);
     /** The MPE pitch bend sensitivity setting has changed. */
-    public static final Integer      MPE_PITCHBEND_RANGE             = Integer.valueOf (49);
+    public static final Integer      MPE_PITCHBEND_RANGE             = Integer.valueOf (50);
     /** Should all track states be colored in mix view? */
-    public static final Integer      COLOR_TRACK_STATES              = Integer.valueOf (50);
+    public static final Integer      COLOR_TRACK_STATES              = Integer.valueOf (51);
     /** The speed of the encoder knob can be slowed down. */
-    public static final Integer      ENCODER_KNOB_SLOW_DOWN          = Integer.valueOf (51);
+    public static final Integer      ENCODER_KNOB_SLOW_DOWN          = Integer.valueOf (52);
 
     // Implementation IDs start at 100
     protected static final int       NEXT_SETTING_ID                 = 100;
@@ -452,6 +455,7 @@ public abstract class AbstractConfiguration implements Configuration
     private RecordFunction                            recordButtonFunction                = RecordFunction.RECORD_ARRANGER;
     private RecordFunction                            shiftedRecordButtonFunction         = RecordFunction.NEW_CLIP;
     private Views                                     startupView                         = Views.PLAY;
+    private Modes                                     startupMode                         = Modes.VOLUME;
     protected Views                                   preferredAudioView                  = Views.PLAY;
     private boolean                                   startWithSessionView                = false;
     private boolean                                   useCombinationButtonToSoundDrumPads = false;
@@ -1695,6 +1699,28 @@ public abstract class AbstractConfiguration implements Configuration
 
 
     /**
+     * Activate the preferred startup mode setting.
+     *
+     * @param settingsUI The settings
+     * @param modes The available modes for selection
+     */
+    protected void activateStartupModeSetting (final ISettingsUI settingsUI, final Modes [] modes)
+    {
+        final String [] labels = new String [modes.length];
+        for (int i = 0; i < modes.length; i++)
+            labels[i] = Modes.getModeName (modes[i]);
+
+        final IEnumSetting startupModeSetting = settingsUI.getEnumSetting ("Startup mode", CATEGORY_WORKFLOW, labels, labels[0]);
+        startupModeSetting.addValueObserver (value -> {
+            this.startupMode = Modes.getModeByName (value);
+            this.notifyObservers (STARTUP_MODE);
+        });
+
+        this.isSettingActive.add (STARTUP_MODE);
+    }
+
+
+    /**
      * Activate the start with session view setting.
      *
      * @param settingsUI The settings
@@ -1934,6 +1960,14 @@ public abstract class AbstractConfiguration implements Configuration
     public Views getStartupView ()
     {
         return this.startupView;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public Modes getStartupMode ()
+    {
+        return this.startupMode;
     }
 
 

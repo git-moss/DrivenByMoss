@@ -16,6 +16,7 @@ import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.constants.Capability;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
+import de.mossgrabers.framework.mode.Modes;
 
 
 /**
@@ -83,6 +84,37 @@ public class MCUConfiguration extends AbstractConfiguration
         MACKIE
     }
 
+
+    private static final Modes []     STARTUP_MODES                         =
+    {
+        Modes.PAN,
+        Modes.VOLUME,
+        Modes.TRACK,
+        Modes.SEND1,
+        Modes.SEND2,
+        Modes.SEND3,
+        Modes.SEND4,
+        Modes.SEND5,
+        Modes.SEND6,
+        Modes.SEND7,
+        Modes.SEND8,
+        Modes.DEVICE_LAYER,
+        Modes.DEVICE_LAYER_VOLUME,
+        Modes.DEVICE_LAYER_PAN,
+        Modes.DEVICE_LAYER_SEND1,
+        Modes.DEVICE_LAYER_SEND2,
+        Modes.DEVICE_LAYER_SEND3,
+        Modes.DEVICE_LAYER_SEND4,
+        Modes.DEVICE_LAYER_SEND5,
+        Modes.DEVICE_LAYER_SEND6,
+        Modes.DEVICE_LAYER_SEND7,
+        Modes.DEVICE_LAYER_SEND8,
+        Modes.DEVICE_PARAMS,
+        Modes.USER,
+        Modes.EQ_DEVICE_PARAMS,
+        Modes.INSTRUMENT_DEVICE_PARAMS,
+        Modes.MARKERS
+    };
 
     private static final String       MCU_DEVICE_1_LEFT                     = "MCU Device 1 - left";
 
@@ -408,6 +440,7 @@ public class MCUConfiguration extends AbstractConfiguration
         // Workflow
 
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
+        this.activateStartupModeSetting (globalSettings, STARTUP_MODES);
         this.activateNewClipLengthSetting (globalSettings);
         this.activateZoomStateSetting (globalSettings);
         this.activateChannelTouchSetting (globalSettings);

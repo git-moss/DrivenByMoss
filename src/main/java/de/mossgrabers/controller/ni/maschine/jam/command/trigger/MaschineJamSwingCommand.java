@@ -9,6 +9,7 @@ import de.mossgrabers.controller.ni.maschine.core.controller.EncoderModeManager;
 import de.mossgrabers.controller.ni.maschine.jam.MaschineJamConfiguration;
 import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSurface;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.GrooveParameterID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.parameter.IParameter;
@@ -50,6 +51,7 @@ public class MaschineJamSwingCommand extends AbstractTriggerCommand<MaschineJamC
         final IParameter parameter = this.model.getGroove ().getParameter (GrooveParameterID.SHUFFLE_RATE);
         parameter.setValue (parameter.getValue () == 0 ? this.model.getValueChanger ().getUpperBound () - 1 : 0);
         this.mvHelper.delayDisplay ( () -> parameter.getName () + ": " + parameter.getDisplayedValue ());
+        this.surface.setTriggerConsumed (ButtonID.SHIFT);
     }
 
 

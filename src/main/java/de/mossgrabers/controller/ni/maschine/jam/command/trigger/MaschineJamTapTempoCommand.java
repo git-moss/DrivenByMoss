@@ -9,6 +9,7 @@ import de.mossgrabers.controller.ni.maschine.core.controller.EncoderModeManager;
 import de.mossgrabers.controller.ni.maschine.jam.MaschineJamConfiguration;
 import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSurface;
 import de.mossgrabers.framework.command.trigger.transport.TapTempoCommand;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
@@ -46,6 +47,7 @@ public class MaschineJamTapTempoCommand extends TapTempoCommand<MaschineJamContr
         if (this.surface.isShiftPressed ())
         {
             this.executeNormal (event);
+            this.surface.setTriggerConsumed (ButtonID.SHIFT);
             return;
         }
 

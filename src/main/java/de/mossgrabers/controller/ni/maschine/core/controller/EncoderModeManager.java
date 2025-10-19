@@ -15,6 +15,7 @@ import de.mossgrabers.framework.command.TempoCommand;
 import de.mossgrabers.framework.command.continuous.SwingCommand;
 import de.mossgrabers.framework.command.core.ContinuousCommand;
 import de.mossgrabers.framework.configuration.Configuration;
+import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.IControlSurface;
 import de.mossgrabers.framework.controller.hardware.IHwContinuousControl;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
@@ -26,6 +27,7 @@ import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.featuregroup.IView;
+import de.mossgrabers.framework.parameter.AbstractParameterWrapper;
 import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.parameter.LoopStartParameter;
 import de.mossgrabers.framework.parameter.PlayPositionParameter;
@@ -223,7 +225,18 @@ public class EncoderModeManager<S extends IControlSurface<C>, C extends Configur
                 break;
         }
 
-        this.encoder.bind (parameter);
+        final IParameter param = new AbstractParameterWrapper (parameter)
+        {
+            /** {@inheritDoc} */
+            @Override
+            public void changeValue (final int control)
+            {
+                this.parameter.changeValue (control);
+                EncoderModeManager.this.surface.setTriggerConsumed (ButtonID.SHIFT);
+            }
+        };
+
+        this.encoder.bind (param);
         this.notifyMode ();
     }
 

@@ -49,6 +49,7 @@ public class MaschineJamSoloCommand extends AbstractTriggerCommand<MaschineJamCo
         {
             final MaschineJamConfiguration configuration = this.surface.getConfiguration ();
             configuration.nextNewClipLength ();
+            this.surface.setTriggerConsumed (ButtonID.SHIFT);
             this.mvHelper.delayDisplay ( () -> AbstractConfiguration.getNewClipLengthValue (configuration.getNewClipLength ()));
         }
     }

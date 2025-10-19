@@ -10,6 +10,7 @@ import de.mossgrabers.framework.configuration.AbstractConfiguration.RecordFuncti
 import de.mossgrabers.framework.configuration.AbstractConfiguration.TransportBehavior;
 import de.mossgrabers.framework.daw.constants.Resolution;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
+import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.observer.ISettingObserver;
 import de.mossgrabers.framework.view.Views;
 
@@ -538,6 +539,14 @@ public interface Configuration
      * @return The preferred note view
      */
     Views getStartupView ();
+
+
+    /**
+     * Get the preferred startup mode.
+     *
+     * @return The preferred startup mode
+     */
+    Modes getStartupMode ();
 
 
     /**

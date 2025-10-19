@@ -8,7 +8,6 @@ import de.mossgrabers.controller.ni.maschine.core.MaschineColorManager;
 import de.mossgrabers.controller.ni.maschine.jam.MaschineJamConfiguration;
 import de.mossgrabers.controller.ni.maschine.jam.controller.FaderConfig;
 import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSurface;
-import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.mode.device.ParameterMode;
@@ -22,7 +21,9 @@ import de.mossgrabers.framework.parameter.IParameter;
  */
 public class MaschineJamParameterMode extends ParameterMode<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineJamMode
 {
-    private static final FaderConfig FADER_OFF = new FaderConfig (FaderConfig.TYPE_SINGLE, 0, 0);
+    private static final FaderConfig FADER_OFF  = new FaderConfig (FaderConfig.TYPE_SINGLE, 0, 0);
+
+    private FaderSlowChange          slowChange = new FaderSlowChange ();
 
 
     /**
@@ -33,7 +34,19 @@ public class MaschineJamParameterMode extends ParameterMode<MaschineJamControlSu
      */
     public MaschineJamParameterMode (final MaschineJamControlSurface surface, final IModel model)
     {
-        super (surface, model, true, ContinuousID.createSequentialList (ContinuousID.FADER1, 8));
+        super (surface, model, true);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onKnobValue (final int index, final int value)
+    {
+        if (!this.cursorDevice.doesExist ())
+            return;
+        final IParameter item = this.cursorDevice.getParameterBank ().getItem (index);
+        if (item != null && item.doesExist ())
+            this.slowChange.changeValue (this.surface, item, value);
     }
 
 

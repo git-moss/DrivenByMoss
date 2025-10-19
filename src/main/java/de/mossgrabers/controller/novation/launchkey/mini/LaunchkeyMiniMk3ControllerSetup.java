@@ -377,6 +377,7 @@ public class LaunchkeyMiniMk3ControllerSetup extends AbstractControllerSetup<Lau
 
         surface.getPadGrid ().setView (Views.SESSION);
         surface.getViewManager ().setActive (Views.SESSION);
+        // Note: the mode cannot be changed from the DAW!
         surface.getModeManager ().setActive (Modes.VOLUME);
         surface.setKnobMode (LaunchkeyMiniMk3ControlSurface.KNOB_MODE_VOLUME);
         surface.setPadMode (LaunchkeyMiniMk3ControlSurface.PAD_MODE_SESSION);

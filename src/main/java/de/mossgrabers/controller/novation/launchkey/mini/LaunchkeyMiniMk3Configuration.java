@@ -4,13 +4,14 @@
 
 package de.mossgrabers.controller.novation.launchkey.mini;
 
+import java.util.List;
+
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
-
-import java.util.List;
+import de.mossgrabers.framework.mode.Modes;
 
 
 /**
@@ -20,6 +21,17 @@ import java.util.List;
  */
 public class LaunchkeyMiniMk3Configuration extends AbstractConfiguration
 {
+    private static final Modes [] STARTUP_MODES =
+    {
+        Modes.VOLUME,
+        Modes.PAN,
+        Modes.SEND1,
+        Modes.SEND2,
+        Modes.DEVICE_PARAMS,
+        Modes.USER
+    };
+
+
     /**
      * Constructor.
      *
@@ -49,6 +61,7 @@ public class LaunchkeyMiniMk3Configuration extends AbstractConfiguration
         // Workflow
 
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
+        this.activateStartupModeSetting (globalSettings, STARTUP_MODES);
         this.activateIncludeMasterSetting (globalSettings);
         this.activateSelectClipOnLaunchSetting (globalSettings);
     }

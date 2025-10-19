@@ -4,16 +4,15 @@
 
 package de.mossgrabers.controller.ni.maschine.jam.mode;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.ni.maschine.jam.MaschineJamConfiguration;
 import de.mossgrabers.controller.ni.maschine.jam.controller.FaderConfig;
 import de.mossgrabers.controller.ni.maschine.jam.controller.MaschineJamControlSurface;
-import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.track.TrackPanMode;
-
-import java.util.Optional;
 
 
 /**
@@ -23,7 +22,9 @@ import java.util.Optional;
  */
 public class MaschineJamPanMode extends TrackPanMode<MaschineJamControlSurface, MaschineJamConfiguration> implements IMaschineJamMode
 {
-    private static final FaderConfig FADER_OFF = new FaderConfig (FaderConfig.TYPE_DOT, 0, 0);
+    private static final FaderConfig FADER_OFF  = new FaderConfig (FaderConfig.TYPE_DOT, 0, 0);
+
+    private FaderSlowChange          slowChange = new FaderSlowChange ();
 
 
     /**
@@ -34,7 +35,17 @@ public class MaschineJamPanMode extends TrackPanMode<MaschineJamControlSurface, 
      */
     public MaschineJamPanMode (final MaschineJamControlSurface surface, final IModel model)
     {
-        super (surface, model, true, ContinuousID.createSequentialList (ContinuousID.FADER1, 8));
+        super (surface, model, true);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onKnobValue (final int index, final int value)
+    {
+        final Optional<ITrack> track = this.getTrack (index);
+        if (!track.isEmpty ())
+            this.slowChange.changeValue (this.surface, track.get ().getPanParameter (), value);
     }
 
 

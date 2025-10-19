@@ -780,7 +780,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             surface.switchVuMode (MCUControlSurface.VUMODE_LED);
 
             surface.getViewManager ().setActive (Views.CONTROL);
-            surface.getModeManager ().setActive (Modes.PAN);
+            surface.getModeManager ().setActive (this.configuration.getStartupMode ());
         }
     }
 

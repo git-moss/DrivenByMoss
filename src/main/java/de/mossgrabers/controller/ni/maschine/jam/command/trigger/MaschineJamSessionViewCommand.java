@@ -53,6 +53,7 @@ public class MaschineJamSessionViewCommand extends AbstractTriggerCommand<Maschi
                 final IApplication application = this.model.getApplication ();
                 final boolean isArrange = IApplication.PANEL_LAYOUT_ARRANGE.equals (application.getPanelLayout ());
                 application.setPanelLayout (isArrange ? IApplication.PANEL_LAYOUT_MIX : IApplication.PANEL_LAYOUT_ARRANGE);
+                this.surface.setTriggerConsumed (ButtonID.SHIFT);
                 return;
             }
 

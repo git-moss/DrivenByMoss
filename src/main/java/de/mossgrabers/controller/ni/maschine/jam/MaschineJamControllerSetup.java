@@ -4,18 +4,27 @@
 
 package de.mossgrabers.controller.ni.maschine.jam;
 
+import java.util.Optional;
+import java.util.function.BooleanSupplier;
+
 import de.mossgrabers.controller.ni.maschine.core.MaschineColorManager;
 import de.mossgrabers.controller.ni.maschine.core.command.trigger.EncoderMode;
 import de.mossgrabers.controller.ni.maschine.core.command.trigger.GroupButtonCommand;
 import de.mossgrabers.controller.ni.maschine.core.command.trigger.MaschineMonitorEncoderCommand;
 import de.mossgrabers.controller.ni.maschine.core.controller.EncoderModeManager;
+import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamAutomationCommand;
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamAuxCommand;
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamControlCommand;
+import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamDoubleCommand;
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamLevelCommand;
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamMacroCommand;
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamMuteCommand;
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamPageLeftCommand;
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamPageRightCommand;
+import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamPlayCommand;
+import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamQuantizeCommand;
+import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamRecordCommand;
+import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamSelectCommand;
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamSessionViewCommand;
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamSoloCommand;
 import de.mossgrabers.controller.ni.maschine.jam.command.trigger.MaschineJamStartSceneCommand;
@@ -50,12 +59,7 @@ import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.core.NopCommand;
 import de.mossgrabers.framework.command.trigger.BrowserCommand;
 import de.mossgrabers.framework.command.trigger.FootswitchCommand;
-import de.mossgrabers.framework.command.trigger.clip.DoubleCommand;
 import de.mossgrabers.framework.command.trigger.clip.FillModeNoteRepeatCommand;
-import de.mossgrabers.framework.command.trigger.clip.QuantizeCommand;
-import de.mossgrabers.framework.command.trigger.transport.AutomationCommand;
-import de.mossgrabers.framework.command.trigger.transport.ConfiguredRecordCommand;
-import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.command.trigger.view.ToggleShiftViewCommand;
 import de.mossgrabers.framework.command.trigger.view.ViewMultiSelectCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
@@ -90,9 +94,6 @@ import de.mossgrabers.framework.view.BrowserView;
 import de.mossgrabers.framework.view.ShuffleView;
 import de.mossgrabers.framework.view.TempoView;
 import de.mossgrabers.framework.view.Views;
-
-import java.util.Optional;
-import java.util.function.BooleanSupplier;
 
 
 /**
@@ -269,21 +270,13 @@ public class MaschineJamControllerSetup extends AbstractControllerSetup<Maschine
         final ITransport t = this.model.getTransport ();
 
         this.addButton (ButtonID.SHIFT, "SHIFT", new ToggleShiftViewCommand<> (this.model, surface), -1);
-        this.addButton (ButtonID.SELECT, "SELECT", NopCommand.INSTANCE, MaschineJamControlSurface.SELECT);
+        this.addButton (ButtonID.SELECT, "SELECT", new MaschineJamSelectCommand (this.model, surface), MaschineJamControlSurface.SELECT);
 
         this.addButton (ButtonID.DELETE, "CLEAR", NopCommand.INSTANCE, MaschineJamControlSurface.CLEAR);
-        this.addButton (ButtonID.DUPLICATE, "DUPLICATE", new DoubleCommand<> (this.model, surface, true), MaschineJamControlSurface.DUPLICATE);
+        this.addButton (ButtonID.DUPLICATE, "DUPLICATE", new MaschineJamDoubleCommand (this.model, surface), MaschineJamControlSurface.DUPLICATE);
 
-        this.addButton (ButtonID.PLAY, "PLAY", new PlayCommand<> (this.model, surface)
-        {
-            @Override
-            protected void executeShifted ()
-            {
-                this.transport.restart ();
-            }
-        }, MaschineJamControlSurface.PLAY, t::isPlaying, ColorManager.BUTTON_STATE_ON, ColorManager.BUTTON_STATE_HI);
-
-        final ConfiguredRecordCommand<MaschineJamControlSurface, MaschineJamConfiguration> recordCommand = new ConfiguredRecordCommand<> (this.model, surface);
+        this.addButton (ButtonID.PLAY, "PLAY", new MaschineJamPlayCommand (this.model, surface), MaschineJamControlSurface.PLAY, t::isPlaying, ColorManager.BUTTON_STATE_ON, ColorManager.BUTTON_STATE_HI);
+        final MaschineJamRecordCommand recordCommand = new MaschineJamRecordCommand (this.model, surface);
         this.addButton (ButtonID.RECORD, "REC", recordCommand, MaschineJamControlSurface.RECORD, (BooleanSupplier) recordCommand::isLit);
 
         this.addButton (ButtonID.PAGE_LEFT, "PAGE LEFT", new MaschineJamPageLeftCommand (this.model, surface), MaschineJamControlSurface.LEFT);
@@ -299,7 +292,7 @@ public class MaschineJamControllerSetup extends AbstractControllerSetup<Maschine
         this.addButton (ButtonID.SENDS, "AUX", new MaschineJamAuxCommand (this.model, surface), MaschineJamControlSurface.AUX, () -> Modes.isSendMode (modeManager.getActiveID ()));
         this.addButton (ButtonID.DEVICE, "CONTROL", new MaschineJamControlCommand (this.model, surface), MaschineJamControlSurface.CONTROL, () -> modeManager.isActive (Modes.DEVICE_PARAMS, Modes.USER));
 
-        final AutomationCommand<MaschineJamControlSurface, MaschineJamConfiguration> automationCommand = new AutomationCommand<> (this.model, surface);
+        final MaschineJamAutomationCommand automationCommand = new MaschineJamAutomationCommand (this.model, surface);
         this.addButton (ButtonID.AUTOMATION, "AUTO", automationCommand, MaschineJamControlSurface.AUTO, automationCommand::isLit);
 
         for (int i = 0; i < 8; i++)
@@ -362,7 +355,7 @@ public class MaschineJamControllerSetup extends AbstractControllerSetup<Maschine
         }
 
         final IHwRelativeKnob knob = this.addRelativeKnob (ContinuousID.MASTER_KNOB, "Encoder", null, MaschineJamControlSurface.KNOB_TURN);
-        this.encoderManager = new EncoderModeManager<> (knob, this.model, surface);
+        this.encoderManager = new EncoderModeManager<MaschineJamControlSurface, MaschineJamConfiguration> (knob, this.model, surface);
         knob.bind (this.encoderManager);
 
         final MaschineMonitorEncoderCommand<MaschineJamControlSurface, MaschineJamConfiguration> encoderCommandMaster = new MaschineMonitorEncoderCommand<> (this.encoderManager, EncoderMode.MASTER_VOLUME, this.model, surface);
@@ -390,7 +383,7 @@ public class MaschineJamControllerSetup extends AbstractControllerSetup<Maschine
 
         this.addButton (ButtonID.TAP_TEMPO, "TEMPO", new MaschineJamTapTempoCommand (this.encoderManager, this.model, surface), MaschineJamControlSurface.TEMPO);
         this.addButton (ButtonID.ACCENT, "SWING", new MaschineJamSwingCommand (this.encoderManager, this.model, surface), MaschineJamControlSurface.SWING, () -> this.model.getGroove ().getParameter (GrooveParameterID.ENABLED).getValue () > 0);
-        this.addButton (ButtonID.GROOVE, "GRID", new QuantizeCommand<> (this.model, surface), MaschineJamControlSurface.GRID);
+        this.addButton (ButtonID.GROOVE, "GRID", new MaschineJamQuantizeCommand (this.model, surface), MaschineJamControlSurface.GRID);
 
         this.addButton (ButtonID.ROW1_1, "PERFORM", new MaschineJamViewCommand (this.encoderManager, EncoderMode.TEMPORARY_PERFORM, this.model, surface), MaschineJamControlSurface.PERFORM);
         this.addButton (ButtonID.ROW1_2, "NOTES", new MaschineJamViewCommand (this.encoderManager, EncoderMode.TEMPORARY_NOTES, this.model, surface), MaschineJamControlSurface.NOTES);
@@ -539,7 +532,7 @@ public class MaschineJamControllerSetup extends AbstractControllerSetup<Maschine
     public void startup ()
     {
         final MaschineJamControlSurface surface = this.getSurface ();
-        surface.getModeManager ().setActive (Modes.VOLUME);
+        surface.getModeManager ().setActive (this.configuration.getStartupMode ());
         surface.getViewManager ().setActive (this.configuration.shouldStartWithSessionView () ? Views.SESSION : this.configuration.getStartupView ());
     }
 
