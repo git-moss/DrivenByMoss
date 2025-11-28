@@ -248,7 +248,7 @@ public class TransportMode extends AbstractElectraOneMode
         this.pageCache.updateColor (5, 1, this.transport.isMetronomeOn () ? ElectraOneColorManager.METRONOME_ON : ElectraOneColorManager.METRONOME_OFF);
         final Optional<IFocusedParameter> focusedParameter = this.model.getFocusedParameter ();
         final int paramValue = focusedParameter.isPresent () ? focusedParameter.get ().getValue () : 0;
-        final String paramStr = focusedParameter.isPresent () ? focusedParameter.get ().getDisplayedValue () : "";
+        final String paramStr = focusedParameter.isPresent () ? focusedParameter.get ().getDisplayedValue () : " ";
         this.pageCache.updateValue (5, 2, paramValue, StringUtils.optimizeName (StringUtils.fixASCII (paramStr), 15));
         this.pageCache.updateColor (5, 3, this.transport.isArrangerOverdub () ? ElectraOneColorManager.AUTO_MODE_ON : ElectraOneColorManager.AUTO_MODE_OFF);
         this.pageCache.updateColor (5, 4, this.launchMarkers ? ElectraOneColorManager.MARKER_LAUNCH_ON : ElectraOneColorManager.MARKER_LAUNCH_OFF);
@@ -264,7 +264,6 @@ public class TransportMode extends AbstractElectraOneMode
         this.pageCache.updateColor (5, 5, this.transport.isPlaying () ? ElectraOneColorManager.PLAY_ON : ElectraOneColorManager.PLAY_OFF);
 
         this.pageCache.updateElement (4, 3, " ", null, Boolean.FALSE);
-        this.pageCache.updateElement (5, 2, " ", null, Boolean.FALSE);
 
         this.pageCache.flush ();
     }

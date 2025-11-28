@@ -193,6 +193,8 @@ public class MCUConfiguration extends AbstractConfiguration
     private static final String       DEVICE_ASPARION_D700                  = "Asparion D700";
     private static final String       DEVICE_BEHRINGER_X_TOUCH              = "Behringer X-Touch";
     private static final String       DEVICE_BEHRINGER_X_TOUCH_ONE          = "Behringer X-Touch One";
+    private static final String       DEVICE_ICON_P1_M                      = "iCON P1-M";
+    private static final String       DEVICE_ICON_P1_NANO                   = "iCON P1-NANO";
     private static final String       DEVICE_ICON_PLATFORM_M                = "iCON Platform M / M+";
     private static final String       DEVICE_ICON_QCON_PRO_X                = "iCON QConPro X";
     private static final String       DEVICE_ICON_QCON_V1M                  = "iCON V1-M";
@@ -205,6 +207,8 @@ public class MCUConfiguration extends AbstractConfiguration
         DEVICE_ASPARION_D700,
         DEVICE_BEHRINGER_X_TOUCH,
         DEVICE_BEHRINGER_X_TOUCH_ONE,
+        DEVICE_ICON_P1_M,
+        DEVICE_ICON_P1_NANO,
         DEVICE_ICON_PLATFORM_M,
         DEVICE_ICON_QCON_PRO_X,
         DEVICE_ICON_QCON_V1M,
@@ -644,6 +648,36 @@ public class MCUConfiguration extends AbstractConfiguration
                     alwaysSendVuMetersSetting.set (off);
                     this.vuMeterStyleSetting.set (VU_METER_STYLES[3]);
                     displayColorsSetting.set (DISPLAY_COLORS_OPTIONS[0]);
+                    break;
+
+                case DEVICE_ICON_P1_M:
+                    mainDisplaySetting.set (MAIN_DISPLAY_OPTIONS[3]);
+                    secondDisplaySetting.set (SECOND_DISPLAY_OPTIONS[0]);
+                    hasSegmentDisplaySetting.set (on);
+                    hasAssignmentDisplaySetting.set (off);
+                    this.hasMotorFadersSetting.set (on);
+                    hasOnly1FaderSetting.set (off);
+                    this.displayTrackNamesSetting.set (on);
+                    useVertZoomForModesSetting.set (off);
+                    this.useFadersAsKnobsSetting.set (off);
+                    alwaysSendVuMetersSetting.set (off);
+                    this.vuMeterStyleSetting.set (VU_METER_STYLES[2]);
+                    displayColorsSetting.set (DISPLAY_COLORS_OPTIONS[3]);
+                    break;
+
+                case DEVICE_ICON_P1_NANO:
+                    mainDisplaySetting.set (MAIN_DISPLAY_OPTIONS[3]);
+                    secondDisplaySetting.set (SECOND_DISPLAY_OPTIONS[0]);
+                    hasSegmentDisplaySetting.set (on);
+                    hasAssignmentDisplaySetting.set (off);
+                    this.hasMotorFadersSetting.set (on);
+                    hasOnly1FaderSetting.set (on);
+                    this.displayTrackNamesSetting.set (on);
+                    useVertZoomForModesSetting.set (off);
+                    this.useFadersAsKnobsSetting.set (off);
+                    alwaysSendVuMetersSetting.set (off);
+                    this.vuMeterStyleSetting.set (VU_METER_STYLES[2]);
+                    displayColorsSetting.set (DISPLAY_COLORS_OPTIONS[3]);
                     break;
 
                 case DEVICE_ICON_PLATFORM_M:
