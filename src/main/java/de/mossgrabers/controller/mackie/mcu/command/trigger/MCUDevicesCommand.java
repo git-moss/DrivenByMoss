@@ -17,7 +17,7 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  *
  * @author Jürgen Moßgraber
  */
-public class DevicesCommand extends MCUMultiModeSwitcherCommand
+public class MCUDevicesCommand extends MCUMultiModeSwitcherCommand
 {
     /**
      * Constructor.
@@ -25,9 +25,9 @@ public class DevicesCommand extends MCUMultiModeSwitcherCommand
      * @param model The model
      * @param surface The surface
      */
-    public DevicesCommand (final IModel model, final MCUControlSurface surface)
+    public MCUDevicesCommand (final IModel model, final MCUControlSurface surface)
     {
-        super (model, surface, Modes.DEVICE_PARAMS, Modes.USER);
+        super (model, surface, Modes.DEVICE_PARAMS, Modes.PROJECT_PARAMETERS, Modes.TRACK_PARAMETERS);
     }
 
 

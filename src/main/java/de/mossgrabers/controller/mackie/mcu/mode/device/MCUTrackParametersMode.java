@@ -13,41 +13,32 @@ import de.mossgrabers.controller.mackie.mcu.mode.BaseMode;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.data.bank.IBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.parameter.IParameter;
-import de.mossgrabers.framework.parameterprovider.IParameterProvider;
 import de.mossgrabers.framework.parameterprovider.device.BankParameterProvider;
 import de.mossgrabers.framework.parameterprovider.special.RangeFilterParameterProvider;
 import de.mossgrabers.framework.utils.StringUtils;
 
 
 /**
- * Mode for editing user parameters.
+ * Mode for editing track parameters.
  *
  * @author Jürgen Moßgraber
  */
-public class UserMode extends BaseMode<IParameter>
+public class MCUTrackParametersMode extends BaseMode<IParameter>
 {
-    protected IParameterProvider projectParameterProvider;
-    protected IParameterProvider trackParameterProvider;
-    protected boolean            isProjectMode = true;
-
-
     /**
      * Constructor.
      *
      * @param surface The control surface
      * @param model The model
      */
-    public UserMode (final MCUControlSurface surface, final IModel model)
+    public MCUTrackParametersMode (final MCUControlSurface surface, final IModel model)
     {
-        super ("User Parameters", surface, model, model.getProject ().getParameterBank ());
+        super ("Track Parameters", surface, model, model.getCursorTrack ().getParameterBank ());
 
         final int surfaceID = surface.getSurfaceID ();
-        this.projectParameterProvider = new RangeFilterParameterProvider (new BankParameterProvider (model.getProject ().getParameterBank ()), surfaceID * 8, 8);
-        this.trackParameterProvider = new RangeFilterParameterProvider (new BankParameterProvider (model.getCursorTrack ().getParameterBank ()), surfaceID * 8, 8);
-        this.setParameterProvider (this.projectParameterProvider);
+        this.setParameterProvider (new RangeFilterParameterProvider (new BankParameterProvider (model.getCursorTrack ().getParameterBank ()), surfaceID * 8, 8));
     }
 
 
@@ -96,7 +87,7 @@ public class UserMode extends BaseMode<IParameter>
         if (this.surface.getConfiguration ().getMainDisplayType () == MainDisplay.ASPARION && this.surface.getSurfaceID () == 0)
         {
             d.clearRow (0);
-            d.setCell (0, 0, this.isProjectMode ? "Project" : "Track");
+            d.setCell (0, 0, "Track");
             d.setCell (0, 1, "Parameters");
 
             if (this.bank instanceof final IParameterBank parameterBank)
@@ -142,41 +133,5 @@ public class UserMode extends BaseMode<IParameter>
     {
         final int extenderOffset = this.surface.getExtenderOffset ();
         this.resetParameter (this.bank.getItem (extenderOffset + index));
-    }
-
-
-    /**
-     * Set the project or track parameters mode.
-     *
-     * @param isProjectMode
-     */
-    public void setMode (final boolean isProjectMode)
-    {
-        this.isProjectMode = isProjectMode;
-        this.switchBanks (this.isProjectMode ? this.model.getProject ().getParameterBank () : this.model.getCursorTrack ().getParameterBank ());
-        this.setParameterProvider (this.isProjectMode ? this.projectParameterProvider : this.trackParameterProvider);
-        this.bindControls ();
-    }
-
-
-    /**
-     * Get the currently selected bank.
-     *
-     * @return The bank
-     */
-    public IBank<?> getParameterBank ()
-    {
-        return this.bank;
-    }
-
-
-    /**
-     * Is project mode active?
-     *
-     * @return True if project mode active
-     */
-    public boolean isProjectMode ()
-    {
-        return this.isProjectMode;
     }
 }

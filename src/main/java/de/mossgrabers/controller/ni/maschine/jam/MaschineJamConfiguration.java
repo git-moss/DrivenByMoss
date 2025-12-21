@@ -148,7 +148,7 @@ public class MaschineJamConfiguration extends AbstractConfiguration
 
     /**
      * Is the slow fader change option enabled?
-     * 
+     *
      * @return True if enabled
      */
     public boolean isSlowFaderChange ()

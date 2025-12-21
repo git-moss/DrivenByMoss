@@ -37,7 +37,7 @@ public abstract class AbstractPlayView<S extends IControlSurface<C>, C extends C
     protected final int []     defaultVelocity;
     protected final boolean    useTrackColor;
 
-    private int                blockNotes   = 0;
+    protected int              blockNotes   = 0;
 
 
     /**

@@ -34,7 +34,7 @@ public class PianoView extends PlayView
     @Override
     public void drawGrid ()
     {
-        PianoViewHelper.drawGrid (this.surface.getPadGrid (), this.model, this.keyManager, 4, 16);
+        PianoViewHelper.drawGrid (this.surface.getPadGrid (), this.model, this.keyManager, 36, 4, 16);
     }
 
 

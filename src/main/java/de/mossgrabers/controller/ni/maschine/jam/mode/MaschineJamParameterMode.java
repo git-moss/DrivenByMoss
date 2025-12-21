@@ -23,7 +23,7 @@ public class MaschineJamParameterMode extends ParameterMode<MaschineJamControlSu
 {
     private static final FaderConfig FADER_OFF  = new FaderConfig (FaderConfig.TYPE_SINGLE, 0, 0);
 
-    private FaderSlowChange          slowChange = new FaderSlowChange ();
+    private final FaderSlowChange          slowChange = new FaderSlowChange ();
 
 
     /**

@@ -39,7 +39,7 @@ public class PianoViewHelper
      */
     public static void drawGrid (final IPadGrid gridPad, final IModel model, final KeyManager keyManager)
     {
-        drawGrid (gridPad, model, keyManager, 8, 8);
+        drawGrid (gridPad, model, keyManager, 36, 8, 8);
     }
 
 
@@ -49,18 +49,17 @@ public class PianoViewHelper
      * @param gridPad The grid to draw
      * @param model The model
      * @param keyManager The key manager
+     * @param startPad The MIDI note of the pad to start drawing
      * @param rows The number of rows of the grid
      * @param columns The number of columns of the grid
      */
-    public static void drawGrid (final IPadGrid gridPad, final IModel model, final KeyManager keyManager, final int rows, final int columns)
+    public static void drawGrid (final IPadGrid gridPad, final IModel model, final KeyManager keyManager, final int startPad, final int rows, final int columns)
     {
         if (!model.canSelectedTrackHoldNotes ())
         {
             gridPad.turnOff ();
             return;
         }
-
-        final int startKey = 36;
 
         final ColorManager colorManager = model.getColorManager ();
         final boolean isRecording = model.hasRecordingState ();
@@ -74,7 +73,7 @@ public class PianoViewHelper
         {
             for (int column = 0; column < columns; column++)
             {
-                final int n = startKey + columns * row + column;
+                final int n = startPad + columns * row + column;
                 final int color;
                 if (row % 2 == 0)
                 {

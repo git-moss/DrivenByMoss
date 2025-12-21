@@ -49,7 +49,7 @@ public class DeviceParamsMode extends BaseMode<IParameter>
      */
     public DeviceParamsMode (final MCUControlSurface surface, final IModel model)
     {
-        this ("Parameters", model.getCursorDevice (), surface, model);
+        this ("Device Parameters", model.getCursorDevice (), surface, model);
     }
 
 

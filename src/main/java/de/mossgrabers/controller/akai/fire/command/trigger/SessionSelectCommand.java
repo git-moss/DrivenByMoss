@@ -39,6 +39,22 @@ public class SessionSelectCommand extends AbstractTriggerCommand<FireControlSurf
     }
 
 
+    /**
+     * Get the color index for the activation state of the views.
+     * 
+     * @return The color index
+     */
+    public int getViewActivationColor ()
+    {
+        final ViewManager viewManager = this.surface.getViewManager ();
+        if (viewManager.isActive (Views.SESSION))
+            return 1;
+        if (viewManager.isActive (Views.MIX))
+            return 2;
+        return 0;
+    }
+
+
     /** {@inheritDoc}} */
     @Override
     public void executeNormal (final ButtonEvent event)

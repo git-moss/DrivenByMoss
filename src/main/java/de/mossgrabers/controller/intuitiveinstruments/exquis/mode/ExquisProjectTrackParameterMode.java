@@ -22,7 +22,6 @@ public class ExquisProjectTrackParameterMode extends ProjectParamsMode<ExquisCon
 {
     private static final int [] PARAM_COLORS =
     {
-
         DAWColor.DAW_COLOR_RED.ordinal (),
         DAWColor.DAW_COLOR_ORANGE.ordinal (),
         DAWColor.DAW_COLOR_LIGHT_ORANGE.ordinal (),
@@ -35,15 +34,26 @@ public class ExquisProjectTrackParameterMode extends ProjectParamsMode<ExquisCon
      *
      * @param surface The control surface
      * @param model The model
+     * @param isProjectParameterMode True to use this mode for project parameters otherwise track
+     *            parameters
      */
-    public ExquisProjectTrackParameterMode (final ExquisControlSurface surface, final IModel model)
+    public ExquisProjectTrackParameterMode (final ExquisControlSurface surface, final IModel model, final boolean isProjectParameterMode)
     {
         super (surface, model, false, null, () -> false, false);
 
         this.setControls (ExquisControlSurface.KNOBS);
-        this.projectParameterProvider = new ExquisFourKnobProvider (surface, new BankParameterProvider (model.getProject ().getParameterBank ()));
-        this.trackParameterProvider = new ExquisFourKnobProvider (surface, new BankParameterProvider (model.getCursorTrack ().getParameterBank ()));
-        this.setParameterProvider (this.projectParameterProvider);
+
+        this.isProjectMode = isProjectParameterMode;
+        if (this.isProjectMode)
+        {
+            this.projectParameterProvider = new ExquisFourKnobProvider (surface, new BankParameterProvider (model.getProject ().getParameterBank ()));
+            this.setParameterProvider (this.projectParameterProvider);
+        }
+        else
+        {
+            this.trackParameterProvider = new ExquisFourKnobProvider (surface, new BankParameterProvider (model.getCursorTrack ().getParameterBank ()));
+            this.setParameterProvider (this.trackParameterProvider);
+        }
     }
 
 
@@ -54,7 +64,7 @@ public class ExquisProjectTrackParameterMode extends ProjectParamsMode<ExquisCon
      */
     public boolean areProjectParametersActive ()
     {
-        return this.getParameterProvider () == this.projectParameterProvider;
+        return this.isProjectMode;
     }
 
 
@@ -70,10 +80,7 @@ public class ExquisProjectTrackParameterMode extends ProjectParamsMode<ExquisCon
     @Override
     public void toggleParameters ()
     {
-        if (this.areProjectParametersActive ())
-            ((ExquisFourKnobProvider) this.projectParameterProvider).toggle ();
-        else
-            ((ExquisFourKnobProvider) this.trackParameterProvider).toggle ();
+        ((ExquisFourKnobProvider) (this.areProjectParametersActive () ? this.projectParameterProvider : this.trackParameterProvider)).toggle ();
         this.bindControls ();
     }
 
@@ -85,8 +92,6 @@ public class ExquisProjectTrackParameterMode extends ProjectParamsMode<ExquisCon
      */
     public boolean are1To4Bound ()
     {
-        if (this.areProjectParametersActive ())
-            return ((ExquisFourKnobProvider) this.projectParameterProvider).are1To4Bound ();
-        return ((ExquisFourKnobProvider) this.trackParameterProvider).are1To4Bound ();
+        return ((ExquisFourKnobProvider) (this.areProjectParametersActive () ? this.projectParameterProvider : this.trackParameterProvider)).are1To4Bound ();
     }
 }

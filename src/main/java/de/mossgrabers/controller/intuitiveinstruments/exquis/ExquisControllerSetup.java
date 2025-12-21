@@ -6,17 +6,22 @@ package de.mossgrabers.controller.intuitiveinstruments.exquis;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import de.mossgrabers.controller.intuitiveinstruments.exquis.command.trigger.ExquisDeviceParameterModeSelectCommand;
-import de.mossgrabers.controller.intuitiveinstruments.exquis.command.trigger.ExquisProjectTrackParameterModeSelectCommand;
+import de.mossgrabers.controller.intuitiveinstruments.exquis.command.trigger.ExquisProjectParameterModeSelectCommand;
 import de.mossgrabers.controller.intuitiveinstruments.exquis.command.trigger.ExquisRepeatCommand;
 import de.mossgrabers.controller.intuitiveinstruments.exquis.command.trigger.ExquisSessionCommand;
+import de.mossgrabers.controller.intuitiveinstruments.exquis.command.trigger.ExquisTrackModeSelectionCommand;
+import de.mossgrabers.controller.intuitiveinstruments.exquis.command.trigger.ExquisTrackParameterModeSelectCommand;
 import de.mossgrabers.controller.intuitiveinstruments.exquis.controller.ExquisColorManager;
 import de.mossgrabers.controller.intuitiveinstruments.exquis.controller.ExquisControlSurface;
 import de.mossgrabers.controller.intuitiveinstruments.exquis.controller.ExquisPadGrid;
 import de.mossgrabers.controller.intuitiveinstruments.exquis.controller.ISysexCallback;
+import de.mossgrabers.controller.intuitiveinstruments.exquis.mode.ExquisArpeggiatorMode;
 import de.mossgrabers.controller.intuitiveinstruments.exquis.mode.ExquisParameterMode;
 import de.mossgrabers.controller.intuitiveinstruments.exquis.mode.ExquisProjectTrackParameterMode;
 import de.mossgrabers.controller.intuitiveinstruments.exquis.mode.ExquisTrackMode;
@@ -24,9 +29,9 @@ import de.mossgrabers.controller.intuitiveinstruments.exquis.mode.ExquisVolumeMo
 import de.mossgrabers.controller.intuitiveinstruments.exquis.view.ExquisNoteView;
 import de.mossgrabers.controller.intuitiveinstruments.exquis.view.ExquisSelectionView;
 import de.mossgrabers.controller.intuitiveinstruments.exquis.view.ExquisSessionView;
+import de.mossgrabers.framework.command.continuous.KnobRowModeCommand;
 import de.mossgrabers.framework.command.trigger.application.RedoCommand;
 import de.mossgrabers.framework.command.trigger.application.UndoCommand;
-import de.mossgrabers.framework.command.trigger.mode.ModeMultiSelectCommand;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.command.trigger.transport.RecordCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
@@ -46,6 +51,7 @@ import de.mossgrabers.framework.daw.IApplication;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.ModelSetup;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiAccess;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
@@ -67,11 +73,12 @@ import de.mossgrabers.framework.view.Views;
  */
 public class ExquisControllerSetup extends AbstractControllerSetup<ExquisControlSurface, ExquisConfiguration> implements ISysexCallback
 {
-    private static final int MIDI_CHANNEL = 15;
+    private static final int            MIDI_CHANNEL          = 15;
 
-    protected boolean        isMoveTracks;
-
-    private IHwAbsoluteKnob  touchstrip;
+    protected boolean                   isMoveTracks;
+    private IHwAbsoluteKnob             touchstrip;
+    private final Map<Integer, byte []> trackSettings         = new HashMap<> ();
+    private int                         previousTrackPosition = -1;
 
 
     /**
@@ -119,7 +126,8 @@ public class ExquisControllerSetup extends AbstractControllerSetup<ExquisControl
 
         final ITrackBank trackBank = this.model.getTrackBank ();
         trackBank.setIndication (true);
-        trackBank.addSelectionObserver ( (index, isSelected) -> this.handleTrackChange (isSelected));
+        trackBank.addSelectionObserver ( (index, isSelected) -> this.handleTrackChange (index, isSelected));
+        trackBank.addPageObserver ( () -> this.handleTrackChange (-1, true));
     }
 
 
@@ -158,8 +166,10 @@ public class ExquisControllerSetup extends AbstractControllerSetup<ExquisControl
         final ModeManager modeManager = surface.getModeManager ();
         modeManager.register (Modes.TRACK, new ExquisTrackMode (surface, this.model));
         modeManager.register (Modes.VOLUME, new ExquisVolumeMode (surface, this.model));
-        modeManager.register (Modes.PROJECT, new ExquisProjectTrackParameterMode (surface, this.model));
+        modeManager.register (Modes.PROJECT_PARAMETERS, new ExquisProjectTrackParameterMode (surface, this.model, true));
+        modeManager.register (Modes.TRACK_PARAMETERS, new ExquisProjectTrackParameterMode (surface, this.model, false));
         modeManager.register (Modes.DEVICE_PARAMS, new ExquisParameterMode (surface, this.model));
+        modeManager.register (Modes.REPEAT_NOTE, new ExquisArpeggiatorMode (surface, this.model));
     }
 
 
@@ -204,6 +214,8 @@ public class ExquisControllerSetup extends AbstractControllerSetup<ExquisControl
             this.scales.setScaleOffsetByName (this.configuration.getScaleBase ());
             surface.updateRootNote (this.scales.getScaleOffset ());
         });
+
+        this.createNoteRepeatObservers (this.configuration, surface);
     }
 
 
@@ -224,10 +236,10 @@ public class ExquisControllerSetup extends AbstractControllerSetup<ExquisControl
         this.addButton (ButtonID.UNDO, "Undo", new UndoCommand<> (this.model, surface), MIDI_CHANNEL, ExquisControlSurface.BUTTON_LEFT, () -> application.canUndo () ? 1 : 0, ExquisColorManager.DO_OFF, ExquisColorManager.DO_ON);
         this.addButton (ButtonID.REDO, "Redo", new RedoCommand<> (this.model, surface), MIDI_CHANNEL, ExquisControlSurface.BUTTON_RIGHT, () -> application.canRedo () ? 1 : 0, ExquisColorManager.DO_OFF, ExquisColorManager.DO_ON);
 
-        this.addButton (ButtonID.KNOB1_TOUCH, "Knob 1 Press", new ExquisProjectTrackParameterModeSelectCommand (this.model, surface, true), MIDI_CHANNEL, ExquisControlSurface.BUTTON_KNOB1);
-        this.addButton (ButtonID.KNOB2_TOUCH, "Knob 2 Press", new ExquisProjectTrackParameterModeSelectCommand (this.model, surface, false), MIDI_CHANNEL, ExquisControlSurface.BUTTON_KNOB2);
+        this.addButton (ButtonID.KNOB1_TOUCH, "Knob 1 Press", new ExquisProjectParameterModeSelectCommand (this.model, surface), MIDI_CHANNEL, ExquisControlSurface.BUTTON_KNOB1);
+        this.addButton (ButtonID.KNOB2_TOUCH, "Knob 2 Press", new ExquisTrackParameterModeSelectCommand (this.model, surface), MIDI_CHANNEL, ExquisControlSurface.BUTTON_KNOB2);
         this.addButton (ButtonID.KNOB3_TOUCH, "Knob 3 Press", new ExquisDeviceParameterModeSelectCommand (this.model, surface), MIDI_CHANNEL, ExquisControlSurface.BUTTON_KNOB3);
-        this.addButton (ButtonID.KNOB4_TOUCH, "Knob 4 Press", new ModeMultiSelectCommand<> (this.model, surface, Modes.TRACK, Modes.VOLUME), MIDI_CHANNEL, ExquisControlSurface.BUTTON_KNOB4);
+        this.addButton (ButtonID.KNOB4_TOUCH, "Knob 4 Press", new ExquisTrackModeSelectionCommand (this.model, surface), MIDI_CHANNEL, ExquisControlSurface.BUTTON_KNOB4);
 
         this.addButton (ButtonID.DOWN, "Down", (event, velocity) -> this.setScrollMode (event, false), MIDI_CHANNEL, ExquisControlSurface.BUTTON_DOWN, () -> 0, AbstractSessionView.COLOR_SCENE);
         this.addButton (ButtonID.UP, "Up", (event, velocity) -> this.setScrollMode (event, true), MIDI_CHANNEL, ExquisControlSurface.BUTTON_UP, () -> 0, ExquisColorManager.TRACKS_COLOR);
@@ -245,7 +257,7 @@ public class ExquisControllerSetup extends AbstractControllerSetup<ExquisControl
         {
             final ContinuousID knobID = ContinuousID.get (ContinuousID.KNOB1, knobIndex);
             final int cc = ExquisControlSurface.FIRST_KNOB + knobIndex;
-            final IHwRelativeKnob relativeKnob = this.addRelativeKnob (knobID, "Knob " + (knobIndex + 1), null, BindType.CC, MIDI_CHANNEL, cc, RelativeEncoding.OFFSET_BINARY);
+            final IHwRelativeKnob relativeKnob = this.addRelativeKnob (knobID, "Knob " + (knobIndex + 1), new KnobRowModeCommand<> (knobIndex, this.model, surface), BindType.CC, MIDI_CHANNEL, cc, RelativeEncoding.OFFSET_BINARY);
             relativeKnob.setIndexInGroup (knobIndex);
 
             final int ki = knobIndex;
@@ -295,7 +307,46 @@ public class ExquisControllerSetup extends AbstractControllerSetup<ExquisControl
     @Override
     public void updateTempo (final int tempo)
     {
-        this.model.getTransport ().setTempo (tempo);
+        final ITransport transport = this.model.getTransport ();
+        transport.setTempo (tempo);
+        this.host.showNotification ("Tempo: " + transport.formatTempo (tempo));
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void storeTrackSettings (final int trackPosition, final byte [] settings)
+    {
+        final int cursorTrackPosition = this.model.getCursorTrack ().getPosition ();
+        final boolean doesntNeedUpdate = trackPosition < 0;
+        final int position = doesntNeedUpdate ? cursorTrackPosition : trackPosition;
+        if (position >= 0)
+            this.trackSettings.put (Integer.valueOf (position), settings);
+
+        if (doesntNeedUpdate)
+            return;
+
+        final byte [] trackSettings = this.trackSettings.get (Integer.valueOf (cursorTrackPosition));
+        if (trackSettings != null)
+            this.getSurface ().sendTrackSettings (trackSettings);
+    }
+
+
+    protected void handleTrackChange (final int index, final boolean isSelected)
+    {
+        final ITrackBank trackBank = this.model.getTrackBank ();
+        if (isSelected)
+        {
+            // The bank page has already changed when the deactivated track is reported, therefore
+            // we need the workaround via the previous track position
+
+            if (this.previousTrackPosition >= 0)
+                this.getSurface ().requestTrackSettings (this.previousTrackPosition);
+            final ITrack item = index >= 0 ? trackBank.getItem (index) : this.model.getCursorTrack ();
+            this.previousTrackPosition = item.doesExist () ? item.getPosition () : -1;
+        }
+
+        this.handleTrackChange (isSelected);
     }
 
 

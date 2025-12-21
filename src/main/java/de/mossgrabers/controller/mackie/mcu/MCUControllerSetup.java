@@ -14,7 +14,7 @@ import de.mossgrabers.controller.mackie.mcu.MCUConfiguration.MainDisplay;
 import de.mossgrabers.controller.mackie.mcu.MCUConfiguration.SecondDisplay;
 import de.mossgrabers.controller.mackie.mcu.MCUConfiguration.VUMeterStyle;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.AssignableCommand;
-import de.mossgrabers.controller.mackie.mcu.command.trigger.DevicesCommand;
+import de.mossgrabers.controller.mackie.mcu.command.trigger.MCUDevicesCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.FaderTouchCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.KeyCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.KeyCommand.Key;
@@ -41,7 +41,8 @@ import de.mossgrabers.controller.mackie.mcu.mode.MCUMultiModeSwitcherCommand;
 import de.mossgrabers.controller.mackie.mcu.mode.MarkerMode;
 import de.mossgrabers.controller.mackie.mcu.mode.device.DeviceBrowserMode;
 import de.mossgrabers.controller.mackie.mcu.mode.device.DeviceParamsMode;
-import de.mossgrabers.controller.mackie.mcu.mode.device.UserMode;
+import de.mossgrabers.controller.mackie.mcu.mode.device.MCUProjectParametersMode;
+import de.mossgrabers.controller.mackie.mcu.mode.device.MCUTrackParametersMode;
 import de.mossgrabers.controller.mackie.mcu.mode.layer.LayerMode;
 import de.mossgrabers.controller.mackie.mcu.mode.layer.LayerPanMode;
 import de.mossgrabers.controller.mackie.mcu.mode.layer.LayerSendMode;
@@ -160,10 +161,11 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         MODE_ACRONYMS.put (Modes.MARKERS, "MK");
         MODE_ACRONYMS.put (Modes.EQ_DEVICE_PARAMS, "EQ");
         MODE_ACRONYMS.put (Modes.INSTRUMENT_DEVICE_PARAMS, "IT");
-        MODE_ACRONYMS.put (Modes.USER, "US");
+        MODE_ACRONYMS.put (Modes.PROJECT_PARAMETERS, "PP");
+        MODE_ACRONYMS.put (Modes.TRACK_PARAMETERS, "TP");
     }
 
-    private static final Set<Modes>                               VALUE_MODES      = EnumSet.of (Modes.VOLUME, Modes.PAN, Modes.TRACK, Modes.SEND1, Modes.SEND2, Modes.SEND3, Modes.SEND4, Modes.SEND5, Modes.SEND6, Modes.SEND7, Modes.SEND8, Modes.DEVICE_PARAMS, Modes.EQ_DEVICE_PARAMS, Modes.INSTRUMENT_DEVICE_PARAMS, Modes.USER);
+    private static final Set<Modes>                               VALUE_MODES      = EnumSet.of (Modes.VOLUME, Modes.PAN, Modes.TRACK, Modes.SEND1, Modes.SEND2, Modes.SEND3, Modes.SEND4, Modes.SEND5, Modes.SEND6, Modes.SEND7, Modes.SEND8, Modes.DEVICE_PARAMS, Modes.EQ_DEVICE_PARAMS, Modes.INSTRUMENT_DEVICE_PARAMS, Modes.PROJECT_PARAMETERS, Modes.TRACK_PARAMETERS);
 
     private final int []                                          vuValues         = new int [32];
     private final int []                                          vuValuesRight    = new int [32];
@@ -171,7 +173,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
     private final int []                                          faderValues      = new int [32];
     private int                                                   masterFaderValue = -1;
     private final int                                             numMCUDevices;
-    private IValueChanger                                         encoderValueChanger;
+    private final IValueChanger                                         encoderValueChanger;
     private JogWheelCommand<MCUControlSurface, MCUConfiguration>  jogWheelCommand  = null;
     private MasterVolumeMode<MCUControlSurface, MCUConfiguration> masterVolumeMode;
 
@@ -335,7 +337,8 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
             modeManager.register (Modes.DEVICE_PARAMS, new DeviceParamsMode (surface, this.model));
             modeManager.register (Modes.EQ_DEVICE_PARAMS, new DeviceParamsMode ("Equalizer", this.model.getSpecificDevice (DeviceID.EQ), surface, this.model));
             modeManager.register (Modes.INSTRUMENT_DEVICE_PARAMS, new DeviceParamsMode ("First Instrument", this.model.getSpecificDevice (DeviceID.FIRST_INSTRUMENT), surface, this.model));
-            modeManager.register (Modes.USER, new UserMode (surface, this.model));
+            modeManager.register (Modes.PROJECT_PARAMETERS, new MCUProjectParametersMode (surface, this.model));
+            modeManager.register (Modes.TRACK_PARAMETERS, new MCUTrackParametersMode (surface, this.model));
             modeManager.register (Modes.BROWSER, new DeviceBrowserMode (surface, this.model));
             modeManager.register (Modes.MARKERS, new MarkerMode (surface, this.model));
         }
@@ -495,7 +498,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
                 this.addButton (surface, ButtonID.TRACK, "Track", new TracksCommand (this.model, surface), 0, MCUControlSurface.MCU_MODE_IO, () -> surface.getButton (ButtonID.SELECT).isPressed () ? this.model.getCursorTrack ().isPinned () : modeManager.isActive (Modes.TRACK, Modes.VOLUME, Modes.DEVICE_LAYER, Modes.DEVICE_LAYER_VOLUME));
                 this.addButton (surface, ButtonID.PAN_SEND, "Pan", new PanCommand (this.model, surface), 0, MCUControlSurface.MCU_MODE_PAN, () -> modeManager.isActive (Modes.PAN, Modes.DEVICE_LAYER_PAN));
                 this.addButton (surface, ButtonID.SENDS, "Sends", new SendSelectCommand (this.model, surface), 0, MCUControlSurface.MCU_MODE_SENDS, () -> Modes.isSendMode (modeManager.getActiveID ()) || Modes.isLayerSendMode (modeManager.getActiveID ()));
-                this.addButton (surface, ButtonID.DEVICE, "Device", new DevicesCommand (this.model, surface), 0, MCUControlSurface.MCU_MODE_PLUGIN, () -> surface.getButton (ButtonID.SELECT).isPressed () ? cursorDevice.isPinned () : modeManager.isActive (Modes.DEVICE_PARAMS, Modes.USER));
+                this.addButton (surface, ButtonID.DEVICE, "Device", new MCUDevicesCommand (this.model, surface), 0, MCUControlSurface.MCU_MODE_PLUGIN, () -> surface.getButton (ButtonID.SELECT).isPressed () ? cursorDevice.isPinned () : modeManager.isActive (Modes.DEVICE_PARAMS, Modes.PROJECT_PARAMETERS, Modes.TRACK_PARAMETERS));
                 this.addButton (surface, ButtonID.PAGE_LEFT, "EQ", new MCUMultiModeSwitcherCommand (this.model, surface, Modes.EQ_DEVICE_PARAMS), 0, MCUControlSurface.MCU_MODE_EQ, () -> modeManager.isActive (Modes.EQ_DEVICE_PARAMS));
                 this.addButton (surface, ButtonID.PAGE_RIGHT, "INST", new MCUMultiModeSwitcherCommand (this.model, surface, Modes.INSTRUMENT_DEVICE_PARAMS), 0, MCUControlSurface.MCU_MODE_DYN, () -> modeManager.isActive (Modes.INSTRUMENT_DEVICE_PARAMS));
 

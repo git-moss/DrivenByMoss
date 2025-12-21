@@ -153,7 +153,7 @@ public class MixerMode extends TrackVolumeMode<KontrolProtocolControlSurface, Ko
             case KontrolProtocol.VERSION_2:
                 return "Track " + (track.getPosition () + 1) + "\n" + name;
             default:
-                return (track.getPosition () + 1) + ": " + name;
+                return track.getPosition () + 1 + ": " + name;
         }
     }
 }

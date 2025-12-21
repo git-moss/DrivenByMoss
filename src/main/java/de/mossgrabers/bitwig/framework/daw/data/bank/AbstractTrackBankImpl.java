@@ -38,6 +38,7 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBankImpl<Trac
     protected IApplication          application;
     protected final CursorTrackImpl cursorTrack;
     protected final Track           rootGroup;
+    private int                     currentPage = -1;
 
 
     /**
@@ -71,8 +72,8 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBankImpl<Trac
         for (int i = 0; i < this.getPageSize (); i++)
             this.items.add (new TrackImpl (host, valueChanger, application, (CursorTrack) cursorTrack.getTrack (), numScenes > 0 ? bank.sceneBank () : null, rootGroup, trackBank.getItemAt (i), i, this.numSends, this.numScenes));
 
-        // Note: cursorIndex is defined for all banks but currently only works for track banks
-        trackBank.cursorIndex ().addValueObserver (this::handleBankSelection);
+        trackBank.cursorIndex ().addValueObserver (this::handleTrackSelection);
+        trackBank.scrollPosition ().addValueObserver (this::handlePageSelection);
     }
 
 
@@ -141,7 +142,7 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBankImpl<Trac
      *
      * @param index The index of the newly de-/selected item
      */
-    private void handleBankSelection (final int index)
+    private void handleTrackSelection (final int index)
     {
         for (int i = 0; i < this.getPageSize (); i++)
         {
@@ -152,6 +153,17 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBankImpl<Trac
                 item.setSelected (isSelected);
                 this.notifySelectionObservers (i, isSelected);
             }
+        }
+    }
+
+
+    private void handlePageSelection (final int position)
+    {
+        final int page = position / this.pageSize;
+        if (page != this.currentPage)
+        {
+            this.currentPage = page;
+            this.firePageObserver ();
         }
     }
 

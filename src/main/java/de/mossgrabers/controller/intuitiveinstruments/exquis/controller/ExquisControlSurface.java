@@ -120,6 +120,7 @@ public class ExquisControlSurface extends AbstractControlSurface<ExquisConfigura
     public static final int                CMD_ENCODERS_SNAPSHOT     = 0x0A;
 
     private final ISysexCallback           callback;
+    private int                            requestTrackSettings      = -1;
 
 
     /**
@@ -242,6 +243,29 @@ public class ExquisControlSurface extends AbstractControlSurface<ExquisConfigura
 
 
     /**
+     * Update the track settings which were previously received for the current track.
+     *
+     * @param settings The settings to update
+     */
+    public void sendTrackSettings (final byte [] settings)
+    {
+        this.sendSysex (CMD_SNAPSHOT, settings);
+    }
+
+
+    /**
+     * Update the track settings which were previously received for the current track.
+     *
+     * @param trackPosition The track for which to request the settings
+     */
+    public void requestTrackSettings (final int trackPosition)
+    {
+        this.requestTrackSettings = trackPosition;
+        this.sendSysex (CMD_SNAPSHOT, new byte [0]);
+    }
+
+
+    /**
      * Send a byte array to the CTRL output of the Electra.One.
      *
      * @param command The command bytes
@@ -292,10 +316,24 @@ public class ExquisControlSurface extends AbstractControlSurface<ExquisConfigura
             case CMD_ROOT_NOTE:
                 final String noteName = Scales.NOTE_NAMES.get (data[CMD_START_POS + 1]);
                 this.configuration.setScaleBase (noteName);
+                this.host.showNotification ("Base Note: " + noteName);
                 break;
 
             case CMD_SCALE_NUMBER:
-                this.configuration.setScale (ExquisConfiguration.EXQUISE_SCALES[data[CMD_START_POS + 1]]);
+                final String scale = ExquisConfiguration.EXQUISE_SCALES[data[CMD_START_POS + 1]];
+                this.configuration.setScale (scale);
+                this.host.showNotification ("Scale: " + scale);
+                break;
+
+            case CMD_SNAPSHOT:
+                if (data.length == CMD_START_POS + 257)
+                {
+                    final byte [] settings = new byte [255];
+                    for (int i = 0; i < 255; i++)
+                        settings[i] = (byte) data[CMD_START_POS + 1 + i];
+                    this.callback.storeTrackSettings (this.requestTrackSettings, settings);
+                    this.requestTrackSettings = -1;
+                }
                 break;
 
             default:

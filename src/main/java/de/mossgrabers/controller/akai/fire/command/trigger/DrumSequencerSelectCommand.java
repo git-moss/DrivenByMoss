@@ -5,11 +5,9 @@
 package de.mossgrabers.controller.akai.fire.command.trigger;
 
 import de.mossgrabers.controller.akai.fire.controller.FireControlSurface;
-import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.featuregroup.ViewManager;
 import de.mossgrabers.framework.mode.INoteEditor;
 import de.mossgrabers.framework.mode.INoteEditorMode;
@@ -38,26 +36,30 @@ public class DrumSequencerSelectCommand extends AbstractFireViewMultiSelectComma
     }
 
 
+    /**
+     * Get the color index for the activation state of the views.
+     * 
+     * @return The color index
+     */
+    public int getViewActivationColor ()
+    {
+        final ViewManager viewManager = this.surface.getViewManager ();
+        if (viewManager.isActive (Views.DRUM))
+            return 1;
+        if (viewManager.isActive (Views.DRUM4))
+            return 2;
+        if (viewManager.isActive (Views.DRUM64))
+            return 3;
+        return 0;
+    }
+
+
     /** {@inheritDoc}} */
     @Override
     public void executeNormal (final ButtonEvent event)
     {
         if (event != ButtonEvent.UP)
             return;
-
-        final ModeManager modeManager = this.surface.getModeManager ();
-
-        // Toggle note mode
-        if (this.surface.isPressed (ButtonID.ALT))
-        {
-            if (modeManager.isActive (Modes.NOTE))
-                modeManager.restore ();
-            else
-                modeManager.setActive (Modes.NOTE);
-            this.surface.getDisplay ().notify ("Edit Notes: " + (modeManager.isActive (Modes.NOTE) ? "On" : "Off"));
-            this.getNoteEditor ().clearNotes ();
-            return;
-        }
 
         this.getNoteEditor ().clearNotes ();
 

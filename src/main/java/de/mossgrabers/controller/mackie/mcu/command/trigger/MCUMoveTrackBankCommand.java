@@ -9,7 +9,8 @@ import java.util.Optional;
 import de.mossgrabers.controller.mackie.mcu.MCUConfiguration;
 import de.mossgrabers.controller.mackie.mcu.MCUConfiguration.MainDisplay;
 import de.mossgrabers.controller.mackie.mcu.controller.MCUControlSurface;
-import de.mossgrabers.controller.mackie.mcu.mode.device.UserMode;
+import de.mossgrabers.controller.mackie.mcu.mode.device.MCUProjectParametersMode;
+import de.mossgrabers.controller.mackie.mcu.mode.device.MCUTrackParametersMode;
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.constants.DeviceID;
@@ -19,7 +20,7 @@ import de.mossgrabers.framework.daw.data.ISpecificDevice;
 import de.mossgrabers.framework.daw.data.bank.IBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
-import de.mossgrabers.framework.featuregroup.FeatureGroupManager;
+import de.mossgrabers.framework.featuregroup.AbstractParameterMode;
 import de.mossgrabers.framework.featuregroup.IMode;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.Modes;
@@ -104,19 +105,18 @@ public class MCUMoveTrackBankCommand extends AbstractTriggerCommand<MCUControlSu
                     this.notifySelectedDeviceAndParameterPage ();
                 break;
 
-            case USER:
-                final UserMode userMode = (UserMode) modeManager.get (Modes.USER);
-                if (this.moveBy1)
-                    this.handleBankMovement (userMode.getParameterBank ());
-                else
-                {
-                    userMode.setMode (this.moveLeft);
-                    // Also change state on other MCU devices
-                    for (final FeatureGroupManager<Modes, IMode> mm: modeManager.getConnectedManagers ())
-                        ((UserMode) mm.get (Modes.USER)).setMode (this.moveLeft);
-                }
+            case PROJECT_PARAMETERS:
+                final MCUProjectParametersMode projectMode = (MCUProjectParametersMode) modeManager.get (Modes.PROJECT_PARAMETERS);
+                this.handleBankMovement (projectMode.getBank ());
                 if (shouldNotify)
-                    this.notifySelectedProjectAndParameterPage ();
+                    this.notifySelectedParameterPage (true);
+                break;
+
+            case TRACK_PARAMETERS:
+                final MCUTrackParametersMode trackMode = (MCUTrackParametersMode) modeManager.get (Modes.TRACK_PARAMETERS);
+                this.handleBankMovement (trackMode.getBank ());
+                if (shouldNotify)
+                    this.notifySelectedParameterPage (false);
                 break;
 
             case MARKERS:
@@ -225,14 +225,14 @@ public class MCUMoveTrackBankCommand extends AbstractTriggerCommand<MCUControlSu
     }
 
 
-    private void notifySelectedProjectAndParameterPage ()
+    private void notifySelectedParameterPage (final boolean isProjectParameters)
     {
         this.mvHelper.delayDisplay ( () -> {
 
-            final UserMode userMode = (UserMode) this.surface.getModeManager ().get (Modes.USER);
+            final IMode mode = this.surface.getModeManager ().get (isProjectParameters ? Modes.PROJECT_PARAMETERS : Modes.TRACK_PARAMETERS);
 
             String text;
-            if (userMode.isProjectMode ())
+            if (isProjectParameters)
                 text = "Project";
             else
             {
@@ -246,13 +246,16 @@ public class MCUMoveTrackBankCommand extends AbstractTriggerCommand<MCUControlSu
 
             text = StringUtils.pad (text, 28);
 
-            final Optional<String> selectedItem = ((IParameterBank) userMode.getBank ()).getPageBank ().getSelectedItem ();
-            if (selectedItem.isPresent ())
+            if (mode instanceof final AbstractParameterMode<?, ?, ?> parameterMode)
             {
-                String pageName = selectedItem.get ();
-                if (pageName == null || pageName.isBlank ())
-                    pageName = "None";
-                text += pageName;
+                final Optional<String> selectedItem = ((IParameterBank) parameterMode.getBank ()).getPageBank ().getSelectedItem ();
+                if (selectedItem.isPresent ())
+                {
+                    String pageName = selectedItem.get ();
+                    if (pageName == null || pageName.isBlank ())
+                        pageName = "None";
+                    text += pageName;
+                }
             }
             return text;
         });

@@ -46,30 +46,41 @@ import de.mossgrabers.framework.utils.FileEx;
  */
 public class GenericFlexiConfiguration extends AbstractConfiguration
 {
-    private static final String                      TAG_TYPE                     = "TYPE";
-    private static final String                      TAG_NUMBER                   = "NUMBER";
-    private static final String                      TAG_MIDI_CHANNEL             = "MIDI_CHANNEL";
-    private static final String                      TAG_RESOLUTION               = "RESOLUTION";
-    private static final String                      TAG_KNOB_MODE                = "KNOB_MODE";
-    private static final String                      TAG_FUNCTION_LAYER           = "FUNCTION_LAYER";
-    private static final String                      TAG_SEND_VALUE               = "SEND_VALUE";
-    private static final String                      TAG_SEND_VALUE_WHEN_RECEIVED = "SEND_VALUE_WHEN_RECEIVED";
-    private static final String                      TAG_COMMAND                  = "COMMAND";
+    private static final String                      TAG_TYPE                          = "TYPE";
+    private static final String                      TAG_NUMBER                        = "NUMBER";
+    private static final String                      TAG_MIDI_CHANNEL                  = "MIDI_CHANNEL";
+    private static final String                      TAG_RESOLUTION                    = "RESOLUTION";
+    private static final String                      TAG_KNOB_MODE                     = "KNOB_MODE";
+    private static final String                      TAG_FUNCTION_LAYER                = "FUNCTION_LAYER";
+    private static final String                      TAG_SEND_VALUE                    = "SEND_VALUE";
+    private static final String                      TAG_SEND_VALUE_WHEN_RECEIVED      = "SEND_VALUE_WHEN_RECEIVED";
+    private static final String                      TAG_COMMAND                       = "COMMAND";
+    private static final String                      TAG_ASSIGNABLE_FUNCTION_ACTIONS   = "ASSIGNABLE_FUNCTION_ACTIONS";
+    private static final String                      TAG_KEYBOARD_INPUT_NAME           = "KEYBOARD_INPUT_NAME";
+    private static final String                      TAG_KEYBOARD_CHANNEL              = "KEYBOARD_CHANNEL";
+    private static final String                      TAG_KEYBOARD_ROUTE_TIMBRE         = "KEYBOARD_ROUTE_TIMBRE";
+    private static final String                      TAG_KEYBOARD_ROUTE_MODULATION     = "KEYBOARD_ROUTE_MODULATION";
+    private static final String                      TAG_KEYBOARD_ROUTE_EXPRESSION     = "KEYBOARD_ROUTE_EXPRESSION";
+    private static final String                      TAG_KEYBOARD_ROUTE_SUSTAIN        = "KEYBOARD_ROUTE_SUSTAIN";
+    private static final String                      TAG_KEYBOARD_ROUTE_PROGRAMCHANGE  = "KEYBOARD_ROUTE_PROGRAMCHANGE";
+    private static final String                      TAG_KEYBOARD_ROUTE_PITCHBEND      = "KEYBOARD_ROUTE_PITCHBEND";
+    private static final String                      TAG_ENABLE_MPE                    = "ENABLE_MPE";
+    private static final String                      TAG_MPE_PITCHBEND_RANGE           = "MPE_PITCHBEND_RANGE";
 
     /** Export signal. */
-    public static final Integer                      BUTTON_SAVE                  = Integer.valueOf (NEXT_SETTING_ID);
+    public static final Integer                      BUTTON_SAVE                       = Integer.valueOf (NEXT_SETTING_ID);
     /** Import signal. */
-    public static final Integer                      BUTTON_LOAD                  = Integer.valueOf (NEXT_SETTING_ID + 1);
+    public static final Integer                      BUTTON_LOAD                       = Integer.valueOf (NEXT_SETTING_ID + 1);
     /** Enable MMC. */
-    public static final Integer                      ENABLE_MMC                   = Integer.valueOf (NEXT_SETTING_ID + 2);
+    public static final Integer                      ENABLE_MMC                        = Integer.valueOf (NEXT_SETTING_ID + 2);
     /** The selected mode. */
-    public static final Integer                      SELECTED_MODE                = Integer.valueOf (NEXT_SETTING_ID + 3);
+    public static final Integer                      SELECTED_MODE                     = Integer.valueOf (NEXT_SETTING_ID + 3);
 
-    private static final String                      CATEGORY_KEYBOARD            = "Keyboard / Pads (requires restart)";
-    private static final String                      CATEGORY_OPTIONS             = "Options";
+    private static final String                      CATEGORY_KEYBOARD                 = "Keyboard / Pads (requires restart)";
+    private static final String                      CATEGORY_OPTIONS                  = "Options";
 
     /** The types. */
-    public static final List<String>                 OPTIONS_TYPE                 = List.of ("Off", "CC", "Note", "Program Change", "Pitchbend", "MMC");
+    public static final List<String>                 OPTIONS_TYPE                      = List.of ("Off", "CC", "Note", "Program Change", "Pitchbend", "MMC");
 
     // @formatter:off
     static final List<String>                        NUMBER_NAMES                 = List.of (
@@ -243,15 +254,15 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     );
     // @formatter:on
 
-    private static final List<String>                CONTROLLER_CHANNELS          = KEYBOARD_CHANNELS.subList (1, KEYBOARD_CHANNELS.size ());
-    private static final List<String>                OPTIONS_RESOLUTION           = List.of ("7-bit", "14-bit");
-    private static final List<String>                FUNCTION_LAYERS              = List.of ("All", "Layer 1", "Layer 2", "Layer 3", "Layer 4", "Layer 5", "Layer 6", "Layer 7", "Layer 8", "Layer 9", "Layer 10");
+    private static final List<String>                CONTROLLER_CHANNELS               = KEYBOARD_CHANNELS.subList (1, KEYBOARD_CHANNELS.size ());
+    private static final List<String>                OPTIONS_RESOLUTION                = List.of ("7-bit", "14-bit");
+    private static final List<String>                FUNCTION_LAYERS                   = List.of ("All", "Layer 1", "Layer 2", "Layer 3", "Layer 4", "Layer 5", "Layer 6", "Layer 7", "Layer 8", "Layer 9", "Layer 10");
 
     /** A setting of a slot has changed. */
-    static final Integer                             SLOT_CHANGE                  = Integer.valueOf (1000);
+    static final Integer                             SLOT_CHANGE                       = Integer.valueOf (1000);
 
     /** The number of command slots. */
-    public static final int                          NUM_SLOTS                    = 300;
+    public static final int                          NUM_SLOTS                         = 300;
 
     private IEnumSetting                             slotSelectionSetting;
     private IEnumSetting                             typeSetting;
@@ -262,8 +273,8 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     private IEnumSetting                             functionLayerSetting;
     private IEnumSetting                             sendValueSetting;
     private IEnumSetting                             sendValueWhenReceivedSetting;
-    private final List<IEnumSetting>                 functionSettings             = new ArrayList<> (CommandCategory.values ().length);
-    private final Map<CommandCategory, IEnumSetting> functionSettingsMap          = new EnumMap<> (CommandCategory.class);
+    private final List<IEnumSetting>                 functionSettings                  = new ArrayList<> (CommandCategory.values ().length);
+    private final Map<CommandCategory, IEnumSetting> functionSettingsMap               = new EnumMap<> (CommandCategory.class);
     private IEnumSetting                             learnTypeSetting;
     private IEnumSetting                             learnNumberSetting;
     private IEnumSetting                             learnMidiChannelSetting;
@@ -271,33 +282,42 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     private IEnumSetting                             selectedModeSetting;
     private IStringSetting                           fileSetting;
 
-    private final CommandSlot []                     commandSlots                 = new CommandSlot [NUM_SLOTS];
-
+    // Helper variables
     private IValueObserver<FlexiCommand>             commandObserver;
     private String                                   filename;
-    private final Object                             syncMapUpdate                = new Object ();
+    private final Object                             syncMapUpdate                     = new Object ();
     private int []                                   keyMap;
-    private int                                      selectedSlot                 = 0;
+    private int                                      selectedSlot                      = 0;
+    private final AtomicBoolean                      doNotFire                         = new AtomicBoolean (false);
+    private final AtomicBoolean                      commandIsUpdating                 = new AtomicBoolean (false);
+    private String                                   selectedMode                      = MODES.get (0);
 
-    private String                                   learnTypeValue               = null;
-    private String                                   learnNumberValue             = null;
-    private String                                   learnMidiChannelValue        = null;
-    private boolean                                  learnResolution              = false;
+    // Variables for learning MIDI commands
+    private String                                   learnTypeValue                    = null;
+    private String                                   learnNumberValue                  = null;
+    private String                                   learnMidiChannelValue             = null;
+    private boolean                                  learnResolution                   = false;
 
-    private final AtomicBoolean                      doNotFire                    = new AtomicBoolean (false);
-    private final AtomicBoolean                      commandIsUpdating            = new AtomicBoolean (false);
-    private final String []                          assignableFunctionActions    = new String [8];
-
-    private String                                   selectedMode                 = MODES.get (0);
-
-    private String                                   keyboardInputName            = "Generic Flexi";
-    private int                                      keyboardChannel              = 0;
-    private boolean                                  keyboardRouteTimbre          = false;
-    private boolean                                  keyboardRouteModulation      = true;
-    private boolean                                  keyboardRouteExpression      = false;
-    private boolean                                  keyboardRouteSustain         = true;
-    private boolean                                  keyboardRouteProgramChange   = false;
-    private boolean                                  keyboardRoutePitchbend       = true;
+    // Setting variables
+    private final CommandSlot []                     commandSlots                      = new CommandSlot [NUM_SLOTS];
+    private final IActionSetting []                  assignableFunctionActionsSettings = new IActionSetting [8];
+    private final String []                          assignableFunctionActions         = new String [8];
+    private String                                   keyboardInputName                 = "Generic Flexi";
+    private int                                      keyboardChannel                   = 0;
+    private boolean                                  keyboardRouteTimbre               = false;
+    private boolean                                  keyboardRouteModulation           = true;
+    private boolean                                  keyboardRouteExpression           = false;
+    private boolean                                  keyboardRouteSustain              = true;
+    private boolean                                  keyboardRouteProgramChange        = false;
+    private boolean                                  keyboardRoutePitchbend            = true;
+    private IStringSetting                           keyboardInputNameSetting;
+    private IEnumSetting                             keyboardMidiChannelSetting;
+    private IEnumSetting                             routeTimbreSetting;
+    private IEnumSetting                             routeModulationSetting;
+    private IEnumSetting                             routeExpressionSetting;
+    private IEnumSetting                             routeSustainSetting;
+    private IEnumSetting                             routeProgramChangeSetting;
+    private IEnumSetting                             routePitchbendSetting;
 
 
     /**
@@ -478,36 +498,36 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         ///////////////////////////////////////////////
         // Keyboard / Pads
 
-        final IStringSetting keyboardInputNameSetting = globalSettings.getStringSetting ("Input Name", CATEGORY_KEYBOARD, 100, "Generic Flexi");
-        this.keyboardInputName = keyboardInputNameSetting.get ();
+        this.keyboardInputNameSetting = globalSettings.getStringSetting ("Input Name", CATEGORY_KEYBOARD, 100, "Generic Flexi");
+        this.keyboardInputName = this.keyboardInputNameSetting.get ();
 
         this.activateMPESetting (globalSettings, CATEGORY_KEYBOARD, false);
 
-        final IEnumSetting keyboardMidiChannelSetting = globalSettings.getEnumSetting ("Midi Channel", CATEGORY_KEYBOARD, KEYBOARD_CHANNELS, KEYBOARD_CHANNELS.get (1));
-        this.keyboardChannel = AbstractConfiguration.lookupIndex (KEYBOARD_CHANNELS, keyboardMidiChannelSetting.get ()) - 1;
+        this.keyboardMidiChannelSetting = globalSettings.getEnumSetting ("Midi Channel", CATEGORY_KEYBOARD, KEYBOARD_CHANNELS, KEYBOARD_CHANNELS.get (1));
+        this.keyboardChannel = AbstractConfiguration.lookupIndex (KEYBOARD_CHANNELS, this.keyboardMidiChannelSetting.get ()) - 1;
 
-        final IEnumSetting routeTimbreSetting = globalSettings.getEnumSetting ("Route Timbre (CC74)", CATEGORY_KEYBOARD, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[0]);
-        this.keyboardRouteTimbre = "On".equals (routeTimbreSetting.get ());
+        this.routeTimbreSetting = globalSettings.getEnumSetting ("Route Timbre (CC74)", CATEGORY_KEYBOARD, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[0]);
+        this.keyboardRouteTimbre = "On".equals (this.routeTimbreSetting.get ());
 
-        final IEnumSetting routeModulationSetting = globalSettings.getEnumSetting ("Route Modulation (CC01)", CATEGORY_KEYBOARD, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[1]);
-        this.keyboardRouteModulation = "On".equals (routeModulationSetting.get ());
+        this.routeModulationSetting = globalSettings.getEnumSetting ("Route Modulation (CC01)", CATEGORY_KEYBOARD, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[1]);
+        this.keyboardRouteModulation = "On".equals (this.routeModulationSetting.get ());
 
-        final IEnumSetting routeExpressionSetting = globalSettings.getEnumSetting ("Route Expression (CC11)", CATEGORY_KEYBOARD, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[0]);
-        this.keyboardRouteExpression = "On".equals (routeExpressionSetting.get ());
+        this.routeExpressionSetting = globalSettings.getEnumSetting ("Route Expression (CC11)", CATEGORY_KEYBOARD, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[0]);
+        this.keyboardRouteExpression = "On".equals (this.routeExpressionSetting.get ());
 
-        final IEnumSetting routeSustainSetting = globalSettings.getEnumSetting ("Route Sustain (CC64)", CATEGORY_KEYBOARD, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[1]);
-        this.keyboardRouteSustain = "On".equals (routeSustainSetting.get ());
+        this.routeSustainSetting = globalSettings.getEnumSetting ("Route Sustain (CC64)", CATEGORY_KEYBOARD, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[1]);
+        this.keyboardRouteSustain = "On".equals (this.routeSustainSetting.get ());
 
-        final IEnumSetting routeProgramChangeSetting = globalSettings.getEnumSetting ("Route Program Changes", CATEGORY_KEYBOARD, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[0]);
-        this.keyboardRouteProgramChange = "On".equals (routeProgramChangeSetting.get ());
+        this.routeProgramChangeSetting = globalSettings.getEnumSetting ("Route Program Changes", CATEGORY_KEYBOARD, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[0]);
+        this.keyboardRouteProgramChange = "On".equals (this.routeProgramChangeSetting.get ());
 
-        final IEnumSetting routePitchbendSetting = globalSettings.getEnumSetting ("Route Pitchbend", CATEGORY_KEYBOARD, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[1]);
-        this.keyboardRoutePitchbend = "On".equals (routePitchbendSetting.get ());
+        this.routePitchbendSetting = globalSettings.getEnumSetting ("Route Pitchbend", CATEGORY_KEYBOARD, AbstractConfiguration.ON_OFF_OPTIONS, AbstractConfiguration.ON_OFF_OPTIONS[1]);
+        this.keyboardRoutePitchbend = "On".equals (this.routePitchbendSetting.get ());
 
         this.addSettingObserver (ENABLED_MPE_ZONES, () -> {
             final boolean isMPEEnabled = this.isMPEEnabled ();
-            keyboardMidiChannelSetting.setEnabled (!isMPEEnabled);
-            routePitchbendSetting.setEnabled (!isMPEEnabled);
+            this.keyboardMidiChannelSetting.setEnabled (!isMPEEnabled);
+            this.routePitchbendSetting.setEnabled (!isMPEEnabled);
         });
 
         ///////////////////////////////////////////////
@@ -522,8 +542,8 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
         for (int i = 0; i < this.assignableFunctionActions.length; i++)
         {
             final int pos = i;
-            final IActionSetting actionSetting = globalSettings.getActionSetting ("Action " + (i + 1), CATEGORY_OPTIONS);
-            actionSetting.addValueObserver (value -> this.assignableFunctionActions[pos] = actionSetting.get ());
+            this.assignableFunctionActionsSettings[i] = globalSettings.getActionSetting ("Action " + (pos + 1), CATEGORY_OPTIONS);
+            this.assignableFunctionActionsSettings[i].addValueObserver (value -> this.assignableFunctionActions[pos] = this.assignableFunctionActionsSettings[pos].get ());
         }
 
         ///////////////////////////////////////////////
@@ -865,6 +885,22 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
             props.put (slotName + TAG_SEND_VALUE, Boolean.toString (slot.isSendValue ()));
             props.put (slotName + TAG_SEND_VALUE_WHEN_RECEIVED, Boolean.toString (slot.isSendValueWhenReceived ()));
         }
+
+        for (int i = 0; i < this.assignableFunctionActions.length; i++)
+            props.put (TAG_ASSIGNABLE_FUNCTION_ACTIONS + i, this.assignableFunctionActions[i] == null ? "" : this.assignableFunctionActions[i]);
+
+        props.put (TAG_KEYBOARD_INPUT_NAME, this.keyboardInputNameSetting.get ());
+        props.put (TAG_KEYBOARD_CHANNEL, this.keyboardMidiChannelSetting.get ());
+        props.put (TAG_KEYBOARD_ROUTE_TIMBRE, this.routeTimbreSetting.get ());
+        props.put (TAG_KEYBOARD_ROUTE_MODULATION, this.routeModulationSetting.get ());
+        props.put (TAG_KEYBOARD_ROUTE_EXPRESSION, this.routeExpressionSetting.get ());
+        props.put (TAG_KEYBOARD_ROUTE_SUSTAIN, this.routeSustainSetting.get ());
+        props.put (TAG_KEYBOARD_ROUTE_PROGRAMCHANGE, this.routeProgramChangeSetting.get ());
+        props.put (TAG_KEYBOARD_ROUTE_PITCHBEND, this.routePitchbendSetting.get ());
+
+        props.put (TAG_ENABLE_MPE, this.enableMPESetting.get ());
+        props.put (TAG_MPE_PITCHBEND_RANGE, this.pitchBendRangeSetting.get ().toString ());
+
         try (final Writer writer = new FileWriter (exportFile))
         {
             props.store (writer, "Generic Flexi");
@@ -881,60 +917,84 @@ public class GenericFlexiConfiguration extends AbstractConfiguration
     public void importFrom (final File importFile) throws IOException
     {
         this.slotSelectionSetting.set ("1");
+        final Properties props = new Properties ();
+        try (final Reader reader = new FileReader (importFile))
+        {
+            props.load (reader);
+        }
+        catch (final IOException ex)
+        {
+            this.host.error ("Could not import from file.", ex);
+            this.host.showNotification ("Could not import from file. Check Script Console for detailed error.");
+            return;
+        }
 
-        this.host.scheduleTask ( () -> {
-            try
+        this.host.scheduleTask ( () -> this.applyProperties (props), 1000);
+    }
+
+
+    private void applyProperties (final Properties props)
+    {
+        try
+        {
+            for (int i = 0; i < this.commandSlots.length; i++)
             {
-                final Properties props = new Properties ();
-                try (final Reader reader = new FileReader (importFile))
-                {
-                    props.load (reader);
-                }
+                final String slotName = "SLOT" + i + "_";
+                final CommandSlot slot = this.commandSlots[i];
 
-                for (int i = 0; i < this.commandSlots.length; i++)
-                {
-                    final String slotName = "SLOT" + i + "_";
-                    final CommandSlot slot = this.commandSlots[i];
+                final String typeProperty = props.getProperty (slotName + TAG_TYPE);
+                if (typeProperty == null)
+                    continue;
 
-                    final String typeProperty = props.getProperty (slotName + TAG_TYPE);
-                    if (typeProperty == null)
-                        continue;
+                int type = Integer.parseInt (typeProperty);
 
-                    int type = Integer.parseInt (typeProperty);
+                final FlexiCommand command = FlexiCommand.lookupByName (props.getProperty (slotName + TAG_COMMAND));
 
-                    final FlexiCommand command = FlexiCommand.lookupByName (props.getProperty (slotName + TAG_COMMAND));
+                // For backwards compatibility
+                if (command == FlexiCommand.OFF)
+                    type = CommandSlot.TYPE_OFF;
 
-                    // For backwards compatibility
-                    if (command == FlexiCommand.OFF)
-                        type = CommandSlot.TYPE_OFF;
+                final String numberProperty = props.getProperty (slotName + TAG_NUMBER);
+                final String midiChannelProperty = props.getProperty (slotName + TAG_MIDI_CHANNEL);
+                final String knobModeProperty = props.getProperty (slotName + TAG_KNOB_MODE);
+                final String functionLayerProperty = props.getProperty (slotName + TAG_FUNCTION_LAYER);
 
-                    final String numberProperty = props.getProperty (slotName + TAG_NUMBER);
-                    final String midiChannelProperty = props.getProperty (slotName + TAG_MIDI_CHANNEL);
-                    final String knobModeProperty = props.getProperty (slotName + TAG_KNOB_MODE);
-                    final String functionLayerProperty = props.getProperty (slotName + TAG_FUNCTION_LAYER);
-
-                    slot.setType (type);
-                    slot.setNumber (numberProperty == null ? 0 : Integer.parseInt (numberProperty));
-                    slot.setMidiChannel (midiChannelProperty == null ? 0 : Integer.parseInt (midiChannelProperty));
-                    slot.setResolution (Boolean.parseBoolean (props.getProperty (slotName + TAG_RESOLUTION)));
-                    slot.setKnobMode (readKnobMode (knobModeProperty));
-                    slot.setFunctionLayer (functionLayerProperty == null ? 0 : Integer.parseInt (functionLayerProperty));
-                    slot.setCommand (command);
-                    slot.setSendValue (Boolean.parseBoolean (props.getProperty (slotName + TAG_SEND_VALUE)));
-                    slot.setSendValueWhenReceived (Boolean.parseBoolean (props.getProperty (slotName + TAG_SEND_VALUE_WHEN_RECEIVED)));
-                }
-            }
-            catch (final IOException | NumberFormatException ex)
-            {
-                this.host.error ("Could not import from file.", ex);
-                this.host.showNotification ("Could not import from file. Check Script Console for detailed error.");
-                return;
+                slot.setType (type);
+                slot.setNumber (numberProperty == null ? 0 : Integer.parseInt (numberProperty));
+                slot.setMidiChannel (midiChannelProperty == null ? 0 : Integer.parseInt (midiChannelProperty));
+                slot.setResolution (Boolean.parseBoolean (props.getProperty (slotName + TAG_RESOLUTION)));
+                slot.setKnobMode (readKnobMode (knobModeProperty));
+                slot.setFunctionLayer (functionLayerProperty == null ? 0 : Integer.parseInt (functionLayerProperty));
+                slot.setCommand (command);
+                slot.setSendValue (Boolean.parseBoolean (props.getProperty (slotName + TAG_SEND_VALUE)));
+                slot.setSendValueWhenReceived (Boolean.parseBoolean (props.getProperty (slotName + TAG_SEND_VALUE_WHEN_RECEIVED)));
             }
 
-            this.clearNoteMap ();
+            for (int i = 0; i < this.assignableFunctionActions.length; i++)
+                this.assignableFunctionActionsSettings[i].set (props.getProperty (TAG_ASSIGNABLE_FUNCTION_ACTIONS + i, ""));
 
-            this.selectSlot ("1");
-        }, 1000);
+            this.keyboardInputNameSetting.set (props.getProperty (TAG_KEYBOARD_INPUT_NAME, "Generic Flexi"));
+            this.keyboardMidiChannelSetting.set (props.getProperty (TAG_KEYBOARD_CHANNEL, "1"));
+            this.routeTimbreSetting.set (props.getProperty (TAG_KEYBOARD_ROUTE_TIMBRE, "Off"));
+            this.routeModulationSetting.set (props.getProperty (TAG_KEYBOARD_ROUTE_MODULATION, "Off"));
+            this.routeExpressionSetting.set (props.getProperty (TAG_KEYBOARD_ROUTE_EXPRESSION, "Off"));
+            this.routeSustainSetting.set (props.getProperty (TAG_KEYBOARD_ROUTE_SUSTAIN, "Off"));
+            this.routeProgramChangeSetting.set (props.getProperty (TAG_KEYBOARD_ROUTE_PROGRAMCHANGE, "Off"));
+            this.routePitchbendSetting.set (props.getProperty (TAG_KEYBOARD_ROUTE_PITCHBEND, "Off"));
+
+            this.enableMPESetting.set (props.getProperty (TAG_ENABLE_MPE, "Off"));
+            this.pitchBendRangeSetting.set (Integer.parseInt (props.getProperty (TAG_MPE_PITCHBEND_RANGE, "48")));
+        }
+        catch (final NumberFormatException ex)
+        {
+            this.host.error ("Could not import from file.", ex);
+            this.host.showNotification ("Could not import from file. Check Script Console for detailed error.");
+            return;
+        }
+
+        this.clearNoteMap ();
+
+        this.selectSlot ("1");
     }
 
 

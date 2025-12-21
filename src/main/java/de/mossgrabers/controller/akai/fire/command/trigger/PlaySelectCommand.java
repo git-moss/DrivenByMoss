@@ -33,6 +33,22 @@ public class PlaySelectCommand extends AbstractFireViewMultiSelectCommand
     }
 
 
+    /**
+     * Get the color index for the activation state of the views.
+     * 
+     * @return The color index
+     */
+    public int getViewActivationColor ()
+    {
+        final ViewManager viewManager = this.surface.getViewManager ();
+        if (viewManager.isActive (Views.PLAY))
+            return 1;
+        if (viewManager.isActive (Views.PIANO))
+            return 2;
+        return 0;
+    }
+
+
     /** {@inheritDoc}} */
     @Override
     public void executeNormal (final ButtonEvent event)

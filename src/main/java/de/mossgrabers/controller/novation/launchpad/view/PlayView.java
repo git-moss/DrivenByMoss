@@ -11,10 +11,7 @@ import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
-import de.mossgrabers.framework.controller.grid.IPadGrid;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.midi.IMidiInput;
-import de.mossgrabers.framework.daw.midi.MidiConstants;
 import de.mossgrabers.framework.featuregroup.IScrollableView;
 import de.mossgrabers.framework.scale.Scale;
 import de.mossgrabers.framework.scale.Scales;
@@ -31,20 +28,7 @@ import de.mossgrabers.framework.view.Views;
  */
 public class PlayView extends AbstractPlayView<LaunchpadControlSurface, LaunchpadConfiguration> implements IScrollableView
 {
-    private static final int [] MODULATION_INTENSITIES =
-    {
-        0,
-        32,
-        64,
-        92,
-        127
-    };
-
-    private boolean             playControls           = false;
-    private boolean             isSustain              = false;
-    private boolean             isPitchDown            = false;
-    private boolean             isPitchUp              = false;
-    private int                 isModulation           = 0;
+    private final PlayControls playControls;
 
 
     /**
@@ -70,6 +54,8 @@ public class PlayView extends AbstractPlayView<LaunchpadControlSurface, Launchpa
     {
         super (name, surface, model, true);
 
+        this.playControls = new PlayControls (surface, this.scales);
+
         final Configuration configuration = this.surface.getConfiguration ();
         configuration.addSettingObserver (AbstractConfiguration.ACTIVATE_FIXED_ACCENT, this::initMaxVelocity);
         configuration.addSettingObserver (AbstractConfiguration.FIXED_ACCENT_VALUE, this::initMaxVelocity);
@@ -89,7 +75,7 @@ public class PlayView extends AbstractPlayView<LaunchpadControlSurface, Launchpa
                 return LaunchpadColorManager.LAUNCHPAD_COLOR_OCEAN_HI;
 
             case SCENE4:
-                return this.playControls ? LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_GREEN_LO;
+                return this.playControls.getToggleButtonColor ();
 
             case SCENE5:
                 return LaunchpadColorManager.LAUNCHPAD_COLOR_AMBER_LO;
@@ -128,11 +114,12 @@ public class PlayView extends AbstractPlayView<LaunchpadControlSurface, Launchpa
                 display.notify (name);
                 break;
             case SCENE4:
-                this.playControls = !this.playControls;
-                this.setBlockedNotes (this.playControls ? 8 : 0);
+                this.playControls.toggle ();
+                this.setBlockedNotes (this.playControls.isActive () ? 8 : 0);
                 break;
             case SCENE5:
                 this.activatePreferredView (Views.CHORDS);
+                display.notify ("Chords: On");
                 // Do not update note map!
                 return;
             case SCENE6:
@@ -166,21 +153,7 @@ public class PlayView extends AbstractPlayView<LaunchpadControlSurface, Launchpa
     public void drawGrid ()
     {
         super.drawGrid ();
-
-        if (!this.playControls)
-            return;
-
-        final IPadGrid padGrid = this.surface.getPadGrid ();
-
-        final int startNote = this.scales.getStartNote ();
-
-        padGrid.light (startNote, this.isSustain ? LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_YELLOW_LO);
-
-        padGrid.light (startNote + 1, this.isPitchDown ? LaunchpadColorManager.LAUNCHPAD_COLOR_CYAN_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_CYAN_LO);
-        padGrid.light (startNote + 2, this.isPitchUp ? LaunchpadColorManager.LAUNCHPAD_COLOR_CYAN_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_CYAN_LO);
-
-        for (int i = 0; i < 5; i++)
-            padGrid.light (startNote + 3 + i, this.isModulation == i ? LaunchpadColorManager.LAUNCHPAD_COLOR_MAGENTA_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_MAGENTA_LO);
+        this.playControls.draw ();
     }
 
 
@@ -188,45 +161,8 @@ public class PlayView extends AbstractPlayView<LaunchpadControlSurface, Launchpa
     @Override
     public void onGridNote (final int key, final int velocity)
     {
-        if (this.playControls)
-        {
-            final int pos = key - this.scales.getStartNote ();
-            if (pos < 8)
-            {
-                final boolean isDown = velocity > 0;
-
-                final IMidiInput midiInput = this.surface.getMidiInput ();
-                switch (pos)
-                {
-                    // Sustain
-                    case 0:
-                        this.isSustain = isDown;
-                        midiInput.sendRawMidiEvent (MidiConstants.CMD_CC, 64, this.isSustain ? 127 : 0);
-                        return;
-
-                    // Pitch
-                    case 1:
-                        this.isPitchDown = isDown;
-                        midiInput.sendRawMidiEvent (MidiConstants.CMD_PITCHBEND, 0, this.isPitchDown ? Math.abs (velocity / 2 - 63) : 64);
-                        return;
-                    case 2:
-                        this.isPitchUp = isDown;
-                        midiInput.sendRawMidiEvent (MidiConstants.CMD_PITCHBEND, 0, this.isPitchUp ? 64 + velocity / 2 : 64);
-                        return;
-
-                    // Modulation
-                    default:
-                        if (isDown)
-                        {
-                            this.isModulation = pos - 3;
-                            midiInput.sendRawMidiEvent (MidiConstants.CMD_CC, 1, MODULATION_INTENSITIES[this.isModulation]);
-                        }
-                        return;
-                }
-            }
-        }
-
-        super.onGridNote (key, velocity);
+        if (!this.playControls.handleGridNotes (key, velocity))
+            super.onGridNote (key, velocity);
     }
 
 

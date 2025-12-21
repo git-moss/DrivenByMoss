@@ -10,12 +10,7 @@ import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.clip.INoteClip;
 import de.mossgrabers.framework.daw.clip.NotePosition;
-import de.mossgrabers.framework.daw.clip.StepState;
 import de.mossgrabers.framework.daw.data.ITrack;
-import de.mossgrabers.framework.featuregroup.IMode;
-import de.mossgrabers.framework.featuregroup.ModeManager;
-import de.mossgrabers.framework.mode.INoteEditorMode;
-import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.scale.Scales;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.Views;
@@ -45,41 +40,20 @@ public class SequencerView extends AbstractNoteSequencerView<FireControlSurface,
 
     /** {@inheritDoc} */
     @Override
-    protected void handleSequencerArea (final int index, final int x, final int y, final int velocity)
+    public void onGridNoteLongPress (final int note)
     {
-        // Handle note editor mode
-        final ModeManager modeManager = this.surface.getModeManager ();
-        if (velocity > 0)
-        {
-            final IMode activeMode = modeManager.getActive ();
-            if (activeMode instanceof final INoteEditorMode noteMode)
-            {
-                // Store existing note for editing
-                final INoteClip clip = this.getClip ();
-                final int mappedY = this.keyManager.map (y);
-                final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), x, mappedY);
-                final StepState state = clip.getStep (notePosition).getState ();
-                if (state == StepState.START)
-                {
-                    this.editNote (clip, notePosition, true);
-                    if (noteMode.getNoteEditor ().getNotes ().isEmpty ())
-                    {
-                        this.surface.getDisplay ().notify ("Edit Notes: Off");
-                        this.isNoteEdited = false;
-                    }
-                }
-                return;
-            }
-        }
-        else
-        {
-            if (this.isNoteEdited)
-                this.isNoteEdited = false;
-            if (modeManager.isActive (Modes.NOTE))
-                return;
-        }
+        if (!this.isActive ())
+            return;
 
-        super.handleSequencerArea (index, x, y, velocity);
+        final int index = note - 36;
+        this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).setConsumed ();
+
+        final int y = index / this.clipCols;
+        if (y >= this.numSequencerRows)
+            return;
+
+        final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), index % this.clipCols, this.keyManager.map (y));
+        this.editNote (this.getClip (), notePosition, false);
     }
 
 

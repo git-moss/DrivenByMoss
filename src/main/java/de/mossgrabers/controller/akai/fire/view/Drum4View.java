@@ -46,6 +46,30 @@ public class Drum4View extends AbstractDrum4View<FireControlSurface, FireConfigu
 
     /** {@inheritDoc} */
     @Override
+    public void onGridNoteLongPress (final int note)
+    {
+        if (!this.isActive ())
+            return;
+
+        final int index = note - this.surface.getPadGrid ().getStartNote ();
+        this.surface.getButton (ButtonID.get (ButtonID.PAD1, index)).setConsumed ();
+
+        final int y = index / this.clipCols;
+
+        // Sequencer steps?
+        if (y < this.playRows)
+            return;
+
+        final int stepX = index % this.clipCols;
+        final int stepY = this.scales.getDrumOffset () + y;
+
+        final NotePosition notePosition = new NotePosition (this.configuration.getMidiEditChannel (), stepX, stepY);
+        this.editNote (this.getClip (), notePosition, false);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public int getSoloButtonColor (final int index)
     {
         return this.isActive () && this.primary.hasDrumPads () && this.primary.getDrumPadBank ().getItem (3 - index).isSelected () ? this.lanes : 0;

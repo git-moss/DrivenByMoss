@@ -224,7 +224,7 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
         final ViewManager viewManager = surface.getViewManager ();
         final ModeManager modeManager = surface.getModeManager ();
 
-        // Modes
+        // Knob Modes
 
         this.modeSelectCommand = new FireModeCommand (this.model, surface, MODES);
         this.addButton (ButtonID.BANK_RIGHT, "BANK", this.modeSelectCommand, FireControlSurface.FIRE_BANK);
@@ -261,39 +261,14 @@ public class FireControllerSetup extends AbstractControllerSetup<FireControlSurf
 
         // Views + state toggles
 
-        this.addButton (ButtonID.SEQUENCER, "STEP", new StepSequencerSelectCommand (this.model, surface), FireControlSurface.FIRE_STEP, () -> {
-            if (viewManager.isActive (Views.SEQUENCER))
-                return 1;
-            if (viewManager.isActive (Views.POLY_SEQUENCER))
-                return 2;
-            return surface.isShiftPressed () && surface.getConfiguration ().isAccentActive () ? 1 : 0;
-        }, FireColorManager.BUTTON_STATE_ON2, FireColorManager.BUTTON_STATE_HI2, ColorManager.BUTTON_STATE_ON);
-
-        this.addButton (ButtonID.NOTE, "NOTE", new PlaySelectCommand (this.model, surface), FireControlSurface.FIRE_NOTE, () -> {
-            if (viewManager.isActive (Views.PLAY))
-                return 1;
-            if (viewManager.isActive (Views.PIANO))
-                return 2;
-            return 0;
-        }, FireColorManager.BUTTON_STATE_ON2, FireColorManager.BUTTON_STATE_HI2, ColorManager.BUTTON_STATE_ON);
-
-        this.addButton (ButtonID.DRUM, "DRUM", new DrumSequencerSelectCommand (this.model, surface), FireControlSurface.FIRE_DRUM, () -> {
-            if (viewManager.isActive (Views.DRUM))
-                return 1;
-            if (viewManager.isActive (Views.DRUM4))
-                return 2;
-            if (viewManager.isActive (Views.DRUM64))
-                return 3;
-            return 0;
-        }, FireColorManager.BUTTON_STATE_ON2, FireColorManager.BUTTON_STATE_HI2, ColorManager.BUTTON_STATE_ON, ColorManager.BUTTON_STATE_HI);
-
-        this.addButton (ButtonID.SESSION, "PERFORM", new SessionSelectCommand (this.model, surface), FireControlSurface.FIRE_PERFORM, () -> {
-            if (viewManager.isActive (Views.SESSION))
-                return 1;
-            if (viewManager.isActive (Views.MIX))
-                return 2;
-            return 0;
-        }, FireColorManager.BUTTON_STATE_ON2, FireColorManager.BUTTON_STATE_HI2, ColorManager.BUTTON_STATE_ON);
+        final StepSequencerSelectCommand stepSequencerSelectCommand = new StepSequencerSelectCommand (this.model, surface);
+        final PlaySelectCommand playSelectCommand = new PlaySelectCommand (this.model, surface);
+        final DrumSequencerSelectCommand drumSequencerSelectCommand = new DrumSequencerSelectCommand (this.model, surface);
+        final SessionSelectCommand sessionSelectCommand = new SessionSelectCommand (this.model, surface);
+        this.addButton (ButtonID.SEQUENCER, "STEP", stepSequencerSelectCommand, FireControlSurface.FIRE_STEP, stepSequencerSelectCommand::getViewActivationColor, FireColorManager.BUTTON_STATE_ON2, FireColorManager.BUTTON_STATE_HI2, ColorManager.BUTTON_STATE_ON);
+        this.addButton (ButtonID.NOTE, "NOTE", playSelectCommand, FireControlSurface.FIRE_NOTE, playSelectCommand::getViewActivationColor, FireColorManager.BUTTON_STATE_ON2, FireColorManager.BUTTON_STATE_HI2, ColorManager.BUTTON_STATE_ON);
+        this.addButton (ButtonID.DRUM, "DRUM", drumSequencerSelectCommand, FireControlSurface.FIRE_DRUM, drumSequencerSelectCommand::getViewActivationColor, FireColorManager.BUTTON_STATE_ON2, FireColorManager.BUTTON_STATE_HI2, ColorManager.BUTTON_STATE_ON, ColorManager.BUTTON_STATE_HI);
+        this.addButton (ButtonID.SESSION, "PERFORM", sessionSelectCommand, FireControlSurface.FIRE_PERFORM, sessionSelectCommand::getViewActivationColor, FireColorManager.BUTTON_STATE_ON2, FireColorManager.BUTTON_STATE_HI2, ColorManager.BUTTON_STATE_ON);
 
         this.addButton (ButtonID.SHIFT, "SHIFT", new ToggleShiftViewCommand<> (this.model, surface), FireControlSurface.FIRE_SHIFT, () -> viewManager.isActive (Views.SHIFT) || surface.isShiftPressed () ? 1 : 0, FireColorManager.BUTTON_STATE_ON2, FireColorManager.BUTTON_STATE_HI2);
         this.addButton (ButtonID.SELECT, "SELECT", new FireSelectButtonCommand (this.model, surface), FireControlSurface.SELECT);

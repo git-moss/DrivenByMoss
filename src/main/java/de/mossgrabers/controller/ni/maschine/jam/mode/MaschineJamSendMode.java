@@ -25,7 +25,7 @@ public class MaschineJamSendMode extends TrackSendMode<MaschineJamControlSurface
 {
     private static final FaderConfig FADER_OFF  = new FaderConfig (FaderConfig.TYPE_DOT, 0, 0);
 
-    private FaderSlowChange          slowChange = new FaderSlowChange ();
+    private final FaderSlowChange          slowChange = new FaderSlowChange ();
 
 
     /**

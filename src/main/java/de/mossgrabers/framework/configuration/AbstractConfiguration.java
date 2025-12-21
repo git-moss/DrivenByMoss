@@ -389,8 +389,8 @@ public abstract class AbstractConfiguration implements Configuration
     private IEnumSetting                              noteRepeatModeSetting;
     private IEnumSetting                              noteRepeatOctaveSetting;
     private IEnumSetting                              midiEditChannelSetting;
-    private IIntegerSetting                           pitchBendRangeSetting;
-    private IEnumSetting                              enableMPESetting;
+    protected IIntegerSetting                         pitchBendRangeSetting;
+    protected IEnumSetting                            enableMPESetting;
     private IEnumSetting                              showPlayedChordsSetting;
 
     private final List<IEnumSetting>                  instrumentSettings                  = new ArrayList<> (7);

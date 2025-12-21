@@ -20,7 +20,7 @@ public class FaderSlowChange
 
     /**
      * Change the value. If Shift is pressed the change is slow and relative.
-     * 
+     *
      * @param surface The surface
      * @param parameter The parameter to modify
      * @param value The new value of the fader

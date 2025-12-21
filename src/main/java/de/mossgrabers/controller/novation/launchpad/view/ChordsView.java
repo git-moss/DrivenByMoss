@@ -126,6 +126,7 @@ public class ChordsView extends AbstractChordView<LaunchpadControlSurface, Launc
                 break;
             case SCENE5:
                 this.activatePreferredView (Views.PLAY);
+                display.notify ("Chords: Off");
                 // Do not update note map!
                 return;
             case SCENE6:

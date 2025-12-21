@@ -63,6 +63,7 @@ public class ExquisConfiguration extends AbstractConfiguration
         this.activateMPEBendRange (documentSettings, CATEGORY_PADS);
         this.activateScaleSetting (documentSettings, EXQUISE_SCALES, EXQUISE_SCALES[0]);
         this.activateScaleBaseSetting (documentSettings);
+        this.activateNoteRepeatSetting (documentSettings);
 
         ///////////////////////////
         // Session
