@@ -150,6 +150,7 @@ public class SessionMode extends AbstractElectraOneMode
                     // Not used
                     break;
             }
+            return;
         }
 
         final ITrackBank tb = this.model.getCurrentTrackBank ();
@@ -249,7 +250,7 @@ public class SessionMode extends AbstractElectraOneMode
                 final int selX = trackPosition;
                 final int selY = scenePosition;
                 final int padsX = 5;
-                final int padsY = 5 + 1;
+                final int padsY = 5;
                 final int offsetX = selX / padsX * padsX;
                 final int offsetY = selY / padsY * padsY;
                 sceneBank.scrollTo (offsetX * numScenes + index * padsY);
@@ -337,7 +338,7 @@ public class SessionMode extends AbstractElectraOneMode
                     ColorEx color = exists ? rowColor : ColorEx.BLACK;
                     if (selX == column && selY == y)
                         color = ColorEx.ORANGE;
-                    final String n = exists && column < maxX ? String.format ("Sc. %d - Tr. %d", Integer.valueOf (scenePosition + 1 + 5 * column), Integer.valueOf (trackPosition + 1 + 5 * y)) : "-";
+                    final String n = exists && column < maxX ? String.format ("Sc. %d - Tr. %d", Integer.valueOf (1 + 5 * column), Integer.valueOf (1 + 5 * y)) : "-";
                     this.pageCache.updateElement (column + 1, y, n, color, Boolean.TRUE);
                 }
             }

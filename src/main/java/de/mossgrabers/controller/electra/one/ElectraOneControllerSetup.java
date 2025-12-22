@@ -78,7 +78,7 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
         ms.setNumSends (6);
         ms.setNumMarkers (8);
 
-        ms.setNumScenes (6);
+        ms.setNumScenes (5);
 
         // Not used (yet)
         ms.setNumFilterColumnEntries (0);
