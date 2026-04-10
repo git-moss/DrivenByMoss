@@ -52,7 +52,7 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
     public static final int                ELECTRA_ROW_1     = 70;
 
     // Controller events to subscribe to: page, pots (= knob touch) and buttons
-    private static final int               SUBSCRIBED_EVENTS = 0x01 | 0x08 | 0x20;
+    private static final int               SUBSCRIBED_EVENTS = 0x01 | 0x08 | 0x10 | 0x20;
 
     /** The IDs for the continuous elements. */
     public static final List<ContinuousID> KNOB_IDS          = new ArrayList<> ();
@@ -244,6 +244,7 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
     private final Object                               touchCombinationCommandsLock = new Object ();
     private final List<int []>                         shiftPatterns                = new ArrayList<> ();
     private final Map<int [], TouchCombinationCommand> commandPatterns              = new HashMap<> ();
+    private ElectraOneType                             electraOneType               = ElectraOneType.MK1;
 
 
     /**
@@ -840,9 +841,28 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
         final int version = root.get ("versionSeq").asInt ();
         final String versionText = root.get ("versionText").asText ();
         if (version < 300400300)
-            this.host.error ("Firmware must be at least 3.4.2 but is " + versionText);
-        else
-            this.host.println ("Firmware: " + versionText);
+            throw new FrameworkException ("Firmware must be at least 3.4.3 but is " + versionText);
+
+        final JsonNode modelNode = root.get ("model");
+        if (modelNode != null)
+        {
+            final String model = modelNode.asText ();
+            switch (model)
+            {
+                case "mk1":
+                    this.electraOneType = ElectraOneType.MK1;
+                    break;
+                case "mk2":
+                    this.electraOneType = ElectraOneType.MK2;
+                    break;
+                case "mini":
+                    this.electraOneType = ElectraOneType.MINI;
+                    break;
+                default:
+                    throw new FrameworkException ("Unknown Electro One controller model: " + model);
+            }
+        }
+        this.host.println ("Model: " + this.electraOneType + " Firmware: " + versionText);
     }
 
 
@@ -903,7 +923,7 @@ public class ElectraOneControlSurface extends AbstractControlSurface<ElectraOneC
             final int bankNumber = bankNumberNode.asInt ();
             final int slot = slotNode.asInt ();
 
-            if ("DrivenByMoss".equals (presetName))
+            if (this.electraOneType != ElectraOneType.MINI && "DrivenByMoss".equals (presetName) || this.electraOneType == ElectraOneType.MINI && "DrivenByMoss MINI".equals (presetName))
             {
                 this.bankIndex = bankNumber;
                 this.presetIndex = slot;

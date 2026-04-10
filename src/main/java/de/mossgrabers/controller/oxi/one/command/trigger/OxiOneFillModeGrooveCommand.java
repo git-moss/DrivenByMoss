@@ -54,6 +54,6 @@ public class OxiOneFillModeGrooveCommand extends AbstractTriggerCommand<OxiOneCo
     public void executeShifted (final ButtonEvent event)
     {
         if (event == ButtonEvent.DOWN)
-            this.surface.getModeManager ().setActive (Modes.GROOVE);
+            this.surface.getModeManager ().setTemporary (Modes.GROOVE);
     }
 }

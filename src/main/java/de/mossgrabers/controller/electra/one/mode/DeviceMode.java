@@ -8,11 +8,9 @@ import de.mossgrabers.controller.electra.one.controller.ElectraOneColorManager;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneControlSurface;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.data.ICursorDevice;
 import de.mossgrabers.framework.daw.data.ICursorTrack;
 import de.mossgrabers.framework.daw.data.IDevice;
-import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.bank.IDeviceBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import de.mossgrabers.framework.daw.data.bank.IParameterPageBank;
@@ -35,10 +33,6 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public class DeviceMode extends AbstractElectraOneMode
 {
-    private final ITransport   transport;
-    private final IMasterTrack masterTrack;
-
-
     /**
      * Constructor.
      *
@@ -48,9 +42,6 @@ public class DeviceMode extends AbstractElectraOneMode
     public DeviceMode (final ElectraOneControlSurface surface, final IModel model)
     {
         super (2, Modes.NAME_PARAMETERS, surface, model);
-
-        this.transport = this.model.getTransport ();
-        this.masterTrack = this.model.getMasterTrack ();
 
         final BankParameterProvider bankParameterProvider = new BankParameterProvider (this.model.getCursorDevice ().getParameterBank ());
         final EmptyParameterProvider emptyParameterProvider = new EmptyParameterProvider (1);
@@ -181,15 +172,7 @@ public class DeviceMode extends AbstractElectraOneMode
         this.pageCache.updateColor (2, 5, cursorDevice.isPinned () ? ElectraOneColorManager.PINNED_ON : ElectraOneColorManager.PINNED_OFF);
         this.pageCache.updateColor (3, 5, cursorDevice.isExpanded () ? ElectraOneColorManager.EXPANDED_ON : ElectraOneColorManager.EXPANDED_OFF);
 
-        // Master
-        this.pageCache.updateColor (0, 5, this.masterTrack.getColor ());
-        this.pageCache.updateValue (0, 5, this.masterTrack.getVolume (), StringUtils.optimizeName (StringUtils.fixASCII (this.masterTrack.getVolumeStr ()), 15));
-        this.pageCache.updateValue (1, 5, 0, StringUtils.optimizeName (StringUtils.fixASCII (this.transport.getBeatText ()), 15));
-        this.pageCache.updateElement (1, 5, StringUtils.optimizeName (StringUtils.fixASCII (this.transport.getPositionText ()), 15), null, null);
-
-        // Transport
-        this.pageCache.updateColor (4, 5, this.transport.isRecording () ? ElectraOneColorManager.RECORD_ON : ElectraOneColorManager.RECORD_OFF);
-        this.pageCache.updateColor (5, 5, this.transport.isPlaying () ? ElectraOneColorManager.PLAY_ON : ElectraOneColorManager.PLAY_OFF);
+        this.updateMasterColumn ();
 
         this.pageCache.flush ();
     }

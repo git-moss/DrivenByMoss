@@ -78,18 +78,18 @@ public class OxiOneBackCommand extends ModeMultiSelectCommand<OxiOneControlSurfa
             case UP:
                 this.surface.setKnobSensitivityIsSlow (false);
 
-                if (!this.isMk2)
+                if (this.hasKnobBeenUsed)
                 {
-                    if (this.hasKnobBeenUsed)
+                    if (!this.isMk2)
                         this.hasKnobBeenUsed = false;
-                    else
-                    {
-                        final ModeManager modeManager = this.surface.getModeManager ();
-                        if (modeManager.isTemporary ())
-                            modeManager.restore ();
-                        else
-                            this.switchMode (!this.surface.isShiftPressed (), event);
-                    }
+                }
+                else
+                {
+                    final ModeManager modeManager = this.surface.getModeManager ();
+                    if (modeManager.isTemporary ())
+                        modeManager.restore ();
+                    else if (!this.isMk2)
+                        this.switchMode (!this.surface.isShiftPressed (), event);
                 }
                 break;
 

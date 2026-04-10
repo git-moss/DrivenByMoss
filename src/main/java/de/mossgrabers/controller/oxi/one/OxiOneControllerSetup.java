@@ -393,7 +393,7 @@ public class OxiOneControllerSetup extends AbstractControllerSetup<OxiOneControl
             this.addButton (ButtonID.TRACK, "Track", new OxiOneTrackCommand (this.model, surface), 1, OxiOneControlSurface.MK2_BUTTON_TRACK, () -> modeManager.isActive (Modes.TRACK, Modes.DEVICE_LAYER));
             this.addButton (ButtonID.DEVICE, "PERF", new OxiOnePerfCommand (this.model, surface), 1, OxiOneControlSurface.MK2_BUTTON_PERF, () -> modeManager.isActive (Modes.DEVICE_PARAMS));
             this.addButton (ButtonID.GROOVE, "FLOW", new OxiOneFillModeGrooveCommand (this.model, surface), 1, OxiOneControlSurface.MK2_BUTTON_FLOW, () -> t.isFillModeActive ());
-            this.addButton (ButtonID.GENERATOR, "GEN", new ModeSelectCommand<> (this.model, surface, Modes.GENERATOR, true), 1, OxiOneControlSurface.MK2_BUTTON_GEN, () -> modeManager.isActive (Modes.GENERATOR));
+            this.addButton (ButtonID.GENERATOR, "GEN", new ModeSelectCommand<> (this.model, surface, Modes.GENERATOR, true, false, true), 1, OxiOneControlSurface.MK2_BUTTON_GEN, () -> modeManager.isActive (Modes.GENERATOR));
         }
     }
 

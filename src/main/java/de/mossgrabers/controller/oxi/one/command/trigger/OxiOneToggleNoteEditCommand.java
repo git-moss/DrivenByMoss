@@ -45,7 +45,7 @@ public class OxiOneToggleNoteEditCommand extends AbstractTriggerCommand<OxiOneCo
         if (modeManager.isActive (Modes.NOTE))
             modeManager.restore ();
         else
-            modeManager.setActive (Modes.NOTE);
+            modeManager.setTemporary (Modes.NOTE);
         this.surface.getDisplay ().notify ("Edit Notes: " + (modeManager.isActive (Modes.NOTE) ? "On" : "Off"));
 
         ((INoteEditorMode) modeManager.get (Modes.NOTE)).getNoteEditor ().clearNotes ();
@@ -64,6 +64,6 @@ public class OxiOneToggleNoteEditCommand extends AbstractTriggerCommand<OxiOneCo
         if (modeManager.isActive (Modes.AUTOMATION))
             modeManager.restore ();
         else
-            modeManager.setActive (Modes.AUTOMATION);
+            modeManager.setTemporary (Modes.AUTOMATION);
     }
 }

@@ -9,11 +9,9 @@ import java.util.Optional;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneColorManager;
 import de.mossgrabers.controller.electra.one.controller.ElectraOneControlSurface;
 import de.mossgrabers.framework.daw.IModel;
-import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.constants.DeviceID;
 import de.mossgrabers.framework.daw.data.EqualizerBandType;
 import de.mossgrabers.framework.daw.data.IEqualizerDevice;
-import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.parameter.IParameter;
@@ -33,8 +31,6 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public class EqualizerMode extends AbstractElectraOneMode
 {
-    private final ITransport       transport;
-    private final IMasterTrack     masterTrack;
     private final IEqualizerDevice eqDevice;
 
 
@@ -47,9 +43,6 @@ public class EqualizerMode extends AbstractElectraOneMode
     public EqualizerMode (final ElectraOneControlSurface surface, final IModel model)
     {
         super (3, Modes.NAME_EQUALIZER, surface, model);
-
-        this.transport = this.model.getTransport ();
-        this.masterTrack = this.model.getMasterTrack ();
 
         this.eqDevice = (IEqualizerDevice) this.model.getSpecificDevice (DeviceID.EQ);
 
@@ -143,15 +136,7 @@ public class EqualizerMode extends AbstractElectraOneMode
 
         this.pageCache.updateColor (3, 5, this.eqDevice.doesExist () && this.eqDevice.isEnabled () ? ElectraOneColorManager.BAND_ON : ElectraOneColorManager.BAND_OFF);
 
-        // Master
-        this.pageCache.updateColor (0, 5, this.masterTrack.getColor ());
-        this.pageCache.updateValue (0, 5, this.masterTrack.getVolume (), StringUtils.optimizeName (StringUtils.fixASCII (this.masterTrack.getVolumeStr ()), 15));
-        this.pageCache.updateValue (1, 5, 0, StringUtils.optimizeName (StringUtils.fixASCII (this.transport.getBeatText ()), 15));
-        this.pageCache.updateElement (1, 5, StringUtils.optimizeName (StringUtils.fixASCII (this.transport.getPositionText ()), 15), null, null);
-
-        // Transport
-        this.pageCache.updateColor (4, 5, this.transport.isRecording () ? ElectraOneColorManager.RECORD_ON : ElectraOneColorManager.RECORD_OFF);
-        this.pageCache.updateColor (5, 5, this.transport.isPlaying () ? ElectraOneColorManager.PLAY_ON : ElectraOneColorManager.PLAY_OFF);
+        this.updateMasterColumn ();
 
         this.pageCache.flush ();
     }

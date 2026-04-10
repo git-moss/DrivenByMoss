@@ -20,7 +20,7 @@ import de.mossgrabers.framework.utils.TimeoutOptimizer;
  */
 public abstract class AbstractHwButton extends AbstractHwInputControl implements IHwButton
 {
-    private static final int               BUTTON_STATE_INTERVAL = 300;
+    private static final int               BUTTON_STATE_INTERVAL = 500;
 
     private final TimeoutOptimizer         optimizer;
 
@@ -30,6 +30,8 @@ public abstract class AbstractHwButton extends AbstractHwInputControl implements
     private ButtonEvent                    state;
     private boolean                        isConsumed;
     private int                            pressedVelocity       = 0;
+    private int                            scheduleCounter       = 0;
+    private final Object                   buttonStateLock       = new Object ();
 
     private final List<ButtonEventHandler> downEventHandlers     = new ArrayList<> ();
     private final List<ButtonEventHandler> upEventHandlers       = new ArrayList<> ();
@@ -61,7 +63,10 @@ public abstract class AbstractHwButton extends AbstractHwInputControl implements
     @Override
     public void clearState ()
     {
-        this.state = null;
+        synchronized (this.buttonStateLock)
+        {
+            this.state = null;
+        }
     }
 
 
@@ -76,10 +81,14 @@ public abstract class AbstractHwButton extends AbstractHwInputControl implements
         if (value == 0)
             return;
 
-        this.state = ButtonEvent.DOWN;
-        this.isConsumed = false;
+        synchronized (this.buttonStateLock)
+        {
+            this.state = ButtonEvent.DOWN;
+            this.isConsumed = false;
+            this.scheduleCounter++;
+            this.host.scheduleTask (this::checkButtonState, this.optimizer.getTimeout ());
+        }
 
-        this.host.scheduleTask (this::checkButtonState, this.optimizer.getTimeout ());
         this.pressedVelocity = (int) (value * 127.0);
         if (this.command != null)
             this.command.execute (ButtonEvent.DOWN, this.pressedVelocity);
@@ -96,7 +105,11 @@ public abstract class AbstractHwButton extends AbstractHwInputControl implements
         if (!this.isBound ())
             return;
 
-        this.state = ButtonEvent.UP;
+        synchronized (this.buttonStateLock)
+        {
+            this.state = ButtonEvent.UP;
+        }
+
         if (this.command != null && !this.isConsumed)
             this.command.execute (ButtonEvent.UP, 0);
 
@@ -124,7 +137,10 @@ public abstract class AbstractHwButton extends AbstractHwInputControl implements
     @Override
     public boolean isPressed ()
     {
-        return this.state == ButtonEvent.DOWN || this.state == ButtonEvent.LONG;
+        synchronized (this.buttonStateLock)
+        {
+            return this.state == ButtonEvent.DOWN || this.state == ButtonEvent.LONG;
+        }
     }
 
 
@@ -132,7 +148,10 @@ public abstract class AbstractHwButton extends AbstractHwInputControl implements
     @Override
     public boolean isLongPressed ()
     {
-        return this.state == ButtonEvent.LONG;
+        synchronized (this.buttonStateLock)
+        {
+            return this.state == ButtonEvent.LONG;
+        }
     }
 
 
@@ -224,9 +243,18 @@ public abstract class AbstractHwButton extends AbstractHwInputControl implements
      */
     private void checkButtonState ()
     {
-        if (!this.isPressed ())
-            return;
-        this.state = ButtonEvent.LONG;
+        synchronized (this.buttonStateLock)
+        {
+            this.scheduleCounter--;
+            // This prevents that LONG is accidently fired if one quickly switches between 2 buttons
+            // and the old scheduler was still running
+            if (this.scheduleCounter > 0)
+                return;
+
+            if (!this.isPressed ())
+                return;
+            this.state = ButtonEvent.LONG;
+        }
 
         if (this.command != null)
             this.command.execute (ButtonEvent.LONG, this.pressedVelocity);

@@ -27,6 +27,7 @@ public class ModeSelectCommand<S extends IControlSurface<C>, C extends Configura
     protected final Modes       modeId;
     protected final boolean     toggle;
     protected boolean           notify;
+    protected boolean           isTemporary;
 
 
     /**
@@ -74,6 +75,23 @@ public class ModeSelectCommand<S extends IControlSurface<C>, C extends Configura
     /**
      * Constructor.
      *
+     * @param model The model
+     * @param surface The surface
+     * @param modeId The ID of the mode to select
+     * @param toggle Activates the previous mode if the mode is already active and this flag is set
+     *            to true
+     * @param notify If true the mode change is notified in the display
+     * @param isTemporary True if the mode should be activated temporarily
+     */
+    public ModeSelectCommand (final IModel model, final S surface, final Modes modeId, final boolean toggle, final boolean notify, final boolean isTemporary)
+    {
+        this (null, model, surface, modeId, toggle, notify, isTemporary);
+    }
+
+
+    /**
+     * Constructor.
+     *
      * @param modeManager The mode manager to use, uses the default mode manager if null
      * @param model The model
      * @param surface The surface
@@ -83,7 +101,7 @@ public class ModeSelectCommand<S extends IControlSurface<C>, C extends Configura
      */
     public ModeSelectCommand (final ModeManager modeManager, final IModel model, final S surface, final Modes modeId, final boolean toggle)
     {
-        this (modeManager, model, surface, modeId, toggle, true);
+        this (modeManager, model, surface, modeId, toggle, true, false);
     }
 
 
@@ -97,8 +115,9 @@ public class ModeSelectCommand<S extends IControlSurface<C>, C extends Configura
      * @param toggle Activates the previous mode if the mode is already active and this flag is set
      *            to true
      * @param notify If true the mode change is notified in the display
+     * @param isTemporary True if the mode should be activated temporarily
      */
-    public ModeSelectCommand (final ModeManager modeManager, final IModel model, final S surface, final Modes modeId, final boolean toggle, final boolean notify)
+    public ModeSelectCommand (final ModeManager modeManager, final IModel model, final S surface, final Modes modeId, final boolean toggle, final boolean notify, final boolean isTemporary)
     {
         super (model, surface);
 
@@ -106,6 +125,7 @@ public class ModeSelectCommand<S extends IControlSurface<C>, C extends Configura
         this.modeManager = modeManager == null ? surface.getModeManager () : modeManager;
         this.modeId = modeId;
         this.toggle = toggle;
+        this.isTemporary = isTemporary;
     }
 
 
@@ -122,7 +142,12 @@ public class ModeSelectCommand<S extends IControlSurface<C>, C extends Configura
             this.modeManager.restore ();
         }
         else
-            this.modeManager.setActive (this.modeId);
+        {
+            if (this.isTemporary)
+                this.modeManager.setTemporary (this.modeId);
+            else
+                this.modeManager.setActive (this.modeId);
+        }
         this.displayMode ();
     }
 

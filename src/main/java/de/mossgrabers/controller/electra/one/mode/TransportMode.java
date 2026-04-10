@@ -13,10 +13,8 @@ import de.mossgrabers.framework.command.trigger.clip.NewCommand;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.IProject;
-import de.mossgrabers.framework.daw.ITransport;
 import de.mossgrabers.framework.daw.constants.AutomationMode;
 import de.mossgrabers.framework.daw.data.IMarker;
-import de.mossgrabers.framework.daw.data.IMasterTrack;
 import de.mossgrabers.framework.daw.data.ISlot;
 import de.mossgrabers.framework.daw.data.bank.IMarkerBank;
 import de.mossgrabers.framework.parameter.IFocusedParameter;
@@ -36,11 +34,8 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public class TransportMode extends AbstractElectraOneMode
 {
-    private final ITransport                                                    transport;
-    private final IMasterTrack                                                  masterTrack;
     private final IProject                                                      project;
     private final NewCommand<ElectraOneControlSurface, ElectraOneConfiguration> newCommand;
-
     private boolean                                                             launchMarkers = false;
 
 
@@ -56,8 +51,6 @@ public class TransportMode extends AbstractElectraOneMode
 
         this.newCommand = new NewCommand<> (model, surface);
 
-        this.transport = this.model.getTransport ();
-        this.masterTrack = this.model.getMasterTrack ();
         this.project = this.model.getProject ();
 
         final EmptyParameterProvider emptyParameterProvider5 = new EmptyParameterProvider (5);
@@ -253,15 +246,7 @@ public class TransportMode extends AbstractElectraOneMode
         this.pageCache.updateColor (5, 3, this.transport.isArrangerOverdub () ? ElectraOneColorManager.AUTO_MODE_ON : ElectraOneColorManager.AUTO_MODE_OFF);
         this.pageCache.updateColor (5, 4, this.launchMarkers ? ElectraOneColorManager.MARKER_LAUNCH_ON : ElectraOneColorManager.MARKER_LAUNCH_OFF);
 
-        // Master
-        this.pageCache.updateColor (0, 5, this.masterTrack.getColor ());
-        this.pageCache.updateValue (0, 5, this.masterTrack.getVolume (), StringUtils.optimizeName (StringUtils.fixASCII (this.masterTrack.getVolumeStr ()), 15));
-        this.pageCache.updateValue (1, 5, 0, StringUtils.optimizeName (StringUtils.fixASCII (this.transport.getBeatText ()), 15));
-        this.pageCache.updateElement (1, 5, StringUtils.optimizeName (StringUtils.fixASCII (this.transport.getPositionText ()), 15), null, null);
-
-        // Transport
-        this.pageCache.updateColor (4, 5, this.transport.isRecording () ? ElectraOneColorManager.RECORD_ON : ElectraOneColorManager.RECORD_OFF);
-        this.pageCache.updateColor (5, 5, this.transport.isPlaying () ? ElectraOneColorManager.PLAY_ON : ElectraOneColorManager.PLAY_OFF);
+        this.updateMasterColumn ();
 
         this.pageCache.updateElement (4, 3, " ", null, Boolean.FALSE);
 

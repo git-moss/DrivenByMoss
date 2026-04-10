@@ -4,10 +4,10 @@
 
 package de.mossgrabers.controller.electra.one.mode;
 
+import java.util.Arrays;
+
 import de.mossgrabers.controller.electra.one.controller.ElectraOneControlSurface;
 import de.mossgrabers.framework.controller.color.ColorEx;
-
-import java.util.Arrays;
 
 
 /**
@@ -281,7 +281,21 @@ class PageCache
                 Arrays.fill (row, null);
             for (final Boolean [] row: this.currentCtrlExistsCache)
                 Arrays.fill (row, null);
+            for (final String [] row: this.currentCtrlValueLabelCache)
+                Arrays.fill (row, null);
             Arrays.fill (this.currentGroupCache, null);
+
+            for (final int [] row: this.ctrlValueCache)
+                Arrays.fill (row, -1);
+            for (final String [] row: this.ctrlLabelCache)
+                Arrays.fill (row, null);
+            for (final ColorEx [] row: this.ctrlColorCache)
+                Arrays.fill (row, null);
+            for (final Boolean [] row: this.ctrlExistsCache)
+                Arrays.fill (row, null);
+            for (final String [] row: this.ctrlValueLabelCache)
+                Arrays.fill (row, null);
+            Arrays.fill (this.groupCache, null);
         }
     }
 }

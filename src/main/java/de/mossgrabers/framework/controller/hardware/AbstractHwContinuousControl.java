@@ -4,14 +4,14 @@
 
 package de.mossgrabers.framework.controller.hardware;
 
+import java.util.function.IntConsumer;
+import java.util.function.IntSupplier;
+
 import de.mossgrabers.framework.command.core.ContinuousCommand;
 import de.mossgrabers.framework.command.core.PitchbendCommand;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.utils.ButtonEvent;
-
-import java.util.function.IntConsumer;
-import java.util.function.IntSupplier;
 
 
 /**
@@ -21,7 +21,7 @@ import java.util.function.IntSupplier;
  */
 public abstract class AbstractHwContinuousControl extends AbstractHwInputControl implements IHwContinuousControl
 {
-    private static final int    BUTTON_STATE_INTERVAL = 400;
+    private static final int    BUTTON_STATE_INTERVAL = 500;
 
     protected ContinuousCommand command;
     protected TriggerCommand    touchCommand;
