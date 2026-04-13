@@ -14,11 +14,11 @@ import de.mossgrabers.controller.mackie.mcu.MCUConfiguration.MainDisplay;
 import de.mossgrabers.controller.mackie.mcu.MCUConfiguration.SecondDisplay;
 import de.mossgrabers.controller.mackie.mcu.MCUConfiguration.VUMeterStyle;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.AssignableCommand;
-import de.mossgrabers.controller.mackie.mcu.command.trigger.MCUDevicesCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.FaderTouchCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.KeyCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.KeyCommand.Key;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.MCUCursorCommand;
+import de.mossgrabers.controller.mackie.mcu.command.trigger.MCUDevicesCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.MCUFlipCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.MCUMoveTrackBankCommand;
 import de.mossgrabers.controller.mackie.mcu.command.trigger.MCUWindCommand;
@@ -173,7 +173,7 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
     private final int []                                          faderValues      = new int [32];
     private int                                                   masterFaderValue = -1;
     private final int                                             numMCUDevices;
-    private final IValueChanger                                         encoderValueChanger;
+    private final IValueChanger                                   encoderValueChanger;
     private JogWheelCommand<MCUControlSurface, MCUConfiguration>  jogWheelCommand  = null;
     private MasterVolumeMode<MCUControlSurface, MCUConfiguration> masterVolumeMode;
 
@@ -780,8 +780,6 @@ public class MCUControllerSetup extends AbstractControllerSetup<MCUControlSurfac
         for (int index = 0; index < this.numMCUDevices; index++)
         {
             final MCUControlSurface surface = this.getSurface (index);
-            surface.switchVuMode (MCUControlSurface.VUMODE_LED);
-
             surface.getViewManager ().setActive (Views.CONTROL);
             surface.getModeManager ().setActive (this.configuration.getStartupMode ());
         }
