@@ -389,3 +389,44 @@ public class ModelImpl extends AbstractModel
         this.getNoteClip (0, 0);
     }
 }
+/* ===============================
+   BITWIG SAMPLER START / END FIX
+   =============================== */
+
+import com.bitwig.extension.controller.api.*;
+
+private void setupSamplerMapping(Device sampler) {
+    try {
+        RemoteControls rc = sampler.createCursorRemoteControlsPage(2);
+
+        rc.getParameter(0).name().addValueObserver(v ->
+            controllerHost.println("START SAMPLE: " + v)
+        );
+
+        rc.getParameter(1).name().addValueObserver(v ->
+            controllerHost.println("END SAMPLE: " + v)
+        );
+
+        controllerHost.println("🎛 START / END SAMPLER ACTIVE");
+    } catch (Exception e) {
+        controllerHost.println("❌ Sampler mapping error: " + e.getMessage());
+    }
+}
+
+public void smartSamplerInit() {
+    try {
+        Track track = host.createCursorTrack("SAMPLER_TRACK", "Sampler Track", 0, null);
+        CursorDevice cursorDevice = track.createCursorDevice();
+
+        cursorDevice.name().addValueObserver(name -> {
+            if (name != null && name.toLowerCase().contains("sampler")) {
+                controllerHost.println("🎛 Sampler detected: " + name);
+                setupSamplerMapping(cursorDevice);
+            }
+        });
+
+        controllerHost.println("✅ smartSamplerInit ACTIVE");
+    } catch (Exception e) {
+        controllerHost.println("❌ smartSamplerInit error: " + e.getMessage());
+    }
+}
