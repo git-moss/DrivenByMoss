@@ -359,7 +359,6 @@ public interface IModel
      * @return True if recording
      */
     boolean hasRecordingState ();
-}
     /**
      * Get the sampler parameter bank if available.
      *
@@ -369,3 +368,5 @@ public interface IModel
     {
         return null;
     }
+
+}
