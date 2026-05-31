@@ -63,6 +63,7 @@ public abstract class AbstractModel implements IModel
     protected IDrumDevice                           drumDevice;
     protected Map<Integer, IDrumDevice>             additionalDrumDevices = new HashMap<> ();
     protected IParameterBank                        userParameterBank;
+    protected de.mossgrabers.framework.daw.data.bank.IParameterBank samplerParameterBank;
     protected Map<String, INoteClip>                cursorClips           = new HashMap<> ();
     protected final Map<DeviceID, ISpecificDevice>  specificDevices       = new EnumMap<> (DeviceID.class);
 
@@ -222,6 +223,13 @@ public abstract class AbstractModel implements IModel
     public IParameterBank getUserParameterBank ()
     {
         return this.userParameterBank;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public de.mossgrabers.framework.daw.data.bank.IParameterBank getSamplerParameterBank ()
+    {
+        return this.samplerParameterBank;
     }
 
 

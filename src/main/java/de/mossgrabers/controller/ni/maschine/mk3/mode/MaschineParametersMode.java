@@ -36,7 +36,13 @@ public class MaschineParametersMode extends SelectedDeviceMode<MaschineControlSu
         super (surface, model, surface.getMaschine ().hasMCUDisplay () ? DEFAULT_KNOB_IDS : null, () -> false);
 
         if (surface.getMaschine ().hasMCUDisplay ())
-            this.setParameterProvider (new BankParameterProvider (this.bank));
+        {
+            final de.mossgrabers.framework.daw.data.bank.IParameterBank samplerBank = model.getSamplerParameterBank ();
+            if (samplerBank != null)
+                this.setParameterProvider (new BankParameterProvider (samplerBank));
+            else
+                this.setParameterProvider (new BankParameterProvider (this.bank));
+        }
 
         this.initTouchedStates (9);
     }

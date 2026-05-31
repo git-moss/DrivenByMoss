@@ -35,18 +35,23 @@ import com.bitwig.extension.controller.api.Arranger;
 import com.bitwig.extension.controller.api.BooleanValue;
 import com.bitwig.extension.controller.api.ControllerHost;
 import com.bitwig.extension.controller.api.CursorDeviceFollowMode;
+import com.bitwig.extension.controller.api.CursorRemoteControlsPage;
 import com.bitwig.extension.controller.api.CursorTrack;
 import com.bitwig.extension.controller.api.Device;
 import com.bitwig.extension.controller.api.DeviceBank;
 import com.bitwig.extension.controller.api.DeviceMatcher;
 import com.bitwig.extension.controller.api.MasterTrack;
 import com.bitwig.extension.controller.api.PinnableCursorDevice;
+import de.mossgrabers.bitwig.framework.daw.data.bank.ParameterBankImpl;
+import de.mossgrabers.bitwig.framework.daw.data.bank.ParameterPageBankImpl;
+import de.mossgrabers.framework.daw.data.bank.IParameterBank;
 import com.bitwig.extension.controller.api.Project;
 import com.bitwig.extension.controller.api.Track;
 import com.bitwig.extension.controller.api.TrackBank;
 import com.bitwig.extension.controller.api.UserControlBank;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -67,6 +72,12 @@ public class ModelImpl extends AbstractModel
     private final BooleanValue             masterTrackEqualsValue;
     private final Map<Integer, ISceneBank> sceneBanks              = new HashMap<> (1);
     private final Map<Integer, ISlotBank>  slotBanks               = new HashMap<> (1);
+
+    private static final int               SAMPLER_SEARCH_DEPTH    = 16;
+    private CursorTrack                    samplerCursorTrack;
+    private PinnableCursorDevice           samplerCursorDevice;
+    private Device                         samplerDevice;
+    private CursorRemoteControlsPage       samplerRemoteControlsPage;
 
 
     /**
@@ -211,6 +222,8 @@ public class ModelImpl extends AbstractModel
 
         this.currentTrackBank = this.trackBank;
 
+        this.initSamplerControl ();
+
         controllerHost.scheduleTask (this::flushWorkaround, 4000);
     }
 
@@ -239,6 +252,59 @@ public class ModelImpl extends AbstractModel
         if (!this.getTransport ().isPlaying ())
             this.controllerHost.requestFlush ();
         this.controllerHost.scheduleTask (this::flushWorkaround, 100);
+    }
+
+    /**
+     * Initialize a dedicated sampler cursor track, the sampler cursor device, and a remote
+     * controls page with two parameters for the Sampler device.
+     */
+    public void initSamplerControl ()
+    {
+        this.samplerCursorTrack = this.controllerHost.createCursorTrack ("SamplerCursor", "Sampler Cursor", 0, 0, true);
+        this.samplerCursorDevice = this.samplerCursorTrack.createCursorDevice ("SAMPLER_CURSOR_DEVICE", "Sampler device", 0, CursorDeviceFollowMode.FOLLOW_SELECTION);
+        this.samplerCursorDevice.isPinned ().markInterested ();
+
+        this.samplerDevice = this.findSamplerDevice ();
+        if (this.samplerDevice == null || !this.samplerDevice.exists ().get ())
+        {
+            this.controllerHost.println ("Sampler detection failed: no Sampler device found in primary device chain.");
+            return;
+        }
+
+        this.samplerRemoteControlsPage = this.samplerDevice.createCursorRemoteControlsPage (2);
+        for (int i = 0; i < 2; i++)
+        {
+            this.samplerRemoteControlsPage.getParameter (i).name ().markInterested ();
+            this.samplerRemoteControlsPage.getParameter (i).exists ().markInterested ();
+            this.samplerRemoteControlsPage.getParameter (i).value ().markInterested ();
+        }
+
+        final String p0 = this.samplerRemoteControlsPage.getParameter (0).name ().get ();
+        final String p1 = this.samplerRemoteControlsPage.getParameter (1).name ().get ();
+        this.controllerHost.println ("initSamplerControl: Sampler detected= " + this.samplerDevice.name ().get () + " | Param0=" + p0 + " | Param1=" + p1);
+
+        // Create a parameter page bank and parameter bank for the Sampler so controllers can bind
+        final int checkedNumParamPages = this.modelSetup.getNumParamPages ();
+        final int checkedNumParams = 2; // Sampler remote controls page size
+        final ParameterPageBankImpl pageBank = new ParameterPageBankImpl (this.samplerRemoteControlsPage, checkedNumParamPages);
+        this.samplerParameterBank = new ParameterBankImpl (this.host, this.valueChanger, pageBank, this.samplerRemoteControlsPage, checkedNumParams);
+    }
+
+    private Device findSamplerDevice ()
+    {
+        final DeviceBank deviceBank = this.bwCursorTrack.createDeviceBank (SAMPLER_SEARCH_DEPTH);
+        for (int i = 0; i < SAMPLER_SEARCH_DEPTH; i++)
+        {
+            final Device device = deviceBank.getItemAt (i);
+            device.exists ().markInterested ();
+            if (!device.exists ().get ())
+                continue;
+
+            final String name = device.name ().get ();
+            if (name != null && name.toLowerCase (Locale.US).contains ("sampler"))
+                return device;
+        }
+        return null;
     }
 
 

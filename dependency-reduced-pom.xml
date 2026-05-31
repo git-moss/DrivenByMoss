@@ -112,7 +112,7 @@
         <executions>
           <execution>
             <id>rename-file</id>
-            <phase>install</phase>
+            <phase>prepare-package</phase>
             <goals>
               <goal>copy</goal>
             </goals>
@@ -220,6 +220,8 @@
     </dependency>
   </dependencies>
   <properties>
+    <maven.compiler.release>17</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <bitwig.extension.directory>${project.build.directory}</bitwig.extension.directory>
   </properties>
 </project>

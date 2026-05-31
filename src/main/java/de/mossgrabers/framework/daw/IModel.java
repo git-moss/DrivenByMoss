@@ -360,3 +360,12 @@ public interface IModel
      */
     boolean hasRecordingState ();
 }
+    /**
+     * Get the sampler parameter bank if available.
+     *
+     * @return The sampler parameter bank or null if none exists
+     */
+    default de.mossgrabers.framework.daw.data.bank.IParameterBank getSamplerParameterBank ()
+    {
+        return null;
+    }

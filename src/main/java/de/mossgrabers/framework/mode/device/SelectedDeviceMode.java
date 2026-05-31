@@ -40,7 +40,7 @@ public class SelectedDeviceMode<S extends IControlSurface<C>, C extends Configur
      */
     public SelectedDeviceMode (final S surface, final IModel model, final List<ContinuousID> knobs)
     {
-        super ("Parameters", surface, model, false, model.getCursorDevice ().getParameterBank (), knobs);
+        super ("Parameters", surface, model, false, model.getSamplerParameterBank () != null ? model.getSamplerParameterBank () : model.getCursorDevice ().getParameterBank (), knobs);
     }
 
 
@@ -55,7 +55,7 @@ public class SelectedDeviceMode<S extends IControlSurface<C>, C extends Configur
      */
     public SelectedDeviceMode (final S surface, final IModel model, final List<ContinuousID> knobs, final BooleanSupplier isAlternativeFunction)
     {
-        super ("Parameters", surface, model, false, model.getCursorDevice ().getParameterBank (), knobs, isAlternativeFunction);
+        super ("Parameters", surface, model, false, model.getSamplerParameterBank () != null ? model.getSamplerParameterBank () : model.getCursorDevice ().getParameterBank (), knobs, isAlternativeFunction);
     }
 
 

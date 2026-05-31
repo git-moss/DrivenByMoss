@@ -9,8 +9,9 @@
 	<version>19.2.2</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.release>17</maven.compiler.release>
+        <bitwig.extension.directory>${project.build.directory}</bitwig.extension.directory>
 	</properties>
-
 	<licenses>
 		<license>
 			<name>LGPL-2.1-or-later</name>
@@ -186,7 +187,7 @@
 				<executions>
 					<execution>
 						<id>rename-file</id>
-						<phase>install</phase>
+						<phase>prepare-package</phase>
 						<goals>
 							<goal>copy</goal>
 						</goals>

@@ -63,9 +63,13 @@ public class DeviceParamsMode extends BaseMode<IParameter>
      */
     public DeviceParamsMode (final PushControlSurface surface, final IModel model)
     {
-        super ("Parameters", surface, model, model.getCursorDevice ().getParameterBank ());
+        super ("Parameters", surface, model, model.getSamplerParameterBank () != null ? model.getSamplerParameterBank () : model.getCursorDevice ().getParameterBank ());
 
-        this.setParameterProvider (new BankParameterProvider (this.model.getCursorDevice ().getParameterBank ()));
+        final IParameterBank samplerBank = model.getSamplerParameterBank ();
+        if (samplerBank != null)
+            this.setParameterProvider (new BankParameterProvider (samplerBank));
+        else
+            this.setParameterProvider (new BankParameterProvider (this.model.getCursorDevice ().getParameterBank ()));
 
         this.setShowDevices (true);
 
