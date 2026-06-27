@@ -21,7 +21,8 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public abstract class AbstractDoubleTriggerCommand<S extends IControlSurface<C>, C extends Configuration> extends AbstractTriggerCommand<S, C>
 {
-    private boolean restartFlag = false;
+    private final ButtonEvent executionEvent;
+    private boolean           restartFlag = false;
 
 
     /**
@@ -32,7 +33,22 @@ public abstract class AbstractDoubleTriggerCommand<S extends IControlSurface<C>,
      */
     protected AbstractDoubleTriggerCommand (final IModel model, final S surface)
     {
+        this (model, surface, ButtonEvent.UP);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param model The model
+     * @param surface The surface
+     * @param executionEvent The button event on which to execute the single/double click action
+     */
+    protected AbstractDoubleTriggerCommand (final IModel model, final S surface, final ButtonEvent executionEvent)
+    {
         super (model, surface);
+
+        this.executionEvent = executionEvent;
     }
 
 
@@ -40,7 +56,7 @@ public abstract class AbstractDoubleTriggerCommand<S extends IControlSurface<C>,
     @Override
     public void executeNormal (final ButtonEvent event)
     {
-        if (event != ButtonEvent.UP || this.handleButtonCombinations ())
+        if (event != this.executionEvent || this.handleButtonCombinations ())
             return;
 
         if (this.restartFlag)

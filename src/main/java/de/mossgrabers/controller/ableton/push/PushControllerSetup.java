@@ -555,7 +555,7 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
 
         final ITransport t = this.model.getTransport ();
 
-        this.addButton (ButtonID.PLAY, "Play", new PlayCommand<> (this.model, surface), PushControlSurface.PUSH_BUTTON_PLAY, t::isPlaying, PushColorManager.PUSH_BUTTON_STATE_PLAY_ON, PushColorManager.PUSH_BUTTON_STATE_PLAY_HI);
+        this.addButton (ButtonID.PLAY, "Play", new PlayCommand<> (this.model, surface, ButtonID.SELECT, ButtonEvent.DOWN), PushControlSurface.PUSH_BUTTON_PLAY, t::isPlaying, PushColorManager.PUSH_BUTTON_STATE_PLAY_ON, PushColorManager.PUSH_BUTTON_STATE_PLAY_HI);
 
         this.addButton (ButtonID.RECORD, "Record", new RecordCommand<> (this.model, surface), PushControlSurface.PUSH_BUTTON_RECORD, () -> {
 

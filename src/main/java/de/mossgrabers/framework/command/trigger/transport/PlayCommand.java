@@ -49,7 +49,22 @@ public class PlayCommand<S extends IControlSurface<C>, C extends Configuration> 
      */
     public PlayCommand (final IModel model, final S surface, final ButtonID selectButtonID)
     {
-        super (model, surface);
+        this (model, surface, selectButtonID, ButtonEvent.UP);
+    }
+
+
+    /**
+     * Constructor.
+     *
+     * @param model The model
+     * @param surface The surface
+     * @param selectButtonID The buttonID to use for the select button which triggers additional
+     *            button combinations
+     * @param executionEvent The button event on which to execute the single/double click action
+     */
+    public PlayCommand (final IModel model, final S surface, final ButtonID selectButtonID, final ButtonEvent executionEvent)
+    {
+        super (model, surface, executionEvent);
 
         this.selectButtonID = selectButtonID;
         this.transport = this.model.getTransport ();
