@@ -182,7 +182,10 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
         if (this.configuration.isClipStopState (this.surface.isLongPressed (ButtonID.STOP_CLIP)))
         {
             this.surface.setTriggerConsumed (ButtonID.STOP_CLIP);
-            track.stop (this.surface.isShiftPressed ());
+            if (this.surface.isShiftPressed ())
+                track.returnToArrangement ();
+            else
+                track.stop (this.surface.isShiftPressed ());
             return;
         }
 
@@ -526,10 +529,11 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
     protected void updateStopMenu ()
     {
         final ITrackBank tb = this.model.getCurrentTrackBank ();
+        final String label = this.surface.isShiftPressed () ? "Return to Arr." : "Stop Clip";
         for (int i = 0; i < 8; i++)
         {
             final ITrack t = tb.getItem (i);
-            this.menu.get (i).set (t.doesExist () ? "Stop Clip" : "", Boolean.valueOf (t.isPlaying ()));
+            this.menu.get (i).set (t.doesExist () ? label : "", Boolean.valueOf (t.isPlaying ()));
         }
     }
 

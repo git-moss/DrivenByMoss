@@ -178,8 +178,10 @@ public class MasterMode extends BaseMode<ITrack>
 
         if (this.model.getHost ().supports (Capability.CUE_VOLUME))
         {
-            display.addChannelElement ("Cue Volume", false, "Cue", ChannelType.CUE, ColorEx.GRAY, false, valueChanger.toDisplayValue (this.project.getCueVolume ()), -1, this.isKnobTouched (2) ? this.project.getCueVolumeStr (8) : "", valueChanger.toDisplayValue (this.project.getCueMix ()), -1, this.isKnobTouched (3) ? this.project.getCueMixStr (8) : "", 0, 0, false, false, false, true, 0, false);
-            display.addChannelSelectorElement ("Cue Mix", false, "", null, ColorEx.BLACK, false, true);
+            final int cueVolumeDisplayValue = valueChanger.toDisplayValue (this.project.getCueVolume ());
+            final int cueMixDisplayValue = valueChanger.toDisplayValue (this.project.getCueMix ());
+            display.addParameterElement ("Cue Volume", cueVolumeDisplayValue, this.project.getCueVolumeStr (8), true, cueVolumeDisplayValue);
+            display.addParameterElement ("Cue Mix", cueMixDisplayValue, this.project.getCueMixStr (8), true, cueMixDisplayValue);
         }
         else
         {

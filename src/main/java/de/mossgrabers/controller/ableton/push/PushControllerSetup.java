@@ -1063,7 +1063,9 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
             surface.sendPressureMode (true);
         surface.getMidiOutput ().sendSysex (DeviceInquiry.createQuery ());
 
-        if (this.pushVersion != PushVersion.VERSION_1)
+        if (this.pushVersion == PushVersion.VERSION_1)
+            this.configuration.setLockState (LockState.MUTE);
+        else
             surface.updateColorPalette ();
     }
 
