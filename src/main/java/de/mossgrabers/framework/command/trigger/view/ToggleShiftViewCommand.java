@@ -74,7 +74,7 @@ public class ToggleShiftViewCommand<S extends IControlSurface<C>, C extends Conf
     }
 
 
-    private void handleOnDown ()
+    protected void handleOnDown ()
     {
         if (this.viewManager.isActive (Views.SHIFT))
         {
@@ -91,7 +91,7 @@ public class ToggleShiftViewCommand<S extends IControlSurface<C>, C extends Conf
     }
 
 
-    private void handleUp ()
+    protected void handleUp ()
     {
         // If shift mode was already used, close it down otherwise leave it open for further
         // interaction

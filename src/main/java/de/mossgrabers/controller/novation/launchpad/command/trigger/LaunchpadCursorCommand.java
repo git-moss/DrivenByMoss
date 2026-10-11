@@ -63,7 +63,8 @@ public class LaunchpadCursorCommand extends CursorCommand<LaunchpadControlSurfac
     @Override
     protected void updateArrowStates ()
     {
-        if (this.surface.getViewManager ().getActive () instanceof final IScrollableView view)
+        final IView active = this.surface.getViewManager ().getActive ();
+        if (active instanceof final IScrollableView view)
             view.updateScrollStates (this.scrollStates);
         else
             this.scrollStates.setAll (false);

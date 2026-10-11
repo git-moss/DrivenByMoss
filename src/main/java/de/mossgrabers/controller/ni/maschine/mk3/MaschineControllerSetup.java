@@ -29,6 +29,7 @@ import de.mossgrabers.controller.ni.maschine.mk3.command.trigger.MaschineSelectB
 import de.mossgrabers.controller.ni.maschine.mk3.command.trigger.MaschineSendSelectCommand;
 import de.mossgrabers.controller.ni.maschine.mk3.command.trigger.MaschineStopCommand;
 import de.mossgrabers.controller.ni.maschine.mk3.command.trigger.MaschineTapMetroCommand;
+import de.mossgrabers.controller.ni.maschine.mk3.command.trigger.MaschineToggleShiftViewCommand;
 import de.mossgrabers.controller.ni.maschine.mk3.command.trigger.PadModeCommand;
 import de.mossgrabers.controller.ni.maschine.mk3.command.trigger.PageCommand;
 import de.mossgrabers.controller.ni.maschine.mk3.command.trigger.ProjectButtonCommand;
@@ -86,7 +87,6 @@ import de.mossgrabers.framework.command.trigger.transport.ConfiguredRecordComman
 import de.mossgrabers.framework.command.trigger.transport.MetronomeCommand;
 import de.mossgrabers.framework.command.trigger.transport.PlayCommand;
 import de.mossgrabers.framework.command.trigger.transport.ToggleLoopCommand;
-import de.mossgrabers.framework.command.trigger.view.ToggleShiftViewCommand;
 import de.mossgrabers.framework.command.trigger.view.ViewMultiSelectCommand;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.ISettingsUI;
@@ -327,7 +327,7 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
         final ITransport t = this.model.getTransport ();
         this.mainKnobCommand = new MainKnobRowModeCommand (this.model, surface);
 
-        this.addButton (ButtonID.SHIFT, "SHIFT", new ToggleShiftViewCommand<> (this.model, surface), this.maschine == Maschine.STUDIO ? MaschineControlSurface.NAVIGATE_BACK : -1, () -> viewManager.isActive (Views.SHIFT) || surface.isShiftPressed ());
+        this.addButton (ButtonID.SHIFT, "SHIFT", new MaschineToggleShiftViewCommand (this.model, surface), this.maschine == Maschine.STUDIO ? MaschineControlSurface.NAVIGATE_BACK : -1, () -> viewManager.isActive (Views.SHIFT) || surface.isShiftPressed ());
 
         // Transport
         this.addButton (ButtonID.PLAY, "PLAY", new PlayCommand<> (this.model, surface), MaschineControlSurface.PLAY, t::isPlaying);
@@ -680,6 +680,10 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
             if (mode != null && event != ButtonEvent.LONG)
                 mode.onKnobTouch (8, event == ButtonEvent.DOWN);
         }, surface.getMidiInput (), BindType.CC, 0, MaschineControlSurface.ENCODER_TOUCH);
+        knob.addHasChangedObserver (Void -> {
+            this.shiftView.setWasUsed ();
+            surface.setStopConsumed ();
+        });
 
         if (this.maschine.hasMCUDisplay ())
         {
@@ -693,6 +697,10 @@ public class MaschineControllerSetup extends AbstractControllerSetup<MaschineCon
                         mode.onKnobTouch (index, event == ButtonEvent.DOWN);
                 }, surface.getMidiInput (), BindType.CC, 0, MaschineControlSurface.MODE_KNOB_TOUCH_1 + i);
                 modeKnob.setIndexInGroup (i);
+                modeKnob.addHasChangedObserver (Void -> {
+                    this.shiftView.setWasUsed ();
+                    surface.setStopConsumed ();
+                });
             }
         }
 

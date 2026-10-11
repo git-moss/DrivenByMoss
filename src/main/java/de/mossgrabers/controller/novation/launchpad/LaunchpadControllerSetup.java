@@ -39,6 +39,7 @@ import de.mossgrabers.controller.novation.launchpad.view.Drum8View;
 import de.mossgrabers.controller.novation.launchpad.view.DrumView;
 import de.mossgrabers.controller.novation.launchpad.view.LaunchpadBrowserView;
 import de.mossgrabers.controller.novation.launchpad.view.LaunchpadShuffleView;
+import de.mossgrabers.controller.novation.launchpad.view.LaunchpadTempoView;
 import de.mossgrabers.controller.novation.launchpad.view.MixView;
 import de.mossgrabers.controller.novation.launchpad.view.NoteEditView;
 import de.mossgrabers.controller.novation.launchpad.view.NoteViewSelectView;
@@ -104,7 +105,6 @@ import de.mossgrabers.framework.mode.track.TrackStopClipMode;
 import de.mossgrabers.framework.mode.track.TrackVolumeMode;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.ScenePlayView;
-import de.mossgrabers.framework.view.TempoView;
 import de.mossgrabers.framework.view.Views;
 import de.mossgrabers.framework.view.sequencer.ClipLengthView;
 
@@ -258,7 +258,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
         viewManager.register (Views.CONTROL, new NoteViewSelectView (surface, this.model));
         viewManager.register (Views.NOTE_EDIT_VIEW, new NoteEditView (surface, this.model));
         viewManager.register (Views.CLIP_LENGTH, new ClipLengthView<> (surface, this.model, true));
-        viewManager.register (Views.TEMPO, new TempoView<> (surface, this.model, LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_HI, LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK));
+        viewManager.register (Views.TEMPO, new LaunchpadTempoView (surface, this.model, LaunchpadColorManager.LAUNCHPAD_COLOR_BLUE_HI, LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK));
         viewManager.register (Views.SHUFFLE, new LaunchpadShuffleView (surface, this.model, LaunchpadColorManager.LAUNCHPAD_COLOR_PINK_HI, LaunchpadColorManager.LAUNCHPAD_COLOR_WHITE, LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK));
         viewManager.register (Views.PROJECT, new ProjectView (surface, this.model));
     }

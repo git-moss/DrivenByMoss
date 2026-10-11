@@ -4,6 +4,7 @@
 
 package de.mossgrabers.controller.ni.maschine.mk3.view;
 
+import de.mossgrabers.controller.ni.maschine.Maschine;
 import de.mossgrabers.controller.ni.maschine.core.MaschineColorManager;
 import de.mossgrabers.controller.ni.maschine.mk3.MaschineConfiguration;
 import de.mossgrabers.controller.ni.maschine.mk3.controller.MaschineControlSurface;
@@ -154,5 +155,27 @@ public class ShiftView extends AbstractShiftView<MaschineControlSurface, Maschin
         padGrid.lightEx (1, 3, MaschineColorManager.COLOR_YELLOW);
         padGrid.lightEx (2, 3, MaschineColorManager.COLOR_BLACK);
         padGrid.lightEx (3, 3, MaschineColorManager.COLOR_BLACK);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onActivate ()
+    {
+        if (this.surface.getMaschine () == Maschine.MK3)
+            this.surface.setKnobSensitivityIsSlow (true);
+
+        super.onActivate ();
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public void onDeactivate ()
+    {
+        if (this.surface.getMaschine () == Maschine.MK3)
+            this.surface.setKnobSensitivityIsSlow (false);
+
+        super.onDeactivate ();
     }
 }
