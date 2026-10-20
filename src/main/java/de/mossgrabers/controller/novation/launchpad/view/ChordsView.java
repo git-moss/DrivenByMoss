@@ -80,6 +80,10 @@ public class ChordsView extends AbstractChordView<LaunchpadControlSurface, Launc
     @Override
     public int getButtonColor (final ButtonID buttonID)
     {
+        final int trackNavigationColor = this.getTrackNavigationColor (buttonID);
+        if (trackNavigationColor >= 0)
+            return trackNavigationColor;
+
         if (this.model.canSelectedTrackHoldNotes ())
         {
             if (buttonID == ButtonID.SCENE1 || buttonID == ButtonID.SCENE2 || buttonID == ButtonID.SCENE7 || buttonID == ButtonID.SCENE8)
@@ -100,6 +104,9 @@ public class ChordsView extends AbstractChordView<LaunchpadControlSurface, Launc
     @Override
     public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
+        if (this.handleTrackNavigation (buttonID, event))
+            return;
+
         if (!ButtonID.isSceneButton (buttonID) || event != ButtonEvent.DOWN || !this.model.canSelectedTrackHoldNotes ())
             return;
 
@@ -152,6 +159,45 @@ public class ChordsView extends AbstractChordView<LaunchpadControlSurface, Launc
                 break;
         }
         this.updateNoteMapping ();
+    }
+
+
+    private boolean handleTrackNavigation (final ButtonID buttonID, final ButtonEvent event)
+    {
+        if (event != ButtonEvent.DOWN || !this.surface.getConfiguration ().isSceneButtonsAsTrackNavigation ())
+            return false;
+
+        switch (buttonID)
+        {
+            case SCENE1:
+                this.model.getCurrentTrackBank ().selectPreviousItem ();
+                break;
+            case SCENE2:
+                this.model.getCurrentTrackBank ().selectNextItem ();
+                break;
+            default:
+                return false;
+        }
+
+        this.mvHelper.notifySelectedTrack ();
+        return true;
+    }
+
+
+    private int getTrackNavigationColor (final ButtonID buttonID)
+    {
+        if (!this.surface.getConfiguration ().isSceneButtonsAsTrackNavigation ())
+            return -1;
+
+        switch (buttonID)
+        {
+            case SCENE1:
+                return this.model.getCurrentTrackBank ().canScrollBackwards () ? LaunchpadColorManager.LAUNCHPAD_COLOR_OCEAN_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
+            case SCENE2:
+                return this.model.getCurrentTrackBank ().canScrollForwards () ? LaunchpadColorManager.LAUNCHPAD_COLOR_OCEAN_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
+            default:
+                return -1;
+        }
     }
 
 

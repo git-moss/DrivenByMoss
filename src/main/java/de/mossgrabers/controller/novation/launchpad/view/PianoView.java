@@ -102,6 +102,9 @@ public class PianoView extends PlayView
     @Override
     public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
+        if (this.handleTrackNavigation (buttonID, event))
+            return;
+
         if (!ButtonID.isSceneButton (buttonID) || event != ButtonEvent.DOWN || !this.model.canSelectedTrackHoldNotes ())
             return;
 
@@ -118,6 +121,10 @@ public class PianoView extends PlayView
     @Override
     public int getButtonColor (final ButtonID buttonID)
     {
+        final int trackNavigationColor = this.getTrackNavigationColor (buttonID);
+        if (trackNavigationColor >= 0)
+            return trackNavigationColor;
+
         return buttonID == ButtonID.SCENE4 ? this.playControls.getToggleButtonColor () : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
     }
 

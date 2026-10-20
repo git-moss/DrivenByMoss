@@ -66,6 +66,10 @@ public class PlayView extends AbstractPlayView<LaunchpadControlSurface, Launchpa
     @Override
     public int getButtonColor (final ButtonID buttonID)
     {
+        final int trackNavigationColor = this.getTrackNavigationColor (buttonID);
+        if (trackNavigationColor >= 0)
+            return trackNavigationColor;
+
         if (!this.model.canSelectedTrackHoldNotes ())
             return LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
 
@@ -93,6 +97,9 @@ public class PlayView extends AbstractPlayView<LaunchpadControlSurface, Launchpa
     @Override
     public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
+        if (this.handleTrackNavigation (buttonID, event))
+            return;
+
         if (!ButtonID.isSceneButton (buttonID) || event != ButtonEvent.DOWN || !this.model.canSelectedTrackHoldNotes ())
             return;
 
@@ -145,6 +152,58 @@ public class PlayView extends AbstractPlayView<LaunchpadControlSurface, Launchpa
                 break;
         }
         this.updateNoteMapping ();
+    }
+
+
+    /**
+     * Handle the first two scene buttons as previous/next track selectors if enabled.
+     *
+     * @param buttonID The ID of the pressed button
+     * @param event The button event
+     * @return True if the button event was handled
+     */
+    protected boolean handleTrackNavigation (final ButtonID buttonID, final ButtonEvent event)
+    {
+        if (event != ButtonEvent.DOWN || !this.surface.getConfiguration ().isSceneButtonsAsTrackNavigation ())
+            return false;
+
+        switch (buttonID)
+        {
+            case SCENE1:
+                this.model.getCurrentTrackBank ().selectPreviousItem ();
+                break;
+            case SCENE2:
+                this.model.getCurrentTrackBank ().selectNextItem ();
+                break;
+            default:
+                return false;
+        }
+
+        this.mvHelper.notifySelectedTrack ();
+        return true;
+    }
+
+
+    /**
+     * Get the color for the track navigation function of the first two scene buttons.
+     *
+     * @param buttonID The ID of the button
+     * @return The color index or -1 if the button is not used for track navigation
+     */
+    protected int getTrackNavigationColor (final ButtonID buttonID)
+    {
+        if (!this.surface.getConfiguration ().isSceneButtonsAsTrackNavigation ())
+            return -1;
+
+        switch (buttonID)
+        {
+            case SCENE1:
+                return this.model.getCurrentTrackBank ().canScrollBackwards () ? LaunchpadColorManager.LAUNCHPAD_COLOR_OCEAN_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
+            case SCENE2:
+                return this.model.getCurrentTrackBank ().canScrollForwards () ? LaunchpadColorManager.LAUNCHPAD_COLOR_OCEAN_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
+            default:
+                return -1;
+        }
     }
 
 
