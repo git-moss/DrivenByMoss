@@ -6,8 +6,10 @@ package de.mossgrabers.bitwig.framework.daw.data.bank;
 
 import de.mossgrabers.bitwig.framework.daw.ApplicationImpl;
 import de.mossgrabers.bitwig.framework.daw.data.CursorTrackImpl;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
+import de.mossgrabers.framework.daw.data.ITrack;
 import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.observer.INoteObserver;
 
@@ -58,6 +60,21 @@ public class EffectTrackBankImpl extends AbstractTrackBankImpl
     public void scrollTo (final int position)
     {
         super.scrollTo (position - this.audioInstrumentTrackBank.getItemCount ());
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public ColorEx getColorOfTrack (final int position)
+    {
+        final int index = position - this.getScrollPosition ();
+        if (index >= 0 && index < this.getPageSize ())
+        {
+            final ITrack track = this.getItem (index);
+            return track.doesExist () ? track.getColor () : ColorEx.BLACK;
+        }
+
+        return ColorEx.BLACK;
     }
 
 

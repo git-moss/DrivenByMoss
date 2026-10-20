@@ -122,6 +122,21 @@ public abstract class AbstractTrackBankImpl extends AbstractChannelBankImpl<Trac
 
     /** {@inheritDoc} */
     @Override
+    public ColorEx getColorOfTrack (final int position)
+    {
+        final int index = position - this.getScrollPosition ();
+        if (index >= 0 && index < this.getPageSize ())
+        {
+            final ITrack track = this.getItem (index);
+            return track.doesExist () ? track.getColor () : ColorEx.BLACK;
+        }
+
+        return this.cursorTrack.getColorOfTrack (position);
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
     public boolean isClipRecording ()
     {
         for (int t = 0; t < this.getPageSize (); t++)

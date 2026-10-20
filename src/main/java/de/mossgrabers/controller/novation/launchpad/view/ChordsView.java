@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.novation.launchpad.view;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.novation.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadColorManager;
 import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadControlSurface;
@@ -12,7 +14,10 @@ import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
+import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.MidiConstants;
 import de.mossgrabers.framework.featuregroup.IScrollableView;
@@ -189,15 +194,26 @@ public class ChordsView extends AbstractChordView<LaunchpadControlSurface, Launc
         if (!this.surface.getConfiguration ().isSceneButtonsAsTrackNavigation ())
             return -1;
 
+        final boolean isPrevious;
         switch (buttonID)
         {
             case SCENE1:
-                return this.model.getCurrentTrackBank ().canScrollBackwards () ? LaunchpadColorManager.LAUNCHPAD_COLOR_OCEAN_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
+                isPrevious = true;
+                break;
             case SCENE2:
-                return this.model.getCurrentTrackBank ().canScrollForwards () ? LaunchpadColorManager.LAUNCHPAD_COLOR_OCEAN_HI : LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
+                isPrevious = false;
+                break;
             default:
                 return -1;
         }
+
+        final ITrackBank trackBank = this.model.getCurrentTrackBank ();
+        final Optional<ITrack> selectedTrack = trackBank.getSelectedItem ();
+        if (selectedTrack.isEmpty () || (isPrevious ? !trackBank.canScrollBackwards () : !trackBank.canScrollForwards ()))
+            return LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
+
+        final int targetPosition = selectedTrack.get ().getPosition () + (isPrevious ? -1 : 1);
+        return this.colorManager.getColorIndex (DAWColor.getColorID (trackBank.getColorOfTrack (targetPosition)));
     }
 
 
