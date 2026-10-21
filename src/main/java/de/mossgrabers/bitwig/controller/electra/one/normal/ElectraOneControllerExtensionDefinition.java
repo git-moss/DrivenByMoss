@@ -2,19 +2,19 @@
 // (c) 2017-2026
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.bitwig.controller.electra.one;
+package de.mossgrabers.bitwig.controller.electra.one.normal;
+
+import com.bitwig.extension.controller.api.ControllerHost;
 
 import de.mossgrabers.bitwig.framework.BitwigSetupFactory;
 import de.mossgrabers.bitwig.framework.configuration.SettingsUIImpl;
 import de.mossgrabers.bitwig.framework.daw.HostImpl;
 import de.mossgrabers.bitwig.framework.extension.AbstractControllerExtensionDefinition;
-import de.mossgrabers.controller.electra.one.ElectraOneConfiguration;
-import de.mossgrabers.controller.electra.one.ElectraOneControllerDefinition;
-import de.mossgrabers.controller.electra.one.ElectraOneControllerSetup;
-import de.mossgrabers.controller.electra.one.controller.ElectraOneControlSurface;
+import de.mossgrabers.controller.electra.one.normal.ElectraOneConfiguration;
+import de.mossgrabers.controller.electra.one.normal.ElectraOneControllerDefinition;
+import de.mossgrabers.controller.electra.one.normal.ElectraOneControllerSetup;
+import de.mossgrabers.controller.electra.one.normal.controller.ElectraOneControlSurface;
 import de.mossgrabers.framework.controller.IControllerSetup;
-
-import com.bitwig.extension.controller.api.ControllerHost;
 
 
 /**

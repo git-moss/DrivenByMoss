@@ -2,18 +2,12 @@
 // (c) 2017-2026
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.electra.one;
+package de.mossgrabers.controller.electra.one.mini;
 
-import de.mossgrabers.controller.electra.one.command.trigger.TouchCombinationCommand;
-import de.mossgrabers.controller.electra.one.controller.ElectraOneColorManager;
-import de.mossgrabers.controller.electra.one.controller.ElectraOneControlSurface;
-import de.mossgrabers.controller.electra.one.mode.DeviceMode;
-import de.mossgrabers.controller.electra.one.mode.EqualizerMode;
-import de.mossgrabers.controller.electra.one.mode.MixerMode;
-import de.mossgrabers.controller.electra.one.mode.ProjectTrackMode;
-import de.mossgrabers.controller.electra.one.mode.SendsMode;
-import de.mossgrabers.controller.electra.one.mode.SessionMode;
-import de.mossgrabers.controller.electra.one.mode.TransportMode;
+import de.mossgrabers.controller.electra.one.base.AbstractElectraOneConfiguration;
+import de.mossgrabers.controller.electra.one.base.controller.ElectraOneColorManager;
+import de.mossgrabers.controller.electra.one.mini.controller.ElectraOneMiniControlSurface;
+import de.mossgrabers.controller.electra.one.mini.mode.ElectraOneMiniMixerMode;
 import de.mossgrabers.framework.command.trigger.mode.ButtonRowModeCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
@@ -38,27 +32,27 @@ import de.mossgrabers.framework.view.Views;
 
 
 /**
- * Support for the Electra One controller.
+ * Support for the Electra One Mini controller.
  *
  * @author Jürgen Moßgraber
  */
-public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOneControlSurface, ElectraOneConfiguration>
+public class ElectraOneMiniControllerSetup extends AbstractControllerSetup<ElectraOneMiniControlSurface, ElectraOneMiniConfiguration>
 {
     /**
-     * O Constructor.
+     * Constructor.
      *
      * @param host The DAW host
      * @param factory The factory
      * @param globalSettings The global settings
      * @param documentSettings The document (project) specific settings
      */
-    public ElectraOneControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI globalSettings, final ISettingsUI documentSettings)
+    public ElectraOneMiniControllerSetup (final IHost host, final ISetupFactory factory, final ISettingsUI globalSettings, final ISettingsUI documentSettings)
     {
         super (factory, host, globalSettings, documentSettings);
 
         this.colorManager = new ElectraOneColorManager ();
         this.valueChanger = new TwosComplementValueChanger (128, 1);
-        this.configuration = new ElectraOneConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
+        this.configuration = new ElectraOneMiniConfiguration (host, this.valueChanger, factory.getArpeggiatorModes ());
     }
 
 
@@ -72,13 +66,14 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
         ms.enableDevice (DeviceID.EQ);
         ms.setWantsFocusedParameter (true);
 
-        ms.setNumTracks (5);
         ms.setHasFlatTrackList (true);
         ms.setHasFullFlatTrackList (true);
-        ms.setNumSends (6);
-        ms.setNumMarkers (8);
 
-        ms.setNumScenes (5);
+        ms.setNumTracks (8);
+        ms.setNumScenes (8);
+        ms.setNumSends (6);
+
+        ms.setNumMarkers (8);
 
         // Not used (yet)
         ms.setNumFilterColumnEntries (0);
@@ -112,13 +107,15 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
         final IMidiOutput ctrlOutput = midiAccess.createOutput (1);
         final IMidiInput ctrlInput = midiAccess.createInput (1, null);
 
-        final ElectraOneControlSurface surface = new ElectraOneControlSurface (this.host, this.colorManager, this.configuration, output, input, ctrlInput, ctrlOutput);
+        final ElectraOneMiniControlSurface surface = new ElectraOneMiniControlSurface (this.host, this.colorManager, this.configuration, output, input, ctrlInput, ctrlOutput);
         this.surfaces.add (surface);
 
-        final TouchCombinationCommand [] touchCombinationCommands = new TouchCombinationCommand [ElectraOneControlSurface.getTouchPatternSize ()];
-        for (int i = 0; i < touchCombinationCommands.length; i++)
-            touchCombinationCommands[i] = new TouchCombinationCommand (i, this.model, surface);
-        surface.setTouchCombinationCommands (touchCombinationCommands);
+        // TODO
+        // final TouchCombinationCommand [] touchCombinationCommands = new TouchCombinationCommand
+        // [surface.getTouchPatternSize ()];
+        // for (int i = 0; i < touchCombinationCommands.length; i++)
+        // touchCombinationCommands[i] = new TouchCombinationCommand (i, this.model, surface);
+        // surface.setTouchCombinationCommands (touchCombinationCommands);
 
         surface.getModeManager ().setDefaultID (Modes.VOLUME);
     }
@@ -128,17 +125,17 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
     @Override
     protected void createModes ()
     {
-        final ElectraOneControlSurface surface = this.getSurface ();
+        final ElectraOneMiniControlSurface surface = this.getSurface ();
         final ModeManager modeManager = surface.getModeManager ();
 
-        modeManager.register (Modes.VOLUME, new MixerMode (surface, this.model));
-        modeManager.register (Modes.SEND, new SendsMode (surface, this.model));
-        modeManager.register (Modes.DEVICE_PARAMS, new DeviceMode (surface, this.model));
-        modeManager.register (Modes.EQ_DEVICE_PARAMS, new EqualizerMode (surface, this.model));
-        modeManager.register (Modes.TRANSPORT, new TransportMode (surface, this.model));
-        modeManager.register (Modes.SESSION, new SessionMode (surface, this.model));
-        modeManager.register (Modes.PROJECT, new ProjectTrackMode (surface, this.model));
-        modeManager.register (Modes.DUMMY, new DummyMode<> (surface, this.model, ElectraOneControlSurface.KNOB_IDS));
+        modeManager.register (Modes.VOLUME, new ElectraOneMiniMixerMode (surface, this.model));
+        // TODO
+        // modeManager.register (Modes.DEVICE_PARAMS, new DeviceMode (surface, this.model));
+        // modeManager.register (Modes.EQ_DEVICE_PARAMS, new EqualizerMode (surface, this.model));
+        // modeManager.register (Modes.TRANSPORT, new TransportMode (surface, this.model));
+        // modeManager.register (Modes.SESSION, new SessionMode (surface, this.model));
+        // modeManager.register (Modes.PROJECT, new ProjectTrackMode (surface, this.model));
+        modeManager.register (Modes.DUMMY, new DummyMode<> (surface, this.model, ElectraOneMiniControlSurface.KNOB_IDS));
     }
 
 
@@ -146,7 +143,7 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
     @Override
     protected void createViews ()
     {
-        final ElectraOneControlSurface surface = this.getSurface ();
+        final ElectraOneMiniControlSurface surface = this.getSurface ();
         // We need this for triggering updateDisplay in the modes
         surface.getViewManager ().register (Views.CONTROL, new DummyView<> ("Control", surface, this.model));
     }
@@ -158,10 +155,10 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
     {
         super.createObservers ();
 
-        final ElectraOneControlSurface surface = this.getSurface ();
+        final ElectraOneMiniControlSurface surface = this.getSurface ();
         this.configuration.registerDeactivatedItemsHandler (this.model);
-        this.configuration.addSettingObserver (ElectraOneConfiguration.KNOB_TOUCH_COMBINATION_COMMANDS, this.getSurface ()::updateTouchCombinationCommandsCache);
-        this.configuration.addSettingObserver (ElectraOneConfiguration.LOG_TO_CONSOLE, surface::setLoggingEnabled);
+        this.configuration.addSettingObserver (AbstractElectraOneConfiguration.KNOB_TOUCH_COMBINATION_COMMANDS, this.getSurface ()::updateTouchCombinationCommandsCache);
+        this.configuration.addSettingObserver (AbstractElectraOneConfiguration.LOG_TO_CONSOLE, surface::setLoggingEnabled);
     }
 
 
@@ -169,20 +166,26 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
     @Override
     protected void registerTriggerCommands ()
     {
-        final ElectraOneControlSurface surface = this.getSurface ();
+        final ElectraOneMiniControlSurface surface = this.getSurface ();
 
-        for (int row = 0; row < 6; row++)
+        // These are the push buttons of the knobs
+        for (int index = 0; index < 8; index++)
         {
-            final int rowLabel = row + 1;
+            final ButtonID buttonID = ButtonID.get (ButtonID.ROW1_1, index);
+            final int colLabel = index + 1;
+            final int cc = 20 + index;
+            final ButtonRowModeCommand<ElectraOneMiniControlSurface, ElectraOneMiniConfiguration> command = new ButtonRowModeCommand<> (0, index, this.model, surface);
+            this.addButton (surface, buttonID, Integer.toString (colLabel), command, 15, cc, () -> this.getButtonColor (surface, buttonID));
+        }
 
-            for (int col = 0; col < 6; col++)
-            {
-                final ButtonID buttonID = ElectraOneControlSurface.getButtonID (row, col);
-                final int colLabel = col + 1;
-                final int cc = ElectraOneControlSurface.ELECTRA_ROW_1 + 10 * row + col;
-                final ButtonRowModeCommand<ElectraOneControlSurface, ElectraOneConfiguration> command = new ButtonRowModeCommand<> (row, col, this.model, surface);
-                this.addButton (surface, buttonID, "Row " + rowLabel + ": " + colLabel, command, 15, cc, () -> this.getButtonColor (surface, buttonID));
-            }
+        // These are the 4 buttons of the Mini
+        for (int index = 0; index < 4; index++)
+        {
+            final ButtonID buttonID = ButtonID.get (ButtonID.ROW2_1, index);
+            final int colLabel = index + 1;
+            final int cc = 30 + index;
+            final ButtonRowModeCommand<ElectraOneMiniControlSurface, ElectraOneMiniConfiguration> command = new ButtonRowModeCommand<> (1, index, this.model, surface);
+            this.addButton (surface, buttonID, Integer.toString (colLabel), command, 15, cc, () -> this.getButtonColor (surface, buttonID));
         }
     }
 
@@ -191,20 +194,14 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
     @Override
     protected void registerContinuousCommands ()
     {
-        for (int row = 0; row < 6; row++)
+        for (int index = 0; index < 8; index++)
         {
-            final int rowLabel = row + 1;
-
-            for (int col = 0; col < 6; col++)
-            {
-                final ContinuousID ctrlID = ElectraOneControlSurface.getContinuousID (row, col);
-                final int colLabel = col + 1;
-                final int cc = ElectraOneControlSurface.ELECTRA_CTRL_1 + 10 * row + col;
-                final IHwContinuousControl ctrl = this.addRelativeKnob (ctrlID, "Ctrl " + rowLabel + "-" + colLabel, null, BindType.CC, 15, cc);
-                // Can sadly only be set at startup
-                if (col < 6)
-                    ctrl.setIndexInGroup (row * 6 + col);
-            }
+            final ContinuousID ctrlID = ContinuousID.get (ContinuousID.KNOB1, index);
+            final int colLabel = index + 1;
+            final int cc = ElectraOneMiniControlSurface.ELECTRA_CTRL_1 + index;
+            final IHwContinuousControl ctrl = this.addRelativeKnob (ctrlID, "Ctrl " + colLabel, null, BindType.CC, 15, cc);
+            // Can sadly only be set at startup
+            ctrl.setIndexInGroup (index);
         }
     }
 
@@ -213,24 +210,24 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
     @Override
     protected void layoutControls ()
     {
-        final ElectraOneControlSurface surface = this.getSurface ();
+        final ElectraOneMiniControlSurface surface = this.getSurface ();
 
         final double width = 12;
         final double height = 10;
         final double padding = 4;
         final double offsetY = 7 * (padding + height);
 
-        for (int row = 0; row < 6; row++)
+        for (int row = 0; row < 2; row++)
         {
-            for (int col = 0; col < 6; col++)
+            for (int col = 0; col < 4; col++)
             {
                 final double x = padding + col * (padding + width);
                 final double y = padding + row * (padding + height);
 
-                final ContinuousID ctrlID = ElectraOneControlSurface.getContinuousID (row, col);
+                final ContinuousID ctrlID = ContinuousID.get (ContinuousID.KNOB1, row * 4 + col);
                 surface.getContinuous (ctrlID).setBounds (x, y, width, height);
 
-                final ButtonID buttonID = ElectraOneControlSurface.getButtonID (row, col);
+                final ButtonID buttonID = ButtonID.get (ButtonID.ROW1_1, row * 4 + col);
                 surface.getButton (buttonID).setBounds (x, offsetY + y, width, height);
             }
         }
@@ -241,7 +238,7 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
     @Override
     public void startup ()
     {
-        final ElectraOneControlSurface surface = this.getSurface ();
+        final ElectraOneMiniControlSurface surface = this.getSurface ();
         surface.getViewManager ().setActive (Views.CONTROL);
         surface.requestDeviceInfo ();
     }

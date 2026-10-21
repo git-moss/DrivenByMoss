@@ -4,6 +4,8 @@
 
 package de.mossgrabers.framework.command.trigger;
 
+import java.util.Optional;
+
 import de.mossgrabers.framework.command.core.AbstractTriggerCommand;
 import de.mossgrabers.framework.command.trigger.application.UndoCommand;
 import de.mossgrabers.framework.command.trigger.clip.NewCommand;
@@ -22,8 +24,6 @@ import de.mossgrabers.framework.daw.data.bank.ISlotBank;
 import de.mossgrabers.framework.daw.midi.MidiConstants;
 import de.mossgrabers.framework.daw.resource.ChannelType;
 import de.mossgrabers.framework.utils.ButtonEvent;
-
-import java.util.Optional;
 
 
 /**

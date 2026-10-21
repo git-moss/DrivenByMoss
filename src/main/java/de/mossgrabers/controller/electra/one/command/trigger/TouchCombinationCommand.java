@@ -4,8 +4,8 @@
 
 package de.mossgrabers.controller.electra.one.command.trigger;
 
-import de.mossgrabers.controller.electra.one.ElectraOneConfiguration;
-import de.mossgrabers.controller.electra.one.controller.ElectraOneControlSurface;
+import de.mossgrabers.controller.electra.one.normal.ElectraOneConfiguration;
+import de.mossgrabers.controller.electra.one.normal.controller.ElectraOneControlSurface;
 import de.mossgrabers.framework.command.trigger.FootswitchCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;

@@ -2,56 +2,80 @@
 // (c) 2017-2026
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.electra.one.mode;
+package de.mossgrabers.controller.electra.one.base.mode;
 
 import java.util.Arrays;
 
-import de.mossgrabers.controller.electra.one.controller.ElectraOneControlSurface;
+import de.mossgrabers.controller.electra.one.base.AbstractElectraOneConfiguration;
+import de.mossgrabers.controller.electra.one.base.controller.AbstractElectraOneControlSurface;
+import de.mossgrabers.controller.electra.one.normal.controller.ElectraOneControlSurface;
 import de.mossgrabers.framework.controller.color.ColorEx;
 
 
 /**
  * Caches the values and UI information of 36 controls of a mode display page.
  *
+ * @param <S> The specific type of the control surface
+ * @param <C> The specific type of the configuration
+ * 
  * @author Jürgen Moßgraber
  */
-class PageCache
+public class PageCache<S extends AbstractElectraOneControlSurface<C>, C extends AbstractElectraOneConfiguration>
 {
-    private static final int               NUM_ROWS                   = 6;
-    private static final int               NUM_COLS                   = 6;
-    private static final int               NUM_GROUPS                 = 500;
-    private static final int               GROUP_OFFSET               = 500;
+    private static final int    NUM_GROUPS        = 500;
 
-    private final int [] []                ctrlValueCache             = new int [NUM_ROWS] [NUM_COLS];
-    private final String [] []             ctrlValueLabelCache        = new String [NUM_ROWS] [NUM_COLS];
-    private final String [] []             ctrlLabelCache             = new String [NUM_ROWS] [NUM_COLS];
-    private final ColorEx [] []            ctrlColorCache             = new ColorEx [NUM_ROWS] [NUM_COLS];
-    private final Boolean [] []            ctrlExistsCache            = new Boolean [NUM_ROWS] [NUM_COLS];
-    private final String []                groupCache                 = new String [NUM_GROUPS];
+    private final int           numRows;
+    private final int           numCols;
 
-    private final int [] []                currentCtrlValueCache      = new int [NUM_ROWS] [NUM_COLS];
-    private final String [] []             currentCtrlValueLabelCache = new String [NUM_ROWS] [NUM_COLS];
-    private final String [] []             currentCtrlLabelCache      = new String [NUM_ROWS] [NUM_COLS];
-    private final ColorEx [] []            currentCtrlColorCache      = new ColorEx [NUM_ROWS] [NUM_COLS];
-    private final Boolean [] []            currentCtrlExistsCache     = new Boolean [NUM_ROWS] [NUM_COLS];
-    private final String []                currentGroupCache          = new String [NUM_GROUPS];
+    private final int [] []     ctrlValueCache;
+    private final int [] []     currentCtrlValueCache;
+    private final String [] []  ctrlValueLabelCache;
+    private final String [] []  currentCtrlValueLabelCache;
+    private final String [] []  ctrlLabelCache;
+    private final String [] []  currentCtrlLabelCache;
+    private final ColorEx [] [] ctrlColorCache;
+    private final ColorEx [] [] currentCtrlColorCache;
+    private final Boolean [] [] ctrlExistsCache;
+    private final Boolean [] [] currentCtrlExistsCache;
 
-    private final Object                   dataLock                   = new Object ();
-    private final ElectraOneControlSurface surface;
-    private final int                      page;
-    private boolean                        isDirty                    = false;
+    private final String []     groupCache        = new String [NUM_GROUPS];
+    private final String []     currentGroupCache = new String [NUM_GROUPS];
+
+    private final Object        dataLock          = new Object ();
+    private final S             surface;
+    private int                 groupOffset;
+    private final int           page;
+    private boolean             isDirty           = false;
 
 
     /**
      * Constructor.
      *
      * @param page The index of the page to cache
+     * @param numRows The number of rows to cache
+     * @param numCols The number of columns to cache
      * @param surface The surface
+     * @param groupOffset The ID of the first group
      */
-    public PageCache (final int page, final ElectraOneControlSurface surface)
+    public PageCache (final int page, final int numRows, final int numCols, final S surface, final int groupOffset)
     {
         this.page = page;
+        this.numRows = numRows;
+        this.numCols = numCols;
         this.surface = surface;
+        this.groupOffset = groupOffset;
+
+        this.ctrlValueCache = new int [this.numRows] [this.numCols];
+        this.ctrlValueLabelCache = new String [this.numRows] [this.numCols];
+        this.ctrlLabelCache = new String [this.numRows] [this.numCols];
+        this.ctrlColorCache = new ColorEx [this.numRows] [this.numCols];
+        this.ctrlExistsCache = new Boolean [this.numRows] [this.numCols];
+
+        this.currentCtrlValueCache = new int [this.numRows] [this.numCols];
+        this.currentCtrlValueLabelCache = new String [this.numRows] [this.numCols];
+        this.currentCtrlLabelCache = new String [this.numRows] [this.numCols];
+        this.currentCtrlColorCache = new ColorEx [this.numRows] [this.numCols];
+        this.currentCtrlExistsCache = new Boolean [this.numRows] [this.numCols];
     }
 
 
@@ -145,7 +169,7 @@ class PageCache
     {
         synchronized (this.dataLock)
         {
-            final int gID = groupID - GROUP_OFFSET;
+            final int gID = groupID - this.groupOffset;
             if (label != null && !label.equals (this.groupCache[gID]))
             {
                 this.isDirty = true;
@@ -155,6 +179,9 @@ class PageCache
     }
 
 
+    /**
+     * Flush the page cache to the controller.
+     */
     public void flush ()
     {
         synchronized (this.dataLock)
@@ -165,9 +192,9 @@ class PageCache
             this.surface.setRepaintEnabled (false);
 
             // Flush values and their labels
-            for (int row = 0; row < NUM_ROWS; row++)
+            for (int row = 0; row < this.numRows; row++)
             {
-                for (int column = 0; column < NUM_COLS; column++)
+                for (int column = 0; column < this.numCols; column++)
                 {
                     // Only update values if value is not currently edited
                     if (this.ctrlValueCache[row][column] != this.currentCtrlValueCache[row][column])
@@ -190,9 +217,9 @@ class PageCache
             String label = null;
             ColorEx color = null;
             Boolean exists = null;
-            for (int row = 0; row < NUM_ROWS; row++)
+            for (int row = 0; row < this.numRows; row++)
             {
-                for (int column = 0; column < NUM_COLS; column++)
+                for (int column = 0; column < this.numCols; column++)
                 {
                     if (this.ctrlLabelCache[row][column] != null && !this.ctrlLabelCache[row][column].equals (this.currentCtrlLabelCache[row][column]))
                     {
@@ -230,7 +257,7 @@ class PageCache
                 if (this.groupCache[group] != null && !this.groupCache[group].equals (this.currentGroupCache[group]))
                 {
                     this.currentGroupCache[group] = this.groupCache[group];
-                    this.surface.updateGroupLabel (GROUP_OFFSET + group, this.currentGroupCache[group]);
+                    this.surface.updateGroupLabel (this.groupOffset + group, this.currentGroupCache[group]);
                 }
             }
 
@@ -250,6 +277,7 @@ class PageCache
      */
     private int getControlID (final int row, final int column)
     {
+        // TODO
         return this.page * 36 + 6 * row + column + 1;
     }
 

@@ -2,32 +2,24 @@
 // (c) 2017-2026
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.electra.one;
+package de.mossgrabers.controller.electra.one.normal;
 
-import java.util.Arrays;
 import java.util.List;
 
+import de.mossgrabers.controller.electra.one.base.AbstractElectraOneConfiguration;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
-import de.mossgrabers.framework.configuration.IActionSetting;
-import de.mossgrabers.framework.configuration.IEnumSetting;
-import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 
 
 /**
- * The configuration settings for Electra One.
+ * The configuration settings for Electra One Mk1/2.
  *
  * @author Jürgen Moßgraber
  */
-public class ElectraOneConfiguration extends AbstractConfiguration
+public class ElectraOneConfiguration extends AbstractElectraOneConfiguration
 {
-    /** A knob touch combination configuration change. */
-    public static final Integer    KNOB_TOUCH_COMBINATION_COMMANDS    = Integer.valueOf (NEXT_SETTING_ID);
-
-    private static final String    CATEGORY_ASSIGNABLE_BUTTONS        = "Assignable button touches";
-
     private static final String [] ASSIGNABLE_VALUES                  =
     {
         "Off",
@@ -180,13 +172,6 @@ public class ElectraOneConfiguration extends AbstractConfiguration
         "Triangle 5, 10, 12"
     };
 
-    /** Display log state. */
-    public static final Integer    LOG_TO_CONSOLE                     = Integer.valueOf (50);
-
-    private boolean                isLogToConsoleEnabled              = false;
-    private final int []           assignableFunctions                = new int [ASSIGNABLE_BUTTON_NAMES.length];
-    private final String []        assignableFunctionActions          = new String [ASSIGNABLE_BUTTON_NAMES.length];
-
 
     /**
      * Constructor.
@@ -197,100 +182,6 @@ public class ElectraOneConfiguration extends AbstractConfiguration
      */
     public ElectraOneConfiguration (final IHost host, final IValueChanger valueChanger, final List<ArpeggiatorMode> arpeggiatorModes)
     {
-        super (host, valueChanger, arpeggiatorModes);
-
-        Arrays.fill (this.assignableFunctions, 0);
-        Arrays.fill (this.assignableFunctionActions, "");
-    }
-
-
-    /** {@inheritDoc} */
-    @Override
-    public void init (final ISettingsUI globalSettings, final ISettingsUI documentSettings)
-    {
-        // ----------------------------------------------------------------
-        // Hardware
-
-        this.activateHardwareSettings (globalSettings);
-        this.activateKnobSpeedSetting (globalSettings, 100, 20);
-
-        // ----------------------------------------------------------------
-        // Transport
-
-        this.activateBehaviourOnPauseSetting (globalSettings);
-
-        // ----------------------------------------------------------------
-        // Workflow
-
-        this.activateExcludeDeactivatedItemsSetting (globalSettings);
-        this.activateNewClipLengthSetting (globalSettings);
-
-        this.activateAssignableSettings (globalSettings);
-    }
-
-
-    private void activateHardwareSettings (final ISettingsUI settingsUI)
-    {
-        final IEnumSetting logToConsoleSetting = settingsUI.getEnumSetting ("Enable Electra.One logging (written to Controller Script Console)", CATEGORY_HARDWARE_SETUP, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);
-        logToConsoleSetting.addValueObserver (value -> {
-            this.isLogToConsoleEnabled = "On".equals (value);
-            this.notifyObservers (LOG_TO_CONSOLE);
-        });
-
-        this.isSettingActive.add (LOG_TO_CONSOLE);
-    }
-
-
-    private void activateAssignableSettings (final ISettingsUI settingsUI)
-    {
-        for (int i = 0; i < this.assignableFunctions.length; i++)
-        {
-            final int pos = i;
-            final IEnumSetting assignableSetting = settingsUI.getEnumSetting (ASSIGNABLE_BUTTON_NAMES[i], CATEGORY_ASSIGNABLE_BUTTONS, ASSIGNABLE_VALUES, ASSIGNABLE_VALUES[ASSIGNABLE_BUTTON_DEFAULTS[i]]);
-            assignableSetting.addValueObserver (value -> {
-                this.assignableFunctions[pos] = lookupIndex (ASSIGNABLE_VALUES, value);
-                this.notifyObservers (KNOB_TOUCH_COMBINATION_COMMANDS);
-            });
-
-            final IActionSetting actionSetting = settingsUI.getActionSetting (ASSIGNABLE_BUTTON_NAMES[i] + " - Action", CATEGORY_ASSIGNABLE_BUTTONS);
-            actionSetting.addValueObserver (value -> this.assignableFunctionActions[pos] = actionSetting.get ());
-        }
-
-        this.isSettingActive.add (KNOB_TOUCH_COMBINATION_COMMANDS);
-    }
-
-
-    /**
-     * Is logging to console enabled?
-     *
-     * @return True if enabled
-     */
-    public boolean isLogToConsoleEnabled ()
-    {
-        return this.isLogToConsoleEnabled;
-    }
-
-
-    /**
-     * Get the assignable function.
-     *
-     * @param index The index of the assignable
-     * @return The function
-     */
-    public int getAssignable (final int index)
-    {
-        return this.assignableFunctions[index];
-    }
-
-
-    /**
-     * If the assignable function is set to Action this method gets the selected action to execute.
-     *
-     * @param index The index of the assignable
-     * @return The ID of the action to execute
-     */
-    public String getAssignableAction (final int index)
-    {
-        return this.assignableFunctionActions[index];
+        super (host, valueChanger, arpeggiatorModes, ASSIGNABLE_BUTTON_NAMES, ASSIGNABLE_BUTTON_DEFAULTS, ASSIGNABLE_VALUES);
     }
 }

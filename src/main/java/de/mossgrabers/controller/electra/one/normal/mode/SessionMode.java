@@ -2,10 +2,10 @@
 // (c) 2017-2026
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.electra.one.mode;
+package de.mossgrabers.controller.electra.one.normal.mode;
 
-import de.mossgrabers.controller.electra.one.ElectraOneConfiguration;
-import de.mossgrabers.controller.electra.one.controller.ElectraOneControlSurface;
+import de.mossgrabers.controller.electra.one.normal.controller.ElectraOneControlSurface;
+import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.clip.IClip;
@@ -145,7 +145,7 @@ public class SessionMode extends AbstractElectraOneMode
 
         final ITrackBank tb = this.model.getCurrentTrackBank ();
         final ISceneBank sceneBank = this.model.getSceneBank ();
-        final ElectraOneConfiguration configuration = this.surface.getConfiguration ();
+        final Configuration configuration = this.surface.getConfiguration ();
 
         // Scenes
         if (row == 0)
