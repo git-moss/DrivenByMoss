@@ -30,6 +30,6 @@ public abstract class AbstractElectraOneMiniMode extends AbstractElectraOneBaseM
      */
     protected AbstractElectraOneMiniMode (final int pageIndex, final String name, final ElectraOneMiniControlSurface surface, final IModel model)
     {
-        super (pageIndex, name, surface, model, 1, 8, ElectraOneMiniControlSurface.KNOB_IDS, GROUP_OFFSET);
+        super (pageIndex, name, surface, model, 2, 8, ElectraOneMiniControlSurface.KNOB_IDS, GROUP_OFFSET);
     }
 }

@@ -182,6 +182,6 @@ public class ElectraOneConfiguration extends AbstractElectraOneConfiguration
      */
     public ElectraOneConfiguration (final IHost host, final IValueChanger valueChanger, final List<ArpeggiatorMode> arpeggiatorModes)
     {
-        super (host, valueChanger, arpeggiatorModes, ASSIGNABLE_BUTTON_NAMES, ASSIGNABLE_BUTTON_DEFAULTS, ASSIGNABLE_VALUES);
+        super (host, valueChanger, arpeggiatorModes, ASSIGNABLE_BUTTON_NAMES, ASSIGNABLE_BUTTON_DEFAULTS, ASSIGNABLE_VALUES, 100);
     }
 }

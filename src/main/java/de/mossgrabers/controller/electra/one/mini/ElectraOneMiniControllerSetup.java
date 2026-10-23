@@ -4,10 +4,15 @@
 
 package de.mossgrabers.controller.electra.one.mini;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.mossgrabers.controller.electra.one.base.AbstractElectraOneConfiguration;
+import de.mossgrabers.controller.electra.one.base.command.trigger.TouchCombinationCommand;
 import de.mossgrabers.controller.electra.one.base.controller.ElectraOneColorManager;
 import de.mossgrabers.controller.electra.one.mini.controller.ElectraOneMiniControlSurface;
 import de.mossgrabers.controller.electra.one.mini.mode.ElectraOneMiniMixerMode;
+import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.command.trigger.mode.ButtonRowModeCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
@@ -27,6 +32,7 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.DummyMode;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.DummyView;
 import de.mossgrabers.framework.view.Views;
 
@@ -110,12 +116,11 @@ public class ElectraOneMiniControllerSetup extends AbstractControllerSetup<Elect
         final ElectraOneMiniControlSurface surface = new ElectraOneMiniControlSurface (this.host, this.colorManager, this.configuration, output, input, ctrlInput, ctrlOutput);
         this.surfaces.add (surface);
 
-        // TODO
-        // final TouchCombinationCommand [] touchCombinationCommands = new TouchCombinationCommand
-        // [surface.getTouchPatternSize ()];
-        // for (int i = 0; i < touchCombinationCommands.length; i++)
-        // touchCombinationCommands[i] = new TouchCombinationCommand (i, this.model, surface);
-        // surface.setTouchCombinationCommands (touchCombinationCommands);
+        final int touchPatternSize = surface.getTouchPatternSize ();
+        final List<TouchCombinationCommand<?, ?>> touchCombinationCommands = new ArrayList<> (touchPatternSize);
+        for (int i = 0; i < touchPatternSize; i++)
+            touchCombinationCommands.add (new TouchCombinationCommand<ElectraOneMiniControlSurface, ElectraOneMiniConfiguration> (i, this.model, surface));
+        surface.setTouchCombinationCommands (touchCombinationCommands);
 
         surface.getModeManager ().setDefaultID (Modes.VOLUME);
     }
@@ -173,7 +178,7 @@ public class ElectraOneMiniControllerSetup extends AbstractControllerSetup<Elect
         {
             final ButtonID buttonID = ButtonID.get (ButtonID.ROW1_1, index);
             final int colLabel = index + 1;
-            final int cc = 20 + index;
+            final int cc = ElectraOneMiniControlSurface.ELECTRA_CTRL_PUSH_1 + index;
             final ButtonRowModeCommand<ElectraOneMiniControlSurface, ElectraOneMiniConfiguration> command = new ButtonRowModeCommand<> (0, index, this.model, surface);
             this.addButton (surface, buttonID, Integer.toString (colLabel), command, 15, cc, () -> this.getButtonColor (surface, buttonID));
         }
@@ -183,7 +188,7 @@ public class ElectraOneMiniControllerSetup extends AbstractControllerSetup<Elect
         {
             final ButtonID buttonID = ButtonID.get (ButtonID.ROW2_1, index);
             final int colLabel = index + 1;
-            final int cc = 30 + index;
+            final int cc = ElectraOneMiniControlSurface.ELECTRA_FUNCTION_BUTTON_1 + index;
             final ButtonRowModeCommand<ElectraOneMiniControlSurface, ElectraOneMiniConfiguration> command = new ButtonRowModeCommand<> (1, index, this.model, surface);
             this.addButton (surface, buttonID, Integer.toString (colLabel), command, 15, cc, () -> this.getButtonColor (surface, buttonID));
         }
@@ -194,14 +199,26 @@ public class ElectraOneMiniControllerSetup extends AbstractControllerSetup<Elect
     @Override
     protected void registerContinuousCommands ()
     {
+        final ElectraOneMiniControlSurface surface = this.getSurface ();
+        final IMidiInput midiInput = surface.getMidiInput ();
         for (int index = 0; index < 8; index++)
         {
             final ContinuousID ctrlID = ContinuousID.get (ContinuousID.KNOB1, index);
             final int colLabel = index + 1;
-            final int cc = ElectraOneMiniControlSurface.ELECTRA_CTRL_1 + index;
+            final int cc = ElectraOneMiniControlSurface.ELECTRA_KNOB_1 + index;
             final IHwContinuousControl ctrl = this.addRelativeKnob (ctrlID, "Ctrl " + colLabel, null, BindType.CC, 15, cc);
             // Can sadly only be set at startup
             ctrl.setIndexInGroup (index);
+            ctrl.bindTouch (new TriggerCommand ()
+            {
+                @Override
+                public void execute (ButtonEvent event, int velocity)
+                {
+                    // TODO
+                    surface.updateTouchCombinationCommandsCache ();
+
+                }
+            }, midiInput, BindType.CC, 15, ElectraOneMiniControlSurface.ELECTRA_KNOB_TOUCH_1);
         }
     }
 

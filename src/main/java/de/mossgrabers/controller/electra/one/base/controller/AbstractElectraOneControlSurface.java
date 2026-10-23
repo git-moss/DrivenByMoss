@@ -20,8 +20,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import de.mossgrabers.controller.electra.one.base.AbstractElectraOneConfiguration;
-import de.mossgrabers.controller.electra.one.command.trigger.TouchCombinationCommand;
-import de.mossgrabers.controller.electra.one.normal.ElectraOneConfiguration;
+import de.mossgrabers.controller.electra.one.base.command.trigger.TouchCombinationCommand;
 import de.mossgrabers.controller.electra.one.normal.mode.AbstractElectraOneMode;
 import de.mossgrabers.framework.controller.AbstractControlSurface;
 import de.mossgrabers.framework.controller.color.ColorEx;
@@ -47,11 +46,11 @@ import de.mossgrabers.framework.utils.StringUtils;
 public abstract class AbstractElectraOneControlSurface<C extends AbstractElectraOneConfiguration> extends AbstractControlSurface<C>
 {
     // Controller events to subscribe to: page, pots (= knob touch) and buttons
-    private static final int                           SUBSCRIBED_EVENTS                 = 0x01 | 0x08 | 0x10 | 0x20;
+    private static final int                                   SUBSCRIBED_EVENTS                 = 0x01 | 0x08 | 0x10 | 0x20;
 
     // Sysex
 
-    private static final byte []                       SYSEX_HDR_BYTE                    =
+    private static final byte []                               SYSEX_HDR_BYTE                    =
     {
         (byte) 0xF0,
         0x00,
@@ -59,7 +58,7 @@ public abstract class AbstractElectraOneControlSurface<C extends AbstractElectra
         0x45
     };
 
-    private static final int []                        SYSEX_HDR_INT                     =
+    private static final int []                                SYSEX_HDR_INT                     =
     {
         0xF0,
         0x00,
@@ -80,53 +79,53 @@ public abstract class AbstractElectraOneControlSurface<C extends AbstractElectra
     private static final byte []         SYSEX_RUNTIME_ENABLE_LOGGER       = { 0x7F, 0x7D };
     // @formatter:on
 
-    private static final int                           CMD_START_POS                     = SYSEX_HDR_INT.length;
-    private static final int                           SUB_CMD_START_POS                 = SYSEX_HDR_INT.length + 1;
+    private static final int                                   CMD_START_POS                     = SYSEX_HDR_INT.length;
+    private static final int                                   SUB_CMD_START_POS                 = SYSEX_HDR_INT.length + 1;
 
     // Command categories
-    private static final int                           CMD_INFO                          = 0x01;
-    private static final int                           CMD_CONTROLLER                    = 0x7E;
-    private static final int                           CMD_SYSTEM_CALL                   = 0x7F;
+    private static final int                                   CMD_INFO                          = 0x01;
+    private static final int                                   CMD_CONTROLLER                    = 0x7E;
+    private static final int                                   CMD_SYSTEM_CALL                   = 0x7F;
 
     // IDs for runtime commands
-    private static final int                           EVENT_PRESET_SWITCH               = 0x02;
-    private static final int                           EVENT_PAGE_SWITCH                 = 0x06;
-    private static final int                           EVENT_POT_TOUCH                   = 0x0A;
+    private static final int                                   EVENT_PRESET_SWITCH               = 0x02;
+    private static final int                                   EVENT_PAGE_SWITCH                 = 0x06;
+    private static final int                                   EVENT_POT_TOUCH                   = 0x0A;
 
     // IDs for system commands
-    private static final int                           SYSTEM_CALL_LOGGING               = 0x00;
+    private static final int                                   SYSTEM_CALL_LOGGING               = 0x00;
 
     // IDs for information commands
-    private static final int                           INFO_PRESET_LIST                  = 0x04;
-    private static final int                           INFO_DEVICE                       = 0x7F;
+    private static final int                                   INFO_PRESET_LIST                  = 0x04;
+    private static final int                                   INFO_DEVICE                       = 0x7F;
 
-    private static final String                        SET_GROUP_TITLE                   = "sgt(%s,\"%s\")";
+    private static final String                                SET_GROUP_TITLE                   = "sgt(%s,\"%s\")";
 
-    private final IMidiInput                           ctrlInput;
-    private final IMidiOutput                          ctrlOutput;
-    private final List<int []>                         sysexChunks                       = new ArrayList<> ();
-    private final ObjectMapper                         mapper                            = new ObjectMapper ();
-    private final Map<String, Integer>                 presetBanks                       = new HashMap<> ();
-    private final Map<String, Integer>                 presetIndices                     = new HashMap<> ();
-    private int                                        bankIndex                         = -1;
-    private int                                        presetIndex                       = -1;
-    private boolean                                    isOnline                          = false;
-    private boolean                                    isShiftPressed;
-    private Modes                                      activeMode                        = null;
-    private int []                                     knobStates;
-    private final List<Modes>                          modes;
-    private TouchCombinationCommand []                 touchCombinationCommands          = null;
-    private final Object                               touchCombinationCommandsLock      = new Object ();
-    private final List<int []>                         shiftPatterns                     = new ArrayList<> ();
-    private final Map<int [], TouchCombinationCommand> commandPatterns                   = new HashMap<> ();
-    private final int [] []                            touchPatterns;
+    private final IMidiInput                                   ctrlInput;
+    private final IMidiOutput                                  ctrlOutput;
+    private final List<int []>                                 sysexChunks                       = new ArrayList<> ();
+    private final ObjectMapper                                 mapper                            = new ObjectMapper ();
+    private final Map<String, Integer>                         presetBanks                       = new HashMap<> ();
+    private final Map<String, Integer>                         presetIndices                     = new HashMap<> ();
+    private int                                                bankIndex                         = -1;
+    private int                                                presetIndex                       = -1;
+    private boolean                                            isOnline                          = false;
+    private boolean                                            isShiftPressed;
+    private Modes                                              activeMode                        = null;
+    private int []                                             knobStates;
+    private final List<Modes>                                  modes;
 
-    protected final String                             templateName;
+    protected List<TouchCombinationCommand<?, ?>>              touchCombinationCommands          = null;
+    protected final Object                                     touchCombinationCommandsLock      = new Object ();
+    protected final Map<int [], TouchCombinationCommand<?, ?>> commandPatterns                   = new HashMap<> ();
+    protected final int [] []                                  touchPatterns;
+
+    protected final String                                     templateName;
 
 
-    protected AbstractElectraOneControlSurface (final IHost host, final C configuration, final ColorManager colorManager, final IMidiOutput ctrlOutput, final IMidiInput ctrlInput, final String templateName, final int numberOfKnobs, final List<Modes> modes, final int [] [] touchPatterns)
+    protected AbstractElectraOneControlSurface (final IHost host, final C configuration, final ColorManager colorManager, final IMidiOutput output, final IMidiInput input, final IMidiOutput ctrlOutput, final IMidiInput ctrlInput, final String templateName, final int numberOfKnobs, final List<Modes> modes, final int [] [] touchPatterns)
     {
-        super (host, configuration, colorManager, ctrlOutput, ctrlInput, null, 100, 200);
+        super (host, configuration, colorManager, output, input, null, 100, 200);
 
         this.ctrlInput = ctrlInput;
         this.ctrlOutput = ctrlOutput;
@@ -164,49 +163,12 @@ public abstract class AbstractElectraOneControlSurface<C extends AbstractElectra
      *
      * @param touchCombinationCommands The commands to set; must match the number of touch patterns
      */
-    public void setTouchCombinationCommands (final TouchCombinationCommand [] touchCombinationCommands)
+    public void setTouchCombinationCommands (final List<TouchCombinationCommand<?, ?>> touchCombinationCommands)
     {
-        if (touchCombinationCommands.length != this.touchPatterns.length)
+        if (touchCombinationCommands.size () != this.touchPatterns.length)
             throw new FrameworkException ("The number of touch commands must match the number of available touch patterns.");
 
         this.touchCombinationCommands = touchCombinationCommands;
-    }
-
-
-    /**
-     * Update the cache for the active knob touch combinations.
-     */
-    public void updateTouchCombinationCommandsCache ()
-    {
-        synchronized (this.touchCombinationCommandsLock)
-        {
-            if (this.touchCombinationCommands == null)
-                return;
-
-            this.shiftPatterns.clear ();
-            this.commandPatterns.clear ();
-
-            for (int i = 0; i < this.touchCombinationCommands.length; i++)
-            {
-                final TouchCombinationCommand command = this.touchCombinationCommands[i];
-
-                final int setting = this.configuration.getAssignable (i);
-                if (setting != ElectraOneConfiguration.ELECTRA_ONE_FUNC_OFF)
-                {
-                    if (setting == ElectraOneConfiguration.ELECTRA_ONE_FUNC_SHIFT_BUTTON)
-                    {
-                        // Create specific shift patterns which ignore all other touched knobs
-                        // (state = 2)
-                        final int [] shiftPattern = new int [this.touchPatterns[i].length];
-                        for (int pos = 0; pos < shiftPattern.length; pos++)
-                            shiftPattern[pos] = this.touchPatterns[i][pos] == 1 ? 1 : 2;
-                        this.shiftPatterns.add (shiftPattern);
-                    }
-                    else
-                        this.commandPatterns.put (this.touchPatterns[i], command);
-                }
-            }
-        }
     }
 
 
@@ -573,20 +535,11 @@ public abstract class AbstractElectraOneControlSurface<C extends AbstractElectra
 
         synchronized (this.touchCombinationCommandsLock)
         {
-            for (final int [] pattern: this.shiftPatterns)
-            {
-                if (compareWithIgnore (this.knobStates, pattern))
-                {
-                    this.updateShift (true);
-                    return;
-                }
-            }
-
-            for (final Map.Entry<int [], TouchCombinationCommand> e: this.commandPatterns.entrySet ())
+            for (final Map.Entry<int [], TouchCombinationCommand<?, ?>> e: this.commandPatterns.entrySet ())
             {
                 if (Arrays.equals (this.knobStates, e.getKey ()))
                 {
-                    final TouchCombinationCommand cmd = e.getValue ();
+                    final TouchCombinationCommand<?, ?> cmd = e.getValue ();
                     cmd.execute (ButtonEvent.DOWN, 127);
                     cmd.execute (ButtonEvent.UP, 0);
                     handled = true;
@@ -597,12 +550,18 @@ public abstract class AbstractElectraOneControlSurface<C extends AbstractElectra
 
         if (!handled)
         {
-            this.updateShift (false);
+            clearShift ();
             return;
         }
 
         // Prevent hanging states
         Arrays.fill (this.knobStates, 0);
+    }
+
+
+    protected void clearShift ()
+    {
+        this.updateShift (false);
     }
 
 
@@ -654,24 +613,6 @@ public abstract class AbstractElectraOneControlSurface<C extends AbstractElectra
     {
         this.isShiftPressed = isShift;
         this.setKnobSensitivityIsSlow (this.isShiftPressed);
-    }
-
-
-    /**
-     * Compares the two given arrays. If the pattern array contains a 2 at a position it is ignored.
-     *
-     * @param knobStates The state array
-     * @param touchPattern The pattern array
-     * @return True if pattern matches
-     */
-    private static boolean compareWithIgnore (final int [] knobStates, final int [] touchPattern)
-    {
-        for (int i = 0; i < touchPattern.length; i++)
-        {
-            if (touchPattern[i] != 2 && touchPattern[i] != knobStates[i])
-                return false;
-        }
-        return true;
     }
 
 

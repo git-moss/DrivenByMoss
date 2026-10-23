@@ -86,7 +86,7 @@ public abstract class AbstractElectraOneBaseMode<S extends AbstractElectraOneCon
     public void setEditing (final int controlID, final boolean isTouched)
     {
         final int index = this.pageCache.getIndex (controlID);
-        if (index < 0 || index >= 36)
+        if (index < 0 || index >= this.pageCache.getPageSize ())
         {
             this.surface.getHost ().error ("Control ID out of bounds: " + controlID);
             return;

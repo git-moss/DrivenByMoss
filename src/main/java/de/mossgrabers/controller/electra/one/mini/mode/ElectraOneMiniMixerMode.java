@@ -4,9 +4,12 @@
 
 package de.mossgrabers.controller.electra.one.mini.mode;
 
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.Optional;
 
 import de.mossgrabers.controller.electra.one.mini.controller.ElectraOneMiniControlSurface;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.ISend;
 import de.mossgrabers.framework.daw.data.ITrack;
@@ -30,15 +33,39 @@ import de.mossgrabers.framework.utils.StringUtils;
  */
 public class ElectraOneMiniMixerMode extends AbstractElectraOneMiniMode
 {
-    private static final int                     FIRST_TRACK_GROUP = 9;
+    private static final String              TAG_PAN           = "PAN";
+    private static final String              TAG_VOLUME        = "VOLUME";
+    private static final int                 FIRST_TRACK_GROUP = 100;
+
+    private static final Map<Modes, String>  MAIN_MODES        = new EnumMap<> (Modes.class);
+    private static final Map<Modes, ColorEx> MAIN_COLORS       = new EnumMap<> (Modes.class);
+    private static final Map<Modes, String>  MODE_LABELS       = new EnumMap<> (Modes.class);
+    private static final Map<Modes, ColorEx> MODE_COLORS       = new EnumMap<> (Modes.class);
+    static
+    {
+        MAIN_MODES.put (Modes.VOLUME, TAG_VOLUME);
+        MAIN_MODES.put (Modes.PAN, TAG_PAN);
+        MAIN_MODES.put (Modes.TRACK, "TRACK");
+
+        MAIN_COLORS.put (Modes.VOLUME, ColorEx.BLUE);
+        MAIN_COLORS.put (Modes.PAN, ColorEx.DARK_PURPLE);
+        MAIN_COLORS.put (Modes.TRACK, ColorEx.DARK_YELLOW);
+
+        MODE_LABELS.put (Modes.MUTE, "MUTE");
+        MODE_LABELS.put (Modes.SOLO, "SOLO");
+        MODE_LABELS.put (Modes.REC_ARM, "REC ARM");
+
+        MODE_COLORS.put (Modes.MUTE, ColorEx.ORANGE);
+        MODE_COLORS.put (Modes.SOLO, ColorEx.YELLOW);
+        MODE_COLORS.put (Modes.REC_ARM, ColorEx.RED);
+    }
 
     private final VolumeParameterProvider        volumeParameterProvider;
     private final PanParameterProvider           panParameterProvider;
     private final SelectedTrackParameterProvider selectedTrackParameterProvider;
 
-    private Modes                                pushMode          = Modes.MUTE;
-
-    private Modes                                turnMode          = Modes.VOLUME;
+    private Modes                                pushMode = Modes.MUTE;
+    private Modes                                turnMode = Modes.VOLUME;
 
 
     /**
@@ -79,15 +106,17 @@ public class ElectraOneMiniMixerMode extends AbstractElectraOneMiniMode
         if (trackOpt.isEmpty ())
             return;
 
+        final ITrack track = trackOpt.get ();
         if (this.surface.isShiftPressed ())
         {
+            if (!track.isSelected ())
+                track.select ();
             this.setParameterProvider (this.selectedTrackParameterProvider);
             this.bindControls ();
             this.turnMode = Modes.TRACK;
             return;
         }
 
-        final ITrack track = trackOpt.get ();
         switch (this.pushMode)
         {
             // Record Arm
@@ -118,11 +147,10 @@ public class ElectraOneMiniMixerMode extends AbstractElectraOneMiniMode
                 if (event == ButtonEvent.DOWN)
                 {
                     final IParameterProvider activeParameterProvider = this.getParameterProvider ();
-                    final boolean isPanMode = activeParameterProvider == this.volumeParameterProvider;
-                    this.setParameterProvider (isPanMode ? this.panParameterProvider : this.volumeParameterProvider);
+                    final boolean isVolumeMode = activeParameterProvider == this.volumeParameterProvider && this.turnMode != Modes.TRACK;
+                    this.setParameterProvider (isVolumeMode ? this.panParameterProvider : this.volumeParameterProvider);
                     this.bindControls ();
-                    this.turnMode = isPanMode ? Modes.VOLUME : Modes.PAN;
-                    // TODO update button text -> is this row 5 ?
+                    this.turnMode = isVolumeMode ? Modes.PAN : Modes.VOLUME;
                 }
                 break;
 
@@ -134,7 +162,6 @@ public class ElectraOneMiniMixerMode extends AbstractElectraOneMiniMode
                         this.pushMode = Modes.REC_ARM;
                     else
                         this.pushMode = this.pushMode != Modes.MUTE ? Modes.MUTE : Modes.SOLO;
-                    // TODO update button text
                 }
                 break;
 
@@ -167,31 +194,37 @@ public class ElectraOneMiniMixerMode extends AbstractElectraOneMiniMode
     @Override
     public void updateDisplay ()
     {
+        final ITrackBank tb = this.model.getCurrentTrackBank ();
+
         for (int column = 0; column < 8; column++)
         {
-            final Optional<ITrack> trackOpt = this.getTrack (column);
-            final ITrack track = trackOpt.isPresent () ? trackOpt.get () : EmptyTrack.getInstance (this.model.getTrackBank ().getItem (0).getSendBank ().getPageSize ());
+            final ITrack indexedTrack = tb.getItem (column);
+            final String groupLabel = indexedTrack.doesExist () ? indexedTrack.getPosition () + 1 + ": " + indexedTrack.getName () : "";
 
+            final Optional<ITrack> trackOpt = this.turnMode == Modes.TRACK ? tb.getSelectedItem () : Optional.of (indexedTrack);
+            final ITrack track = trackOpt.isPresent () ? trackOpt.get () : EmptyTrack.getInstance (tb.getItem (0).getSendBank ().getPageSize ());
             final boolean trackExists = track.doesExist ();
             final Boolean exists = Boolean.valueOf (trackExists);
 
             int value = 0;
             String valueText = " ";
             String label = " ";
+            ColorEx color = ColorEx.BLACK;
             if (trackExists)
             {
+                color = track.getColor ();
                 switch (this.turnMode)
                 {
                     default:
                     case VOLUME:
                         value = track.getVolume ();
                         valueText = StringUtils.optimizeName (StringUtils.fixASCII (track.getVolumeStr ()), 15);
-                        label = "VOLUME";
+                        label = TAG_VOLUME;
                         break;
                     case PAN:
                         value = track.getPan ();
                         valueText = StringUtils.optimizeName (StringUtils.fixASCII (track.getPanStr ()), 15);
-                        label = "PAN";
+                        label = TAG_PAN;
                         break;
                     case TRACK:
                         switch (column)
@@ -199,12 +232,12 @@ public class ElectraOneMiniMixerMode extends AbstractElectraOneMiniMode
                             case 0:
                                 value = track.getVolume ();
                                 valueText = StringUtils.optimizeName (StringUtils.fixASCII (track.getVolumeStr ()), 15);
-                                label = "VOLUME";
+                                label = track.doesExist () ? track.getPosition () + 1 + ": " + track.getName () : "";
                                 break;
                             case 1:
                                 value = track.getPan ();
                                 valueText = StringUtils.optimizeName (StringUtils.fixASCII (track.getPanStr ()), 15);
-                                label = "PAN";
+                                label = TAG_PAN;
                                 break;
                             default:
                                 final ISendBank sendBank = track.getSendBank ();
@@ -215,16 +248,21 @@ public class ElectraOneMiniMixerMode extends AbstractElectraOneMiniMode
                                     valueText = send.getDisplayedValue (15);
                                     label = "S" + (column + 1) + ": " + send.getName (11);
                                 }
+                                else
+                                    color = ColorEx.BLACK;
                                 break;
                         }
                         break;
                 }
             }
-            final String groupLabel = trackExists ? track.getPosition () + 1 + ": " + track.getName () : "";
+
             this.pageCache.updateValue (0, column, value, valueText);
-            this.pageCache.updateElement (0, column, label, track.getColor (), exists);
+            this.pageCache.updateElement (0, column, label, color, exists);
             this.pageCache.updateGroupLabel (FIRST_TRACK_GROUP + column, groupLabel);
         }
+
+        this.pageCache.updateElement (1, 0, MAIN_MODES.get (this.turnMode), MAIN_COLORS.get (this.turnMode), Boolean.TRUE);
+        this.pageCache.updateElement (1, 1, MODE_LABELS.get (this.pushMode), MODE_COLORS.get (this.pushMode), Boolean.TRUE);
 
         this.pageCache.flush ();
     }

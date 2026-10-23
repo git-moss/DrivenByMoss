@@ -38,6 +38,7 @@ public abstract class AbstractElectraOneConfiguration extends AbstractConfigurat
     private final String []       assignableButtonNames;
     private final int []          assignableButtonDefaults;
     private final String []       assignableValues;
+    private final int             defaultKnobSpeedNormal;
 
 
     /**
@@ -49,14 +50,16 @@ public abstract class AbstractElectraOneConfiguration extends AbstractConfigurat
      * @param assignableButtonNames The names of the assignable button combinations
      * @param assignableButtonDefaults The default values of the assignable button combinations
      * @param assignableValues The assignable value names
+     * @param defaultKnobSpeedNormal The default normal knob speed (e.g. 100)
      */
-    protected AbstractElectraOneConfiguration (final IHost host, final IValueChanger valueChanger, final List<ArpeggiatorMode> arpeggiatorModes, final String [] assignableButtonNames, final int [] assignableButtonDefaults, final String [] assignableValues)
+    protected AbstractElectraOneConfiguration (final IHost host, final IValueChanger valueChanger, final List<ArpeggiatorMode> arpeggiatorModes, final String [] assignableButtonNames, final int [] assignableButtonDefaults, final String [] assignableValues, final int defaultKnobSpeedNormal)
     {
         super (host, valueChanger, arpeggiatorModes);
 
         this.assignableButtonNames = assignableButtonNames;
         this.assignableButtonDefaults = assignableButtonDefaults;
         this.assignableValues = assignableValues;
+        this.defaultKnobSpeedNormal = defaultKnobSpeedNormal;
 
         this.assignableFunctions = new int [assignableButtonNames.length];
         this.assignableFunctionActions = new String [assignableButtonNames.length];
@@ -74,7 +77,7 @@ public abstract class AbstractElectraOneConfiguration extends AbstractConfigurat
         // Hardware
 
         this.activateHardwareSettings (globalSettings);
-        this.activateKnobSpeedSetting (globalSettings, 100, 20);
+        this.activateKnobSpeedSetting (globalSettings, this.defaultKnobSpeedNormal, 20);
 
         // ----------------------------------------------------------------
         // Transport

@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import de.mossgrabers.controller.electra.one.base.command.trigger.TouchCombinationCommand;
 import de.mossgrabers.controller.electra.one.base.controller.AbstractElectraOneControlSurface;
 import de.mossgrabers.controller.electra.one.normal.ElectraOneConfiguration;
 import de.mossgrabers.framework.controller.ButtonID;
@@ -175,7 +176,7 @@ public class ElectraOneControlSurface extends AbstractElectraOneControlSurface<E
      */
     public ElectraOneControlSurface (final IHost host, final ColorManager colorManager, final ElectraOneConfiguration configuration, final IMidiOutput output, final IMidiInput input, final IMidiInput ctrlInput, final IMidiOutput ctrlOutput)
     {
-        super (host, configuration, colorManager, output, input, "DrivenByMoss", 12, MODES, TOUCH_PATTERNS);
+        super (host, configuration, colorManager, output, input, ctrlOutput, ctrlInput, "DrivenByMoss", 12, MODES, TOUCH_PATTERNS);
     }
 
 
@@ -205,6 +206,43 @@ public class ElectraOneControlSurface extends AbstractElectraOneControlSurface<E
             }
         }
         this.host.println ("Model: " + this.electraOneType + " - Firmware: " + versionText);
+    }
+
+
+    /**
+     * Update the cache for the active knob touch combinations.
+     */
+    public void updateTouchCombinationCommandsCache ()
+    {
+        synchronized (this.touchCombinationCommandsLock)
+        {
+            if (this.touchCombinationCommands == null)
+                return;
+
+            this.shiftPatterns.clear ();
+            this.commandPatterns.clear ();
+
+            for (int i = 0; i < this.touchCombinationCommands.size (); i++)
+            {
+                final TouchCombinationCommand<?, ?> command = this.touchCombinationCommands.get (i);
+
+                final int setting = this.configuration.getAssignable (i);
+                if (setting != ElectraOneConfiguration.ELECTRA_ONE_FUNC_OFF)
+                {
+                    if (setting == ElectraOneConfiguration.ELECTRA_ONE_FUNC_SHIFT_BUTTON)
+                    {
+                        // Create specific shift patterns which ignore all other touched knobs
+                        // (state = 2)
+                        final int [] shiftPattern = new int [this.touchPatterns[i].length];
+                        for (int pos = 0; pos < shiftPattern.length; pos++)
+                            shiftPattern[pos] = this.touchPatterns[i][pos] == 1 ? 1 : 2;
+                        this.shiftPatterns.add (shiftPattern);
+                    }
+                    else
+                        this.commandPatterns.put (this.touchPatterns[i], command);
+                }
+            }
+        }
     }
 
 

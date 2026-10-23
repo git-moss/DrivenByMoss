@@ -13,7 +13,7 @@ import de.mossgrabers.framework.controller.color.ColorEx;
 
 
 /**
- * Caches the values and UI information of 36 controls of a mode display page.
+ * Caches the values and UI information of column * row controls of a mode display page.
  *
  * @param <S> The specific type of the control surface
  * @param <C> The specific type of the configuration
@@ -26,6 +26,7 @@ public class PageCache<S extends AbstractElectraOneControlSurface<C>, C extends 
 
     private final int           numRows;
     private final int           numCols;
+    private final int           pageSize;
 
     private final int [] []     ctrlValueCache;
     private final int [] []     currentCtrlValueCache;
@@ -62,6 +63,7 @@ public class PageCache<S extends AbstractElectraOneControlSurface<C>, C extends 
         this.page = page;
         this.numRows = numRows;
         this.numCols = numCols;
+        this.pageSize = this.numCols * this.numRows;
         this.surface = surface;
         this.groupOffset = groupOffset;
 
@@ -277,8 +279,7 @@ public class PageCache<S extends AbstractElectraOneControlSurface<C>, C extends 
      */
     private int getControlID (final int row, final int column)
     {
-        // TODO
-        return this.page * 36 + 6 * row + column + 1;
+        return this.page * this.pageSize + this.numCols * row + column + 1;
     }
 
 
@@ -290,7 +291,7 @@ public class PageCache<S extends AbstractElectraOneControlSurface<C>, C extends 
      */
     public int getIndex (final int controlID)
     {
-        return (controlID - 1) % 36;
+        return (controlID - 1) % this.pageSize;
     }
 
 
@@ -325,5 +326,16 @@ public class PageCache<S extends AbstractElectraOneControlSurface<C>, C extends 
                 Arrays.fill (row, null);
             Arrays.fill (this.groupCache, null);
         }
+    }
+
+
+    /**
+     * Get the page size.
+     * 
+     * @return The page size
+     */
+    public int getPageSize ()
+    {
+        return this.pageSize;
     }
 }

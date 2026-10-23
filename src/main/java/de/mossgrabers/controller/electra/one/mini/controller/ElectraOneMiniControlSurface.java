@@ -10,8 +10,10 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import de.mossgrabers.controller.electra.one.base.command.trigger.TouchCombinationCommand;
 import de.mossgrabers.controller.electra.one.base.controller.AbstractElectraOneControlSurface;
 import de.mossgrabers.controller.electra.one.mini.ElectraOneMiniConfiguration;
+import de.mossgrabers.controller.electra.one.normal.ElectraOneConfiguration;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.color.ColorManager;
 import de.mossgrabers.framework.daw.IHost;
@@ -28,98 +30,63 @@ import de.mossgrabers.framework.utils.FrameworkException;
  */
 public class ElectraOneMiniControlSurface extends AbstractElectraOneControlSurface<ElectraOneMiniConfiguration>
 {
-    /** The MIDI CC of the first control on a page. */
-    public static final int                ELECTRA_CTRL_1                     = 10;
+    /** The MIDI CC of the first knob on a page. */
+    public static final int                ELECTRA_KNOB_1                   = 10;
+    /** The MIDI CC of the first control button press on a page. */
+    public static final int                ELECTRA_CTRL_PUSH_1              = 20;
+    /** The MIDI CC of the first function buttons on a page. */
+    public static final int                ELECTRA_FUNCTION_BUTTON_1        = 30;
+    /** The MIDI CC of the first knob touch on a page. */
+    public static final int                ELECTRA_KNOB_TOUCH_1             = 40;
 
     /** The IDs for the continuous elements. */
-    public static final List<ContinuousID> KNOB_IDS                           = Collections.unmodifiableList (ContinuousID.createSequentialList (ContinuousID.KNOB1, 8));
+    public static final List<ContinuousID> KNOB_IDS                         = Collections.unmodifiableList (ContinuousID.createSequentialList (ContinuousID.KNOB1, 8));
 
     // @formatter:off
 
+//    "Triangle 2, 5, 7",
+//    "Triangle 3, 6, 8",
+
     // 0 = not touched, 1 = touched
-    private static final int [] TOUCH_PATTERN_LINEAR_1__3          = new int [] { 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-    private static final int [] TOUCH_PATTERN_LINEAR_2__4          = new int [] { 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0 };
-    private static final int [] TOUCH_PATTERN_LINEAR_3__5          = new int [] { 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0 };
-    private static final int [] TOUCH_PATTERN_LINEAR_4__6          = new int [] { 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0 };
-    private static final int [] TOUCH_PATTERN_LINEAR_7__9          = new int [] { 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0 };
-    private static final int [] TOUCH_PATTERN_LINEAR_8__10         = new int [] { 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0 };
-    private static final int [] TOUCH_PATTERN_LINEAR_9__11         = new int [] { 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0 };
-    private static final int [] TOUCH_PATTERN_LINEAR_10__12        = new int [] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1 };
-    private static final int [] TOUCH_PATTERN_LINEAR_LEFT_1_2_4    = new int [] { 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 };
-    private static final int [] TOUCH_PATTERN_LINEAR_LEFT_2_3_5    = new int [] { 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0 };
-    private static final int [] TOUCH_PATTERN_LINEAR_LEFT_3_4_6    = new int [] { 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0 };
-    private static final int [] TOUCH_PATTERN_LINEAR_LEFT_7_8_10   = new int [] { 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0 };
-    private static final int [] TOUCH_PATTERN_LINEAR_LEFT_8_9_11   = new int [] { 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0 };
-    private static final int [] TOUCH_PATTERN_LINEAR_LEFT_9_10_12  = new int [] { 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1 };
-    private static final int [] TOUCH_PATTERN_LINEAR_RIGHT_1_3_4   = new int [] { 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0 };
-    private static final int [] TOUCH_PATTERN_LINEAR_RIGHT_2_4_5   = new int [] { 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0 };
-    private static final int [] TOUCH_PATTERN_LINEAR_RIGHT_3_5_6   = new int [] { 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0 };
-    private static final int [] TOUCH_PATTERN_LINEAR_RIGHT_7_9_10  = new int [] { 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0 };
-    private static final int [] TOUCH_PATTERN_LINEAR_RIGHT_8_10_11 = new int [] { 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0 };
-    private static final int [] TOUCH_PATTERN_LINEAR_RIGHT_9_11_12 = new int [] { 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1 };
-    private static final int [] TOUCH_PATTERN_LINEAR_BROAD_1_3_5   = new int [] { 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0 };
-    private static final int [] TOUCH_PATTERN_LINEAR_BROAD_2_4_6   = new int [] { 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0 };
-    private static final int [] TOUCH_PATTERN_LINEAR_BROAD_7_9_11  = new int [] { 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0 };
-    private static final int [] TOUCH_PATTERN_LINEAR_BROAD_8_10_12 = new int [] { 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1 };
-    private static final int [] TOUCH_PATTERN_CORNER_LEFT_1_2_7    = new int [] { 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0 };
-    private static final int [] TOUCH_PATTERN_CORNER_LEFT_2_3_8    = new int [] { 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0 };
-    private static final int [] TOUCH_PATTERN_CORNER_LEFT_3_4_9    = new int [] { 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0 };
-    private static final int [] TOUCH_PATTERN_CORNER_LEFT_4_5_10   = new int [] { 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0 };
-    private static final int [] TOUCH_PATTERN_CORNER_LEFT_5_6_11   = new int [] { 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0 };
-    private static final int [] TOUCH_PATTERN_CORNER_RIGHT_1_2_8   = new int [] { 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0 };
-    private static final int [] TOUCH_PATTERN_CORNER_RIGHT_2_3_9   = new int [] { 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0 };
-    private static final int [] TOUCH_PATTERN_CORNER_RIGHT_3_4_10  = new int [] { 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0 };
-    private static final int [] TOUCH_PATTERN_CORNER_RIGHT_4_5_11  = new int [] { 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0 };
-    private static final int [] TOUCH_PATTERN_CORNER_RIGHT_5_6_12  = new int [] { 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1 };
-    private static final int [] TOUCH_PATTERN_TRIANGLE_2_7_9       = new int [] { 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0 };
-    private static final int [] TOUCH_PATTERN_TRIANGLE_3_8_10      = new int [] { 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0 };
-    private static final int [] TOUCH_PATTERN_TRIANGLE_4_9_11      = new int [] { 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0 };
-    private static final int [] TOUCH_PATTERN_TRIANGLE_5_10_12     = new int [] { 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1 };
+    private static final int [] TOUCH_PATTERN_LINEAR_1__3          = new int [] { 1, 1, 1, 0, 0, 0, 0, 0 };
+    private static final int [] TOUCH_PATTERN_LINEAR_2__4          = new int [] { 0, 1, 1, 1, 0, 0, 0, 0 };
+    private static final int [] TOUCH_PATTERN_LINEAR_5__7          = new int [] { 0, 0, 0, 0, 1, 1, 1, 0 };
+    private static final int [] TOUCH_PATTERN_LINEAR_6__8          = new int [] { 0, 0, 0, 0, 0, 1, 1, 1 };
+    private static final int [] TOUCH_PATTERN_LINEAR_LEFT_1_2_4    = new int [] { 1, 1, 0, 1, 0, 0, 0, 0 };
+    private static final int [] TOUCH_PATTERN_LINEAR_LEFT_5_6_8    = new int [] { 0, 0, 0, 0, 1, 1, 0, 1 };
+    private static final int [] TOUCH_PATTERN_LINEAR_RIGHT_1_3_4   = new int [] { 1, 0, 1, 1, 0, 0, 0, 0 };
+    private static final int [] TOUCH_PATTERN_LINEAR_RIGHT_5_7_8   = new int [] { 0, 0, 0, 0, 1, 0, 1, 1 };
+    private static final int [] TOUCH_PATTERN_CORNER_LEFT_1_2_5    = new int [] { 1, 1, 0, 0, 1, 0, 0, 0 };
+    private static final int [] TOUCH_PATTERN_CORNER_LEFT_2_3_6    = new int [] { 0, 1, 1, 0, 0, 1, 0, 0 };
+    private static final int [] TOUCH_PATTERN_CORNER_LEFT_3_4_7    = new int [] { 0, 0, 1, 1, 0, 0, 1, 0 };
+    private static final int [] TOUCH_PATTERN_CORNER_RIGHT_1_2_6   = new int [] { 1, 1, 0, 0, 0, 1, 0, 0 };
+    private static final int [] TOUCH_PATTERN_CORNER_RIGHT_2_3_7   = new int [] { 0, 1, 1, 0, 0, 0, 1, 0 };
+    private static final int [] TOUCH_PATTERN_CORNER_RIGHT_3_4_8   = new int [] { 0, 0, 1, 1, 0, 0, 0, 1 };
+    private static final int [] TOUCH_PATTERN_TRIANGLE_2_5_7       = new int [] { 0, 1, 0, 0, 1, 0, 1, 0 };
+    private static final int [] TOUCH_PATTERN_TRIANGLE_3_6_8       = new int [] { 0, 0, 1, 0, 0, 1, 0, 1 };
     // @formatter:on
 
-    private static final int [] []         TOUCH_PATTERNS                     =
+    private static final int [] []         TOUCH_PATTERNS                   =
     {
         TOUCH_PATTERN_LINEAR_1__3,
         TOUCH_PATTERN_LINEAR_2__4,
-        TOUCH_PATTERN_LINEAR_3__5,
-        TOUCH_PATTERN_LINEAR_4__6,
-        TOUCH_PATTERN_LINEAR_7__9,
-        TOUCH_PATTERN_LINEAR_8__10,
-        TOUCH_PATTERN_LINEAR_9__11,
-        TOUCH_PATTERN_LINEAR_10__12,
+        TOUCH_PATTERN_LINEAR_5__7,
+        TOUCH_PATTERN_LINEAR_6__8,
         TOUCH_PATTERN_LINEAR_LEFT_1_2_4,
-        TOUCH_PATTERN_LINEAR_LEFT_2_3_5,
-        TOUCH_PATTERN_LINEAR_LEFT_3_4_6,
-        TOUCH_PATTERN_LINEAR_LEFT_7_8_10,
-        TOUCH_PATTERN_LINEAR_LEFT_8_9_11,
-        TOUCH_PATTERN_LINEAR_LEFT_9_10_12,
+        TOUCH_PATTERN_LINEAR_LEFT_5_6_8,
         TOUCH_PATTERN_LINEAR_RIGHT_1_3_4,
-        TOUCH_PATTERN_LINEAR_RIGHT_2_4_5,
-        TOUCH_PATTERN_LINEAR_RIGHT_3_5_6,
-        TOUCH_PATTERN_LINEAR_RIGHT_7_9_10,
-        TOUCH_PATTERN_LINEAR_RIGHT_8_10_11,
-        TOUCH_PATTERN_LINEAR_RIGHT_9_11_12,
-        TOUCH_PATTERN_LINEAR_BROAD_1_3_5,
-        TOUCH_PATTERN_LINEAR_BROAD_2_4_6,
-        TOUCH_PATTERN_LINEAR_BROAD_7_9_11,
-        TOUCH_PATTERN_LINEAR_BROAD_8_10_12,
-        TOUCH_PATTERN_CORNER_LEFT_1_2_7,
-        TOUCH_PATTERN_CORNER_LEFT_2_3_8,
-        TOUCH_PATTERN_CORNER_LEFT_3_4_9,
-        TOUCH_PATTERN_CORNER_LEFT_4_5_10,
-        TOUCH_PATTERN_CORNER_LEFT_5_6_11,
-        TOUCH_PATTERN_CORNER_RIGHT_1_2_8,
-        TOUCH_PATTERN_CORNER_RIGHT_2_3_9,
-        TOUCH_PATTERN_CORNER_RIGHT_3_4_10,
-        TOUCH_PATTERN_CORNER_RIGHT_4_5_11,
-        TOUCH_PATTERN_CORNER_RIGHT_5_6_12,
-        TOUCH_PATTERN_TRIANGLE_2_7_9,
-        TOUCH_PATTERN_TRIANGLE_3_8_10,
-        TOUCH_PATTERN_TRIANGLE_4_9_11,
-        TOUCH_PATTERN_TRIANGLE_5_10_12
+        TOUCH_PATTERN_LINEAR_RIGHT_5_7_8,
+        TOUCH_PATTERN_CORNER_LEFT_1_2_5,
+        TOUCH_PATTERN_CORNER_LEFT_2_3_6,
+        TOUCH_PATTERN_CORNER_LEFT_3_4_7,
+        TOUCH_PATTERN_CORNER_RIGHT_1_2_6,
+        TOUCH_PATTERN_CORNER_RIGHT_2_3_7,
+        TOUCH_PATTERN_CORNER_RIGHT_3_4_8,
+        TOUCH_PATTERN_TRIANGLE_2_5_7,
+        TOUCH_PATTERN_TRIANGLE_3_6_8
     };
 
-    private static final List<Modes>       MODES                              = new ArrayList<> ();
+    private static final List<Modes>       MODES                            = new ArrayList<> ();
     static
     {
         Collections.addAll (MODES, Modes.VOLUME, Modes.SEND, Modes.DEVICE_PARAMS, Modes.EQ_DEVICE_PARAMS, Modes.TRANSPORT, Modes.SESSION, Modes.PROJECT);
@@ -139,7 +106,7 @@ public class ElectraOneMiniControlSurface extends AbstractElectraOneControlSurfa
      */
     public ElectraOneMiniControlSurface (final IHost host, final ColorManager colorManager, final ElectraOneMiniConfiguration configuration, final IMidiOutput output, final IMidiInput input, final IMidiInput ctrlInput, final IMidiOutput ctrlOutput)
     {
-        super (host, configuration, colorManager, output, input, "DrivenByMoss Mini", 8, MODES, TOUCH_PATTERNS);
+        super (host, configuration, colorManager, output, input, ctrlOutput, ctrlInput, "DrivenByMoss Mini", 8, MODES, TOUCH_PATTERNS);
     }
 
 
@@ -160,5 +127,36 @@ public class ElectraOneMiniControlSurface extends AbstractElectraOneControlSurfa
                 throw new FrameworkException ("This extension does only support the Electro One Mini but found model: " + model);
         }
         this.host.println ("Model: Mini - Firmware: " + versionText);
+    }
+
+
+    /**
+     * Update the cache for the active knob touch combinations.
+     */
+    public void updateTouchCombinationCommandsCache ()
+    {
+        synchronized (this.touchCombinationCommandsLock)
+        {
+            if (this.touchCombinationCommands == null)
+                return;
+
+            this.commandPatterns.clear ();
+
+            for (int i = 0; i < this.touchCombinationCommands.size (); i++)
+            {
+                final TouchCombinationCommand<?, ?> command = this.touchCombinationCommands.get (i);
+
+                final int setting = this.configuration.getAssignable (i);
+                if (setting != ElectraOneConfiguration.ELECTRA_ONE_FUNC_OFF)
+                    this.commandPatterns.put (this.touchPatterns[i], command);
+            }
+        }
+    }
+
+
+    @Override
+    protected void clearShift ()
+    {
+        // Shift combinations on MINI since we use a dedicated SHIFT button
     }
 }
