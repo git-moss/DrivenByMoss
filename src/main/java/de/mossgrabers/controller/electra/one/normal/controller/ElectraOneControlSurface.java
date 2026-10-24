@@ -5,14 +5,17 @@
 package de.mossgrabers.controller.electra.one.normal.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import de.mossgrabers.controller.electra.one.base.command.trigger.TouchCombinationCommand;
 import de.mossgrabers.controller.electra.one.base.controller.AbstractElectraOneControlSurface;
 import de.mossgrabers.controller.electra.one.normal.ElectraOneConfiguration;
+import de.mossgrabers.controller.electra.one.normal.command.trigger.ElectraOneTouchCombinationCommand;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.ContinuousID;
 import de.mossgrabers.framework.controller.color.ColorManager;
@@ -20,6 +23,7 @@ import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.mode.Modes;
+import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.FrameworkException;
 
 
@@ -160,7 +164,10 @@ public class ElectraOneControlSurface extends AbstractElectraOneControlSurface<E
         Collections.addAll (MODES, Modes.VOLUME, Modes.SEND, Modes.DEVICE_PARAMS, Modes.EQ_DEVICE_PARAMS, Modes.TRANSPORT, Modes.SESSION, Modes.PROJECT);
     }
 
-    private ElectraOneType electraOneType = ElectraOneType.MK1;
+    protected List<ElectraOneTouchCombinationCommand>              touchCombinationCommands = null;
+    protected final Map<int [], ElectraOneTouchCombinationCommand> commandPatterns          = new HashMap<> ();
+    private final List<int []>                                     shiftPatterns            = new ArrayList<> ();
+    private ElectraOneType                                         electraOneType           = ElectraOneType.MK1;
 
 
     /**
@@ -224,7 +231,7 @@ public class ElectraOneControlSurface extends AbstractElectraOneControlSurface<E
 
             for (int i = 0; i < this.touchCombinationCommands.size (); i++)
             {
-                final TouchCombinationCommand<?, ?> command = this.touchCombinationCommands.get (i);
+                final ElectraOneTouchCombinationCommand command = this.touchCombinationCommands.get (i);
 
                 final int setting = this.configuration.getAssignable (i);
                 if (setting != ElectraOneConfiguration.ELECTRA_ONE_FUNC_OFF)
@@ -269,5 +276,51 @@ public class ElectraOneControlSurface extends AbstractElectraOneControlSurface<E
     public static ContinuousID getContinuousID (final int row, final int column)
     {
         return ContinuousID.get (CTRL_ROW_IDS[row], column);
+    }
+
+
+    /**
+     * Set the commands to execute on detected knob touch combinations.
+     *
+     * @param touchCombinationCommands The commands to set; must match the number of touch patterns
+     */
+    public void setTouchCombinationCommands (final List<ElectraOneTouchCombinationCommand> touchCombinationCommands)
+    {
+        if (touchCombinationCommands.size () != this.touchPatterns.length)
+            throw new FrameworkException ("The number of touch commands must match the number of available touch patterns.");
+
+        this.touchCombinationCommands = touchCombinationCommands;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    protected void matchStates ()
+    {
+        boolean handled = false;
+
+        synchronized (this.touchCombinationCommandsLock)
+        {
+            for (final Map.Entry<int [], ElectraOneTouchCombinationCommand> e: this.commandPatterns.entrySet ())
+            {
+                if (Arrays.equals (this.knobStates, e.getKey ()))
+                {
+                    final ElectraOneTouchCombinationCommand cmd = e.getValue ();
+                    cmd.execute (ButtonEvent.DOWN, 127);
+                    cmd.execute (ButtonEvent.UP, 0);
+                    handled = true;
+                    break;
+                }
+            }
+        }
+
+        if (!handled)
+        {
+            clearShift ();
+            return;
+        }
+
+        // Prevent hanging states
+        Arrays.fill (this.knobStates, 0);
     }
 }

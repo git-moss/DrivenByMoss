@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.mossgrabers.controller.electra.one.base.AbstractElectraOneConfiguration;
-import de.mossgrabers.controller.electra.one.base.command.trigger.TouchCombinationCommand;
 import de.mossgrabers.controller.electra.one.base.controller.ElectraOneColorManager;
+import de.mossgrabers.controller.electra.one.normal.command.trigger.ElectraOneTouchCombinationCommand;
 import de.mossgrabers.controller.electra.one.normal.controller.ElectraOneControlSurface;
 import de.mossgrabers.controller.electra.one.normal.mode.DeviceMode;
 import de.mossgrabers.controller.electra.one.normal.mode.EqualizerMode;
@@ -121,9 +121,9 @@ public class ElectraOneControllerSetup extends AbstractControllerSetup<ElectraOn
         this.surfaces.add (surface);
 
         final int touchPatternSize = surface.getTouchPatternSize ();
-        final List<TouchCombinationCommand<?, ?>> touchCombinationCommands = new ArrayList<> (touchPatternSize);
+        final List<ElectraOneTouchCombinationCommand> touchCombinationCommands = new ArrayList<> (touchPatternSize);
         for (int i = 0; i < touchPatternSize; i++)
-            touchCombinationCommands.add (new TouchCombinationCommand<ElectraOneControlSurface, ElectraOneConfiguration> (i, this.model, surface));
+            touchCombinationCommands.add (new ElectraOneTouchCombinationCommand (i, this.model, surface));
         surface.setTouchCombinationCommands (touchCombinationCommands);
 
         surface.getModeManager ().setDefaultID (Modes.VOLUME);

@@ -2,11 +2,10 @@
 // (c) 2017-2026
 // Licensed under LGPLv3 - http://www.gnu.org/licenses/lgpl-3.0.txt
 
-package de.mossgrabers.controller.electra.one.base.command.trigger;
+package de.mossgrabers.controller.electra.one.normal.command.trigger;
 
-import de.mossgrabers.controller.electra.one.base.AbstractElectraOneConfiguration;
-import de.mossgrabers.controller.electra.one.base.controller.AbstractElectraOneControlSurface;
 import de.mossgrabers.controller.electra.one.normal.ElectraOneConfiguration;
+import de.mossgrabers.controller.electra.one.normal.controller.ElectraOneControlSurface;
 import de.mossgrabers.framework.command.trigger.FootswitchCommand;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.utils.ButtonEvent;
@@ -15,12 +14,9 @@ import de.mossgrabers.framework.utils.ButtonEvent;
 /**
  * Command for assignable knob touch combination functions.
  *
- * @param <S> The specific type of the control surface
- * @param <C> The specific type of the configuration
- *
  * @author Jürgen Moßgraber
  */
-public class TouchCombinationCommand<S extends AbstractElectraOneControlSurface<C>, C extends AbstractElectraOneConfiguration> extends FootswitchCommand<S, C>
+public class ElectraOneTouchCombinationCommand extends FootswitchCommand<ElectraOneControlSurface, ElectraOneConfiguration>
 {
     /**
      * Constructor.
@@ -29,7 +25,7 @@ public class TouchCombinationCommand<S extends AbstractElectraOneControlSurface<
      * @param model The model
      * @param surface The surface
      */
-    public TouchCombinationCommand (final int index, final IModel model, final S surface)
+    public ElectraOneTouchCombinationCommand (final int index, final IModel model, final ElectraOneControlSurface surface)
     {
         super (model, surface, index);
     }
@@ -39,7 +35,7 @@ public class TouchCombinationCommand<S extends AbstractElectraOneControlSurface<
     @Override
     public void execute (final ButtonEvent event, final int velocity)
     {
-        final C configuration = this.surface.getConfiguration ();
+        final ElectraOneConfiguration configuration = this.surface.getConfiguration ();
 
         switch (this.surface.getConfiguration ().getAssignable (this.index))
         {

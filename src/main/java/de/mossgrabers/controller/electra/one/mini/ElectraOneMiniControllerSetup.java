@@ -8,9 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.mossgrabers.controller.electra.one.base.AbstractElectraOneConfiguration;
-import de.mossgrabers.controller.electra.one.base.command.trigger.TouchCombinationCommand;
 import de.mossgrabers.controller.electra.one.base.controller.ElectraOneColorManager;
+import de.mossgrabers.controller.electra.one.mini.command.trigger.ElectraOneMiniTouchCombinationCommand;
 import de.mossgrabers.controller.electra.one.mini.controller.ElectraOneMiniControlSurface;
+import de.mossgrabers.controller.electra.one.mini.mode.ElectraOneMiniDeviceMode;
 import de.mossgrabers.controller.electra.one.mini.mode.ElectraOneMiniMixerMode;
 import de.mossgrabers.framework.command.core.TriggerCommand;
 import de.mossgrabers.framework.command.trigger.mode.ButtonRowModeCommand;
@@ -117,9 +118,9 @@ public class ElectraOneMiniControllerSetup extends AbstractControllerSetup<Elect
         this.surfaces.add (surface);
 
         final int touchPatternSize = surface.getTouchPatternSize ();
-        final List<TouchCombinationCommand<?, ?>> touchCombinationCommands = new ArrayList<> (touchPatternSize);
+        final List<ElectraOneMiniTouchCombinationCommand> touchCombinationCommands = new ArrayList<> (touchPatternSize);
         for (int i = 0; i < touchPatternSize; i++)
-            touchCombinationCommands.add (new TouchCombinationCommand<ElectraOneMiniControlSurface, ElectraOneMiniConfiguration> (i, this.model, surface));
+            touchCombinationCommands.add (new ElectraOneMiniTouchCombinationCommand (i, this.model, surface));
         surface.setTouchCombinationCommands (touchCombinationCommands);
 
         surface.getModeManager ().setDefaultID (Modes.VOLUME);
@@ -134,8 +135,8 @@ public class ElectraOneMiniControllerSetup extends AbstractControllerSetup<Elect
         final ModeManager modeManager = surface.getModeManager ();
 
         modeManager.register (Modes.VOLUME, new ElectraOneMiniMixerMode (surface, this.model));
+        modeManager.register (Modes.DEVICE_PARAMS, new ElectraOneMiniDeviceMode (surface, this.model));
         // TODO
-        // modeManager.register (Modes.DEVICE_PARAMS, new DeviceMode (surface, this.model));
         // modeManager.register (Modes.EQ_DEVICE_PARAMS, new EqualizerMode (surface, this.model));
         // modeManager.register (Modes.TRANSPORT, new TransportMode (surface, this.model));
         // modeManager.register (Modes.SESSION, new SessionMode (surface, this.model));
