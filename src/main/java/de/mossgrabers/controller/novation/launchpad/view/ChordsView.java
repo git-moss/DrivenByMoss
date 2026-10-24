@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.novation.launchpad.view;
 
+import java.util.Optional;
+
 import de.mossgrabers.controller.novation.launchpad.LaunchpadConfiguration;
 import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadColorManager;
 import de.mossgrabers.controller.novation.launchpad.controller.LaunchpadControlSurface;
@@ -12,7 +14,10 @@ import de.mossgrabers.framework.configuration.Configuration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
 import de.mossgrabers.framework.controller.grid.IPadGrid;
+import de.mossgrabers.framework.daw.DAWColor;
 import de.mossgrabers.framework.daw.IModel;
+import de.mossgrabers.framework.daw.data.ITrack;
+import de.mossgrabers.framework.daw.data.bank.ITrackBank;
 import de.mossgrabers.framework.daw.midi.IMidiInput;
 import de.mossgrabers.framework.daw.midi.MidiConstants;
 import de.mossgrabers.framework.featuregroup.IScrollableView;
@@ -80,6 +85,10 @@ public class ChordsView extends AbstractChordView<LaunchpadControlSurface, Launc
     @Override
     public int getButtonColor (final ButtonID buttonID)
     {
+        final int trackNavigationColor = this.getTrackNavigationColor (buttonID);
+        if (trackNavigationColor >= 0)
+            return trackNavigationColor;
+
         if (this.model.canSelectedTrackHoldNotes ())
         {
             if (buttonID == ButtonID.SCENE1 || buttonID == ButtonID.SCENE2 || buttonID == ButtonID.SCENE7 || buttonID == ButtonID.SCENE8)
@@ -100,6 +109,9 @@ public class ChordsView extends AbstractChordView<LaunchpadControlSurface, Launc
     @Override
     public void onButton (final ButtonID buttonID, final ButtonEvent event, final int velocity)
     {
+        if (this.handleTrackNavigation (buttonID, event))
+            return;
+
         if (!ButtonID.isSceneButton (buttonID) || event != ButtonEvent.DOWN || !this.model.canSelectedTrackHoldNotes ())
             return;
 
@@ -152,6 +164,56 @@ public class ChordsView extends AbstractChordView<LaunchpadControlSurface, Launc
                 break;
         }
         this.updateNoteMapping ();
+    }
+
+
+    private boolean handleTrackNavigation (final ButtonID buttonID, final ButtonEvent event)
+    {
+        if (event != ButtonEvent.DOWN || !this.surface.getConfiguration ().isSceneButtonsAsTrackNavigation ())
+            return false;
+
+        switch (buttonID)
+        {
+            case SCENE1:
+                this.model.getCurrentTrackBank ().selectPreviousItem ();
+                break;
+            case SCENE2:
+                this.model.getCurrentTrackBank ().selectNextItem ();
+                break;
+            default:
+                return false;
+        }
+
+        this.mvHelper.notifySelectedTrack ();
+        return true;
+    }
+
+
+    private int getTrackNavigationColor (final ButtonID buttonID)
+    {
+        if (!this.surface.getConfiguration ().isSceneButtonsAsTrackNavigation ())
+            return -1;
+
+        final boolean isPrevious;
+        switch (buttonID)
+        {
+            case SCENE1:
+                isPrevious = true;
+                break;
+            case SCENE2:
+                isPrevious = false;
+                break;
+            default:
+                return -1;
+        }
+
+        final ITrackBank trackBank = this.model.getCurrentTrackBank ();
+        final Optional<ITrack> selectedTrack = trackBank.getSelectedItem ();
+        if (selectedTrack.isEmpty () || (isPrevious ? !trackBank.canScrollBackwards () : !trackBank.canScrollForwards ()))
+            return LaunchpadColorManager.LAUNCHPAD_COLOR_BLACK;
+
+        final int targetPosition = selectedTrack.get ().getPosition () + (isPrevious ? -1 : 1);
+        return this.colorManager.getColorIndex (DAWColor.getColorID (trackBank.getColorOfTrack (targetPosition)));
     }
 
 

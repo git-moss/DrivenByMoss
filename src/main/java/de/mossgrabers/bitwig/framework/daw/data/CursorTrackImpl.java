@@ -8,6 +8,7 @@ import de.mossgrabers.bitwig.framework.daw.ApplicationImpl;
 import de.mossgrabers.bitwig.framework.daw.HostImpl;
 import de.mossgrabers.bitwig.framework.daw.ModelImpl;
 import de.mossgrabers.bitwig.framework.daw.data.bank.ParameterBankImpl;
+import de.mossgrabers.framework.controller.color.ColorEx;
 import de.mossgrabers.framework.controller.valuechanger.IValueChanger;
 import de.mossgrabers.framework.daw.IHost;
 import de.mossgrabers.framework.daw.data.ICursorTrack;
@@ -18,6 +19,7 @@ import com.bitwig.extension.controller.api.CursorRemoteControlsPage;
 import com.bitwig.extension.controller.api.CursorTrack;
 import com.bitwig.extension.controller.api.SceneBank;
 import com.bitwig.extension.controller.api.SettableBooleanValue;
+import com.bitwig.extension.controller.api.SettableColorValue;
 import com.bitwig.extension.controller.api.Track;
 import com.bitwig.extension.controller.api.TrackBank;
 
@@ -124,6 +126,24 @@ public class CursorTrackImpl extends TrackImpl implements ICursorTrack
     public void selectNext ()
     {
         this.cursorTrack.selectNext ();
+    }
+
+
+    /**
+     * Get the color of the track at the given absolute position.
+     *
+     * @param position The absolute position of the track
+     * @return The color of the track, black if no track exists at the position
+     */
+    public ColorEx getColorOfTrack (final int position)
+    {
+        if (position < 0 || position >= NUM_TRACKS_LARGE_BANK)
+            return ColorEx.BLACK;
+
+        final Track track = this.largeTrackBank.getItemAt (position);
+        final SettableColorValue color = track.color ();
+        color.markInterested ();
+        return new ColorEx (color.red (), color.green (), color.blue ());
     }
 
 

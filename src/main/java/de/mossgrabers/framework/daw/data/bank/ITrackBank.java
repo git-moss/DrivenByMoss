@@ -59,6 +59,15 @@ public interface ITrackBank extends IChannelBank<ITrack>
 
 
     /**
+     * Get the color of the track at the given absolute position.
+     *
+     * @param position The absolute position of the track
+     * @return The color of the track, black if no track exists at the position
+     */
+    ColorEx getColorOfTrack (int position);
+
+
+    /**
      * Add an observer for the items name.
      *
      * @param observer The observer to notify on a name change

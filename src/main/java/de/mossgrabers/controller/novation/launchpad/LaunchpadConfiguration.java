@@ -47,8 +47,15 @@ public class LaunchpadConfiguration extends AbstractConfiguration
             PAD_BRIGHTNESS_VALUES[i] = Integer.toString (i);
     }
 
+    private static final String [] SCENE_BUTTON_OPTIONS   =
+    {
+        "Scale Layout",
+        "Previous/Next Track"
+    };
+
     private final ILaunchpadControllerDefinition definition;
     private int                                  padBrightness;
+    private boolean                              sceneButtonsAsTrackNavigation;
 
 
     /**
@@ -95,6 +102,7 @@ public class LaunchpadConfiguration extends AbstractConfiguration
         this.activateStartWithSessionViewSetting (globalSettings);
         this.activateTurnOffScalePadsSetting (globalSettings);
         this.activateShowPlayedChordsSetting (globalSettings);
+        this.activateSceneButtonsSetting (globalSettings);
 
         // ----------------------------------------------------------------
         // Transport
@@ -144,6 +152,13 @@ public class LaunchpadConfiguration extends AbstractConfiguration
     }
 
 
+    protected void activateSceneButtonsSetting (final ISettingsUI settingsUI)
+    {
+        final IEnumSetting sceneButtonsSetting = settingsUI.getEnumSetting ("Scene 1/2 buttons", CATEGORY_PLAY_AND_SEQUENCE, SCENE_BUTTON_OPTIONS, SCENE_BUTTON_OPTIONS[0]);
+        sceneButtonsSetting.addValueObserver (value -> this.sceneButtonsAsTrackNavigation = SCENE_BUTTON_OPTIONS[1].equals (value));
+    }
+
+
     /**
      * Get the pad brightness.
      *
@@ -152,5 +167,17 @@ public class LaunchpadConfiguration extends AbstractConfiguration
     public int getPadBrightness ()
     {
         return this.padBrightness;
+    }
+
+
+    /**
+     * Are the first two scene buttons used to select the previous/next track instead of changing the
+     * scale layout?
+     *
+     * @return True if used for track navigation
+     */
+    public boolean isSceneButtonsAsTrackNavigation ()
+    {
+        return this.sceneButtonsAsTrackNavigation;
     }
 }
