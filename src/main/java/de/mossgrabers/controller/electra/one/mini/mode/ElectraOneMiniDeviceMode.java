@@ -155,7 +155,12 @@ public class ElectraOneMiniDeviceMode extends AbstractElectraOneMiniMode
                 {
                     final ICursorDevice cursorDevice = this.model.getCursorDevice ();
                     if (cursorDevice.doesExist ())
-                        cursorDevice.toggleWindowOpen ();
+                    {
+                        if (this.surface.isShiftPressed ())
+                            cursorDevice.toggleEnabledState ();
+                        else
+                            cursorDevice.toggleWindowOpen ();
+                    }
                 }
                 break;
 
@@ -164,9 +169,9 @@ public class ElectraOneMiniDeviceMode extends AbstractElectraOneMiniMode
                 if (event == ButtonEvent.DOWN)
                 {
                     if (this.surface.isShiftPressed ())
-                        this.parameterBank.selectPreviousPage ();
+                        this.parameterBank.selectPreviousItem ();
                     else
-                        this.parameterBank.selectNextPage ();
+                        this.parameterBank.selectNextItem ();
                 }
                 break;
 
