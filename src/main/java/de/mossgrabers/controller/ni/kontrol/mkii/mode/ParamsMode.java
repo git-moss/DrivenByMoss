@@ -59,7 +59,9 @@ public class ParamsMode extends AbstractParameterMode<KontrolProtocolControlSurf
     private int                         previouslySelectedDevice = -1;
     private long                        previouslyDeviceChange   = System.currentTimeMillis ();
     private int                         currentlySelectedDevice  = -1;
+    private int                         currentlySelectedTab     = -1;
     private String                      currentChainInfo         = "";
+    private boolean                     pageSelectMode           = false;
 
 
     /**
@@ -221,6 +223,13 @@ public class ParamsMode extends AbstractParameterMode<KontrolProtocolControlSurf
     @Override
     public void selectPreviousItemPage ()
     {
+        // Jump to the previous 8 pages since the pages can be selected directly
+        if (this.isPageSelectModeActive ())
+        {
+            this.banks.get (this.activeProviderIndex).getPageBank ().selectPreviousPage ();
+            return;
+        }
+
         this.banks.get (this.activeProviderIndex).scrollBackwards ();
     }
 
@@ -229,6 +238,13 @@ public class ParamsMode extends AbstractParameterMode<KontrolProtocolControlSurf
     @Override
     public void selectNextItemPage ()
     {
+        // Jump to the next 8 pages since the pages can be selected directly
+        if (this.isPageSelectModeActive ())
+        {
+            this.banks.get (this.activeProviderIndex).getPageBank ().selectNextPage ();
+            return;
+        }
+
         this.banks.get (this.activeProviderIndex).scrollForwards ();
     }
 
@@ -247,12 +263,31 @@ public class ParamsMode extends AbstractParameterMode<KontrolProtocolControlSurf
 
 
     /**
-     * The selected device has changed.
+     * The selected device has changed. If page selection mode is active, the index is the one of
+     * the selected parameter page. Pressing the already selected device (or SHIFT + device) toggles
+     * the page selection mode.
      *
-     * @param deviceIndex The index of the selected device
+     * @param deviceIndex The index of the selected device or parameter page
      */
     public void selectedDeviceHasChanged (final int deviceIndex)
     {
+        if (!this.isTrackOrProjectMode ())
+        {
+            final boolean isShiftPressed = this.surface.isShiftPressed ();
+            if (this.isPageSelectModeActive ())
+            {
+                final IParameterPageBank parameterPageBank = this.banks.get (this.activeProviderIndex).getPageBank ();
+                if (isShiftPressed || deviceIndex == parameterPageBank.getSelectedItemIndex ())
+                    this.setPageSelectMode (false);
+                else if (parameterPageBank.getScrollPosition () + deviceIndex < parameterPageBank.getItemCount ())
+                    parameterPageBank.selectPage (deviceIndex);
+                return;
+            }
+
+            if (isShiftPressed || deviceIndex == this.getSelectedDeviceInfo ().getKey ().intValue ())
+                this.setPageSelectMode (true);
+        }
+
         final IDeviceBank deviceBank;
         if (this.layerSubModeEnabled)
         {
@@ -292,6 +327,46 @@ public class ParamsMode extends AbstractParameterMode<KontrolProtocolControlSurf
     }
 
 
+    private void setPageSelectMode (final boolean enable)
+    {
+        this.pageSelectMode = enable;
+
+        // Force a refresh of the display buttons
+        this.currentChainInfo = "";
+    }
+
+
+    /**
+     * If page selection mode is not applicable (NKS device, device without pages) it is only
+     * suspended, so that it stays active when another device gets selected.
+     *
+     * @return True if the display buttons show the parameter pages instead of the devices
+     */
+    private boolean isPageSelectModeActive ()
+    {
+        if (!this.pageSelectMode || this.isTrackOrProjectMode () || this.isNksDeviceSelected ())
+            return false;
+        final IParameterPageBank parameterPageBank = this.banks.get (this.activeProviderIndex).getPageBank ();
+        return parameterPageBank != null && parameterPageBank.getItemCount () > 0;
+    }
+
+
+    /**
+     * The NKS device is controlled by the special mode of the Kontrol, which does not notify the
+     * extension.
+     *
+     * @return True if the selected device is the NKS device
+     */
+    private boolean isNksDeviceSelected ()
+    {
+        // A Komplete Kontrol instance inside of a layer does not use the NKS mode
+        if (this.layerSubModeEnabled)
+            return false;
+        final ISpecificDevice nksDevice = this.model.getSpecificDevice (DeviceID.NI_KOMPLETE);
+        return nksDevice.doesExist () && this.model.getCursorDevice ().getPosition () == nksDevice.getPosition ();
+    }
+
+
     /**
      * Toggle between Cursor Device, Track and Project parameters.
      */
@@ -300,6 +375,10 @@ public class ParamsMode extends AbstractParameterMode<KontrolProtocolControlSurf
         String presetName = "";
         final StringBuilder chainInfoSb = new StringBuilder ();
         int deviceIndex = 0;
+        int selectedTab = 0;
+
+        final IParameterBank parameterBank = this.banks.get (this.activeProviderIndex);
+        final IParameterPageBank parameterPageBank = parameterBank.getPageBank ();
 
         if (this.isTrackOrProjectMode ())
         {
@@ -311,23 +390,36 @@ public class ParamsMode extends AbstractParameterMode<KontrolProtocolControlSurf
             deviceIndex = pair.getKey ().intValue ();
             presetName = pair.getValue ();
 
-            final IDeviceBank deviceBank;
-            if (((ParamsMode) this.surface.getModeManager ().get (Modes.DEVICE_PARAMS)).isLayerSubModeEnabled ())
-                deviceBank = this.model.getCursorLayer ().getDeviceBank ();
-            else
-                deviceBank = this.model.getCursorDevice ().getDeviceBank ();
-
-            for (int i = 0; i < 8; i++)
+            if (this.isPageSelectModeActive ())
             {
-                final IDevice device = deviceBank.getItem (i);
-                if (!device.doesExist ())
-                    break;
-                chainInfoSb.append (device.getName ()).append ('\0');
+                // Show the parameter pages of the current page window instead of the devices
+                final int scrollPosition = parameterPageBank.getScrollPosition ();
+                for (int i = 0; i < 8 && scrollPosition + i < parameterPageBank.getItemCount (); i++)
+                    chainInfoSb.append (parameterPageBank.getItem (i)).append ('\0');
+                selectedTab = Math.max (0, parameterPageBank.getSelectedItemIndex ());
+            }
+            else
+            {
+                final IDeviceBank deviceBank;
+                if (((ParamsMode) this.surface.getModeManager ().get (Modes.DEVICE_PARAMS)).isLayerSubModeEnabled ())
+                    deviceBank = this.model.getCursorLayer ().getDeviceBank ();
+                else
+                    deviceBank = this.model.getCursorDevice ().getDeviceBank ();
+
+                for (int i = 0; i < 8; i++)
+                {
+                    final IDevice device = deviceBank.getItem (i);
+                    if (!device.doesExist ())
+                        break;
+                    chainInfoSb.append (device.getName ()).append ('\0');
+                }
+                selectedTab = deviceIndex;
             }
         }
 
         final String chainInfo = chainInfoSb.append ('\0').toString ();
-        final boolean respectCache = this.currentChainInfo.equals (chainInfo) && this.currentlySelectedDevice == deviceIndex;
+        final boolean respectCache = this.currentChainInfo.equals (chainInfo) && this.currentlySelectedDevice == deviceIndex && this.currentlySelectedTab == selectedTab;
+        this.currentlySelectedTab = selectedTab;
         if (this.currentlySelectedDevice != deviceIndex)
         {
             this.previouslyDeviceChange = System.currentTimeMillis ();
@@ -343,10 +435,8 @@ public class ParamsMode extends AbstractParameterMode<KontrolProtocolControlSurf
 
         this.currentChainInfo = chainInfo;
 
-        this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_PLUGIN_SELECTED_PLUGIN, 0, deviceIndex, respectCache);
+        this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_PLUGIN_SELECTED_PLUGIN, 0, selectedTab, respectCache);
 
-        final IParameterBank parameterBank = this.banks.get (this.activeProviderIndex);
-        final IParameterPageBank parameterPageBank = parameterBank.getPageBank ();
         final Optional<String> selectedItem = parameterPageBank.getSelectedItem ();
         final String selectedPage = selectedItem.isPresent () ? selectedItem.get () : "";
         final int selectedPageIndex = Math.max (0, parameterPageBank.getSelectedItemIndex ());
@@ -364,7 +454,7 @@ public class ParamsMode extends AbstractParameterMode<KontrolProtocolControlSurf
         this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_PLUGIN_CHAIN_INFO, 0, 0, chainInfo, respectCache);
         this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_PLUGIN_SELECTED_PARAM_PAGE, parameterPageBank.getItemCount (), selectedPageIndex, respectCache);
         this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_PLUGIN_SELECTED_PRESET, 0, 0, presetName, respectCache);
-        this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_PLUGIN_SELECTED_PLUGIN, 0, deviceIndex, respectCache);
+        this.surface.sendKontrolSysEx (KontrolProtocolControlSurface.SYSEX_PLUGIN_SELECTED_PLUGIN, 0, selectedTab, respectCache);
 
         final ISpecificDevice kkDevice = this.model.getSpecificDevice (DeviceID.NI_KOMPLETE);
         final String kompleteInstanceNew = kkDevice.doesExist () ? kkDevice.getID () : "";
