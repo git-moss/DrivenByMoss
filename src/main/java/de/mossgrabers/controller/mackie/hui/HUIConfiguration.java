@@ -251,7 +251,7 @@ public class HUIConfiguration extends AbstractConfiguration
      */
     public void toggleZoomState ()
     {
-        this.zoomStateSetting.set (this.zoomState ? ON_OFF_OPTIONS[0] : ON_OFF_OPTIONS[1]);
+        this.zoomStateSetting.set (ON_OFF_OPTIONS[this.zoomState ? 0 : 1]);
     }
 
 

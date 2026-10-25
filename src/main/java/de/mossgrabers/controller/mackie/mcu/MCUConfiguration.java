@@ -879,7 +879,7 @@ public class MCUConfiguration extends AbstractConfiguration
      */
     public void toggleZoomState ()
     {
-        this.zoomStateSetting.set (this.zoomState ? ON_OFF_OPTIONS[0] : ON_OFF_OPTIONS[1]);
+        this.zoomStateSetting.set (ON_OFF_OPTIONS[this.zoomState ? 0 : 1]);
     }
 
 
@@ -899,7 +899,7 @@ public class MCUConfiguration extends AbstractConfiguration
      */
     public void toggleDisplayTime ()
     {
-        this.displayTimeSetting.set (this.displayTime ? TIME_OR_BEATS_OPTIONS[1] : TIME_OR_BEATS_OPTIONS[0]);
+        this.displayTimeSetting.set (TIME_OR_BEATS_OPTIONS[this.displayTime ? 1 : 0]);
     }
 
 
@@ -919,7 +919,7 @@ public class MCUConfiguration extends AbstractConfiguration
      */
     public void toggleDisplayTicks ()
     {
-        this.tempoOrTicksSetting.set (this.displayTicks ? TEMPO_OR_TICKS_OPTIONS[1] : TEMPO_OR_TICKS_OPTIONS[0]);
+        this.tempoOrTicksSetting.set (TEMPO_OR_TICKS_OPTIONS[this.displayTicks ? 1 : 0]);
     }
 
 

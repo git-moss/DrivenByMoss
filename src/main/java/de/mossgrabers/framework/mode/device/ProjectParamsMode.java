@@ -124,7 +124,7 @@ public class ProjectParamsMode<S extends IControlSurface<C>, C extends Configura
     {
         super.selectPreviousItem ();
 
-        this.notifyPage ();
+        this.doNotifyPage ();
     }
 
 
@@ -134,7 +134,7 @@ public class ProjectParamsMode<S extends IControlSurface<C>, C extends Configura
     {
         super.selectNextItem ();
 
-        this.notifyPage ();
+        this.doNotifyPage ();
     }
 
 
@@ -162,7 +162,7 @@ public class ProjectParamsMode<S extends IControlSurface<C>, C extends Configura
     }
 
 
-    private void notifyPage ()
+    private void doNotifyPage ()
     {
         if (this.notifyPageChange)
         {

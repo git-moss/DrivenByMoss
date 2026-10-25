@@ -4,6 +4,8 @@
 
 package de.mossgrabers.controller.ableton.push.mode;
 
+import java.util.List;
+
 import de.mossgrabers.controller.ableton.push.PushConfiguration;
 import de.mossgrabers.controller.ableton.push.controller.Push1Display;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
@@ -30,8 +32,6 @@ import de.mossgrabers.framework.parameter.IParameter;
 import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.utils.Pair;
 import de.mossgrabers.framework.utils.StringUtils;
-
-import java.util.List;
 
 
 /**
@@ -279,7 +279,8 @@ public class NoteRepeatMode extends BaseMode<IItem>
             final ColorManager colorManager = this.model.getColorManager ();
             if (index < 7)
                 return colorManager.getColorIndex (AbstractFeatureGroup.BUTTON_COLOR_OFF);
-            return this.model.getGroove ().getParameter (GrooveParameterID.ENABLED).getValue () > 0 ? colorManager.getColorIndex (AbstractMode.BUTTON_COLOR_HI) : colorManager.getColorIndex (AbstractFeatureGroup.BUTTON_COLOR_ON);
+            final boolean isEnabled = this.model.getGroove ().getParameter (GrooveParameterID.ENABLED).getValue () > 0;
+            return colorManager.getColorIndex (isEnabled ? AbstractMode.BUTTON_COLOR_HI : AbstractFeatureGroup.BUTTON_COLOR_ON);
         }
 
         return super.getButtonColor (buttonID);

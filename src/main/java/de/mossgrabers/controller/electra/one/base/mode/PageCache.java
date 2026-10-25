@@ -17,7 +17,7 @@ import de.mossgrabers.framework.controller.color.ColorEx;
  *
  * @param <S> The specific type of the control surface
  * @param <C> The specific type of the configuration
- * 
+ *
  * @author Jürgen Moßgraber
  */
 public class PageCache<S extends AbstractElectraOneControlSurface<C>, C extends AbstractElectraOneConfiguration>
@@ -44,7 +44,7 @@ public class PageCache<S extends AbstractElectraOneControlSurface<C>, C extends 
 
     private final Object        dataLock          = new Object ();
     private final S             surface;
-    private int                 groupOffset;
+    private final int                 groupOffset;
     private final int           page;
     private boolean             isDirty           = false;
 
@@ -331,7 +331,7 @@ public class PageCache<S extends AbstractElectraOneControlSurface<C>, C extends 
 
     /**
      * Get the page size.
-     * 
+     *
      * @return The page size
      */
     public int getPageSize ()

@@ -669,7 +669,7 @@ public abstract class AbstractConfiguration implements Configuration
     protected void setOnOffSetting (final IEnumSetting setting, final boolean enabled)
     {
         if (setting != null)
-            setting.set (enabled ? ON_OFF_OPTIONS[1] : ON_OFF_OPTIONS[0]);
+            setting.set (ON_OFF_OPTIONS[enabled ? 1 : 0]);
     }
 
 

@@ -81,7 +81,7 @@ public class GamepadFunctionHandler implements IGamepadCallback
         switch (function)
         {
             case GamepadConfiguration.FUNCTION_PITCHBEND:
-                this.handleMidiPitchbend (event == ButtonEvent.DOWN ? 1 : 0);
+                this.handleMidiPitchbend (event == ButtonEvent.DOWN ? 1f : 0f);
                 break;
 
             case GamepadConfiguration.FUNCTION_NOTE_REPEAT_ENABLE:

@@ -603,7 +603,7 @@ public class NoteParameter extends AbstractParameterImpl
                 return StringUtils.formatPercentage (stepInfo.getVelocitySpread ());
 
             case MUTE:
-                return String.format ("Mute: %s", stepInfo.isMuted () ? "Yes" : "No");
+                return "Mute: " + (stepInfo.isMuted () ? "Yes" : "No");
 
             case PRESSURE:
                 return StringUtils.formatPercentage (stepInfo.getPressure ());

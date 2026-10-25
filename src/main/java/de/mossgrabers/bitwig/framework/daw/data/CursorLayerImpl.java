@@ -54,14 +54,14 @@ public class CursorLayerImpl implements ICursorLayer
         this.cursorDeviceLayer = cursorDeviceLayer;
         this.cursorDevice = cursorDevice;
 
-        final DeviceBank deviceBank = cursorDeviceLayer.createDeviceBank (numDevicesInBank);
+        final DeviceBank bwDeviceBank = cursorDeviceLayer.createDeviceBank (numDevicesInBank);
         for (int i = 0; i < numDevicesInBank; i++)
         {
-            final Device device = deviceBank.getItemAt (i);
+            final Device device = bwDeviceBank.getItemAt (i);
             this.devices.add (new SpecificDeviceImpl (host, valueChanger, device, 0, numParamPages, numParams, numDevicesInBank, 0, 0, 0));
         }
 
-        this.deviceBank = new DeviceBankImpl (host, valueChanger, null, deviceBank, numDevicesInBank);
+        this.deviceBank = new DeviceBankImpl (host, valueChanger, null, bwDeviceBank, numDevicesInBank);
     }
 
 

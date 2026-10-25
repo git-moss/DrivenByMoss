@@ -53,14 +53,9 @@ public class ElectraOneMiniTouchCombinationCommand extends FootswitchCommand<Ele
                     this.surface.selectPage (1);
                 break;
 
-            case ElectraOneMiniConfiguration.ELECTRA_ONE_FUNC_MODE_EQ:
-                if (event == ButtonEvent.DOWN)
-                    this.surface.selectPage (2);
-                break;
-
             case ElectraOneMiniConfiguration.ELECTRA_ONE_FUNC_MODE_TRANSPORT:
                 if (event == ButtonEvent.DOWN)
-                    this.surface.selectPage (3);
+                    this.surface.selectPage (2);
                 break;
 
             case ElectraOneMiniConfiguration.ELECTRA_ONE_FUNC_MODE_ACTION:

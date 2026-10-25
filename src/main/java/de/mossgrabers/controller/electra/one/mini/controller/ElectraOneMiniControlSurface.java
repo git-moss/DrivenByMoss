@@ -92,7 +92,7 @@ public class ElectraOneMiniControlSurface extends AbstractElectraOneControlSurfa
     private static final List<Modes>       MODES                            = new ArrayList<> ();
     static
     {
-        Collections.addAll (MODES, Modes.VOLUME, Modes.DEVICE_PARAMS, Modes.EQ_DEVICE_PARAMS, Modes.TRANSPORT);
+        Collections.addAll (MODES, Modes.VOLUME, Modes.DEVICE_PARAMS, Modes.TRANSPORT);
     }
 
     protected List<ElectraOneMiniTouchCombinationCommand>              touchCombinationCommands = null;
@@ -204,7 +204,7 @@ public class ElectraOneMiniControlSurface extends AbstractElectraOneControlSurfa
 
         if (!handled)
         {
-            clearShift ();
+            this.clearShift ();
             return;
         }
 

@@ -38,7 +38,7 @@ import de.mossgrabers.framework.utils.StringUtils;
  * Base class for all Electra One surfaces.
  *
  * @param <C> The specific type of the configuration
- * 
+ *
  * @author Jürgen Moßgraber
  */
 public abstract class AbstractElectraOneControlSurface<C extends AbstractElectraOneConfiguration> extends AbstractControlSurface<C>

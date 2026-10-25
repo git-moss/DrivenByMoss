@@ -25,7 +25,6 @@ public class ElectraOneMiniConfiguration extends AbstractElectraOneConfiguration
         "Off",
         "Mode: Mixer",
         "Mode: Device",
-        "Mode: EQ",
         "Mode: Transport",
         "Function: Toggle Play",
         "Function: Toggle Record",
@@ -51,10 +50,8 @@ public class ElectraOneMiniConfiguration extends AbstractElectraOneConfiguration
     public static final int        ELECTRA_ONE_FUNC_MODE_MIXER     = 1;
     /** Select device mode. */
     public static final int        ELECTRA_ONE_FUNC_MODE_DEVICE    = 2;
-    /** Select EQ mode. */
-    public static final int        ELECTRA_ONE_FUNC_MODE_EQ        = 3;
     /** Select transport mode. */
-    public static final int        ELECTRA_ONE_FUNC_MODE_TRANSPORT = 4;
+    public static final int        ELECTRA_ONE_FUNC_MODE_TRANSPORT = 3;
     /** Execute an action. */
     public static final int        ELECTRA_ONE_FUNC_MODE_ACTION    = 25;
 
@@ -65,7 +62,7 @@ public class ElectraOneMiniConfiguration extends AbstractElectraOneConfiguration
         // Linear
         ELECTRA_ONE_FUNC_MODE_MIXER,
         ELECTRA_ONE_FUNC_MODE_DEVICE,
-        ELECTRA_ONE_FUNC_MODE_EQ,
+        ELECTRA_ONE_FUNC_OFF,
         ELECTRA_ONE_FUNC_MODE_TRANSPORT,
 
         // Linear Left

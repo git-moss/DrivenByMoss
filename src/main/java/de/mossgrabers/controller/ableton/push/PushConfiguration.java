@@ -4,6 +4,10 @@
 
 package de.mossgrabers.controller.ableton.push;
 
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
+
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.configuration.IColorSetting;
@@ -18,10 +22,6 @@ import de.mossgrabers.framework.daw.midi.ArpeggiatorMode;
 import de.mossgrabers.framework.graphics.IGraphicsConfiguration;
 import de.mossgrabers.framework.mode.Modes;
 import de.mossgrabers.framework.view.Views;
-
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
 
 
 /**
@@ -1789,7 +1789,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     @Override
     public void setFlipSession (final boolean enabled)
     {
-        this.sessionViewSetting.set (enabled ? SESSION_VIEW_OPTIONS[1] : SESSION_VIEW_OPTIONS[0]);
+        this.sessionViewSetting.set (SESSION_VIEW_OPTIONS[enabled ? 1 : 0]);
     }
 
 

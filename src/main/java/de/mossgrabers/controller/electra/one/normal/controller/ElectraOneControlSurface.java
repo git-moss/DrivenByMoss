@@ -316,7 +316,7 @@ public class ElectraOneControlSurface extends AbstractElectraOneControlSurface<E
 
         if (!handled)
         {
-            clearShift ();
+            this.clearShift ();
             return;
         }
 

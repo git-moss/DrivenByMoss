@@ -13,7 +13,7 @@ import de.mossgrabers.controller.electra.one.mini.command.trigger.ElectraOneMini
 import de.mossgrabers.controller.electra.one.mini.controller.ElectraOneMiniControlSurface;
 import de.mossgrabers.controller.electra.one.mini.mode.ElectraOneMiniDeviceMode;
 import de.mossgrabers.controller.electra.one.mini.mode.ElectraOneMiniMixerMode;
-import de.mossgrabers.framework.command.core.TriggerCommand;
+import de.mossgrabers.controller.electra.one.mini.mode.ElectraOneMiniTransportMode;
 import de.mossgrabers.framework.command.trigger.mode.ButtonRowModeCommand;
 import de.mossgrabers.framework.configuration.ISettingsUI;
 import de.mossgrabers.framework.controller.AbstractControllerSetup;
@@ -33,7 +33,6 @@ import de.mossgrabers.framework.daw.midi.IMidiOutput;
 import de.mossgrabers.framework.featuregroup.ModeManager;
 import de.mossgrabers.framework.mode.DummyMode;
 import de.mossgrabers.framework.mode.Modes;
-import de.mossgrabers.framework.utils.ButtonEvent;
 import de.mossgrabers.framework.view.DummyView;
 import de.mossgrabers.framework.view.Views;
 
@@ -133,14 +132,9 @@ public class ElectraOneMiniControllerSetup extends AbstractControllerSetup<Elect
     {
         final ElectraOneMiniControlSurface surface = this.getSurface ();
         final ModeManager modeManager = surface.getModeManager ();
-
         modeManager.register (Modes.VOLUME, new ElectraOneMiniMixerMode (surface, this.model));
         modeManager.register (Modes.DEVICE_PARAMS, new ElectraOneMiniDeviceMode (surface, this.model));
-        // TODO
-        // modeManager.register (Modes.EQ_DEVICE_PARAMS, new EqualizerMode (surface, this.model));
-        // modeManager.register (Modes.TRANSPORT, new TransportMode (surface, this.model));
-        // modeManager.register (Modes.SESSION, new SessionMode (surface, this.model));
-        // modeManager.register (Modes.PROJECT, new ProjectTrackMode (surface, this.model));
+        modeManager.register (Modes.TRANSPORT, new ElectraOneMiniTransportMode (surface, this.model));
         modeManager.register (Modes.DUMMY, new DummyMode<> (surface, this.model, ElectraOneMiniControlSurface.KNOB_IDS));
     }
 
@@ -200,8 +194,6 @@ public class ElectraOneMiniControllerSetup extends AbstractControllerSetup<Elect
     @Override
     protected void registerContinuousCommands ()
     {
-        final ElectraOneMiniControlSurface surface = this.getSurface ();
-        final IMidiInput midiInput = surface.getMidiInput ();
         for (int index = 0; index < 8; index++)
         {
             final ContinuousID ctrlID = ContinuousID.get (ContinuousID.KNOB1, index);
@@ -210,16 +202,6 @@ public class ElectraOneMiniControllerSetup extends AbstractControllerSetup<Elect
             final IHwContinuousControl ctrl = this.addRelativeKnob (ctrlID, "Ctrl " + colLabel, null, BindType.CC, 15, cc);
             // Can sadly only be set at startup
             ctrl.setIndexInGroup (index);
-            ctrl.bindTouch (new TriggerCommand ()
-            {
-                @Override
-                public void execute (ButtonEvent event, int velocity)
-                {
-                    // TODO
-                    surface.updateTouchCombinationCommandsCache ();
-
-                }
-            }, midiInput, BindType.CC, 15, ElectraOneMiniControlSurface.ELECTRA_KNOB_TOUCH_1);
         }
     }
 

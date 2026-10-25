@@ -28,7 +28,7 @@ import de.mossgrabers.framework.utils.StringUtils;
 /**
  * The device mode. The knobs control 8 parameters of the current device, project of track page.
  *
- * 
+ *
  * @author Jürgen Moßgraber
  */
 public class ElectraOneMiniDeviceMode extends AbstractElectraOneMiniMode
@@ -210,7 +210,7 @@ public class ElectraOneMiniDeviceMode extends AbstractElectraOneMiniMode
             // Set device names
             final IDevice device = siblingBank.getItem (column);
             final boolean deviceExists = device.doesExist ();
-            this.pageCache.updateGroupLabel (FIRST_TRACK_GROUP + column, deviceExists ? (device.getPosition () + 1) + ": " + StringUtils.fixASCII (device.getName ()) : "None");
+            this.pageCache.updateGroupLabel (FIRST_TRACK_GROUP + column, deviceExists ? device.getPosition () + 1 + ": " + StringUtils.fixASCII (device.getName ()) : "None");
         }
 
         this.pageCache.updateElement (1, 0, MAIN_MODES.get (this.turnMode), MAIN_COLORS.get (this.turnMode), Boolean.TRUE);
