@@ -193,6 +193,7 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
     private int                           activeVuMode             = VUMODE_LED;
     private final int []                  knobValues               = new int [8];
     private byte []                       currentColors            = new byte [8];
+    private short []                      currentWideColors        = new short [8];
     private final int [] []               currentAsparionColors    = new int [8] [3];
 
     private final List<MCUControlSurface> surfaces;
@@ -409,7 +410,8 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
         final IMidiOutput midiOutput = this.getMidiOutput ();
         switch (this.configuration.hasDisplayColors ())
         {
-            case BEHRINGER:
+            case BEHRINGER_1_22:
+            {
                 ColorEx [] cs = colors;
                 if (this.isMainDevice && this.getTextDisplay ().isNotificationActive ())
                 {
@@ -436,6 +438,39 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
                 for (int i = 0; i < 8; i++)
                     msg1[6 + i] = displayColors[i];
                 msg1[14] = (byte) 0xF7;
+                midiOutput.sendSysex (msg1);
+                break;
+            }
+
+            case BEHRINGER_1_25:
+                ColorEx [] cs = colors;
+                if (this.isMainDevice && this.getTextDisplay ().isNotificationActive ())
+                {
+                    cs = new ColorEx [8];
+                    Arrays.fill (cs, ColorEx.WHITE);
+                }
+
+                final short [] displayWideColors = new short [8];
+                for (int i = 0; i < 8; i++)
+                    displayWideColors[i] = toBehringer125 (cs[i] == null ? ColorEx.BLACK : cs[i]);
+
+                if (Arrays.compare (displayWideColors, this.currentWideColors) == 0)
+                    return;
+
+                this.currentWideColors = displayWideColors;
+                final byte [] msg1 = new byte [23];
+                msg1[0] = (byte) 0xF0;
+                msg1[1] = 0x00;
+                msg1[2] = 0x00;
+                msg1[3] = 0x66;
+                msg1[4] = this.isMainDevice ? (byte) 0x14 : (byte) 0x15;
+                msg1[5] = 0x73;
+                for (int i = 0; i < 8; i++)
+                {
+                    msg1[6 + (2 * i)] = (byte) (displayWideColors[i] >>> 8);
+                    msg1[6 + (2 * i) + 1] = (byte) displayWideColors[i];
+                }
+                msg1[22] = (byte) 0xF7;
                 midiOutput.sendSysex (msg1);
                 break;
 
@@ -558,5 +593,21 @@ public class MCUControlSurface extends AbstractControlSurface<MCUConfiguration>
     public boolean isMainDevice ()
     {
         return this.isMainDevice;
+    }
+
+
+    /**
+     * Convert an RGB color to the 16-bit value used for the Behringer X-Touch starting with
+     * firmware 1.25. The intensity values for each channel are from 0 through 4.
+     *
+     * @param color The color to transform
+     * @return The 16-bit value representing the input color.
+     */
+    private static short toBehringer125 (final ColorEx color)
+    {
+        final short red = (short) Math.min (4, color.getRed () * 5);
+        final short green = (short) Math.min (4, color.getGreen () * 5);
+        final short blue = (short) Math.min (4, color.getBlue () * 5);
+        return (short) ((green << 12) | (red << 8) | blue);
     }
 }

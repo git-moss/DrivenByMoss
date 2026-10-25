@@ -44,7 +44,7 @@ public class PageCache<S extends AbstractElectraOneControlSurface<C>, C extends 
 
     private final Object        dataLock          = new Object ();
     private final S             surface;
-    private final int                 groupOffset;
+    private final int           groupOffset;
     private final int           page;
     private boolean             isDirty           = false;
 

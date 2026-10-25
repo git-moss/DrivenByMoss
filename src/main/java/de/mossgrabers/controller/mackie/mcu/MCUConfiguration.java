@@ -36,8 +36,10 @@ public class MCUConfiguration extends AbstractConfiguration
         NONE,
         /** Colors can be displayed with Asparion commands. */
         ASPARION,
-        /** Colors can be displayed with Behringer commands. */
-        BEHRINGER,
+        /** Colors can be displayed with Behringer X-Touch Firmware 1.22 commands. */
+        BEHRINGER_1_22,
+        /** Colors can be displayed with Behringer X-Touch Firmware 1.25 commands. */
+        BEHRINGER_1_25,
         /** Colors can be displayed with iCON commands. */
         ICON
     }
@@ -333,7 +335,8 @@ public class MCUConfiguration extends AbstractConfiguration
     {
         "None",
         TAG_ASPARION,
-        "Behringer",
+        "Behringer (X-Touch Firmware 1.22)",
+        "Behringer (X-Touch Firmware 1.25)",
         "iCON"
     };
 
@@ -576,8 +579,10 @@ public class MCUConfiguration extends AbstractConfiguration
             if (DISPLAY_COLORS_OPTIONS[1].equals (value))
                 this.displayColors = DisplayColors.ASPARION;
             else if (DISPLAY_COLORS_OPTIONS[2].equals (value))
-                this.displayColors = DisplayColors.BEHRINGER;
+                this.displayColors = DisplayColors.BEHRINGER_1_22;
             else if (DISPLAY_COLORS_OPTIONS[3].equals (value))
+                this.displayColors = DisplayColors.BEHRINGER_1_25;
+            else if (DISPLAY_COLORS_OPTIONS[4].equals (value))
                 this.displayColors = DisplayColors.ICON;
             else
                 this.displayColors = DisplayColors.NONE;
@@ -634,7 +639,7 @@ public class MCUConfiguration extends AbstractConfiguration
                     this.useFadersAsKnobsSetting.set (off);
                     alwaysSendVuMetersSetting.set (off);
                     vuMeterStyleSetting.set (VU_METER_STYLES[3]);
-                    displayColorsSetting.set (DISPLAY_COLORS_OPTIONS[2]);
+                    displayColorsSetting.set (DISPLAY_COLORS_OPTIONS[3]);
                     break;
 
                 case DEVICE_BEHRINGER_X_TOUCH_ONE:
@@ -664,7 +669,7 @@ public class MCUConfiguration extends AbstractConfiguration
                     this.useFadersAsKnobsSetting.set (off);
                     alwaysSendVuMetersSetting.set (off);
                     vuMeterStyleSetting.set (VU_METER_STYLES[2]);
-                    displayColorsSetting.set (DISPLAY_COLORS_OPTIONS[3]);
+                    displayColorsSetting.set (DISPLAY_COLORS_OPTIONS[4]);
                     break;
 
                 case DEVICE_ICON_P1_NANO:
@@ -679,7 +684,7 @@ public class MCUConfiguration extends AbstractConfiguration
                     this.useFadersAsKnobsSetting.set (off);
                     alwaysSendVuMetersSetting.set (off);
                     vuMeterStyleSetting.set (VU_METER_STYLES[2]);
-                    displayColorsSetting.set (DISPLAY_COLORS_OPTIONS[3]);
+                    displayColorsSetting.set (DISPLAY_COLORS_OPTIONS[4]);
                     break;
 
                 case DEVICE_ICON_PLATFORM_M:
@@ -724,7 +729,7 @@ public class MCUConfiguration extends AbstractConfiguration
                     this.useFadersAsKnobsSetting.set (off);
                     alwaysSendVuMetersSetting.set (off);
                     vuMeterStyleSetting.set (VU_METER_STYLES[2]);
-                    displayColorsSetting.set (DISPLAY_COLORS_OPTIONS[3]);
+                    displayColorsSetting.set (DISPLAY_COLORS_OPTIONS[4]);
                     break;
 
                 case DEVICE_ZOOM_R16:
