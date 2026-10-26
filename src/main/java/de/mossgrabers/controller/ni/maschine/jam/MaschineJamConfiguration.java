@@ -92,9 +92,10 @@ public class MaschineJamConfiguration extends AbstractConfiguration
         // ----------------------------------------------------------------
         // Transport
 
+        this.activateBehaviourOnPauseSetting (globalSettings);
+        this.activateDoubleClickPlayButton (globalSettings);
         this.activateRecordButtonSetting (globalSettings);
         this.activateShiftedRecordButtonSetting (globalSettings);
-        this.activateBehaviourOnPauseSetting (globalSettings);
 
         // ----------------------------------------------------------------
         // Play and Sequence

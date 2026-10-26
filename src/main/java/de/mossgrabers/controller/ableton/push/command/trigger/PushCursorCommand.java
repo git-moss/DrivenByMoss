@@ -8,6 +8,7 @@ import de.mossgrabers.controller.ableton.push.PushConfiguration;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.framework.command.trigger.Direction;
 import de.mossgrabers.framework.command.trigger.mode.CursorCommand;
+import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.daw.IModel;
 import de.mossgrabers.framework.daw.data.bank.ISceneBank;
 import de.mossgrabers.framework.featuregroup.IMode;
@@ -50,10 +51,10 @@ public class PushCursorCommand extends CursorCommand<PushControlSurface, PushCon
         final ISceneBank sceneBank = this.getSceneBank ();
         switch (this.surface.isShiftPressed () || this.isScenePlay () ? this.configuration.getCursorKeysSceneShiftedOption () : this.configuration.getCursorKeysSceneOption ())
         {
-            case PushConfiguration.CURSOR_KEYS_SCENE_OPTION_MOVE_BANK_BY_PAGE:
+            case AbstractConfiguration.CURSOR_KEYS_SCENE_OPTION_MOVE_BANK_BY_PAGE:
                 sceneBank.selectPreviousPage ();
                 break;
-            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_1:
+            case AbstractConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_1:
                 sceneBank.scrollBackwards ();
                 break;
             default:
@@ -72,10 +73,10 @@ public class PushCursorCommand extends CursorCommand<PushControlSurface, PushCon
         final ISceneBank sceneBank = this.getSceneBank ();
         switch (this.surface.isShiftPressed () || this.isScenePlay () ? this.configuration.getCursorKeysSceneShiftedOption () : this.configuration.getCursorKeysSceneOption ())
         {
-            case PushConfiguration.CURSOR_KEYS_SCENE_OPTION_MOVE_BANK_BY_PAGE:
+            case AbstractConfiguration.CURSOR_KEYS_SCENE_OPTION_MOVE_BANK_BY_PAGE:
                 sceneBank.selectNextPage ();
                 break;
-            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_1:
+            case AbstractConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_1:
                 sceneBank.scrollForwards ();
                 break;
             default:
@@ -125,11 +126,11 @@ public class PushCursorCommand extends CursorCommand<PushControlSurface, PushCon
 
         switch (shiftPressed || this.isScenePlay () ? this.configuration.getCursorKeysSceneShiftedOption () : this.configuration.getCursorKeysSceneOption ())
         {
-            case PushConfiguration.CURSOR_KEYS_SCENE_OPTION_MOVE_BANK_BY_PAGE:
+            case AbstractConfiguration.CURSOR_KEYS_SCENE_OPTION_MOVE_BANK_BY_PAGE:
                 this.scrollStates.setCanScrollUp (sceneBank.canScrollPageBackwards ());
                 this.scrollStates.setCanScrollDown (sceneBank.canScrollPageForwards ());
                 break;
-            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_1:
+            case AbstractConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_1:
                 this.scrollStates.setCanScrollUp (sceneBank.canScrollBackwards ());
                 this.scrollStates.setCanScrollDown (sceneBank.canScrollForwards ());
                 break;

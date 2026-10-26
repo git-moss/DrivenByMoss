@@ -571,4 +571,20 @@ public interface Configuration
      * @return True if enabled
      */
     boolean isShowPlayedChords ();
+
+
+    /**
+     * Is double clicking the PLAY button enabled?
+     * 
+     * @return True if enabled
+     */
+    boolean isEnableDoubleClickPlayButton ();
+
+
+    /**
+     * Is double clicking the STOP button enabled?
+     * 
+     * @return True if enabled
+     */
+    boolean isEnableDoubleClickStopButton ();
 }

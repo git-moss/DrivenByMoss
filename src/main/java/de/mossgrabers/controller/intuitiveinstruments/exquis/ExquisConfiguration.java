@@ -76,6 +76,7 @@ public class ExquisConfiguration extends AbstractConfiguration
         // Transport
 
         this.activateBehaviourOnPauseSetting (globalSettings);
+        this.activateDoubleClickPlayButton (globalSettings);
 
         // ----------------------------------------------------------------
         // Workflow

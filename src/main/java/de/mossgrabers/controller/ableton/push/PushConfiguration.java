@@ -46,119 +46,119 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
 
 
     /** Setting for the ribbon mode. */
-    public static final Integer     RIBBON_MODE                                = Integer.valueOf (NEXT_SETTING_ID);
+    public static final Integer     RIBBON_MODE                     = Integer.valueOf (NEXT_SETTING_ID);
     /** Setting for the ribbon mode MIDI CC. */
-    public static final Integer     RIBBON_MODE_CC_VAL                         = Integer.valueOf (NEXT_SETTING_ID + 1);
+    public static final Integer     RIBBON_MODE_CC_VAL              = Integer.valueOf (NEXT_SETTING_ID + 1);
     /** Setting for the ribbon mode note repeat. */
-    public static final Integer     RIBBON_MODE_NOTE_REPEAT                    = Integer.valueOf (NEXT_SETTING_ID + 2);
+    public static final Integer     RIBBON_MODE_NOTE_REPEAT         = Integer.valueOf (NEXT_SETTING_ID + 2);
 
     /** Setting for the velocity curve. */
-    public static final Integer     VELOCITY_CURVE                             = Integer.valueOf (NEXT_SETTING_ID + 3);
+    public static final Integer     VELOCITY_CURVE                  = Integer.valueOf (NEXT_SETTING_ID + 3);
     /** Setting for the Push 1 pad threshold. */
-    public static final Integer     PAD_PUSH1_THRESHOLD                        = Integer.valueOf (NEXT_SETTING_ID + 4);
+    public static final Integer     PAD_PUSH1_THRESHOLD             = Integer.valueOf (NEXT_SETTING_ID + 4);
     /** Setting for the display brightness. */
-    public static final Integer     DISPLAY_BRIGHTNESS                         = Integer.valueOf (NEXT_SETTING_ID + 5);
+    public static final Integer     DISPLAY_BRIGHTNESS              = Integer.valueOf (NEXT_SETTING_ID + 5);
     /** Setting for the pad LED brightness. */
-    public static final Integer     LED_BRIGHTNESS                             = Integer.valueOf (NEXT_SETTING_ID + 6);
+    public static final Integer     LED_BRIGHTNESS                  = Integer.valueOf (NEXT_SETTING_ID + 6);
     /** Setting for the Push 2 pad sensitivity. */
-    public static final Integer     PAD_PUSH2_SENSITIVITY                      = Integer.valueOf (NEXT_SETTING_ID + 7);
+    public static final Integer     PAD_PUSH2_SENSITIVITY           = Integer.valueOf (NEXT_SETTING_ID + 7);
     /** Setting for the Push 2 pad gain. */
-    public static final Integer     PAD_PUSH2_GAIN                             = Integer.valueOf (NEXT_SETTING_ID + 8);
+    public static final Integer     PAD_PUSH2_GAIN                  = Integer.valueOf (NEXT_SETTING_ID + 8);
     /** Setting for the Push 2 pad dynamics. */
-    public static final Integer     PAD_PUSH2_DYNAMICS                         = Integer.valueOf (NEXT_SETTING_ID + 9);
+    public static final Integer     PAD_PUSH2_DYNAMICS              = Integer.valueOf (NEXT_SETTING_ID + 9);
     /** Setting for the Push 3 pad velocity curve - threshold parameter. */
-    public static final Integer     PAD_PUSH3_THRESHOLD                        = Integer.valueOf (NEXT_SETTING_ID + 10);
+    public static final Integer     PAD_PUSH3_THRESHOLD             = Integer.valueOf (NEXT_SETTING_ID + 10);
     /** Setting for the Push 3 pad velocity curve - drive parameter. */
-    public static final Integer     PAD_PUSH3_DRIVE                            = Integer.valueOf (NEXT_SETTING_ID + 11);
+    public static final Integer     PAD_PUSH3_DRIVE                 = Integer.valueOf (NEXT_SETTING_ID + 11);
     /** Setting for the Push 3 pad velocity curve - compand parameter. */
-    public static final Integer     PAD_PUSH3_COMPAND                          = Integer.valueOf (NEXT_SETTING_ID + 12);
+    public static final Integer     PAD_PUSH3_COMPAND               = Integer.valueOf (NEXT_SETTING_ID + 12);
     /** Setting for the Push 3 pad velocity curve - range parameter. */
-    public static final Integer     PAD_PUSH3_RANGE                            = Integer.valueOf (NEXT_SETTING_ID + 14);
+    public static final Integer     PAD_PUSH3_RANGE                 = Integer.valueOf (NEXT_SETTING_ID + 14);
 
     /** Setting for stopping automation recording on knob release. */
-    public static final Integer     STOP_AUTOMATION_ON_KNOB_RELEASE            = Integer.valueOf (NEXT_SETTING_ID + 15);
+    public static final Integer     STOP_AUTOMATION_ON_KNOB_RELEASE = Integer.valueOf (NEXT_SETTING_ID + 15);
     /** Mode debug. */
-    public static final Integer     DEBUG_MODE                                 = Integer.valueOf (NEXT_SETTING_ID + 16);
+    public static final Integer     DEBUG_MODE                      = Integer.valueOf (NEXT_SETTING_ID + 16);
     /** Push 2 display debug window. */
-    public static final Integer     DEBUG_WINDOW                               = Integer.valueOf (NEXT_SETTING_ID + 17);
+    public static final Integer     DEBUG_WINDOW                    = Integer.valueOf (NEXT_SETTING_ID + 17);
 
     /** Background color of an element. */
-    public static final Integer     COLOR_BACKGROUND                           = Integer.valueOf (NEXT_SETTING_ID + 20);
+    public static final Integer     COLOR_BACKGROUND                = Integer.valueOf (NEXT_SETTING_ID + 20);
     /** Border color of an element. */
-    public static final Integer     COLOR_BORDER                               = Integer.valueOf (NEXT_SETTING_ID + 21);
+    public static final Integer     COLOR_BORDER                    = Integer.valueOf (NEXT_SETTING_ID + 21);
     /** Text color of an element. */
-    public static final Integer     COLOR_TEXT                                 = Integer.valueOf (NEXT_SETTING_ID + 22);
+    public static final Integer     COLOR_TEXT                      = Integer.valueOf (NEXT_SETTING_ID + 22);
     /** Fader color of an element. */
-    public static final Integer     COLOR_FADER                                = Integer.valueOf (NEXT_SETTING_ID + 23);
+    public static final Integer     COLOR_FADER                     = Integer.valueOf (NEXT_SETTING_ID + 23);
     /** VU color of an element. */
-    public static final Integer     COLOR_VU                                   = Integer.valueOf (NEXT_SETTING_ID + 24);
+    public static final Integer     COLOR_VU                        = Integer.valueOf (NEXT_SETTING_ID + 24);
     /** Edit color of an element. */
-    public static final Integer     COLOR_EDIT                                 = Integer.valueOf (NEXT_SETTING_ID + 25);
+    public static final Integer     COLOR_EDIT                      = Integer.valueOf (NEXT_SETTING_ID + 25);
     /** Record color of an element. */
-    public static final Integer     COLOR_RECORD                               = Integer.valueOf (NEXT_SETTING_ID + 26);
+    public static final Integer     COLOR_RECORD                    = Integer.valueOf (NEXT_SETTING_ID + 26);
     /** Solo color of an element. */
-    public static final Integer     COLOR_SOLO                                 = Integer.valueOf (NEXT_SETTING_ID + 27);
+    public static final Integer     COLOR_SOLO                      = Integer.valueOf (NEXT_SETTING_ID + 27);
     /** Mute color of an element. */
-    public static final Integer     COLOR_MUTE                                 = Integer.valueOf (NEXT_SETTING_ID + 28);
+    public static final Integer     COLOR_MUTE                      = Integer.valueOf (NEXT_SETTING_ID + 28);
     /** Background color darker of an element. */
-    public static final Integer     COLOR_BACKGROUND_DARKER                    = Integer.valueOf (NEXT_SETTING_ID + 29);
+    public static final Integer     COLOR_BACKGROUND_DARKER         = Integer.valueOf (NEXT_SETTING_ID + 29);
     /** Background color lighter of an element. */
-    public static final Integer     COLOR_BACKGROUND_LIGHTER                   = Integer.valueOf (NEXT_SETTING_ID + 30);
+    public static final Integer     COLOR_BACKGROUND_LIGHTER        = Integer.valueOf (NEXT_SETTING_ID + 30);
 
     /** Session view options. */
-    public static final Integer     SESSION_VIEW                               = Integer.valueOf (NEXT_SETTING_ID + 31);
+    public static final Integer     SESSION_VIEW                    = Integer.valueOf (NEXT_SETTING_ID + 31);
     /** Display scenes or clips. */
-    public static final Integer     DISPLAY_SCENES_CLIPS                       = Integer.valueOf (NEXT_SETTING_ID + 32);
+    public static final Integer     DISPLAY_SCENES_CLIPS            = Integer.valueOf (NEXT_SETTING_ID + 32);
 
     /** MPE - Per-pad pitchbend. */
-    public static final Integer     PER_PAD_PITCHBEND                          = Integer.valueOf (NEXT_SETTING_ID + 33);
+    public static final Integer     PER_PAD_PITCHBEND               = Integer.valueOf (NEXT_SETTING_ID + 33);
     /** MPE - Pad in-tune location. */
-    public static final Integer     IN_TUNE_LOCATION                           = Integer.valueOf (NEXT_SETTING_ID + 34);
+    public static final Integer     IN_TUNE_LOCATION                = Integer.valueOf (NEXT_SETTING_ID + 34);
     /** MPE - Pad in-tune location width. */
-    public static final Integer     IN_TUNE_WIDTH                              = Integer.valueOf (NEXT_SETTING_ID + 35);
+    public static final Integer     IN_TUNE_WIDTH                   = Integer.valueOf (NEXT_SETTING_ID + 35);
     /** MPE - Pad in-tune location height. */
-    public static final Integer     IN_TUNE_SLIDE_HEIGHT                       = Integer.valueOf (NEXT_SETTING_ID + 36);
+    public static final Integer     IN_TUNE_SLIDE_HEIGHT            = Integer.valueOf (NEXT_SETTING_ID + 36);
 
     /** Audio Interface - Footswitch or CV 1. */
-    public static final Integer     PEDAL_1                                    = Integer.valueOf (NEXT_SETTING_ID + 37);
+    public static final Integer     PEDAL_1                         = Integer.valueOf (NEXT_SETTING_ID + 37);
     /** Audio Interface - Footswitch or CV 2. */
-    public static final Integer     PEDAL_2                                    = Integer.valueOf (NEXT_SETTING_ID + 38);
+    public static final Integer     PEDAL_2                         = Integer.valueOf (NEXT_SETTING_ID + 38);
     /** Audio Interface - Pre-amp type 1. */
-    public static final Integer     PREAMP_TYPE_1                              = Integer.valueOf (NEXT_SETTING_ID + 39);
+    public static final Integer     PREAMP_TYPE_1                   = Integer.valueOf (NEXT_SETTING_ID + 39);
     /** Audio Interface - Pre-amp type 2. */
-    public static final Integer     PREAMP_TYPE_2                              = Integer.valueOf (NEXT_SETTING_ID + 40);
+    public static final Integer     PREAMP_TYPE_2                   = Integer.valueOf (NEXT_SETTING_ID + 40);
     /** Audio Interface - Pre-amp gain 1. */
-    public static final Integer     PREAMP_GAIN_1                              = Integer.valueOf (NEXT_SETTING_ID + 41);
+    public static final Integer     PREAMP_GAIN_1                   = Integer.valueOf (NEXT_SETTING_ID + 41);
     /** Audio Interface - Pre-amp gain 2. */
-    public static final Integer     PREAMP_GAIN_2                              = Integer.valueOf (NEXT_SETTING_ID + 42);
+    public static final Integer     PREAMP_GAIN_2                   = Integer.valueOf (NEXT_SETTING_ID + 42);
     /** Audio Interface - Output configuration. */
-    public static final Integer     AUDIO_OUTPUTS                              = Integer.valueOf (NEXT_SETTING_ID + 43);
+    public static final Integer     AUDIO_OUTPUTS                   = Integer.valueOf (NEXT_SETTING_ID + 43);
 
     /** Use ribbon for pitch bend. */
-    public static final int         RIBBON_MODE_PITCH                          = 0;
+    public static final int         RIBBON_MODE_PITCH               = 0;
     /** Use ribbon for MIDI CC. */
-    public static final int         RIBBON_MODE_CC                             = 1;
+    public static final int         RIBBON_MODE_CC                  = 1;
     /** Use ribbon for MIDI CC and pitch bend. */
-    public static final int         RIBBON_MODE_CC_PB                          = 2;
+    public static final int         RIBBON_MODE_CC_PB               = 2;
     /** Use ribbon for pitch bend and MIDI CC. */
-    public static final int         RIBBON_MODE_PB_CC                          = 3;
+    public static final int         RIBBON_MODE_PB_CC               = 3;
     /** Use ribbon as volume fader. */
-    public static final int         RIBBON_MODE_FADER                          = 4;
+    public static final int         RIBBON_MODE_FADER               = 4;
     /** Use ribbon to change the last touched parameter. */
-    public static final int         RIBBON_MODE_LAST_TOUCHED                   = 5;
+    public static final int         RIBBON_MODE_LAST_TOUCHED        = 5;
 
     /** Use ribbon not for note repeat settings. */
-    public static final int         NOTE_REPEAT_OFF                            = 0;
+    public static final int         NOTE_REPEAT_OFF                 = 0;
     /** Use ribbon for changing the note repeat period. */
-    public static final int         NOTE_REPEAT_PERIOD                         = 1;
+    public static final int         NOTE_REPEAT_PERIOD              = 1;
     /** Use ribbon for changing the note repeat length. */
-    public static final int         NOTE_REPEAT_LENGTH                         = 2;
+    public static final int         NOTE_REPEAT_LENGTH              = 2;
 
-    private static final String     CATEGORY_RIBBON                            = "Ribbon";
-    private static final String     CATEGORY_AUDIO                             = "Audio Interface";
-    private static final String     CATEGORY_COLORS                            = "Display Colors";
+    private static final String     CATEGORY_RIBBON                 = "Ribbon";
+    private static final String     CATEGORY_AUDIO                  = "Audio Interface";
+    private static final String     CATEGORY_COLORS                 = "Display Colors";
 
-    private static final String []  RIBBON_MODE_VALUES                         =
+    private static final String []  RIBBON_MODE_VALUES              =
     {
         "Pitch",
         "CC",
@@ -168,46 +168,21 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         "Last Touched"
     };
 
-    private static final String []  RIBBON_NOTE_REPEAT_VALUES                  =
+    private static final String []  RIBBON_NOTE_REPEAT_VALUES       =
     {
         "Off",
         "Period",
         "Length"
     };
 
-    private static final String []  SESSION_VIEW_OPTIONS                       =
+    private static final String []  SESSION_VIEW_OPTIONS            =
     {
         "Clips",
         "Flipped",
         "Scenes"
     };
 
-    /** ID for moving the track bank by a page. */
-    public static final int         CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_PAGE = 0;
-    /** ID for moving the track bank by 1. */
-    public static final int         CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_1    = 1;
-    /** ID for swapping the track with the previous/next track. */
-    public static final int         CURSOR_KEYS_TRACK_OPTION_SWAP              = 2;
-
-    private static final String []  CURSOR_KEYS_TRACK_OPTIONS                  =
-    {
-        "Scroll track bank by page",
-        "Scroll track bank by 1",
-        "Swap tracks"
-    };
-
-    /** ID for moving the scene bank by a page. */
-    public static final int         CURSOR_KEYS_SCENE_OPTION_MOVE_BANK_BY_PAGE = 0;
-    /** ID for moving the scene bank by 1. */
-    public static final int         CURSOR_KEYS_SCENE_OPTION_MOVE_BANK_BY_1    = 1;
-
-    private static final String []  CURSOR_KEYS_SCENE_OPTIONS                  =
-    {
-        "Scroll scene bank by page",
-        "Scroll scene bank by 1",
-    };
-
-    private static final Views []   PREFERRED_NOTE_VIEWS                       =
+    private static final Views []   PREFERRED_NOTE_VIEWS            =
     {
         Views.PLAY,
         Views.CHORDS,
@@ -223,7 +198,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     };
 
     /** Debug modes. */
-    private static final Set<Modes> DEBUG_MODES                                = EnumSet.noneOf (Modes.class);
+    private static final Set<Modes> DEBUG_MODES                     = EnumSet.noneOf (Modes.class);
 
     static
     {
@@ -281,14 +256,14 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     }
 
     /** Options for the MPE in-tune location options. */
-    public static final String [] IN_TUNE_LOCATION_OPTIONS     =
+    public static final String [] IN_TUNE_LOCATION_OPTIONS    =
     {
         "Pad",
         "Finger"
     };
 
     /** Options for the MPE in-tune width options. */
-    public static final String [] IN_TUNE_WIDTH_OPTIONS        =
+    public static final String [] IN_TUNE_WIDTH_OPTIONS       =
     {
         "0",
         "1",
@@ -305,7 +280,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     };
 
     /** Options for the MPE slide height options. */
-    public static final String [] SLIDE_HEIGHT_OPTIONS         =
+    public static final String [] SLIDE_HEIGHT_OPTIONS        =
     {
         "10",
         "11",
@@ -317,14 +292,14 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     };
 
     /** Options for footswitch or CV out setting. */
-    public static final String [] FOOT_CV_OPTIONS              =
+    public static final String [] FOOT_CV_OPTIONS             =
     {
         "Footswitch",
         "CV Out"
     };
 
     /** Options for pre-amp type setting. */
-    public static final String [] PREAMP_TYPE_OPTIONS          =
+    public static final String [] PREAMP_TYPE_OPTIONS         =
     {
         "Line",
         "Instrument",
@@ -332,7 +307,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     };
 
     /** Options for pre-amp gain setting. */
-    public static final String [] PREAMP_GAIN_OPTIONS          =
+    public static final String [] PREAMP_GAIN_OPTIONS         =
     {
         "0dB",
         "1dB",
@@ -358,60 +333,56 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     };
 
     /** Options for output configuration setting. */
-    public static final String [] OUTPUT_CONFIGURATION         =
+    public static final String [] OUTPUT_CONFIGURATION        =
     {
         "Headphones 1/2 - Speaker 1/2",
         "Headphones 3/4 - Speaker 1/2",
         "Headphones 1/2 - Speaker 3/4"
     };
     /** Options for output configuration setting - short. */
-    public static final String [] OUTPUT_CONFIGURATION_SHORT   =
+    public static final String [] OUTPUT_CONFIGURATION_SHORT  =
     {
         "H1/2-S1/2",
         "H3/4-S1/2",
         "H1/2-S3/4"
     };
 
-    private LockState             lockState                    = LockState.OFF;
-    private int                   cursorKeysTrackOption        = 0;
-    private int                   cursorKeysTrackShiftedOption = 2;
-    private int                   cursorKeysSceneOption        = 1;
-    private int                   cursorKeysSceneShiftedOption = 0;
+    private LockState             lockState                   = LockState.OFF;
     private boolean               isScenesClipView;
 
     /** What does the ribbon send? **/
-    private int                   ribbonMode                   = RIBBON_MODE_PITCH;
-    private int                   ribbonModeCCVal              = 1;
-    private int                   ribbonModeNoteRepeat         = NOTE_REPEAT_PERIOD;
+    private int                   ribbonMode                  = RIBBON_MODE_PITCH;
+    private int                   ribbonModeCCVal             = 1;
+    private int                   ribbonModeNoteRepeat        = NOTE_REPEAT_PERIOD;
 
-    private boolean               stopAutomationOnKnobRelease  = false;
-    private Modes                 debugMode                    = Modes.TRACK;
-    private Modes                 layerMode                    = null;
+    private boolean               stopAutomationOnKnobRelease = false;
+    private Modes                 debugMode                   = Modes.TRACK;
+    private Modes                 layerMode                   = null;
 
     // Only Push 1
-    private int                   velocityCurvePush1           = 1;
-    private int                   padThresholdPush1            = 20;
+    private int                   velocityCurvePush1          = 1;
+    private int                   padThresholdPush1           = 20;
 
     // Only Push 2
-    private int                   displayBrightness            = 255;
-    private int                   ledBrightness                = 127;
-    private int                   padSensitivityPush2          = 5;
-    private int                   padGainPush2                 = 5;
-    private int                   padDynamicsPush2             = 5;
-    private ColorEx               colorBackground              = DEFAULT_COLOR_BACKGROUND;
-    private ColorEx               colorBorder                  = DEFAULT_COLOR_BORDER;
-    private ColorEx               colorText                    = DEFAULT_COLOR_TEXT;
-    private ColorEx               colorFader                   = DEFAULT_COLOR_FADER;
-    private ColorEx               colorVU                      = DEFAULT_COLOR_VU;
-    private ColorEx               colorEdit                    = DEFAULT_COLOR_EDIT;
-    private ColorEx               colorRecord                  = DEFAULT_COLOR_RECORD;
-    private ColorEx               colorSolo                    = DEFAULT_COLOR_SOLO;
-    private ColorEx               colorMute                    = DEFAULT_COLOR_MUTE;
-    private ColorEx               colorBackgroundDarker        = DEFAULT_COLOR_BACKGROUND_DARKER;
-    private ColorEx               colorBackgroundLighter       = DEFAULT_COLOR_BACKGROUND_LIGHTER;
+    private int                   displayBrightness           = 255;
+    private int                   ledBrightness               = 127;
+    private int                   padSensitivityPush2         = 5;
+    private int                   padGainPush2                = 5;
+    private int                   padDynamicsPush2            = 5;
+    private ColorEx               colorBackground             = DEFAULT_COLOR_BACKGROUND;
+    private ColorEx               colorBorder                 = DEFAULT_COLOR_BORDER;
+    private ColorEx               colorText                   = DEFAULT_COLOR_TEXT;
+    private ColorEx               colorFader                  = DEFAULT_COLOR_FADER;
+    private ColorEx               colorVU                     = DEFAULT_COLOR_VU;
+    private ColorEx               colorEdit                   = DEFAULT_COLOR_EDIT;
+    private ColorEx               colorRecord                 = DEFAULT_COLOR_RECORD;
+    private ColorEx               colorSolo                   = DEFAULT_COLOR_SOLO;
+    private ColorEx               colorMute                   = DEFAULT_COLOR_MUTE;
+    private ColorEx               colorBackgroundDarker       = DEFAULT_COLOR_BACKGROUND_DARKER;
+    private ColorEx               colorBackgroundLighter      = DEFAULT_COLOR_BACKGROUND_LIGHTER;
 
     // Only Push 3
-    private boolean               perPadPitchbend              = true;
+    private boolean               perPadPitchbend             = true;
     private int                   inTuneLocation;
     private int                   inTuneWidth;
     private int                   slideHeight;
@@ -423,10 +394,10 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
     private int                   preamp2Gain;
     private int                   audioOutputs;
 
-    private int                   padCurveThresholdPush3       = 7;
-    private int                   padCurveDrivePush3           = 4;
-    private int                   padCurveCompandPush3         = -26;
-    private int                   padCurveRangePush3           = 35;
+    private int                   padCurveThresholdPush3      = 7;
+    private int                   padCurveDrivePush3          = 4;
+    private int                   padCurveCompandPush3        = -26;
+    private int                   padCurveRangePush3          = 35;
 
     private final PushVersion     pushVersion;
 
@@ -523,6 +494,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         // Transport
 
         this.activateBehaviourOnPauseSetting (globalSettings);
+        this.activateDoubleClickPlayButton (globalSettings);
         this.activateFlipRecordSetting (globalSettings);
 
         // ----------------------------------------------------------------
@@ -602,50 +574,6 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         // Debugging
 
         this.activateDebugSettings (globalSettings);
-    }
-
-
-    /**
-     * Get the track function to execute for left/right cursor keys.
-     *
-     * @return The index of the option
-     */
-    public int getCursorKeysTrackOption ()
-    {
-        return this.cursorKeysTrackOption;
-    }
-
-
-    /**
-     * Get the track function to execute for shifted left/right cursor keys.
-     *
-     * @return The index of the option
-     */
-    public int getCursorKeysTrackShiftedOption ()
-    {
-        return this.cursorKeysTrackShiftedOption;
-    }
-
-
-    /**
-     * Get the scene function to execute for up/down cursor keys.
-     *
-     * @return The index of the option
-     */
-    public int getCursorKeysSceneOption ()
-    {
-        return this.cursorKeysSceneOption;
-    }
-
-
-    /**
-     * Get the scene function to execute for shifted up/down cursor keys.
-     *
-     * @return The index of the option
-     */
-    public int getCursorKeysSceneShiftedOption ()
-    {
-        return this.cursorKeysSceneShiftedOption;
     }
 
 
@@ -1763,25 +1691,6 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
             this.notifyObservers (AbstractConfiguration.FLIP_SESSION);
             this.notifyObservers (PushConfiguration.SESSION_VIEW);
         });
-    }
-
-
-    /**
-     * Activate the cursor keys track option.
-     *
-     * @param settingsUI The settings
-     */
-    private void activateCursorKeysSettings (final ISettingsUI settingsUI)
-    {
-        final IEnumSetting cursorKeysTrackSetting = settingsUI.getEnumSetting ("Cursor Keys Track Option", CATEGORY_WORKFLOW, CURSOR_KEYS_TRACK_OPTIONS, CURSOR_KEYS_TRACK_OPTIONS[0]);
-        cursorKeysTrackSetting.addValueObserver (value -> this.cursorKeysTrackOption = lookupIndex (CURSOR_KEYS_TRACK_OPTIONS, value));
-        final IEnumSetting cursorKeysTrackShiftedSetting = settingsUI.getEnumSetting ("Shifted Cursor Keys Track Option", CATEGORY_WORKFLOW, CURSOR_KEYS_TRACK_OPTIONS, CURSOR_KEYS_TRACK_OPTIONS[2]);
-        cursorKeysTrackShiftedSetting.addValueObserver (value -> this.cursorKeysTrackShiftedOption = lookupIndex (CURSOR_KEYS_TRACK_OPTIONS, value));
-
-        final IEnumSetting cursorKeysSceneSetting = settingsUI.getEnumSetting ("Cursor Keys Scene Option", CATEGORY_WORKFLOW, CURSOR_KEYS_SCENE_OPTIONS, CURSOR_KEYS_SCENE_OPTIONS[1]);
-        cursorKeysSceneSetting.addValueObserver (value -> this.cursorKeysSceneOption = lookupIndex (CURSOR_KEYS_SCENE_OPTIONS, value));
-        final IEnumSetting cursorKeysSceneShiftedSetting = settingsUI.getEnumSetting ("Shifted Cursor Keys Scene Option", CATEGORY_WORKFLOW, CURSOR_KEYS_SCENE_OPTIONS, CURSOR_KEYS_SCENE_OPTIONS[0]);
-        cursorKeysSceneShiftedSetting.addValueObserver (value -> this.cursorKeysSceneShiftedOption = lookupIndex (CURSOR_KEYS_SCENE_OPTIONS, value));
     }
 
 

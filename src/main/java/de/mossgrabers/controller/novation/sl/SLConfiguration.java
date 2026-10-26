@@ -83,11 +83,17 @@ public class SLConfiguration extends AbstractConfiguration
         this.isSettingActive.add (TOUCHPAD_MODE);
 
         // ----------------------------------------------------------------
+        // Transport
+
+        this.activateBehaviourOnPauseSetting (globalSettings);
+        this.activateBehaviourOnStopSetting (globalSettings);
+        this.activateDoubleClickPlayButton (globalSettings);
+        this.activateDoubleClickStopButton (globalSettings);
+
+        // ----------------------------------------------------------------
         // Workflow
 
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
-        this.activateBehaviourOnStopSetting (globalSettings);
-        this.activateBehaviourOnPauseSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);
 
         final IEnumSetting drumpadsAsModeSelectionSetting = globalSettings.getEnumSetting ("Use drum pads for mode selection", CATEGORY_WORKFLOW, ON_OFF_OPTIONS, ON_OFF_OPTIONS[0]);

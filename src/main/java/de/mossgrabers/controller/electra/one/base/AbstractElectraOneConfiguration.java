@@ -83,6 +83,7 @@ public abstract class AbstractElectraOneConfiguration extends AbstractConfigurat
         // Transport
 
         this.activateBehaviourOnPauseSetting (globalSettings);
+        this.activateDoubleClickPlayButton (globalSettings);
 
         // ----------------------------------------------------------------
         // Workflow

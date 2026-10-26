@@ -42,15 +42,17 @@ public class LaunchkeyMk3Configuration extends AbstractConfiguration
 
         this.activateBehaviourOnStopSetting (globalSettings);
         this.activateBehaviourOnPauseSetting (globalSettings);
+        this.activateDoubleClickPlayButton (globalSettings);
+        this.activateDoubleClickStopButton (globalSettings);
         this.activateRecordButtonSetting (globalSettings);
         this.activateShiftedRecordButtonSetting (globalSettings);
-        this.activateNewClipLengthSetting (globalSettings);
 
         // ----------------------------------------------------------------
         // Workflow
 
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
         this.activateIncludeMasterSetting (globalSettings);
+        this.activateNewClipLengthSetting (globalSettings);
         this.activateSelectClipOnLaunchSetting (globalSettings);
     }
 }

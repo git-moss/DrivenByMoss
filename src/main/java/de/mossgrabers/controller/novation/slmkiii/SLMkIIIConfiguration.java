@@ -55,11 +55,17 @@ public class SLMkIIIConfiguration extends AbstractConfiguration
         this.activateScaleInScaleSetting (documentSettings);
 
         // ----------------------------------------------------------------
+        // Transport
+
+        this.activateBehaviourOnPauseSetting (globalSettings);
+        this.activateBehaviourOnStopSetting (globalSettings);
+        this.activateDoubleClickPlayButton (globalSettings);
+        this.activateDoubleClickStopButton (globalSettings);
+
+        // ----------------------------------------------------------------
         // Workflow
 
         this.activateExcludeDeactivatedItemsSetting (globalSettings);
-        this.activateBehaviourOnStopSetting (globalSettings);
-        this.activateBehaviourOnPauseSetting (globalSettings);
         this.activateNewClipLengthSetting (globalSettings);
         this.activateKnobSpeedSetting (globalSettings);
 

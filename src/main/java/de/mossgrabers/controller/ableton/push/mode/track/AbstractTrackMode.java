@@ -13,6 +13,7 @@ import de.mossgrabers.controller.ableton.push.controller.Push1Display;
 import de.mossgrabers.controller.ableton.push.controller.PushColorManager;
 import de.mossgrabers.controller.ableton.push.controller.PushControlSurface;
 import de.mossgrabers.controller.ableton.push.mode.BaseMode;
+import de.mossgrabers.framework.configuration.AbstractConfiguration;
 import de.mossgrabers.framework.controller.ButtonID;
 import de.mossgrabers.framework.controller.display.IGraphicDisplay;
 import de.mossgrabers.framework.controller.display.ITextDisplay;
@@ -258,13 +259,13 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
     {
         switch (this.surface.isShiftPressed () ? this.configuration.getCursorKeysTrackShiftedOption () : this.configuration.getCursorKeysTrackOption ())
         {
-            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_PAGE:
+            case AbstractConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_PAGE:
                 super.selectPreviousItemPage ();
                 break;
-            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_1:
+            case AbstractConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_1:
                 this.model.getCurrentTrackBank ().scrollBackwards ();
                 break;
-            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_SWAP:
+            case AbstractConfiguration.CURSOR_KEYS_TRACK_OPTION_SWAP:
                 this.model.getCursorTrack ().swapWithPrevious ();
                 break;
             default:
@@ -280,13 +281,13 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
     {
         switch (this.surface.isShiftPressed () ? this.configuration.getCursorKeysTrackShiftedOption () : this.configuration.getCursorKeysTrackOption ())
         {
-            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_PAGE:
+            case AbstractConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_PAGE:
                 super.selectNextItemPage ();
                 break;
-            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_1:
+            case AbstractConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_1:
                 this.model.getCurrentTrackBank ().scrollForwards ();
                 break;
-            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_SWAP:
+            case AbstractConfiguration.CURSOR_KEYS_TRACK_OPTION_SWAP:
                 this.model.getCursorTrack ().swapWithNext ();
                 break;
             default:
@@ -302,10 +303,10 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
     {
         switch (this.configuration.getCursorKeysTrackShiftedOption ())
         {
-            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_PAGE:
+            case AbstractConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_PAGE:
                 return super.hasPreviousItemPage ();
-            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_1:
-            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_SWAP:
+            case AbstractConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_1:
+            case AbstractConfiguration.CURSOR_KEYS_TRACK_OPTION_SWAP:
             default:
                 return super.hasPreviousItem ();
         }
@@ -318,10 +319,10 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
     {
         switch (this.configuration.getCursorKeysTrackShiftedOption ())
         {
-            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_PAGE:
+            case AbstractConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_PAGE:
                 return super.hasNextItemPage ();
-            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_1:
-            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_SWAP:
+            case AbstractConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_1:
+            case AbstractConfiguration.CURSOR_KEYS_TRACK_OPTION_SWAP:
             default:
                 return super.hasNextItem ();
         }
@@ -334,10 +335,10 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
     {
         switch (this.configuration.getCursorKeysTrackOption ())
         {
-            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_PAGE:
+            case AbstractConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_PAGE:
                 return super.hasPreviousItemPage ();
-            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_1:
-            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_SWAP:
+            case AbstractConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_1:
+            case AbstractConfiguration.CURSOR_KEYS_TRACK_OPTION_SWAP:
             default:
                 return super.hasPreviousItem ();
         }
@@ -350,10 +351,10 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
     {
         switch (this.configuration.getCursorKeysTrackOption ())
         {
-            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_PAGE:
+            case AbstractConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_PAGE:
                 return super.hasNextItemPage ();
-            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_1:
-            case PushConfiguration.CURSOR_KEYS_TRACK_OPTION_SWAP:
+            case AbstractConfiguration.CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_1:
+            case AbstractConfiguration.CURSOR_KEYS_TRACK_OPTION_SWAP:
             default:
                 return super.hasNextItem ();
         }

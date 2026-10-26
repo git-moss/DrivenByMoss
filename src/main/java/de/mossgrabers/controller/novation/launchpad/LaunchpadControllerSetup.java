@@ -716,7 +716,7 @@ public class LaunchpadControllerSetup extends AbstractControllerSetup<LaunchpadC
     protected void recallLastView ()
     {
         final LaunchpadControlSurface surface = this.getSurface ();
-        if (!surface.getViewManager ().isActive (Views.SESSION) || surface.isPressed (ButtonID.TRACK))
+        if (!surface.getViewManager ().isActive (Views.SESSION, Views.MIX, Views.PROJECT) || surface.isPressed (ButtonID.TRACK))
             surface.recallPreferredView (this.model.getCursorTrack ());
     }
 

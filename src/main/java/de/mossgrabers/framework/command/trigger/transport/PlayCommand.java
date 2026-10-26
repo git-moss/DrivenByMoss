@@ -90,7 +90,8 @@ public class PlayCommand<S extends IControlSurface<C>, C extends Configuration> 
     @Override
     protected void executeDoubleClick ()
     {
-        this.transport.stopAndRewind ();
+        if (this.surface.getConfiguration ().isEnableDoubleClickPlayButton ())
+            this.transport.stopAndRewind ();
     }
 
 

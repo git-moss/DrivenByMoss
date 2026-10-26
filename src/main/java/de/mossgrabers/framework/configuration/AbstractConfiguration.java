@@ -356,7 +356,7 @@ public abstract class AbstractConfiguration implements Configuration
     }
 
 
-    private static final String []                    RECORD_OPTIONS                      =
+    private static final String []                    RECORD_OPTIONS                             =
     {
         "Record arranger",
         "Record arranger + enable automation",
@@ -369,7 +369,32 @@ public abstract class AbstractConfiguration implements Configuration
         "Toggle rec arm",
     };
 
-    private static final int                          NUMBER_OF_FOOTSWITCHES              = 4;
+    private static final int                          NUMBER_OF_FOOTSWITCHES                     = 4;
+
+    /** ID for moving the track bank by a page. */
+    public static final int                           CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_PAGE = 0;
+    /** ID for moving the track bank by 1. */
+    public static final int                           CURSOR_KEYS_TRACK_OPTION_MOVE_BANK_BY_1    = 1;
+    /** ID for swapping the track with the previous/next track. */
+    public static final int                           CURSOR_KEYS_TRACK_OPTION_SWAP              = 2;
+
+    private static final String []                    CURSOR_KEYS_TRACK_OPTIONS                  =
+    {
+        "Scroll track bank by page",
+        "Scroll track bank by 1",
+        "Swap tracks"
+    };
+
+    /** ID for moving the scene bank by a page. */
+    public static final int                           CURSOR_KEYS_SCENE_OPTION_MOVE_BANK_BY_PAGE = 0;
+    /** ID for moving the scene bank by 1. */
+    public static final int                           CURSOR_KEYS_SCENE_OPTION_MOVE_BANK_BY_1    = 1;
+
+    private static final String []                    CURSOR_KEYS_SCENE_OPTIONS                  =
+    {
+        "Scroll scene bank by page",
+        "Scroll scene bank by 1",
+    };
 
     protected final IHost                             host;
 
@@ -392,10 +417,10 @@ public abstract class AbstractConfiguration implements Configuration
     protected IIntegerSetting                         pitchBendRangeSetting;
     protected IEnumSetting                            enableMPESetting;
 
-    private final List<IEnumSetting>                  instrumentSettings                  = new ArrayList<> (7);
-    private final List<IEnumSetting>                  audioSettings                       = new ArrayList<> (3);
-    private final List<IEnumSetting>                  effectSettings                      = new ArrayList<> (3);
-    private final List<IEnumSetting>                  deviceSettings                      = new ArrayList<> (3);
+    private final List<IEnumSetting>                  instrumentSettings                         = new ArrayList<> (7);
+    private final List<IEnumSetting>                  audioSettings                              = new ArrayList<> (3);
+    private final List<IEnumSetting>                  effectSettings                             = new ArrayList<> (3);
+    private final List<IEnumSetting>                  deviceSettings                             = new ArrayList<> (3);
 
     private List<IDeviceMetadata>                     instrumentMetadata;
     private List<IDeviceMetadata>                     effectMetadata;
@@ -404,65 +429,73 @@ public abstract class AbstractConfiguration implements Configuration
     private String []                                 effectNames;
     private String []                                 deviceNames;
 
-    private final Map<Integer, Set<ISettingObserver>> observers                           = new ConcurrentHashMap<> ();
-    protected final Set<Integer>                      dontNotifyAll                       = new HashSet<> ();
-    protected final Set<Integer>                      isSettingActive                     = new HashSet<> ();
+    private final Map<Integer, Set<ISettingObserver>> observers                                  = new ConcurrentHashMap<> ();
+    protected final Set<Integer>                      dontNotifyAll                              = new HashSet<> ();
+    protected final Set<Integer>                      isSettingActive                            = new HashSet<> ();
     protected IValueChanger                           valueChanger;
 
-    private String                                    scale                               = "Major";
-    private String                                    scaleBase                           = "C";
-    private boolean                                   scaleInKey                          = true;
-    private String                                    scaleLayout                         = "4th ^";
-    private boolean                                   enableVUMeters                      = false;
-    private TransportBehavior                         behaviorOnStop                      = TransportBehavior.STOP;
-    private TransportBehavior                         behaviorOnPause                     = TransportBehavior.PAUSE;
-    protected boolean                                 flipSession                         = false;
-    protected boolean                                 selectClipOnLaunch                  = true;
-    protected boolean                                 drawRecordStripe                    = true;
-    protected int                                     convertAftertouch                   = 0;
+    private String                                    scale                                      = "Major";
+    private String                                    scaleBase                                  = "C";
+    private boolean                                   scaleInKey                                 = true;
+    private String                                    scaleLayout                                = "4th ^";
+    private boolean                                   enableVUMeters                             = false;
+    private TransportBehavior                         behaviorOnStop                             = TransportBehavior.STOP;
+    private TransportBehavior                         behaviorOnPause                            = TransportBehavior.PAUSE;
+    protected boolean                                 flipSession                                = false;
+    protected boolean                                 selectClipOnLaunch                         = true;
+    protected boolean                                 drawRecordStripe                           = true;
+    protected int                                     convertAftertouch                          = 0;
     /** Accent button active. */
-    protected boolean                                 accentActive                        = false;
+    protected boolean                                 accentActive                               = false;
     /** Fixed velocity value for accent. */
-    protected int                                     fixedAccentValue                    = 127;
-    private int                                       quantizeAmount                      = 100;
-    protected boolean                                 flipRecord                          = false;
-    private int                                       newClipLength                       = 2;
-    private boolean                                   autoSelectDrum                      = false;
-    private int                                       actionForRecArmedPad                = 0;
-    private boolean                                   turnOffEmptyDrumPads                = false;
+    protected int                                     fixedAccentValue                           = 127;
+    private int                                       quantizeAmount                             = 100;
+    protected boolean                                 flipRecord                                 = false;
+    private int                                       newClipLength                              = 2;
+    private boolean                                   autoSelectDrum                             = false;
+    private int                                       actionForRecArmedPad                       = 0;
+    private boolean                                   turnOffEmptyDrumPads                       = false;
     private boolean                                   turnOffScalePads;
-    private final int []                              footswitch                          = new int [NUMBER_OF_FOOTSWITCHES];
-    private int                                       knobSpeedDefault                    = 0;
-    private int                                       knobSpeedSlow                       = -40;
-    private int                                       encoderKnobSlowDown                 = 0;
+    private final int []                              footswitch                                 = new int [NUMBER_OF_FOOTSWITCHES];
+    private int                                       knobSpeedDefault                           = 0;
+    private int                                       knobSpeedSlow                              = -40;
+    private int                                       encoderKnobSlowDown                        = 0;
 
-    private boolean                                   noteRepeatActive                    = false;
-    private Resolution                                noteRepeatPeriod                    = Resolution.RES_1_8;
-    private Resolution                                noteRepeatLength                    = Resolution.RES_1_8;
+    private boolean                                   noteRepeatActive                           = false;
+    private Resolution                                noteRepeatPeriod                           = Resolution.RES_1_8;
+    private Resolution                                noteRepeatLength                           = Resolution.RES_1_8;
     private ArpeggiatorMode                           noteRepeatMode;
-    private int                                       noteRepeatOctave                    = 0;
-    private int                                       midiEditChannel                     = 0;
+    private int                                       noteRepeatOctave                           = 0;
+    private int                                       midiEditChannel                            = 0;
     private final List<ArpeggiatorMode>               arpeggiatorModes;
 
-    private boolean                                   includeMaster                       = true;
-    private boolean                                   excludeDeactivatedItems             = false;
-    private boolean                                   isTrackNavigationFlat               = true;
+    private boolean                                   includeMaster                              = true;
+    private boolean                                   excludeDeactivatedItems                    = false;
+    private boolean                                   isTrackNavigationFlat                      = true;
 
-    private boolean                                   isDeleteActive                      = false;
-    private boolean                                   isDuplicateActive                   = false;
+    private boolean                                   isDeleteActive                             = false;
+    private boolean                                   isDuplicateActive                          = false;
 
-    private RecordFunction                            recordButtonFunction                = RecordFunction.RECORD_ARRANGER;
-    private RecordFunction                            shiftedRecordButtonFunction         = RecordFunction.NEW_CLIP;
-    private Views                                     startupView                         = Views.PLAY;
-    private Modes                                     startupMode                         = Modes.VOLUME;
-    protected Views                                   preferredAudioView                  = Views.PLAY;
-    private boolean                                   startWithSessionView                = false;
-    private boolean                                   useCombinationButtonToSoundDrumPads = false;
+    private RecordFunction                            recordButtonFunction                       = RecordFunction.RECORD_ARRANGER;
+    private RecordFunction                            shiftedRecordButtonFunction                = RecordFunction.NEW_CLIP;
+    private Views                                     startupView                                = Views.PLAY;
+    private Modes                                     startupMode                                = Modes.VOLUME;
+    protected Views                                   preferredAudioView                         = Views.PLAY;
+    private boolean                                   startWithSessionView                       = false;
+    private boolean                                   useCombinationButtonToSoundDrumPads        = false;
 
-    private boolean                                   isMPEEnabled                        = false;
-    private int                                       mpePitchBendRange                   = 48;
-    private boolean                                   showPlayedChords                    = true;
-    private boolean                                   colorTrackStates                    = true;
+    private boolean                                   isMPEEnabled                               = false;
+    private int                                       mpePitchBendRange                          = 48;
+    private boolean                                   showPlayedChords                           = true;
+    private boolean                                   colorTrackStates                           = true;
+
+    private boolean                                   enableDoubleClickPlayButton                = true;
+    private boolean                                   enableDoubleClickStopButton                = true;
+
+    private int                                       cursorKeysTrackOption                      = 0;
+    private int                                       cursorKeysTrackShiftedOption               = 2;
+    private int                                       cursorKeysSceneOption                      = 1;
+    private int                                       cursorKeysSceneShiftedOption               = 0;
 
 
     /**
@@ -1115,6 +1148,30 @@ public abstract class AbstractConfiguration implements Configuration
         });
 
         this.isSettingActive.add (BEHAVIOUR_ON_PAUSE);
+    }
+
+
+    /**
+     * Activate the setting to return to zero when PLAY is double clicked.
+     *
+     * @param settingsUI The settings
+     */
+    protected void activateDoubleClickPlayButton (final ISettingsUI settingsUI)
+    {
+        final IEnumSetting enableDoubleClickPlayButtonSetting = settingsUI.getEnumSetting ("Double click PLAY returns to zero", CATEGORY_TRANSPORT, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        enableDoubleClickPlayButtonSetting.addValueObserver (value -> this.enableDoubleClickPlayButton = "On".equals (value));
+    }
+
+
+    /**
+     * Activate the setting to jump to the end of the arranger when STOP is double clicked.
+     *
+     * @param settingsUI The settings
+     */
+    protected void activateDoubleClickStopButton (final ISettingsUI settingsUI)
+    {
+        final IEnumSetting enableDoubleClickStopButtonSetting = settingsUI.getEnumSetting ("Double click STOP jumps to end of arranger", CATEGORY_TRANSPORT, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        enableDoubleClickStopButtonSetting.addValueObserver (value -> this.enableDoubleClickStopButton = "On".equals (value));
     }
 
 
@@ -1805,6 +1862,25 @@ public abstract class AbstractConfiguration implements Configuration
     }
 
 
+    /**
+     * Activate the cursor keys track option.
+     *
+     * @param settingsUI The settings
+     */
+    protected void activateCursorKeysSettings (final ISettingsUI settingsUI)
+    {
+        final IEnumSetting cursorKeysTrackSetting = settingsUI.getEnumSetting ("Cursor Keys Track Option", CATEGORY_WORKFLOW, CURSOR_KEYS_TRACK_OPTIONS, CURSOR_KEYS_TRACK_OPTIONS[0]);
+        cursorKeysTrackSetting.addValueObserver (value -> this.cursorKeysTrackOption = lookupIndex (CURSOR_KEYS_TRACK_OPTIONS, value));
+        final IEnumSetting cursorKeysTrackShiftedSetting = settingsUI.getEnumSetting ("Shifted Cursor Keys Track Option", CATEGORY_WORKFLOW, CURSOR_KEYS_TRACK_OPTIONS, CURSOR_KEYS_TRACK_OPTIONS[2]);
+        cursorKeysTrackShiftedSetting.addValueObserver (value -> this.cursorKeysTrackShiftedOption = lookupIndex (CURSOR_KEYS_TRACK_OPTIONS, value));
+
+        final IEnumSetting cursorKeysSceneSetting = settingsUI.getEnumSetting ("Cursor Keys Scene Option", CATEGORY_WORKFLOW, CURSOR_KEYS_SCENE_OPTIONS, CURSOR_KEYS_SCENE_OPTIONS[1]);
+        cursorKeysSceneSetting.addValueObserver (value -> this.cursorKeysSceneOption = lookupIndex (CURSOR_KEYS_SCENE_OPTIONS, value));
+        final IEnumSetting cursorKeysSceneShiftedSetting = settingsUI.getEnumSetting ("Shifted Cursor Keys Scene Option", CATEGORY_WORKFLOW, CURSOR_KEYS_SCENE_OPTIONS, CURSOR_KEYS_SCENE_OPTIONS[0]);
+        cursorKeysSceneShiftedSetting.addValueObserver (value -> this.cursorKeysSceneShiftedOption = lookupIndex (CURSOR_KEYS_SCENE_OPTIONS, value));
+    }
+
+
     /** {@inheritDoc} */
     @Override
     public void notifyAllObservers ()
@@ -2219,5 +2295,65 @@ public abstract class AbstractConfiguration implements Configuration
         for (int i = 0; i < deviceNames.length; i++)
             deviceNames[i] = deviceMetadata.get (i).fullName ();
         return deviceNames;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isEnableDoubleClickPlayButton ()
+    {
+        return this.enableDoubleClickPlayButton;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isEnableDoubleClickStopButton ()
+    {
+        return this.enableDoubleClickStopButton;
+    }
+
+
+    /**
+     * Get the track function to execute for left/right cursor keys.
+     *
+     * @return The index of the option
+     */
+    public int getCursorKeysTrackOption ()
+    {
+        return this.cursorKeysTrackOption;
+    }
+
+
+    /**
+     * Get the track function to execute for shifted left/right cursor keys.
+     *
+     * @return The index of the option
+     */
+    public int getCursorKeysTrackShiftedOption ()
+    {
+        return this.cursorKeysTrackShiftedOption;
+    }
+
+
+    /**
+     * Get the scene function to execute for up/down cursor keys.
+     *
+     * @return The index of the option
+     */
+    public int getCursorKeysSceneOption ()
+    {
+        return this.cursorKeysSceneOption;
+    }
+
+
+    /**
+     * Get the scene function to execute for shifted up/down cursor keys.
+     *
+     * @return The index of the option
+     */
+    public int getCursorKeysSceneShiftedOption ()
+    {
+        return this.cursorKeysSceneShiftedOption;
     }
 }

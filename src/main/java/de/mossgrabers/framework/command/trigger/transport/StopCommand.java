@@ -57,7 +57,8 @@ public class StopCommand<S extends IControlSurface<C>, C extends Configuration> 
     @Override
     protected void executeDoubleClick ()
     {
-        this.transport.setPositionToEnd ();
+        if (this.surface.getConfiguration ().isEnableDoubleClickStopButton ())
+            this.transport.setPositionToEnd ();
     }
 
 

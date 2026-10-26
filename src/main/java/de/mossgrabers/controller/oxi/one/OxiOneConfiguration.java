@@ -128,6 +128,8 @@ public class OxiOneConfiguration extends AbstractConfiguration
         this.activateBehaviourOnPauseSetting (globalSettings);
         this.activateRecordButtonSetting (globalSettings);
         this.activateShiftedRecordButtonSetting (globalSettings);
+        this.activateDoubleClickPlayButton (globalSettings);
+        this.activateDoubleClickStopButton (globalSettings);
 
         // ----------------------------------------------------------------
         // Play and Sequence

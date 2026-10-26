@@ -55,6 +55,7 @@ public class LaunchControlXLConfiguration extends AbstractConfiguration
         // Transport
 
         this.activateBehaviourOnPauseSetting (globalSettings);
+        this.activateDoubleClickPlayButton (globalSettings);
 
         // ----------------------------------------------------------------
         // Play & Sequence

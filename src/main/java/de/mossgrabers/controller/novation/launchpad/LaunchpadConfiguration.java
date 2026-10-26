@@ -102,6 +102,7 @@ public class LaunchpadConfiguration extends AbstractConfiguration
         this.activateBehaviourOnPauseSetting (globalSettings);
         this.activateRecordButtonSetting (globalSettings);
         this.activateShiftedRecordButtonSetting (globalSettings);
+        this.activateDoubleClickPlayButton (globalSettings);
 
         // ----------------------------------------------------------------
         // Session
