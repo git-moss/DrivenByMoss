@@ -144,7 +144,10 @@ public class OxiOneConfiguration extends AbstractConfiguration
         // Drum Sequencer
 
         if (this.host.supports (Capability.HAS_DRUM_DEVICE))
+        {
             this.activateTurnOffEmptyDrumPadsSetting (globalSettings);
+            this.activateShowSelectedDrumPadSetting (globalSettings);
+        }
 
         // ----------------------------------------------------------------
         // Workflow

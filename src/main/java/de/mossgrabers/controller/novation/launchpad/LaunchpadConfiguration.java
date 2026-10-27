@@ -116,6 +116,7 @@ public class LaunchpadConfiguration extends AbstractConfiguration
 
         this.activateAutoSelectDrumSetting (globalSettings);
         this.activateTurnOffEmptyDrumPadsSetting (globalSettings);
+        this.activateShowSelectedDrumPadSetting (globalSettings);
 
         // ----------------------------------------------------------------
         // Workflow
