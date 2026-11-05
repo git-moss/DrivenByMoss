@@ -262,6 +262,14 @@ public interface Configuration
 
 
     /**
+     * Highlight the selected drum pad?
+     *
+     * @return True if the selected drum pad should be highlighted
+     */
+    boolean isShowSelectedDrumPad ();
+
+
+    /**
      * Turn off the LEDs of pads which represent notes in the scale?
      *
      * @return True if should turned off

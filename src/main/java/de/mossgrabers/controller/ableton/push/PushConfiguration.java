@@ -516,6 +516,7 @@ public class PushConfiguration extends AbstractConfiguration implements IGraphic
         {
             this.activateAutoSelectDrumSetting (globalSettings);
             this.activateTurnOffEmptyDrumPadsSetting (globalSettings);
+            this.activateShowSelectedDrumPadSetting (globalSettings);
         }
 
         // ----------------------------------------------------------------
