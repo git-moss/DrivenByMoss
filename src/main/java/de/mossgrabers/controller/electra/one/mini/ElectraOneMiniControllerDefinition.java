@@ -19,7 +19,7 @@ import de.mossgrabers.framework.utils.Pair;
  */
 public class ElectraOneMiniControllerDefinition extends DefaultControllerDefinition
 {
-    private static final String ELECTRA_CONTROLLER_ELECTRA_CTRL = "Electra Controller Electra CTRL";
+    private static final String ELECTRA_CONTROLLER_ELECTRA_CTRL = "Electra Mini Electra CTRL";
 
 
     /**
@@ -42,24 +42,24 @@ public class ElectraOneMiniControllerDefinition extends DefaultControllerDefinit
             case WINDOWS:
                 pairs.add (this.addDeviceDiscoveryPair (new String []
                 {
-                    "Electra Controller",
-                    "MIDIIN3 (Electra Controller)"
+                    "Electra Mini",
+                    "MIDIIN3 (Electra Mini)"
                 }, new String []
                 {
-                    "Electra Controller",
-                    "MIDIOUT3 (Electra Controller)"
+                    "Electra Mini",
+                    "MIDIOUT3 (Electra Mini)"
                 }));
                 for (int i = 2; i < 10; i++)
                 {
                     final String [] portInNames = new String []
                     {
-                        "Electra Controller #" + i,
-                        "MIDIIN" + 3 * i + " (Electra Controller)"
+                        "Electra Mini #" + i,
+                        "MIDIIN" + 3 * i + " (Electra Mini)"
                     };
                     final String [] portOutNames = new String []
                     {
-                        "Electra Controller #" + i,
-                        "MIDIOUT" + 3 * i + " (Electra Controller)"
+                        "Electra Mini #" + i,
+                        "MIDIOUT" + 3 * i + " (Electra Mini)"
                     };
                     pairs.add (this.addDeviceDiscoveryPair (portInNames, portOutNames));
                 }
@@ -68,7 +68,7 @@ public class ElectraOneMiniControllerDefinition extends DefaultControllerDefinit
             case MAC, MAC_ARM:
                 final String [] portNamesMac = new String []
                 {
-                    "Electra Controller Electra Port 1",
+                    "Electra Mini Electra Port 1",
                     ELECTRA_CONTROLLER_ELECTRA_CTRL
                 };
                 pairs.add (this.addDeviceDiscoveryPair (portNamesMac, portNamesMac));
@@ -78,7 +78,7 @@ public class ElectraOneMiniControllerDefinition extends DefaultControllerDefinit
             case LINUX:
                 final String [] portNamesLinux = new String []
                 {
-                    "Electra Controller Electra Port",
+                    "Electra Mini Electra Port",
                     ELECTRA_CONTROLLER_ELECTRA_CTRL
                 };
                 pairs.add (this.addDeviceDiscoveryPair (portNamesLinux, portNamesLinux));
