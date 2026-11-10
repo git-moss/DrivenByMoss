@@ -26,6 +26,7 @@ import de.mossgrabers.controller.ableton.push.command.trigger.PageLeftCommand;
 import de.mossgrabers.controller.ableton.push.command.trigger.PageRightCommand;
 import de.mossgrabers.controller.ableton.push.command.trigger.PanSendCommand;
 import de.mossgrabers.controller.ableton.push.command.trigger.PlayPositionKnobCommand;
+import de.mossgrabers.controller.ableton.push.command.trigger.Push1DeleteCommand;
 import de.mossgrabers.controller.ableton.push.command.trigger.PushAddEffectCommand;
 import de.mossgrabers.controller.ableton.push.command.trigger.PushAutomationCommand;
 import de.mossgrabers.controller.ableton.push.command.trigger.PushCursorCommand;
@@ -569,7 +570,10 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
         this.addButton (ButtonID.FIXED_LENGTH, "Fixed Length", new FixedLengthCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_FIXED_LENGTH, () -> modeManager.isActive (Modes.FIXED));
         this.addButton (ButtonID.DUPLICATE, "Duplicate", new DuplicateCommand<> (this.model, surface), PushControlSurface.PUSH_BUTTON_DUPLICATE);
         this.addButton (ButtonID.QUANTIZE, "Quantize", new PushQuantizeCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_QUANTIZE);
-        this.addButton (ButtonID.DELETE, "Delete", new DeleteCommand<> (this.model, surface), PushControlSurface.PUSH_BUTTON_DELETE);
+        if (this.pushVersion == PushVersion.VERSION_1)
+            this.addButton (ButtonID.DELETE, "Delete", new Push1DeleteCommand (this.model, surface), PushControlSurface.PUSH_BUTTON_DELETE);
+        else
+            this.addButton (ButtonID.DELETE, "Delete", new DeleteCommand<> (this.model, surface), PushControlSurface.PUSH_BUTTON_DELETE);
         this.addButton (ButtonID.DOUBLE, "Double Loop", new DoubleCommand<> (this.model, surface), PushControlSurface.PUSH_BUTTON_DOUBLE);
         this.addButton (ButtonID.UNDO, "Undo", new UndoCommand<> (this.model, surface), PushControlSurface.PUSH_BUTTON_UNDO, () -> {
 
