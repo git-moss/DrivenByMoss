@@ -51,6 +51,14 @@ public class VolumeCommand extends AbstractTriggerCommand<PushControlSurface, Pu
             return;
         }
 
+        // Shift + Volume toggles between volume control for tracks and effect tracks.
+        if (!config.isPushModern () && this.surface.isShiftPressed ())
+        {
+            this.model.toggleCurrentTrackBank ();
+            modeManager.setActive (Modes.VOLUME);
+            return;
+        }
+
         if (Modes.VOLUME.equals (currentMode))
         {
             if (this.model.getHost ().supports (Capability.HAS_CROSSFADER))
