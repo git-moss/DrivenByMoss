@@ -4,12 +4,12 @@
 
 package de.mossgrabers.controller.electra.one.mini;
 
-import java.util.List;
-import java.util.UUID;
-
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
+
+import java.util.List;
+import java.util.UUID;
 
 
 /**
@@ -20,7 +20,6 @@ import de.mossgrabers.framework.utils.Pair;
 public class ElectraOneMiniControllerDefinition extends DefaultControllerDefinition
 {
     private static final String ELECTRA_CONTROLLER_ELECTRA_CTRL = "Electra Mini Electra CTRL";
-
 
     /**
      * Constructor.
@@ -78,7 +77,7 @@ public class ElectraOneMiniControllerDefinition extends DefaultControllerDefinit
             case LINUX:
                 final String [] portNamesLinux = new String []
                 {
-                    "Electra Mini Electra Port",
+                    "Electra Mini Electra Port 1",
                     ELECTRA_CONTROLLER_ELECTRA_CTRL
                 };
                 pairs.add (this.addDeviceDiscoveryPair (portNamesLinux, portNamesLinux));

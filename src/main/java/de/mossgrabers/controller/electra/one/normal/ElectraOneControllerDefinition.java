@@ -4,12 +4,12 @@
 
 package de.mossgrabers.controller.electra.one.normal;
 
-import java.util.List;
-import java.util.UUID;
-
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
+
+import java.util.List;
+import java.util.UUID;
 
 
 /**
@@ -20,7 +20,6 @@ import de.mossgrabers.framework.utils.Pair;
 public class ElectraOneControllerDefinition extends DefaultControllerDefinition
 {
     private static final String ELECTRA_CONTROLLER_ELECTRA_CTRL = "Electra Controller Electra CTRL";
-
 
     /**
      * Constructor.
