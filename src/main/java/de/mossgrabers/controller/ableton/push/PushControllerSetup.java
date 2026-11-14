@@ -738,7 +738,13 @@ public class PushControllerSetup extends AbstractControllerSetup<PushControlSurf
 
         this.masterVolumeCommand = new PushMasterVolumeCommand (this.model, surface);
         final IHwRelativeKnob knobMaster = this.addRelativeKnob (ContinuousID.MASTER_KNOB, "Master", this.masterVolumeCommand, PushControlSurface.PUSH_KNOB9);
-        knobMaster.bindTouch (new MastertrackTouchCommand (this.model, surface), input, BindType.NOTE, 0, PushControlSurface.PUSH_KNOB9_TOUCH);
+        knobMaster.bindTouch (
+            new MastertrackTouchCommand (this.model, surface, this.pushVersion != PushVersion.VERSION_1),
+            input,
+            BindType.NOTE,
+            0,
+            PushControlSurface.PUSH_KNOB9_TOUCH
+        );
 
         this.tempoShuffleCommand = new RasteredKnobCommand (this.model, surface);
         final IHwRelativeKnob knobTempo = this.addRelativeKnob (ContinuousID.TEMPO, "Tempo", this.tempoShuffleCommand, PushControlSurface.PUSH_SMALL_KNOB1);

@@ -22,15 +22,19 @@ import de.mossgrabers.framework.utils.ButtonEvent;
  */
 public class MastertrackTouchCommand extends AbstractTriggerCommand<PushControlSurface, PushConfiguration>
 {
+    private final boolean allowSwitchingMode;
+
     /**
      * Constructor.
      *
      * @param model The model
      * @param surface The surface
+     * @param allowSwitchingMode True to switch to the master mode while the knob is touched
      */
-    public MastertrackTouchCommand (final IModel model, final PushControlSurface surface)
+    public MastertrackTouchCommand (final IModel model, final PushControlSurface surface, final boolean allowSwitchingMode)
     {
         super (model, surface);
+        this.allowSwitchingMode = allowSwitchingMode;
     }
 
 
@@ -55,13 +59,18 @@ public class MastertrackTouchCommand extends AbstractTriggerCommand<PushControlS
             return;
         }
 
-        final boolean isMasterMode = modeManager.isActive (Modes.MASTER);
-        if (isTouched && isMasterMode)
-            return;
+        // On Push 1, keep the current view active while adjusting master volume
+        if (this.allowSwitchingMode)
+        {
 
-        if (isTouched)
-            modeManager.setTemporary (Modes.MASTER_TEMP);
-        else if (!isMasterMode)
-            modeManager.restore ();
+            final boolean isMasterMode = modeManager.isActive (Modes.MASTER);
+            if (isTouched && isMasterMode)
+                return;
+
+            if (isTouched)
+                modeManager.setTemporary (Modes.MASTER_TEMP);
+            else if (!isMasterMode)
+                modeManager.restore ();
+        }
     }
 }
