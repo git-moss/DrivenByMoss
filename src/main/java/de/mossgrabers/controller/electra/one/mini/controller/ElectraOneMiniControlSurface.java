@@ -47,8 +47,8 @@ public class ElectraOneMiniControlSurface extends AbstractElectraOneControlSurfa
 
     // @formatter:off
 
-//    "Triangle 2, 5, 7",
-//    "Triangle 3, 6, 8",
+    //    "Triangle 2, 5, 7",
+    //    "Triangle 3, 6, 8",
 
     // 0 = not touched, 1 = touched
     private static final int [] TOUCH_PATTERN_LINEAR_1__3          = new int [] { 1, 1, 1, 0, 0, 0, 0, 0 };
@@ -122,8 +122,8 @@ public class ElectraOneMiniControlSurface extends AbstractElectraOneControlSurfa
     {
         final int version = root.get ("versionSeq").asInt ();
         final String versionText = root.get ("versionText").asText ();
-        if (version < 500000400)
-            throw new FrameworkException ("Firmware must be at least 5.0.4 but is " + versionText);
+        if (version < 500100000)
+            throw new FrameworkException ("Firmware must be at least 5.1.0 but is " + versionText);
 
         final JsonNode modelNode = root.get ("model");
         if (modelNode != null)
