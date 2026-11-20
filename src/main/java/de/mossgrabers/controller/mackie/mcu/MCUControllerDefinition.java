@@ -4,12 +4,12 @@
 
 package de.mossgrabers.controller.mackie.mcu;
 
+import java.util.List;
+import java.util.UUID;
+
 import de.mossgrabers.framework.controller.DefaultControllerDefinition;
 import de.mossgrabers.framework.utils.OperatingSystem;
 import de.mossgrabers.framework.utils.Pair;
-
-import java.util.List;
-import java.util.UUID;
 
 
 /**
@@ -26,7 +26,9 @@ public class MCUControllerDefinition extends DefaultControllerDefinition
         UUID.fromString ("5F10A0CD-F866-41C0-B16A-AEA16282B657"),
         UUID.fromString ("7FF808DD-45DB-4026-AA6E-844ED8C05B55"),
         UUID.fromString ("8E0EDA26-ACB9-4F5E-94FB-B886C9468C7A"),
-        UUID.fromString ("4923C47A-B1DC-48C8-AE89-A332AA26BA87")
+        UUID.fromString ("4923C47A-B1DC-48C8-AE89-A332AA26BA87"),
+        UUID.fromString ("4DD4567F-3091-4C88-8308-A18A50AA7F71"),
+        UUID.fromString ("59CF43BD-453B-4688-8107-8B0F471874C6")
     };
 
     private static final String [] HARDWARE_MODEL         =
@@ -34,7 +36,9 @@ public class MCUControllerDefinition extends DefaultControllerDefinition
         "MCU - Control Universal",
         "MCU - Control Universal + 1 Extender",
         "MCU - Control Universal + 2 Extenders",
-        "MCU - Control Universal + 3 Extenders"
+        "MCU - Control Universal + 3 Extenders",
+        "MCU - Control Universal + 4 Extenders",
+        "MCU - Control Universal + 5 Extenders",
     };
 
 
