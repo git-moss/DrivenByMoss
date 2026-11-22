@@ -388,12 +388,15 @@ public abstract class AbstractTrackMode extends BaseMode<ITrack>
         if (index >= 0)
         {
             final ITrack track = tb.getItem (index);
-            if (!track.doesExist () || !track.isActivated ())
+            if (!track.doesExist ())
                 return this.colorManager.getColorIndex (PushColorManager.PUSH_BLACK);
 
             final ITrack cursorTrack = this.model.getCursorTrack ();
             final int selIndex = cursorTrack.doesExist () ? cursorTrack.getIndex () : -1;
             final boolean isSel = track.getIndex () == selIndex;
+
+            if (!track.isActivated ())
+                return this.colorManager.getColorIndex (isSel ? PushColorManager.PUSH_GREEN_LO : PushColorManager.PUSH_BLACK);
 
             if (track.isRecArm ())
                 return this.colorManager.getColorIndex (isSel ? PushColorManager.PUSH_RED_HI : PushColorManager.PUSH_RED_LO);
