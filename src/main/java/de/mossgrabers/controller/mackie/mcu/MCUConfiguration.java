@@ -26,6 +26,10 @@ import de.mossgrabers.framework.mode.Modes;
  */
 public class MCUConfiguration extends AbstractConfiguration
 {
+    private static final String MCU_DEVICE_2 = "MCU Device 2";
+    private static final String MCU_DEVICE_3 = "MCU Device 3";
+    private static final String MCU_DEVICE_4 = "MCU Device 4";
+
     private static final String TAG_ASPARION = "Asparion";
 
 
@@ -308,18 +312,33 @@ public class MCUConfiguration extends AbstractConfiguration
         },
         {
             MCU_DEVICE_1_LEFT,
-            "MCU Device 2 - right",
+            "MCU Device 2 - right"
         },
         {
             MCU_DEVICE_1_LEFT,
             "MCU Device 2 - center",
-            "MCU Device 3 - right",
+            "MCU Device 3 - right"
         },
         {
             MCU_DEVICE_1_LEFT,
-            "MCU Device 2",
-            "MCU Device 3",
-            "MCU Device 4 - right",
+            MCU_DEVICE_2,
+            MCU_DEVICE_3,
+            "MCU Device 4 - right"
+        },
+        {
+            MCU_DEVICE_1_LEFT,
+            MCU_DEVICE_2,
+            MCU_DEVICE_3,
+            MCU_DEVICE_4,
+            "MCU Device 5 - right"
+        },
+        {
+            MCU_DEVICE_1_LEFT,
+            MCU_DEVICE_2,
+            MCU_DEVICE_3,
+            MCU_DEVICE_4,
+            "MCU Device 5",
+            "MCU Device 6 - right"
         }
     };
 
