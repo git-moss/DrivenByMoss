@@ -147,6 +147,8 @@ public abstract class AbstractConfiguration implements Configuration
     public static final Integer      COLOR_TRACK_STATES              = Integer.valueOf (51);
     /** The speed of the encoder knob can be slowed down. */
     public static final Integer      ENCODER_KNOB_SLOW_DOWN          = Integer.valueOf (52);
+    /** Setting for highlighting the selected drum pad. */
+    public static final Integer      SHOW_SELECTED_DRUM_PAD          = Integer.valueOf (53);
 
     // Implementation IDs start at 100
     protected static final int       NEXT_SETTING_ID                 = 100;
@@ -455,6 +457,7 @@ public abstract class AbstractConfiguration implements Configuration
     private boolean                                   autoSelectDrum                             = false;
     private int                                       actionForRecArmedPad                       = 0;
     private boolean                                   turnOffEmptyDrumPads                       = false;
+    private boolean                                   showSelectedDrumPad                        = true;
     private boolean                                   turnOffScalePads;
     private final int []                              footswitch                                 = new int [NUMBER_OF_FOOTSWITCHES];
     private int                                       knobSpeedDefault                           = 0;
@@ -818,6 +821,14 @@ public abstract class AbstractConfiguration implements Configuration
     public boolean isTurnOffEmptyDrumPads ()
     {
         return this.turnOffEmptyDrumPads;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isShowSelectedDrumPad ()
+    {
+        return this.showSelectedDrumPad;
     }
 
 
@@ -1440,6 +1451,23 @@ public abstract class AbstractConfiguration implements Configuration
         });
 
         this.isSettingActive.add (TURN_OFF_EMPTY_DRUM_PADS);
+    }
+
+
+    /**
+     * Activate the show selected drum pad setting.
+     *
+     * @param settingsUI The settings
+     */
+    protected void activateShowSelectedDrumPadSetting (final ISettingsUI settingsUI)
+    {
+        final IEnumSetting showSelectedDrumPadSetting = settingsUI.getEnumSetting ("Highlight selected drum pad", CATEGORY_DRUMS, ON_OFF_OPTIONS, ON_OFF_OPTIONS[1]);
+        showSelectedDrumPadSetting.addValueObserver (value -> {
+            this.showSelectedDrumPad = "On".equals (value);
+            this.notifyObservers (SHOW_SELECTED_DRUM_PAD);
+        });
+
+        this.isSettingActive.add (SHOW_SELECTED_DRUM_PAD);
     }
 
 

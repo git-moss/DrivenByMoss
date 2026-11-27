@@ -188,7 +188,7 @@ public abstract class AbstractDrum64View<S extends IControlSurface<C>, C extends
         if (this.pressedKeys[this.offsetY + index] > 0)
             return isRecording ? AbstractDrumView.COLOR_PAD_RECORD : AbstractDrumView.COLOR_PAD_PLAY;
         // Selected?
-        if (this.selectedPad == index)
+        if (this.selectedPad == index && this.surface.getConfiguration ().isShowSelectedDrumPad ())
             return AbstractDrumView.COLOR_PAD_SELECTED;
 
         // Exists and active?

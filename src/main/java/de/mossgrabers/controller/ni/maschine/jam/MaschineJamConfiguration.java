@@ -112,7 +112,10 @@ public class MaschineJamConfiguration extends AbstractConfiguration
         // Drum Sequencer
 
         if (this.host.supports (Capability.HAS_DRUM_DEVICE))
+        {
             this.activateTurnOffEmptyDrumPadsSetting (globalSettings);
+            this.activateShowSelectedDrumPadSetting (globalSettings);
+        }
 
         // ----------------------------------------------------------------
         // Session
