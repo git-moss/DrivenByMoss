@@ -98,14 +98,16 @@ public class Push1Display extends AbstractTextDisplay
     public ITextDisplay setBlock (final int row, final int block, final String value)
     {
         final int cell = 2 * block;
-        if (value.length () > 9)
+        // Convert before splitting and padding so expanded ASCII replacements stay within the block.
+        final String asciiValue = StringUtils.fixASCII (value);
+        if (asciiValue.length () > 9)
         {
-            this.cells[row * 8 + cell] = value.substring (0, 9);
-            this.cells[row * 8 + cell + 1] = StringUtils.pad (value.substring (9), 8, ' ');
+            this.cells[row * 8 + cell] = asciiValue.substring (0, 9);
+            this.cells[row * 8 + cell + 1] = StringUtils.pad (asciiValue.substring (9), 8, ' ');
         }
         else
         {
-            this.cells[row * 8 + cell] = StringUtils.pad (value, 9, ' ');
+            this.cells[row * 8 + cell] = StringUtils.pad (asciiValue, 9, ' ');
             this.clearCell (row, cell + 1);
         }
         return this;
@@ -124,7 +126,8 @@ public class Push1Display extends AbstractTextDisplay
     @Override
     public ITextDisplay setCell (final int row, final int cell, final String value)
     {
-        this.cells[row * 8 + cell] = StringUtils.pad (value, 8, ' ') + (cell % 2 == 0 ? " " : "");
+        // Convert before padding so replacements such as "±" -> "+-" do not increase the cell width.
+        this.cells[row * 8 + cell] = StringUtils.pad (StringUtils.fixASCII (value), 8, ' ') + (cell % 2 == 0 ? " " : "");
         return this;
     }
 
@@ -153,7 +156,8 @@ public class Push1Display extends AbstractTextDisplay
     @Override
     public void writeLine (final int row, final String text, final String previousText)
     {
-        this.output.sendSysex (Push1Display.SYSEX_MESSAGE[row] + StringUtils.asciiToHex (text) + "F7");
+        final String asciiText = StringUtils.fixASCII (text);
+        this.output.sendSysex (Push1Display.SYSEX_MESSAGE[row] + StringUtils.asciiToHex (asciiText) + "F7");
     }
 
 
